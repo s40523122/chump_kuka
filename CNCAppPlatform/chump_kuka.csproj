@@ -179,6 +179,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\myEventArgs.cs" />
     <EmbeddedResource Include="Controls\Container.resx">
       <DependentUpon>Container.cs</DependentUpon>
     </EmbeddedResource>

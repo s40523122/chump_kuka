@@ -30,18 +30,26 @@ namespace Chump_kuka.Controls
                 node = value; 
                 for (int i = 0; i < node.Length; i++)
                 {
-                    flowLayoutPanel1.Controls.Add(new Container() { ContainerName = node[i], Size = container1.Size});
+                    Container container = new Container() { ContainerName = node[i], Size = container1.Size };
+                    container.ContainerClick += Container_ContainerClick;
+                    flowLayoutPanel1.Controls.Add(container);
                 }
             }
         }
 
-
         private string[] node = new string[] { };
+
+        // 定義事件，使用自定義參數
+        public event EventHandler<ContainerClickEventArgs> ContainerClick;
 
         public kuka_area()
         {
             InitializeComponent();
             SizeChanged += Kuka_area_SizeChanged;
+        }
+        private void Container_ContainerClick(object sender, ContainerClickEventArgs e)
+        {
+            ContainerClick?.Invoke(this, e);
         }
 
         private void Kuka_area_SizeChanged(object sender, EventArgs e)
@@ -53,6 +61,12 @@ namespace Chump_kuka.Controls
             {
                 container.Size = container1.Size;
             }
+        }
+
+        private void flowLayoutPanel1_Click(object sender, EventArgs e)
+        {
+
+
         }
     }
 }

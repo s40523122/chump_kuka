@@ -81,6 +81,7 @@
             this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel1.Size = new System.Drawing.Size(584, 310);
             this.flowLayoutPanel1.TabIndex = 2;
+            this.flowLayoutPanel1.Click += new System.EventHandler(this.flowLayoutPanel1_Click);
             // 
             // container1
             // 

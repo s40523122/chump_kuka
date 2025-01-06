@@ -33,18 +33,19 @@ namespace Chump_kuka
                         doubleImg1.BackColor = Color.MediumSpringGreen;
                         panel2.BackColor = Color.OrangeRed;
                         label2.Text = "已選定";
-                        f01_ManualApi.AddSeleted = this;
                         break;
                     case false:
                         doubleImg1.BackColor = Color.CadetBlue;
                         panel2.BackColor = Color.DarkOrange;
                         label2.Text = "";
-                        f01_ManualApi.RemoveSeleted = this;
                         break;
                 }
             }
         }
         private bool _checked = false;
+
+        // 定義事件，使用自定義參數
+        public event EventHandler<ContainerClickEventArgs> ContainerClick;
 
         public Container()
         {
@@ -62,6 +63,9 @@ namespace Chump_kuka
         private void doubleImg1_Click(object sender, EventArgs e)
         {
             Checked = !Checked;
+
+            // 觸發事件，並傳遞按鈕資訊
+            ContainerClick?.Invoke(this, new ContainerClickEventArgs(Name, this));
         }
     }
 }
