@@ -45,7 +45,7 @@ namespace Chump_kuka
         private bool _checked = false;
 
         // 定義事件，使用自定義參數
-        public event EventHandler<ContainerClickEventArgs> ContainerClick;
+        public event EventHandler<ControlClickEventArgs> ContainerClick;
 
         public Container()
         {
@@ -65,7 +65,7 @@ namespace Chump_kuka
             Checked = !Checked;
 
             // 觸發事件，並傳遞按鈕資訊
-            ContainerClick?.Invoke(this, new ContainerClickEventArgs(Name, this));
+            ContainerClick?.Invoke(this, new ControlClickEventArgs(Name, this));
         }
     }
 }

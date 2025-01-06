@@ -34,9 +34,11 @@
             this.container1 = new Chump_kuka.Container();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new iCAPS.ScaleLabel();
+            this.myPanel2 = new iCAPS.myPanel();
             this.myPanel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.myPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // myPanel1
@@ -44,11 +46,11 @@
             this.myPanel1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.myPanel1.Controls.Add(this.tableLayoutPanel1);
             this.myPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.myPanel1.Location = new System.Drawing.Point(0, 0);
+            this.myPanel1.Location = new System.Drawing.Point(5, 5);
             this.myPanel1.Name = "myPanel1";
             this.myPanel1.Padding = new System.Windows.Forms.Padding(15, 16, 15, 16);
             this.myPanel1.Radius = 10;
-            this.myPanel1.Size = new System.Drawing.Size(618, 414);
+            this.myPanel1.Size = new System.Drawing.Size(608, 404);
             this.myPanel1.TabIndex = 3;
             // 
             // tableLayoutPanel1
@@ -67,7 +69,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 82F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(588, 382);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(578, 372);
             this.tableLayoutPanel1.TabIndex = 3;
             // 
             // flowLayoutPanel1
@@ -75,11 +77,11 @@
             this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
             this.flowLayoutPanel1.Controls.Add(this.container1);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(2, 70);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(2, 68);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(4);
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(584, 310);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(574, 302);
             this.flowLayoutPanel1.TabIndex = 2;
             this.flowLayoutPanel1.Click += new System.EventHandler(this.flowLayoutPanel1_Click);
             // 
@@ -97,10 +99,10 @@
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.HotTrack;
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(2, 59);
+            this.panel1.Location = new System.Drawing.Point(2, 57);
             this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(239, 7);
+            this.panel1.Size = new System.Drawing.Size(235, 7);
             this.panel1.TabIndex = 2;
             // 
             // label1
@@ -108,19 +110,31 @@
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label1.Factor = 0.5F;
-            this.label1.Font = new System.Drawing.Font("微軟正黑體", 28.5F, System.Drawing.FontStyle.Bold);
+            this.label1.Font = new System.Drawing.Font("微軟正黑體", 27.5F, System.Drawing.FontStyle.Bold);
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(237, 57);
+            this.label1.Size = new System.Drawing.Size(233, 55);
             this.label1.TabIndex = 3;
             this.label1.Text = "scaleLabel1";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // myPanel2
+            // 
+            this.myPanel2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.myPanel2.Controls.Add(this.myPanel1);
+            this.myPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.myPanel2.Location = new System.Drawing.Point(0, 0);
+            this.myPanel2.Name = "myPanel2";
+            this.myPanel2.Padding = new System.Windows.Forms.Padding(5);
+            this.myPanel2.Radius = 10;
+            this.myPanel2.Size = new System.Drawing.Size(618, 414);
+            this.myPanel2.TabIndex = 4;
             // 
             // kuka_area
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.myPanel1);
+            this.Controls.Add(this.myPanel2);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "kuka_area";
             this.Size = new System.Drawing.Size(618, 414);
@@ -128,6 +142,7 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
+            this.myPanel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -140,5 +155,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel1;
         private iCAPS.ScaleLabel label1;
+        private iCAPS.myPanel myPanel2;
     }
 }

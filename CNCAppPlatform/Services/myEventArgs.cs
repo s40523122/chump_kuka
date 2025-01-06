@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace Chump_kuka
 {
-    public class ContainerClickEventArgs : EventArgs
+    public class ControlClickEventArgs : EventArgs
     {
-        public string ContainerName { get; }
-        public object Container { get; }
+        public string ControlName { get; }
+        public object Control { get; }
 
-        public ContainerClickEventArgs(string controlName, object control)
+        public ControlClickEventArgs(string controlName, object control)
         {
-            ContainerName = controlName;
-            Container = control;
+            ControlName = controlName;
+            Control = control;
         }
     }
 }

@@ -56,12 +56,51 @@ namespace Chump_kuka.Forms
             foreach(kuka_area area in tableLayoutPanel2.Controls)
             {
                 area.ContainerClick += Kuka_area1_ContainerClick;
+                area.AreaClick += Area_AreaClick;
             }
         }
 
-        private void Kuka_area1_ContainerClick(object sender, ContainerClickEventArgs e)
+        private void Area_AreaClick(object sender, ControlClickEventArgs e)
         {
-            Container container = e.Container as Container;
+            kuka_area container = e.Control as kuka_area;
+
+            if (container.Checked)
+            {
+                if (selected_1.Tag == null)
+                {
+                    selected_1.Tag = container;
+                    selected_1.Text = container.AreaName;
+                }
+                else if (selected_2.Tag == null)
+                {
+                    selected_2.Tag = container;
+                    selected_2.Text = container.AreaName;
+                }
+                else
+                {
+                    container.Checked = false;
+                    MsgBox.Show("已選擇2個節點");
+                }
+            }
+            else
+            {
+                // 如果觸發點擊的容器被取消選取，
+                // 判斷該容器是否存在於 selected_1 或 selected_2 的 Tag中，
+                // 若存在，清空該 selected_1 或 selected_2
+                new List<Label> { selected_1, selected_2 }
+                .Where(c => c.Tag == container)
+                .ToList()
+                .ForEach(c =>
+                {
+                    c.Tag = null;
+                    c.Text = "null";
+                });
+            }
+        }
+
+        private void Kuka_area1_ContainerClick(object sender, ControlClickEventArgs e)
+        {
+            Container container = e.Control as Container;
 
             if (container.Checked)
             {

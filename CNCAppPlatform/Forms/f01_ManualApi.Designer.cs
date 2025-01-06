@@ -82,6 +82,7 @@
             // 
             // tableLayoutPanel2
             // 
+            this.tableLayoutPanel2.BackColor = System.Drawing.SystemColors.Control;
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -224,7 +225,7 @@
             this.selected_2.Name = "selected_2";
             this.selected_2.Size = new System.Drawing.Size(106, 92);
             this.selected_2.TabIndex = 2;
-            this.selected_2.Text = "組裝區";
+            this.selected_2.Text = "null";
             this.selected_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // selected_1
@@ -237,7 +238,7 @@
             this.selected_1.Name = "selected_1";
             this.selected_1.Size = new System.Drawing.Size(105, 92);
             this.selected_1.TabIndex = 2;
-            this.selected_1.Text = "組裝區";
+            this.selected_1.Text = "null";
             this.selected_1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // doubleImg1

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using iCAPS;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -37,17 +38,38 @@ namespace Chump_kuka.Controls
             }
         }
 
+        [Description("表示元件是否為已核取狀態。"), Category("自訂值")]
+        public bool Checked
+        {
+            get { return _checked; }
+            set
+            {
+                _checked = value;
+                switch (_checked)
+                {
+                    case true:
+                        myPanel2.BackColor = Color.MediumSpringGreen;
+                        break;
+                    case false:
+                        myPanel2.BackColor = SystemColors.ControlLight;
+                        break;
+                }
+            }
+        }
+        private bool _checked = false;
+
         private string[] node = new string[] { };
 
         // 定義事件，使用自定義參數
-        public event EventHandler<ContainerClickEventArgs> ContainerClick;
+        public event EventHandler<ControlClickEventArgs> ContainerClick;
+        public event EventHandler<ControlClickEventArgs> AreaClick;
 
         public kuka_area()
         {
             InitializeComponent();
             SizeChanged += Kuka_area_SizeChanged;
         }
-        private void Container_ContainerClick(object sender, ContainerClickEventArgs e)
+        private void Container_ContainerClick(object sender, ControlClickEventArgs e)
         {
             ContainerClick?.Invoke(this, e);
         }
@@ -65,7 +87,9 @@ namespace Chump_kuka.Controls
 
         private void flowLayoutPanel1_Click(object sender, EventArgs e)
         {
-
+            Checked = !Checked;
+            // 觸發事件，並傳遞按鈕資訊
+            AreaClick?.Invoke(this, new ControlClickEventArgs(Name, this));
 
         }
     }
