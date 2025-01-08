@@ -10,12 +10,11 @@ using System.Windows.Forms;
 
 namespace Chump_kuka.Forms
 {
-    public partial class myAMRS : Form
+    public partial class f03_Web : Form
     {
-        public myAMRS()
+        public f03_Web()
         {
             InitializeComponent();
-            Text = "正暉的大寶貝";
         }
     }
 }

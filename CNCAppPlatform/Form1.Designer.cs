@@ -32,12 +32,12 @@ namespace Chump_kuka
             // 
             // panel1
             // 
-            this.panel1.Size = new System.Drawing.Size(678, 450);
+            this.panel1.Size = new System.Drawing.Size(745, 450);
             // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(944, 581);
+            this.ClientSize = new System.Drawing.Size(1011, 581);
             this.Name = "Form1";
             this.ResumeLayout(false);
             this.PerformLayout();

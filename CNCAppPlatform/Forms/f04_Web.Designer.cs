@@ -1,6 +1,6 @@
 ﻿namespace Chump_kuka.Forms
 {
-    partial class test
+    partial class f04_Web
     {
         /// <summary>
         /// Required designer variable.
@@ -54,16 +54,16 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // test
+            // f04_Web
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(913, 587);
             this.Controls.Add(this.panel1);
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "test";
+            this.Name = "f04_Web";
             this.Padding = new System.Windows.Forms.Padding(15, 16, 15, 16);
-            this.Text = "test";
+            this.Text = "第四頁";
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 

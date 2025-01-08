@@ -44,6 +44,8 @@ namespace Chump_kuka
         }
         private bool _checked = false;
 
+        public string Type { get { return "NODE_POINT"; } }
+
         // 定義事件，使用自定義參數
         public event EventHandler<ControlClickEventArgs> ContainerClick;
 

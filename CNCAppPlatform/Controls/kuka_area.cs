@@ -58,6 +58,9 @@ namespace Chump_kuka.Controls
         }
         private bool _checked = false;
 
+        public string Type { get { return "NODE_AREA"; } }
+        public string AreaCode = "";
+
         private string[] node = new string[] { };
 
         // 定義事件，使用自定義參數

@@ -9,7 +9,7 @@ using System.Reflection;
 using iCAPS;
 
 namespace Chump_kuka
-{ 
+{
     public partial class Form1 : iCAPS.Form1
     {
         public Form1()

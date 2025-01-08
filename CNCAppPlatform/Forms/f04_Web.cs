@@ -12,13 +12,11 @@ using iCAPS;
 
 namespace Chump_kuka.Forms
 {
-    public partial class test : Form
+    public partial class f04_Web : Form
     {
-        public test()
+        public f04_Web()
         {
             InitializeComponent();
-
-            Text = "第一項";
 
             Load += Test_Load;
         }

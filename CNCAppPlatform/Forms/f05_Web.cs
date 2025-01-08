@@ -11,9 +11,9 @@ using System.Windows.Forms;
 
 namespace Chump_kuka.Forms
 {
-    public partial class ttest : Form
+    public partial class f05_Web : Form
     {
-        public ttest()
+        public f05_Web()
         {
             InitializeComponent();
 
