@@ -79,7 +79,7 @@ namespace Chump_kuka.Controls
 
         private void Kuka_area_SizeChanged(object sender, EventArgs e)
         {
-            container1.Height = flowLayoutPanel1.Height / 2 - 10;
+            container1.Height = (int)(flowLayoutPanel1.Height * 0.47);
             container1.Width = (int)(container1.Height * 0.6);
 
             foreach (Container container in flowLayoutPanel1.Controls)
