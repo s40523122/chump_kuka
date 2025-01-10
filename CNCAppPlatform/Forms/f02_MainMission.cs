@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Chump_kuka.Forms
 {
-    public partial class f02_Mission : Form
+    public partial class f02_MainMission : Form
     {
-        public f02_Mission()
+        public f02_MainMission()
         {
             InitializeComponent();
 

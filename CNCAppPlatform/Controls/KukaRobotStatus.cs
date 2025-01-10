@@ -1,4 +1,5 @@
-﻿using iCAPS;
+﻿using CookComputing.XmlRpc;
+using iCAPS;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -86,8 +87,22 @@ namespace Chump_kuka.Controls
                 string responseBody = await Env.kuka_api.PostRequest("robotQuery", body);
                 isProcessing = false;
 
-                robot_infos = (JArray)JObject.Parse(responseBody)["data"];
-                request_time = robot_infos.Count != 0 ? DateTime.Now.ToString() : "--";
+                try
+                {
+                    JObject resp_json = JObject.Parse(responseBody);
+                    if (!(bool)resp_json["success"])
+                    {
+                        MsgBox.Show($"訪問 /areaQuery 時發生異常 [{(string)resp_json["code"]}] {(string)resp_json["message"]}");
+                        return;
+                    }
+
+                    robot_infos = (JArray)resp_json["data"];
+                    request_time = robot_infos.Count != 0 ? DateTime.Now.ToString() : "--";
+                }
+                catch
+                {
+                    MessageBox.Show(responseBody, "robot_state");
+                }
             }
 
             TimerTick?.Invoke(sender, e);

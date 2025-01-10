@@ -1,6 +1,6 @@
 ﻿namespace Chump_kuka.Forms
 {
-    partial class f02_Mission
+    partial class f02_MainMission
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(f02_Mission));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(f02_MainMission));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.kukaRobotStatus1 = new Chump_kuka.Controls.KukaRobotStatus();
@@ -54,7 +54,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1154, 705);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(937, 516);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tableLayoutPanel2
@@ -68,12 +68,12 @@
             this.tableLayoutPanel2.Controls.Add(this.kuka_area1, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.kukaRobotStatus2, 2, 1);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(37, 38);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(31, 28);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(1078, 628);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(873, 458);
             this.tableLayoutPanel2.TabIndex = 2;
             // 
             // kukaRobotStatus1
@@ -93,27 +93,27 @@
         "3"};
             this.kuka_area1.Checked = false;
             this.kuka_area1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kuka_area1.Location = new System.Drawing.Point(0, 188);
+            this.kuka_area1.Location = new System.Drawing.Point(0, 137);
             this.kuka_area1.Margin = new System.Windows.Forms.Padding(0);
             this.kuka_area1.Name = "kuka_area1";
-            this.kuka_area1.Size = new System.Drawing.Size(539, 440);
+            this.kuka_area1.Size = new System.Drawing.Size(436, 321);
             this.kuka_area1.TabIndex = 0;
             // 
             // kukaRobotStatus2
             // 
             this.kukaRobotStatus2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kukaRobotStatus2.Location = new System.Drawing.Point(811, 191);
+            this.kukaRobotStatus2.Location = new System.Drawing.Point(657, 140);
             this.kukaRobotStatus2.Name = "kukaRobotStatus2";
-            this.kukaRobotStatus2.Size = new System.Drawing.Size(264, 434);
+            this.kukaRobotStatus2.Size = new System.Drawing.Size(213, 315);
             this.kukaRobotStatus2.TabIndex = 1;
             // 
-            // f02_Mission
+            // f02_MainMission
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(1194, 745);
+            this.ClientSize = new System.Drawing.Size(977, 556);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "f02_Mission";
+            this.Name = "f02_MainMission";
             this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "交換站任務";
             this.tableLayoutPanel1.ResumeLayout(false);
