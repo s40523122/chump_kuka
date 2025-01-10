@@ -28,16 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(f02_Mission));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.kuka_area1 = new Chump_kuka.Controls.kuka_area();
-            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.kukaRobotStatus1 = new Chump_kuka.Controls.KukaRobotStatus();
+            this.kuka_area1 = new Chump_kuka.Controls.kuka_area();
+            this.kukaRobotStatus2 = new Chump_kuka.Controls.KukaRobotStatus();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
-            this.tableLayoutPanel3.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -49,7 +47,6 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 2, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(20, 20);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -57,22 +54,35 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1154, 731);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1154, 705);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tableLayoutPanel2
             // 
-            this.tableLayoutPanel2.ColumnCount = 1;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.ColumnCount = 3;
+            this.tableLayoutPanel1.SetColumnSpan(this.tableLayoutPanel2, 2);
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel2.Controls.Add(this.kukaRobotStatus1, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.kuka_area1, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.kukaRobotStatus2, 2, 1);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(37, 39);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(37, 38);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 80F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(767, 651);
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(1078, 628);
             this.tableLayoutPanel2.TabIndex = 2;
+            // 
+            // kukaRobotStatus1
+            // 
+            this.kukaRobotStatus1.AutoSize = true;
+            this.kukaRobotStatus1.Location = new System.Drawing.Point(3, 3);
+            this.kukaRobotStatus1.Name = "kukaRobotStatus1";
+            this.kukaRobotStatus1.Size = new System.Drawing.Size(0, 0);
+            this.kukaRobotStatus1.TabIndex = 0;
             // 
             // kuka_area1
             // 
@@ -83,61 +93,32 @@
         "3"};
             this.kuka_area1.Checked = false;
             this.kuka_area1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kuka_area1.Location = new System.Drawing.Point(25, 191);
-            this.kuka_area1.Margin = new System.Windows.Forms.Padding(25);
+            this.kuka_area1.Location = new System.Drawing.Point(0, 188);
+            this.kuka_area1.Margin = new System.Windows.Forms.Padding(0);
             this.kuka_area1.Name = "kuka_area1";
-            this.kuka_area1.Size = new System.Drawing.Size(717, 472);
+            this.kuka_area1.Size = new System.Drawing.Size(539, 440);
             this.kuka_area1.TabIndex = 0;
             // 
-            // tableLayoutPanel3
+            // kukaRobotStatus2
             // 
-            this.tableLayoutPanel3.ColumnCount = 1;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Controls.Add(this.groupBox1, 0, 1);
-            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(810, 39);
-            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-            this.tableLayoutPanel3.RowCount = 3;
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(305, 651);
-            this.tableLayoutPanel3.TabIndex = 3;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.kukaRobotStatus1);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(3, 133);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(10);
-            this.groupBox1.Size = new System.Drawing.Size(299, 384);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
-            // 
-            // kukaRobotStatus1
-            // 
-            this.kukaRobotStatus1.AutoSize = true;
-            this.kukaRobotStatus1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kukaRobotStatus1.Location = new System.Drawing.Point(10, 23);
-            this.kukaRobotStatus1.Name = "kukaRobotStatus1";
-            this.kukaRobotStatus1.Size = new System.Drawing.Size(279, 351);
-            this.kukaRobotStatus1.TabIndex = 0;
+            this.kukaRobotStatus2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kukaRobotStatus2.Location = new System.Drawing.Point(811, 191);
+            this.kukaRobotStatus2.Name = "kukaRobotStatus2";
+            this.kukaRobotStatus2.Size = new System.Drawing.Size(264, 434);
+            this.kukaRobotStatus2.TabIndex = 1;
             // 
             // f02_Mission
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(1194, 771);
+            this.ClientSize = new System.Drawing.Size(1194, 745);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "f02_Mission";
             this.Padding = new System.Windows.Forms.Padding(20);
-            this.Text = "主任務";
+            this.Text = "交換站任務";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel3.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -147,9 +128,8 @@
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private Controls.kuka_area kuka_area1;
-        private System.Windows.Forms.GroupBox groupBox1;
         private Controls.KukaRobotStatus kukaRobotStatus1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private Controls.KukaRobotStatus kukaRobotStatus2;
     }
 }
