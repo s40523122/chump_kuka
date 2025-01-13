@@ -9,7 +9,9 @@ namespace Chump_kuka
 {
     public class Env : iCAPS.Env
     {
-        public static HttpRequest kuka_api = new HttpRequest("http://192.168.68.84:10870/interfaces/api/amr/");
+        public static HttpRequest kuka_api = new HttpRequest("http://192.168.32.162:10870/interfaces/api/amr/");
         public static HttpRequest pmc_api = new HttpRequest("http://127.0.0.1:10870");
+
+        public static bool enble_kuka_api = false;
     }
 }

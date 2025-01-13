@@ -15,6 +15,13 @@ namespace Chump_kuka
         public Form1()
         {
             InitializeComponent();
+            
+            if (!Debugger.IsAttached) { button1.Visible = false; }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Env.enble_kuka_api = true;
         }
     }
 }

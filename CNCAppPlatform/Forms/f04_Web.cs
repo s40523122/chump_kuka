@@ -17,12 +17,13 @@ namespace Chump_kuka.Forms
         public f04_Web()
         {
             InitializeComponent();
+            Text = "API 設定";
 
             Load += Test_Load;
         }
         private void Test_Load(object sender, EventArgs e)
         {
-            WebView webView = new WebView("https://stackoverflow.com/questions/1237829/datagridview-checkbox-column-value-and-functionality");
+            WebView webView = new WebView("http://192.168.32.162:6888/");
             webView.Embed(panel1);
         }
 

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CefSharp;
+using iCAPS;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +17,15 @@ namespace Chump_kuka.Forms
         public f03_Web()
         {
             InitializeComponent();
+            Text = "地圖監控";
+
+            Load += F03_Web_Load;
+        }
+
+        private void F03_Web_Load(object sender, EventArgs e)
+        {
+            WebView webView = new WebView("http://192.168.32.162:5000/#/monitor/monitor");
+            webView.Embed(myPanel1);
         }
     }
 }

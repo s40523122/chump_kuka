@@ -41,9 +41,11 @@ namespace Chump_kuka.Forms
             // 當切換至當前分頁時，執行以下動作
             // if (Visible) MessageBox.Show("Show");
 
-            if (!Debugger.IsAttached)
+            if (Env.enble_kuka_api)
             {
                 tableLayoutPanel2.Controls.Clear();
+                selected_1.Tag = selected_2.Tag = null;
+                selected_1.Text = selected_2.Text = "null";
 
 
                 /* 取得區域列表   */
@@ -242,6 +244,12 @@ namespace Chump_kuka.Forms
             DialogResult dialogResult = MessageBox.Show($"是否執行派車任務?\n{texts[0]} -> {texts[1]}", "info", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.No)
             {
+                return;
+            }
+
+            if (!Env.enble_kuka_api)
+            {
+                MsgBox.Show("尚未開啟 kuka api");
                 return;
             }
 

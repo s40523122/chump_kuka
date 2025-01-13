@@ -70,7 +70,7 @@ namespace Chump_kuka.Controls
         {
             // 靜態計時器更新，所有元件同步更新
 
-            if (!Debugger.IsAttached)
+            if (Env.enble_kuka_api)
             {
                 if (isProcessing) return; // 如果正在處理，直接退出
 
