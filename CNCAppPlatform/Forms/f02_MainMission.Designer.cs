@@ -48,12 +48,12 @@
             this.doubleImg6 = new iCAPS.DoubleImg();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel8 = new iCAPS.ScaleLabel();
-            this.kuka_area1 = new Chump_kuka.Controls.kuka_area();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel9 = new iCAPS.ScaleLabel();
             this.button1 = new System.Windows.Forms.Button();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel10 = new iCAPS.ScaleLabel();
+            this.kuka_area1 = new Chump_kuka.Controls.kuka_area();
             this.kukaRobotStatus1 = new Chump_kuka.Controls.KukaRobotStatus();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
@@ -123,6 +123,7 @@
             this.scaleLabel7.TabIndex = 0;
             this.scaleLabel7.Text = "任務流程";
             this.scaleLabel7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.scaleLabel7.Click += new System.EventHandler(this.scaleLabel7_Click);
             // 
             // myPanel1
             // 
@@ -370,21 +371,6 @@
             this.scaleLabel8.Text = "區域狀態";
             this.scaleLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // kuka_area1
-            // 
-            this.kuka_area1.AreaName = "scaleLabel1";
-            this.kuka_area1.AreaNode = new string[] {
-        "1",
-        "2",
-        "3"};
-            this.kuka_area1.Checked = false;
-            this.kuka_area1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kuka_area1.Location = new System.Drawing.Point(0, 37);
-            this.kuka_area1.Margin = new System.Windows.Forms.Padding(0);
-            this.kuka_area1.Name = "kuka_area1";
-            this.kuka_area1.Size = new System.Drawing.Size(354, 261);
-            this.kuka_area1.TabIndex = 0;
-            // 
             // tableLayoutPanel6
             // 
             this.tableLayoutPanel6.ColumnCount = 1;
@@ -451,6 +437,21 @@
             this.scaleLabel10.TabIndex = 0;
             this.scaleLabel10.Text = "機器人狀態";
             this.scaleLabel10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // kuka_area1
+            // 
+            this.kuka_area1.AreaName = "scaleLabel1";
+            this.kuka_area1.AreaNode = new string[] {
+        "1",
+        "2",
+        "3"};
+            this.kuka_area1.Checked = false;
+            this.kuka_area1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kuka_area1.Location = new System.Drawing.Point(0, 37);
+            this.kuka_area1.Margin = new System.Windows.Forms.Padding(0);
+            this.kuka_area1.Name = "kuka_area1";
+            this.kuka_area1.Size = new System.Drawing.Size(354, 261);
+            this.kuka_area1.TabIndex = 0;
             // 
             // kukaRobotStatus1
             // 
