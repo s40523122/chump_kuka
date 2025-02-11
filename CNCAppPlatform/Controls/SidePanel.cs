@@ -38,7 +38,7 @@ namespace Chump_kuka.Controls
             if (ParentWidth != Parent.Width)
             {
                 ParentWidth = Parent.Width;
-                MaxSidebarWidth = ParentWidth * 0.2f;
+                MaxSidebarWidth = ParentWidth * 0.3f;
 
                 this.Location = new Point(ParentWidth, 0);
                 this.Width = (int)MaxSidebarWidth;
