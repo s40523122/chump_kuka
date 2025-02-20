@@ -1,5 +1,4 @@
 ﻿using Chump_kuka.Controls;
-using HZH_Controls.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +13,7 @@ namespace Chump_kuka.Forms
 {
     public partial class f02_MainMission : Form
     {
-        SidePanel sidePanel = new SidePanel();
+        SidePanel1 sidePanel = new SidePanel1();
         public f02_MainMission()
         {
             InitializeComponent();

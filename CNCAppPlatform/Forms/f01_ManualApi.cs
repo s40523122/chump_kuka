@@ -49,7 +49,11 @@ namespace Chump_kuka.Forms
 
 
                 /* 取得區域列表   */
-                string area_responseBody = await Env.kuka_api.GetResponse("areaQuery");     // 等待 api 回應
+                
+                int area_response_code = await Env.kuka_api.GetResponse("areaQuery");     // 等待 api 回應
+                if (area_response_code != 200) return;
+
+                string area_responseBody = Env.kuka_api.ResponseMessage;
                 /* 沒連接 api 時，測試用
                 string area_responseBody = @"{""code"": ""0"", 
                                               ""message"": """", 
@@ -68,7 +72,7 @@ namespace Chump_kuka.Forms
 
                 if (!(bool)resp_json["success"])
                 {
-                    MsgBox.Show($"訪問 /areaQuery 時發生異常 [{(string)resp_json["code"]}] {(string)resp_json["message"]}");
+                    MsgBox.Show($"手動派車頁面訪問 /areaQuery 時發生異常 [{(string)resp_json["code"]}] {(string)resp_json["message"]}");
                     return;
                 }
 
@@ -86,7 +90,10 @@ namespace Chump_kuka.Forms
                     areaCodes = area_codes
                 };
 
-                string node_responseBody = await Env.kuka_api.PostRequest("areaNodesQuery", body);       // 等待 api 回應
+                int node_response_code = await Env.kuka_api.PostRequest("areaNodesQuery", body);       // 等待 api 回應
+                if (node_response_code != 200) return;
+
+                string node_responseBody = Env.kuka_api.ResponseMessage;
                 /* 沒連接 api 時，測試用
                 string node_responseBody = @"{""code"": ""0"", 
                                               ""message"": """", 
@@ -102,7 +109,7 @@ namespace Chump_kuka.Forms
                 resp_json = JObject.Parse(node_responseBody);
                 if (!(bool)resp_json["success"])
                 {
-                    MsgBox.Show($"訪問 /areaNodesQuery 時發生異常 [{(string)resp_json["code"]}] {(string)resp_json["message"]}");
+                    MsgBox.Show($"手動派車頁面訪問 /areaNodesQuery 時發生異常 [{(string)resp_json["code"]}] {(string)resp_json["message"]}");
                     return;
                 }
 
@@ -293,8 +300,11 @@ namespace Chump_kuka.Forms
                     }
                 }
             };
-            
-            string responseBody = await Env.kuka_api.PostRequest("submitMission", body);
+
+            int response_code = await Env.kuka_api.PostRequest("submitMission", body);       // 等待 api 回應
+            if (response_code != 200) return;
+
+            string responseBody = Env.kuka_api.ResponseMessage;
 
             JObject resp_json = JObject.Parse(responseBody);
             if (!(bool)resp_json["success"])

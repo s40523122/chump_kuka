@@ -23,7 +23,7 @@ namespace Chump_kuka.Forms
         }
         private void Test_Load(object sender, EventArgs e)
         {
-            WebView webView = new WebView("http://192.168.32.162:6888/");
+            WebView webView = new WebView("http://192.168.68.64:6888/");
             webView.Embed(panel1);
         }
 

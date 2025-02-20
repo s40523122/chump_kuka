@@ -18,7 +18,7 @@ namespace Chump_kuka.Controls
 {
     public partial class KukaRobotStatus : UserControl
     {
-        private static Timer timer1 = new Timer();
+        private static Timer timer1 = new Timer();      // API 資料更新時間
 
         // 靜態事件，用於通知所有實例
         public static event EventHandler TimerTick;
@@ -83,16 +83,18 @@ namespace Chump_kuka.Controls
                 };
 
                 // 等待 api 回應
+                // TODO 更改為 timer.stop ?
                 isProcessing = true;
-                string responseBody = await Env.kuka_api.PostRequest("robotQuery", body);
-                isProcessing = false;
+                int response_code = await Env.kuka_api.PostRequest("robotQuery", body);
+                string responseBody = Env.kuka_api.ResponseMessage;
+                
 
                 try
                 {
                     JObject resp_json = JObject.Parse(responseBody);
                     if (!(bool)resp_json["success"])
                     {
-                        MsgBox.Show($"訪問 /areaQuery 時發生異常 [{(string)resp_json["code"]}] {(string)resp_json["message"]}");
+                        MsgBox.Show($"KukaRobotStatus控制項嘗試訪問 /areaQuery 時發生異常。 [{(string)resp_json["code"]}] {(string)resp_json["message"]}");
                         return;
                     }
 
@@ -101,11 +103,13 @@ namespace Chump_kuka.Controls
                 }
                 catch
                 {
-                    MessageBox.Show(responseBody, "robot_state");
+                    MessageBox.Show($"KukaRobotStatus控制項嘗試訪問 /areaQuery 時發生異常。{responseBody}", "robot_state error");
                 }
             }
 
             TimerTick?.Invoke(sender, e);
+            
+            isProcessing = false;
         }
 
         public KukaRobotStatus()
@@ -118,21 +122,32 @@ namespace Chump_kuka.Controls
             tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;       // 切換分頁時，顯示內容
         }
 
+        /// <summary>
+        /// 依據分頁更新表格內容
+        /// </summary>
         private void InfoUPdate()
         {
             if (robot_infos.Count == 0) return;
 
-            robot_id.Text = (string)robot_infos[page_index]["robotId"];
-            robot_type.Text = (string)robot_infos[page_index]["robotType"];
-            container_code.Text = (string)robot_infos[page_index]["containerCode"];
-            map_code.Text = (string)robot_infos[page_index]["mapCode"];
-            Dictionary<string, string> status_dict = new Dictionary<string, string>() { { "1", "離場" }, { "2", "離線" }, { "3", "空閒" }, { "4", "任務中" }, { "5", "充電中" }, { "6", "更新中" }, { "7", "異常" } };
-            status.Text = status_dict[(string)robot_infos[page_index]["status"]];
-            Dictionary<string, string> occupy_dict = new Dictionary<string, string>() { { "0", "未占用" }, { "1", "占用中" }};
-            occupy_status.Text = occupy_dict[(string)robot_infos[page_index]["occupyStatus"]];
-            battery_level.Text = (string)robot_infos[page_index]["batteryLevel"];
-            node_code.Text = (string)robot_infos[page_index]["nodeCode"];
-            update_time.Text = request_time;
+            // 因為 api 返回順序不固定，因此需要有一個尋找順序的機制
+            for (int current_index = 0; current_index < robot_infos.Count; current_index++)
+            {
+                if ((string)robot_infos[current_index]["robotId"] == tabControl1.TabPages[page_index].Text)
+                {
+                    robot_id.Text = (string)robot_infos[current_index]["robotId"];
+                    robot_type.Text = (string)robot_infos[current_index]["robotType"];
+                    container_code.Text = (string)robot_infos[current_index]["containerCode"];
+                    map_code.Text = (string)robot_infos[current_index]["mapCode"];
+                    Dictionary<string, string> status_dict = new Dictionary<string, string>() { { "1", "離場" }, { "2", "離線" }, { "3", "空閒" }, { "4", "任務中" }, { "5", "充電中" }, { "6", "更新中" }, { "7", "異常" } };
+                    status.Text = status_dict[(string)robot_infos[current_index]["status"]];
+                    Dictionary<string, string> occupy_dict = new Dictionary<string, string>() { { "0", "未占用" }, { "1", "占用中" } };
+                    occupy_status.Text = occupy_dict[(string)robot_infos[current_index]["occupyStatus"]];
+                    battery_level.Text = (string)robot_infos[current_index]["batteryLevel"];
+                    node_code.Text = (string)robot_infos[current_index]["nodeCode"];
+                    update_time.Text = request_time;
+                    return ;
+                }
+            }
         }
 
         private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)

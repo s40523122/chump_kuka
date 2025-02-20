@@ -23,7 +23,7 @@ namespace Chump_kuka.Forms
 
         private void Ttest_Load(object sender, EventArgs e)
         {
-            WebView webView = new WebView("http://192.168.32.162:5000/#/wcs/job_records");
+            WebView webView = new WebView("http://192.168.68.64:5000/#/wcs/job_records");
             webView.Embed(panel1);
         }
     }
