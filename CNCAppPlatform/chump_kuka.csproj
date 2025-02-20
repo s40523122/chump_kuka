@@ -43,11 +43,6 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="ActUtlTypeLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=627cb188e78f967a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\..\..\..\MELSEC\Act\Control\ActUtlTypeLib.dll</HintPath>
-    </Reference>
     <Reference Include="CefSharp, Version=131.3.50.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
       <HintPath>..\packages\CefSharp.Common.131.3.50\lib\net462\CefSharp.dll</HintPath>
     </Reference>
@@ -71,7 +66,7 @@
     </Reference>
     <Reference Include="iCAPS_template, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\iCAPS_template\iCAPS_template_git\iCAPS_template\bin\Debug\iCAPS_template.dll</HintPath>
+      <HintPath>..\..\iCAPS_template\iCAPS_template\bin\Debug\iCAPS_template.dll</HintPath>
     </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
@@ -88,6 +83,9 @@
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nmodbuspc">
+      <HintPath>..\packages\nmodbuspc.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -143,6 +141,12 @@
     </Compile>
     <Compile Include="Controls\kuka_area.Designer.cs">
       <DependentUpon>kuka_area.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SidePanel1.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SidePanel1.Designer.cs">
+      <DependentUpon>SidePanel1.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\SidePanel.cs">
       <SubType>UserControl</SubType>
@@ -201,6 +205,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\DI_DOManager.cs" />
     <Compile Include="Services\myEventArgs.cs" />
     <EmbeddedResource Include="Controls\Container.resx">
       <DependentUpon>Container.cs</DependentUpon>
@@ -210,6 +215,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\kuka_area.resx">
       <DependentUpon>kuka_area.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SidePanel1.resx">
+      <DependentUpon>SidePanel1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SidePanel.resx">
       <DependentUpon>SidePanel.cs</DependentUpon>
