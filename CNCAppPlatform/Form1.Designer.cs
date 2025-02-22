@@ -37,6 +37,8 @@ namespace Chump_kuka
             this.btStart = new System.Windows.Forms.Button();
             this.btStop = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.label2 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -46,6 +48,8 @@ namespace Chump_kuka
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.textBox1);
+            this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.btStop);
             this.panel1.Controls.Add(this.btStart);
             this.panel1.Controls.Add(this.pictureBox4);
@@ -60,6 +64,8 @@ namespace Chump_kuka
             this.panel1.Controls.SetChildIndex(this.pictureBox4, 0);
             this.panel1.Controls.SetChildIndex(this.btStart, 0);
             this.panel1.Controls.SetChildIndex(this.btStop, 0);
+            this.panel1.Controls.SetChildIndex(this.label2, 0);
+            this.panel1.Controls.SetChildIndex(this.textBox1, 0);
             // 
             // enable_side
             // 
@@ -114,7 +120,7 @@ namespace Chump_kuka
             // 
             // btStart
             // 
-            this.btStart.Location = new System.Drawing.Point(497, 272);
+            this.btStart.Location = new System.Drawing.Point(166, 272);
             this.btStart.Name = "btStart";
             this.btStart.Size = new System.Drawing.Size(91, 45);
             this.btStart.TabIndex = 2;
@@ -124,7 +130,7 @@ namespace Chump_kuka
             // 
             // btStop
             // 
-            this.btStop.Location = new System.Drawing.Point(616, 272);
+            this.btStop.Location = new System.Drawing.Point(285, 272);
             this.btStop.Name = "btStop";
             this.btStop.Size = new System.Drawing.Size(91, 45);
             this.btStop.TabIndex = 2;
@@ -135,6 +141,23 @@ namespace Chump_kuka
             // timer1
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(51, 320);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(33, 12);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "label2";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(52, 356);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(89, 22);
+            this.textBox1.TabIndex = 4;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // Form1
             // 
@@ -165,6 +188,8 @@ namespace Chump_kuka
         private System.Windows.Forms.Button btStop;
         private System.Windows.Forms.Button btStart;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

@@ -26,6 +26,19 @@ namespace Chump_kuka
 
             modbusService = new ModbusService();
             Load += Form1_Load;
+
+            KukaParm.PropertyChanged += KukaParm_PropertyChanged;
+            UpdateUI();
+        }
+
+        private void KukaParm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            UpdateUI();
+        }
+
+        private void UpdateUI()
+        {
+            label2.Text = $"音量: {KukaParm.Volume}";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -99,6 +112,11 @@ namespace Chump_kuka
             bool currentState = listDO[index].BackColor == Color.Red;
             modbusService.WriteDO(index, !currentState);
             listDO[index].BackColor = !currentState ? Color.Red : Color.Maroon;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            KukaParm.Volume = textBox1.Text;
         }
     }
 }

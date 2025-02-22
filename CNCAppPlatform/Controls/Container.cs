@@ -20,6 +20,13 @@ namespace Chump_kuka
             set { label1.Text = value; }
         }
 
+        [Description("容器圖片。"), Category("自訂值")]
+        public Image ContainerImage
+        {
+            get { return doubleImg1.Image; }
+            set { doubleImg1.Image = value; }
+        }
+
         [Description("表示元件是否為已核取狀態。"), Category("自訂值")]
         public bool Checked
         {

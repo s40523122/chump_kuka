@@ -203,9 +203,11 @@
     <Compile Include="Forms\f01_ManualApi.Designer.cs">
       <DependentUpon>f01_ManualApi.cs</DependentUpon>
     </Compile>
+    <Compile Include="KukaParam.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DI_DOManager.cs" />
+    <Compile Include="Services\KukaApiHandle.cs" />
     <Compile Include="Services\myEventArgs.cs" />
     <EmbeddedResource Include="Controls\Container.resx">
       <DependentUpon>Container.cs</DependentUpon>

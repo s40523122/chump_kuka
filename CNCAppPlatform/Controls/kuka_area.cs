@@ -23,20 +23,23 @@ namespace Chump_kuka.Controls
         [Description("區域中的節點。"), Category("自訂值")]
         public string[] AreaNode
         {
-            get { return node; }
+            get { return _nodes; }
             set 
             {
-                flowLayoutPanel1.Controls.Clear();
+                if (_nodes == value) return;        // 如果資訊未更新，不處理
+
+                containerPanel.Controls.Clear();
                 if (value == null) return;
-                node = value; 
-                for (int i = 0; i < node.Length; i++)
+                _nodes = value; 
+                for (int i = 0; i < _nodes.Length; i++)
                 {
-                    Container container = new Container() { ContainerName = node[i], Size = container1.Size };
+                    Container container = new Container() { ContainerName = _nodes[i], Size = container1.Size };
                     container.ContainerClick += Container_ContainerClick;
-                    flowLayoutPanel1.Controls.Add(container);
+                    containerPanel.Controls.Add(container);
                 }
             }
         }
+        private string[] _nodes = new string[] { };
 
         [Description("表示元件是否為已核取狀態。"), Category("自訂值")]
         public bool Checked
@@ -44,14 +47,15 @@ namespace Chump_kuka.Controls
             get { return _checked; }
             set
             {
+                // 當控制項被點擊後，點亮外框
                 _checked = value;
                 switch (_checked)
                 {
                     case true:
-                        myPanel2.BackColor = Color.MediumSpringGreen;
+                        custom_border.BackColor = Color.MediumSpringGreen;
                         break;
                     case false:
-                        myPanel2.BackColor = SystemColors.ControlLight;
+                        custom_border.BackColor = SystemColors.ControlLight;
                         break;
                 }
             }
@@ -61,7 +65,7 @@ namespace Chump_kuka.Controls
         public string Type { get { return "NODE_AREA"; } }
         public string AreaCode = "";
 
-        private string[] node = new string[] { };
+        
 
         // 定義事件，使用自定義參數
         public event EventHandler<ControlClickEventArgs> ContainerClick;
@@ -72,6 +76,31 @@ namespace Chump_kuka.Controls
             InitializeComponent();
             SizeChanged += Kuka_area_SizeChanged;
         }
+
+        public void UpdateContainerImage(int[] container_status)
+        {
+            int i = 0;
+            foreach (Container _container in containerPanel.Controls)
+            {
+                switch (container_status[i++]) 
+                { 
+                    case 0:
+                        // 無交換站
+                        _container.ContainerImage = null;
+                        break;
+                    case 1:
+                        // 僅交換站
+                        _container.ContainerImage = doubleImg1.Image;
+                        break;
+                    case 2:
+                        // 已入料
+                        _container.ContainerImage = doubleImg1.SubImg;
+                        break;
+
+                }
+                
+            }
+        }
         private void Container_ContainerClick(object sender, ControlClickEventArgs e)
         {
             ContainerClick?.Invoke(this, e);
@@ -79,10 +108,10 @@ namespace Chump_kuka.Controls
 
         private void Kuka_area_SizeChanged(object sender, EventArgs e)
         {
-            container1.Height = (int)(flowLayoutPanel1.Height * 0.47);
+            container1.Height = (int)(containerPanel.Height * 0.47);
             container1.Width = (int)(container1.Height * 0.6);
 
-            foreach (Container container in flowLayoutPanel1.Controls)
+            foreach (Container container in containerPanel.Controls)
             {
                 container.Size = container1.Size;
             }
