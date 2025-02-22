@@ -118,5 +118,10 @@ namespace Chump_kuka
         {
             KukaParm.Volume = textBox1.Text;
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Log.Append("這是一個測試訊息", "Test", "Form1");
+        }
     }
 }
