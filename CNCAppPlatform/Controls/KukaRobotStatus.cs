@@ -94,7 +94,7 @@ namespace Chump_kuka.Controls
                     JObject resp_json = JObject.Parse(responseBody);
                     if (!(bool)resp_json["success"])
                     {
-                        MsgBox.Show($"KukaRobotStatus控制項嘗試訪問 /areaQuery 時發生異常。 [{(string)resp_json["code"]}] {(string)resp_json["message"]}");
+                        MsgBox.Show($"KukaRobotStatus控制項嘗試訪問 /robotQuery 時發生異常。 [{(string)resp_json["code"]}] {(string)resp_json["message"]}");
                         return;
                     }
 

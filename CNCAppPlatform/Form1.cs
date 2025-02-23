@@ -56,6 +56,8 @@ namespace Chump_kuka
         {
             listDI = new List<PictureBox> { pictureBox1, pictureBox2, pictureBox3, pictureBox4 };
             //listDO = new List<PictureBox> { DO0, DO1, DO2, DO3 };
+
+
         }
 
         private async void btStart_Click(object sender, EventArgs e)

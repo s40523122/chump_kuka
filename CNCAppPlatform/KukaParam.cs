@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.ComponentModel;
 
 /// <summary>
@@ -20,7 +21,8 @@ public static class KukaParm
     public static event PropertyChangedEventHandler PropertyChanged;
     
     private static string _volume;
-    private static string _theme = "light";
+    private static string _robot_status_feedback_time = "--";
+    private static JArray _robot_status_infos;
     private static bool _isDarkMode;
     
 
@@ -37,15 +39,27 @@ public static class KukaParm
         }
     }
 
-    public static string Theme
+    public static string RobotStatusFeedbackTime
     {
-        get => _theme;
+        get => _robot_status_feedback_time;
         set
         {
-            if (_theme != value)
+            if (_robot_status_feedback_time != value)
             {
-                _theme = value;
-                OnPropertyChanged(nameof(Theme));
+                _robot_status_feedback_time = value;
+                OnPropertyChanged(nameof(RobotStatusFeedbackTime));
+            }
+        }
+    }
+    public static JArray RobotStatusInfos
+    {
+        get => _robot_status_infos;
+        set
+        {
+            if (_robot_status_infos != value)
+            {
+                _robot_status_infos = value;
+                OnPropertyChanged(nameof(RobotStatusInfos));
             }
         }
     }
