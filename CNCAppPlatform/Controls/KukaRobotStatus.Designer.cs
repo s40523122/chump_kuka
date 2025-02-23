@@ -15,6 +15,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KukaRobotStatus));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -36,14 +37,22 @@
             this.status = new iCAPS.ScaleLabel();
             this.map_code = new iCAPS.ScaleLabel();
             this.robot_type = new iCAPS.ScaleLabel();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.server_reject = new System.Windows.Forms.TableLayoutPanel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.scaleLabel2 = new iCAPS.ScaleLabel();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.server_reject.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Font = new System.Drawing.Font("微軟正黑體", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.tabControl1.HotTrack = true;
@@ -364,6 +373,61 @@
             this.robot_type.Text = "--";
             this.robot_type.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.server_reject);
+            this.tabPage2.Location = new System.Drawing.Point(4, 24);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Size = new System.Drawing.Size(308, 385);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "no connect";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // server_reject
+            // 
+            this.server_reject.BackColor = System.Drawing.Color.DarkGray;
+            this.server_reject.ColumnCount = 3;
+            this.server_reject.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.server_reject.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
+            this.server_reject.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.server_reject.Controls.Add(this.pictureBox1, 1, 1);
+            this.server_reject.Controls.Add(this.scaleLabel2, 1, 2);
+            this.server_reject.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.server_reject.Location = new System.Drawing.Point(0, 0);
+            this.server_reject.Name = "server_reject";
+            this.server_reject.RowCount = 4;
+            this.server_reject.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.server_reject.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.server_reject.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.server_reject.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.server_reject.Size = new System.Drawing.Size(308, 385);
+            this.server_reject.TabIndex = 0;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(33, 41);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(240, 186);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            // 
+            // scaleLabel2
+            // 
+            this.scaleLabel2.AutoSize = true;
+            this.scaleLabel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scaleLabel2.Factor = 0.15F;
+            this.scaleLabel2.Font = new System.Drawing.Font("微軟正黑體", 17.25F, System.Drawing.FontStyle.Bold);
+            this.scaleLabel2.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.scaleLabel2.Location = new System.Drawing.Point(33, 230);
+            this.scaleLabel2.Name = "scaleLabel2";
+            this.scaleLabel2.Size = new System.Drawing.Size(240, 115);
+            this.scaleLabel2.TabIndex = 1;
+            this.scaleLabel2.Text = "無法連接至伺服器";
+            this.scaleLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // KukaRobotStatus
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -375,6 +439,10 @@
             this.tabPage1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.server_reject.ResumeLayout(false);
+            this.server_reject.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -402,5 +470,9 @@
         private iCAPS.ScaleLabel robot_type;
         private iCAPS.ScaleLabel update_time;
         private iCAPS.ScaleLabel scaleLabel17;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TableLayoutPanel server_reject;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private iCAPS.ScaleLabel scaleLabel2;
     }
 }

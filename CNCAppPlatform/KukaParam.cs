@@ -22,7 +22,7 @@ public static class KukaParm
     
     private static string _volume;
     private static string _robot_status_feedback_time = "--";
-    private static JArray _robot_status_infos;
+    private static JArray _robot_status_infos = new JArray();
     private static bool _isDarkMode;
     
 

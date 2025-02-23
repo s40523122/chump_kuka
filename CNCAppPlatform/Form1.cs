@@ -12,6 +12,7 @@ using ModbusTCP_Master;
 using Modbus.Device;
 using System.Net.Sockets;
 using System.Net.Http;
+using Newtonsoft.Json.Linq;
 
 namespace Chump_kuka
 {
@@ -124,6 +125,43 @@ namespace Chump_kuka
         private void button2_Click(object sender, EventArgs e)
         {
             Log.Append("這是一個測試訊息", "Test", "Form1");
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            JArray robot_infos = (JArray)JObject.Parse($@"{{""code"": ""0"", 
+                                                                     ""message"": """", 
+                                                                      ""success"": true, 
+                                                                      ""data"":[{{ 
+                                                                            ""robotId"":""robot001"", 
+                                                                            ""robotType"":""test001"", 
+                                                                            ""containerCode"" : ""container001"", 
+                                                                            ""mapCode"" : ""map01"", 
+                                                                            ""floorNumber"" : ""floor01"", 
+                                                                            ""buildingCode"" : ""9001"", 
+                                                                            ""status"" : 4, 
+                                                                            ""occupyStatus"" : 1, 
+                                                                            ""batteryLevel"" : 60, 
+                                                                            ""nodeCode"" : ""node001"", 
+                                                                            ""missionCode"" : ""missionCode111"", 
+                                                                            ""updateTime"" : ""{DateTime.Now.ToString(@"G")}""
+                                                                           }},
+                                                                           {{ 
+                                                                            ""robotId"":""robot002"", 
+                                                                            ""robotType"":""test002"", 
+                                                                            ""containerCode"" : ""container002"", 
+                                                                            ""mapCode"" : ""map02"", 
+                                                                            ""floorNumber"" : ""floor02"", 
+                                                                            ""buildingCode"" : ""9002"", 
+                                                                            ""status"" : 4, 
+                                                                            ""occupyStatus"" : 1, 
+                                                                            ""batteryLevel"" : 60, 
+                                                                            ""nodeCode"" : ""node001"", 
+                                                                            ""missionCode"" : ""missionCode111"", 
+                                                                            ""updateTime"" : ""{DateTime.Now.ToString(@"G")}""
+                                                                           }}] 
+                                                                    }} ")["data"];
+        KukaParm.RobotStatusInfos = robot_infos;
         }
     }
 }

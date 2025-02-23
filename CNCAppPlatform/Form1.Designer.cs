@@ -177,6 +177,7 @@ namespace Chump_kuka
             // 
             // logWindow1
             // 
+            this.logWindow1.BackColor = System.Drawing.Color.Gainsboro;
             this.logWindow1.Location = new System.Drawing.Point(407, 33);
             this.logWindow1.Name = "logWindow1";
             this.logWindow1.Size = new System.Drawing.Size(681, 359);

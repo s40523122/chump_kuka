@@ -12,32 +12,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 
 namespace Chump_kuka.Controls
 {
     public partial class KukaRobotStatus : UserControl
     {
-        private static Timer timer1 = new Timer();      // API 資料更新時間
-
-        // 靜態事件，用於通知所有實例
-        public static event EventHandler TimerTick;
-
-        // 靜態建構子，用於初始化靜態 Timer
-        static KukaRobotStatus()
-        {
-            timer1 = new Timer();
-            timer1.Interval = 1000; // 設定時間間隔（毫秒）
-            timer1.Tick += Timer1_Tick;
-        }
-
-        private static string request_time = string.Empty;
-        private static JArray robot_infos = new JArray();
-        
-        /*private static JArray robot_infos = (JArray)JObject.Parse(@"{""code"": ""0"", 
+        // 回應字串範例
+        private static JArray robot_infos = (JArray)JObject.Parse($@"{{""code"": ""0"", 
                                                                      ""message"": """", 
                                                                       ""success"": true, 
-                                                                      ""data"":[{ 
+                                                                      ""data"":[{{ 
                                                                             ""robotId"":""robot001"", 
                                                                             ""robotType"":""test001"", 
                                                                             ""containerCode"" : ""container001"", 
@@ -48,9 +34,10 @@ namespace Chump_kuka.Controls
                                                                             ""occupyStatus"" : 1, 
                                                                             ""batteryLevel"" : 60, 
                                                                             ""nodeCode"" : ""node001"", 
-                                                                            ""missionCode"" : ""missionCode111"" 
-                                                                           },
-                                                                           { 
+                                                                            ""missionCode"" : ""missionCode111"", 
+                                                                            ""updateTime"" : ""{DateTime.Now.ToString(@"g")}""
+                                                                           }},
+                                                                           {{ 
                                                                             ""robotId"":""robot002"", 
                                                                             ""robotType"":""test002"", 
                                                                             ""containerCode"" : ""container002"", 
@@ -61,65 +48,25 @@ namespace Chump_kuka.Controls
                                                                             ""occupyStatus"" : 1, 
                                                                             ""batteryLevel"" : 60, 
                                                                             ""nodeCode"" : ""node001"", 
-                                                                            ""missionCode"" : ""missionCode111"" 
-                                                                           }] 
-                                                                    } ")["data"];*/
-        private static bool isProcessing = false;
-        private int page_index = 0;
-        private async static void Timer1_Tick(object sender, EventArgs e)
-        {
-            // 靜態計時器更新，所有元件同步更新
-
-            if (Env.enble_kuka_api)
-            {
-                if (isProcessing) return; // 如果正在處理，直接退出
-
-                var body = new
-                {
-                    robotId = "",
-                    robotType = "",
-                    mapCode = "",
-                    floorNumber = ""
-                };
-
-                // 等待 api 回應
-                // TODO 更改為 timer.stop ?
-                isProcessing = true;
-                int response_code = await Env.kuka_api.PostRequest("robotQuery", body);
-                string responseBody = Env.kuka_api.ResponseMessage;
-                
-
-                try
-                {
-                    JObject resp_json = JObject.Parse(responseBody);
-                    if (!(bool)resp_json["success"])
-                    {
-                        MsgBox.Show($"KukaRobotStatus控制項嘗試訪問 /robotQuery 時發生異常。 [{(string)resp_json["code"]}] {(string)resp_json["message"]}");
-                        return;
-                    }
-
-                    robot_infos = (JArray)resp_json["data"];
-                    request_time = robot_infos.Count != 0 ? DateTime.Now.ToString() : "--";
-                }
-                catch
-                {
-                    MessageBox.Show($"KukaRobotStatus控制項嘗試訪問 /areaQuery 時發生異常。{responseBody}", "robot_state error");
-                }
-            }
-
-            TimerTick?.Invoke(sender, e);
-            
-            isProcessing = false;
-        }
+                                                                            ""missionCode"" : ""missionCode111"", 
+                                                                            ""updateTime"" : ""{DateTime.Now.ToString(@"g")}""
+                                                                           }}] 
+                                                                    }} ")["data"];
 
         public KukaRobotStatus()
         {
             InitializeComponent();
 
             Load += KukaRobotStatus_Load;
-            Resize += KukaRobotStatus_Resize;
-            
+            Resize += KukaRobotStatus_Resize;       // 自動調整分頁字體大小
+
             tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;       // 切換分頁時，顯示內容
+            KukaParm.PropertyChanged += KukaParm_PropertyChanged;       // 自動更新機器人資訊
+        }
+
+        private void KukaParm_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            InfoUPdate();
         }
 
         /// <summary>
@@ -127,24 +74,50 @@ namespace Chump_kuka.Controls
         /// </summary>
         private void InfoUPdate()
         {
-            if (robot_infos.Count == 0) return;
+            if (KukaParm.RobotStatusInfos.Count == 0)
+            {
+                tabControl1.Controls.Clear();
+                tabControl1.Controls.Add(tabPage2);
+                return; 
+            }
+
+            // 將搜尋到的機器人名稱整理成 list
+            List<string> robotIds = KukaParm.RobotStatusInfos
+                                  .Select(obj => obj["robotId"].ToObject<string>())
+                                  .ToList();
+
+            // 刪除不存在於 List 中的 TabPage
+            tabControl1.TabPages
+                .Cast<TabPage>()
+                .Where(tab => !robotIds.Contains(tab.Text))
+                .ToList()
+                .ForEach(tab => tabControl1.TabPages.Remove(tab));
+
+            // 新增不存在於 TabControl 中的 TabPage
+            robotIds
+                .Where(tabName => !tabControl1.TabPages.Cast<TabPage>().Any(tab => tab.Text == tabName))
+                .ToList()
+                .ForEach(tabName => tabControl1.TabPages.Add(new TabPage(tabName) { BackColor = Color.White, Padding = new Padding(15) } ));
+
+            // 將按鈕的 Parent 設置為當前 TabPage
+            tableLayoutPanel1.Parent = tabControl1.SelectedTab;
 
             // 因為 api 返回順序不固定，因此需要有一個尋找順序的機制
-            for (int current_index = 0; current_index < robot_infos.Count; current_index++)
+            for (int current_index = 0; current_index < robotIds.Count; current_index++)
             {
-                if ((string)robot_infos[current_index]["robotId"] == tabControl1.TabPages[page_index].Text)
+                if (robotIds[current_index] == tabControl1.SelectedTab.Text)
                 {
-                    robot_id.Text = (string)robot_infos[current_index]["robotId"];
-                    robot_type.Text = (string)robot_infos[current_index]["robotType"];
-                    container_code.Text = (string)robot_infos[current_index]["containerCode"];
-                    map_code.Text = (string)robot_infos[current_index]["mapCode"];
+                    robot_id.Text = (string)KukaParm.RobotStatusInfos[current_index]["robotId"];
+                    robot_type.Text = (string)KukaParm.RobotStatusInfos[current_index]["robotType"];
+                    container_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["containerCode"];
+                    map_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["mapCode"];
                     Dictionary<string, string> status_dict = new Dictionary<string, string>() { { "1", "離場" }, { "2", "離線" }, { "3", "空閒" }, { "4", "任務中" }, { "5", "充電中" }, { "6", "更新中" }, { "7", "異常" } };
-                    status.Text = status_dict[(string)robot_infos[current_index]["status"]];
+                    status.Text = status_dict[(string)KukaParm.RobotStatusInfos[current_index]["status"]];
                     Dictionary<string, string> occupy_dict = new Dictionary<string, string>() { { "0", "未占用" }, { "1", "占用中" } };
-                    occupy_status.Text = occupy_dict[(string)robot_infos[current_index]["occupyStatus"]];
-                    battery_level.Text = (string)robot_infos[current_index]["batteryLevel"];
-                    node_code.Text = (string)robot_infos[current_index]["nodeCode"];
-                    update_time.Text = request_time;
+                    occupy_status.Text = occupy_dict[(string)KukaParm.RobotStatusInfos[current_index]["occupyStatus"]];
+                    battery_level.Text = (string)KukaParm.RobotStatusInfos[current_index]["batteryLevel"];
+                    node_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["nodeCode"];
+                    update_time.Text = (string)KukaParm.RobotStatusInfos[current_index]["updateTime"];
                     return ;
                 }
             }
@@ -159,12 +132,7 @@ namespace Chump_kuka.Controls
             {
                 // 將按鈕的 Parent 設置為當前 TabPage
                 tableLayoutPanel1.Parent = currentTab;
-
-                page_index = tabControl1.SelectedIndex;
                 InfoUPdate();
-
-                // 動態調整按鈕的位置（保持相對位置，也可以自定義）
-                //tableLayoutPanel1.Location = new Point(20, 20); // 可以改為根據需求計算位置
             }
         }
 
@@ -172,12 +140,7 @@ namespace Chump_kuka.Controls
         {
             if (DesignMode) return;     // 若在設計階段，不執行以下內容。( 需在 Load 事件中才有用)
 
-            tabControl1.Controls.Clear();
-
-            if (!timer1.Enabled) timer1.Start();        // 當靜態計時器未啟動時，啟動它。
-            
-            // 訂閱實例的計時器事件
-            TimerTick += OnTimerTick;
+            tabControl1.Controls.RemoveAt(0);
         }
 
         private void KukaRobotStatus_Resize(object sender, EventArgs e)
@@ -185,49 +148,5 @@ namespace Chump_kuka.Controls
             tabControl1.Font = robot_id.Font;
         }
 
-        private void OnTimerTick(object Sender, EventArgs e)
-        {
-            if (robot_infos.Count != tabControl1.TabCount || tabControl1.TabCount==0)
-            {
-                tabControl1.Controls.Clear();
-                page_index = 0;
-                tabControl1.Controls.Add(tabPage1);
-
-                for (int i=0; i < robot_infos.Count; i++)
-                {
-                    TabPage page = new TabPage() 
-                    { 
-                        Text = (string)robot_infos[i]["robotId"], 
-                        BackColor = Color.White, 
-                        Padding = new Padding(15) 
-                    };
-
-                    tabControl1.Controls.Add(page);
-
-                    if (i == 0) 
-                    {
-                        tableLayoutPanel1.Parent = page;        // 清空後記得加回來
-                        tabControl1.Controls.Remove(tabPage1);
-                    }
-                }
-            }
-
-            InfoUPdate();
-        }
-
-        
-        /// <summary> 
-        /// 清除任何使用中的資源。
-        /// </summary>
-        /// <param name="disposing">如果應該處置受控資源則為 true，否則為 false。</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                TimerTick -= OnTimerTick;       // 記得在釋放時取消訂閱靜態事件，避免內存洩漏
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
     }
 }

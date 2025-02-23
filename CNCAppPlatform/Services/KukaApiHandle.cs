@@ -120,7 +120,15 @@ namespace Chump_kuka.Services
                 }
 
                 JArray robot_infos = (JArray)resp_json["data"];
-                KukaParm.RobotStatusFeedbackTime = robot_infos.Count != 0 ? DateTime.Now.ToString() : "--";
+
+                JObject updete_time = new JObject();
+                for (int index = 0; index < robot_infos.Count; index++)
+                {
+                    updete_time[index]["updeteTime"] = robot_infos.Count != 0 ? DateTime.Now.ToString(@"G") : "--";
+                }
+                robot_infos.Add(updete_time);
+                //KukaParm.RobotStatusFeedbackTime = robot_infos.Count != 0 ? DateTime.Now.ToString() : "--";
+                KukaParm.RobotStatusInfos = robot_infos;
             }
             catch
             {
