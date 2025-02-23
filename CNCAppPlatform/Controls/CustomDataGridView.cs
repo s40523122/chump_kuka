@@ -21,6 +21,7 @@ public class CustomDataGridView : DataGridView
     private bool autoSave = false; // 是否自動儲存 CSV
     private string csvFilePath = "data.csv"; // 預設 CSV 檔案名稱
     private string[] columns = new string[] {};
+    private float[] columnWidthRatios = new float[] {}; // 欄位寬度比例
 
     [Description("資料存放 CSV 位置"), Category("自訂值")]
     public string CsvFilePath
@@ -47,6 +48,22 @@ public class CustomDataGridView : DataGridView
         }
     }
 
+    [Description("設定或取得欄位寬度比例。\n每個數值代表對應欄位所佔的相對寬度。"), Category("自訂值")]
+    public float[] UserColumnWidthRatios
+    {
+        get => columnWidthRatios;
+        set
+        {
+            //if (value.Length != columns.Length)
+            //{
+            //    MessageBox.Show("設定值與欄位數量不符合");
+            //    return;
+            //}
+            columnWidthRatios = value;
+            AdjustColumnWidths();
+        }
+    }
+
     /// <summary>
     /// 初始化 CustomDataGridView，並建立指定的欄位。
     /// </summary>
@@ -55,6 +72,12 @@ public class CustomDataGridView : DataGridView
     {
         AllowUserToAddRows = false;
         //InitializeColumns(columns);
+        Resize += CustomDataGridView_Resize;
+    }
+
+    private void CustomDataGridView_Resize(object sender, EventArgs e)
+    {
+        AdjustColumnWidths();
     }
 
     /// <summary>
@@ -67,6 +90,20 @@ public class CustomDataGridView : DataGridView
         foreach (var col in columns)
         {
             Columns.Add(col, col);
+        }
+    }
+
+    /// <summary>
+    /// 調整欄位寬度，使其符合設定的比例。
+    /// </summary>
+    private void AdjustColumnWidths()
+    {
+        if (Columns.Count == 0 || columnWidthRatios.Length < Columns.Count) return;
+
+        int totalWidth = ClientSize.Width;
+        for (int i = 0; i < Columns.Count; i++)
+        {
+            Columns[i].Width = (int)(totalWidth * columnWidthRatios[i]);
         }
     }
 

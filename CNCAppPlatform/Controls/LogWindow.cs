@@ -24,6 +24,7 @@ namespace Chump_kuka.Controls
         private void LogChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             List<string> log_info = Log.LogInfo;
+            log_info.Insert(0, (logView.RowCount+1).ToString());
             logView.AddRow(log_info);
         }
 
