@@ -5,13 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
-namespace Chump_kuka.Services
+namespace Chump_kuka
 {
     internal class KukaApiHandle
     {
@@ -25,8 +26,10 @@ namespace Chump_kuka.Services
             set
             {
                 if (value == _enable) return;
+                
+                _enable = value;
 
-                if (value) apiTimer.Start();
+                if (_enable) apiTimer.Start();
                 else apiTimer.Stop();
             }
         }
@@ -46,10 +49,14 @@ namespace Chump_kuka.Services
 
             // 加入 API 任務到佇列
             AppendRobotStatusTask();        // 加入機器人狀態任務查詢
+
             //apiQueue.Enqueue(() => RequestApiAsync("API2", "https://api.example.com/data2", HandleApi2Response));
             //apiQueue.Enqueue(() => RequestApiAsync("API3", "https://api.example.com/data3", HandleApi3Response));
         }
 
+        /// <summary>
+        /// 將機器人狀態查詢請求加入 API 等待列表
+        /// </summary>
         public static void AppendRobotStatusTask()
         {
             var request_body = new
@@ -60,7 +67,30 @@ namespace Chump_kuka.Services
                 floorNumber = ""
             };
             apiQueue.Enqueue(() => RequestApiAsync("robotQuery", request_body, HandleRobotStatusResponse));
-            Log.Append("已加入 /robotQuery 於請求等待列表", "INFO", "KukaAPiHandle");
+            // Log.Append("已加入 /robotQuery 於請求等待列表", "INFO", "KukaAPiHandle");
+        }
+
+        /// <summary>
+        /// 將區域狀態查詢請求加入 API 等待列表
+        /// </summary>
+        public static void AppendAreaTask()
+        {
+            apiQueue.Enqueue(() => RequestApiAsync("areaQuery", null, HandleAreaResponse));
+            Log.Append("已加入 /areaQuery 於請求等待列表", "INFO", "KukaAPiHandle");
+        }
+
+        /// <summary>
+        /// 將區域節點狀態查詢請求加入 API 等待列表
+        /// </summary>
+        public static void AppendNodesTask()
+        {
+            var request_body = new
+            {
+                areaCodes = KukaParm.KukaAreas.Select(a => a.AreaCode).ToList()
+            };
+
+            apiQueue.Enqueue(() => RequestApiAsync("areaNodesQuery", request_body, HandleNodesResponse));
+            Log.Append("已加入 /areaNodesQuery 於請求等待列表", "INFO", "KukaAPiHandle");
         }
 
         /// <summary>
@@ -98,6 +128,7 @@ namespace Chump_kuka.Services
 
                 // 處理 API 回應
                 handleResponse(responseBody);
+                if (apiName != "robotQuery") Log.Append($"收到來自 /{apiName} 的回應", "INFO", "KukaAPiHandle");
             }
             catch (Exception ex)
             {
@@ -124,7 +155,7 @@ namespace Chump_kuka.Services
                 JObject updete_time = new JObject();
                 for (int index = 0; index < robot_infos.Count; index++)
                 {
-                    updete_time[index]["updeteTime"] = robot_infos.Count != 0 ? DateTime.Now.ToString(@"G") : "--";
+                    robot_infos[index]["updeteTime"] = DateTime.Now.ToString(@"G");
                 }
                 robot_infos.Add(updete_time);
                 //KukaParm.RobotStatusFeedbackTime = robot_infos.Count != 0 ? DateTime.Now.ToString() : "--";
@@ -137,6 +168,64 @@ namespace Chump_kuka.Services
             }
         }
 
-        
+        private static void HandleAreaResponse(string responseBody)
+        {
+            try
+            {
+                JObject resp_json = JObject.Parse(responseBody);
+
+                if (!(bool)resp_json["success"])
+                {
+                    Log.Append($"訪問 KUKA API 發生異常。 [{(string)resp_json["code"]}] {(string)resp_json["message"]}", "ERROR", "/areaQuery");
+                    return;
+                }
+
+                KukaParm.KukaAreas = resp_json["data"].ToObject<List<KukaAreaModel>>();
+
+                // 加入節點查詢
+                AppendNodesTask();
+            }
+            catch
+            {
+                // MessageBox.Show($"KukaRobotStatus控制項嘗試訪問 /areaQuery 時發生異常。{responseBody}", "robot_state error");
+                Log.Append($"訪問 KUKA API 發生異常。 [{responseBody}]", "ERROR", "/areaQuery");
+            }
+        }
+
+        private static void HandleNodesResponse(string responseBody)
+        {
+            try
+            {
+                JObject resp_json = JObject.Parse(responseBody);
+
+                if (!(bool)resp_json["success"])
+                {
+                    Log.Append($"訪問 KUKA API 發生異常。 [{(string)resp_json["code"]}] {(string)resp_json["message"]}", "ERROR", "/areaNodesQuery");
+                    return;
+                }
+
+                var nodeData = resp_json["data"].ToObject<List<dynamic>>();
+
+                List<KukaAreaModel> _kuka_areas = KukaParm.KukaAreas.Select(area => (KukaAreaModel)area.Clone()).ToList();
+
+                // 將第二個 JSON 的 nodeList 合併進 areas
+                foreach (var area in _kuka_areas)
+                {
+                    // 根據 areaCode 尋找匹配的 nodeList
+                    var matchingNode = nodeData.FirstOrDefault(x => x.areaCode == area.AreaCode);
+                    if (matchingNode != null)
+                    {
+                        area.NodeList = matchingNode.nodeList.ToObject<List<string>>();
+                    }
+                }
+
+                KukaParm.KukaAreas = _kuka_areas;
+            }
+            catch
+            {
+                // MessageBox.Show($"KukaRobotStatus控制項嘗試訪問 /areaQuery 時發生異常。{responseBody}", "robot_state error");
+                Log.Append($"訪問 KUKA API 發生異常。 [{responseBody}]", "ERROR", "/areaNodesQuery");
+            }
+        }
     }
 }

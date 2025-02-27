@@ -13,6 +13,7 @@ using Modbus.Device;
 using System.Net.Sockets;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
+using Chump_kuka.Services;
 
 namespace Chump_kuka
 {
@@ -28,23 +29,13 @@ namespace Chump_kuka
             modbusService = new ModbusService();
             Load += Form1_Load;
 
-            KukaParm.PropertyChanged += KukaParm_PropertyChanged;
-            UpdateUI();
-        }
-
-        private void KukaParm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            UpdateUI();
-        }
-
-        private void UpdateUI()
-        {
-            label2.Text = $"音量: {KukaParm.Volume}";
+            logWindow1.Visible = false;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             Env.enble_kuka_api = true;
+            KukaApiHandle.Enable = true;
         }
 
 
@@ -162,6 +153,11 @@ namespace Chump_kuka
                                                                            }}] 
                                                                     }} ")["data"];
         KukaParm.RobotStatusInfos = robot_infos;
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            logWindow1.Visible = checkBox1.Checked;
         }
     }
 }

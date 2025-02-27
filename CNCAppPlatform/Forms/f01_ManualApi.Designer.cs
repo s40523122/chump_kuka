@@ -31,33 +31,33 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(f01_ManualApi));
             this.button1 = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.kuka_area3 = new Chump_kuka.Controls.kuka_area();
-            this.kuka_area2 = new Chump_kuka.Controls.kuka_area();
-            this.kuka_area1 = new Chump_kuka.Controls.kuka_area();
+            this.scaleLabel2 = new iCAPS.ScaleLabel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+            this.scaleLabel3 = new iCAPS.ScaleLabel();
+            this.myPanel1 = new iCAPS.myPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.selected_2 = new iCAPS.ScaleLabel();
             this.selected_1 = new iCAPS.ScaleLabel();
             this.go_direction = new iCAPS.DoubleImg();
-            this.kukaRobotStatus1 = new Chump_kuka.Controls.KukaRobotStatus();
-            this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.scaleLabel2 = new iCAPS.ScaleLabel();
-            this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
-            this.scaleLabel3 = new iCAPS.ScaleLabel();
-            this.myPanel1 = new iCAPS.myPanel();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel1 = new iCAPS.ScaleLabel();
+            this.kuka_area3 = new Chump_kuka.Controls.kuka_area();
+            this.kuka_area2 = new Chump_kuka.Controls.kuka_area();
+            this.kuka_area1 = new Chump_kuka.Controls.kuka_area();
+            this.kukaRobotStatus1 = new Chump_kuka.Controls.KukaRobotStatus();
             this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel5.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
-            this.tableLayoutPanel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.go_direction)).BeginInit();
-            this.tableLayoutPanel5.SuspendLayout();
             this.tableLayoutPanel6.SuspendLayout();
             this.myPanel1.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.go_direction)).BeginInit();
             this.tableLayoutPanel7.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -95,6 +95,21 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1091, 579);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
+            // tableLayoutPanel5
+            // 
+            this.tableLayoutPanel5.ColumnCount = 1;
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel5.Controls.Add(this.tableLayoutPanel2, 0, 1);
+            this.tableLayoutPanel5.Controls.Add(this.scaleLabel2, 0, 0);
+            this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(35, 21);
+            this.tableLayoutPanel5.Name = "tableLayoutPanel5";
+            this.tableLayoutPanel5.RowCount = 2;
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8F));
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 92F));
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(735, 536);
+            this.tableLayoutPanel5.TabIndex = 5;
+            // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.AutoScroll = true;
@@ -115,53 +130,20 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(729, 488);
             this.tableLayoutPanel2.TabIndex = 1;
             // 
-            // kuka_area3
+            // scaleLabel2
             // 
-            this.kuka_area3.AreaName = "成品區";
-            this.kuka_area3.AreaNode = new string[] {
-        "42",
-        "43",
-        "44",
-        "45",
-        "46",
-        "47"};
-            this.kuka_area3.Checked = false;
-            this.kuka_area3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kuka_area3.Location = new System.Drawing.Point(10, 254);
-            this.kuka_area3.Margin = new System.Windows.Forms.Padding(10);
-            this.kuka_area3.Name = "kuka_area3";
-            this.kuka_area3.Size = new System.Drawing.Size(344, 224);
-            this.kuka_area3.TabIndex = 2;
-            // 
-            // kuka_area2
-            // 
-            this.kuka_area2.AreaName = "組裝區";
-            this.kuka_area2.AreaNode = new string[] {
-        "36",
-        "37",
-        "38",
-        "39"};
-            this.kuka_area2.Checked = false;
-            this.kuka_area2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kuka_area2.Location = new System.Drawing.Point(374, 10);
-            this.kuka_area2.Margin = new System.Windows.Forms.Padding(10);
-            this.kuka_area2.Name = "kuka_area2";
-            this.kuka_area2.Size = new System.Drawing.Size(345, 224);
-            this.kuka_area2.TabIndex = 1;
-            // 
-            // kuka_area1
-            // 
-            this.kuka_area1.AreaName = "加工區";
-            this.kuka_area1.AreaNode = new string[] {
-        "25",
-        "26"};
-            this.kuka_area1.Checked = false;
-            this.kuka_area1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kuka_area1.Location = new System.Drawing.Point(10, 10);
-            this.kuka_area1.Margin = new System.Windows.Forms.Padding(10);
-            this.kuka_area1.Name = "kuka_area1";
-            this.kuka_area1.Size = new System.Drawing.Size(344, 224);
-            this.kuka_area1.TabIndex = 0;
+            this.scaleLabel2.AutoSize = true;
+            this.scaleLabel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scaleLabel2.Factor = 0.4F;
+            this.scaleLabel2.Font = new System.Drawing.Font("微軟正黑體", 16.8F, System.Drawing.FontStyle.Bold);
+            this.scaleLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.scaleLabel2.Location = new System.Drawing.Point(3, 0);
+            this.scaleLabel2.Name = "scaleLabel2";
+            this.scaleLabel2.Size = new System.Drawing.Size(729, 42);
+            this.scaleLabel2.TabIndex = 2;
+            this.scaleLabel2.Text = "區域總覽";
+            this.scaleLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.scaleLabel2.Click += new System.EventHandler(this.scaleLabel2_Click);
             // 
             // panel1
             // 
@@ -187,6 +169,48 @@
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 65F));
             this.tableLayoutPanel4.Size = new System.Drawing.Size(277, 536);
             this.tableLayoutPanel4.TabIndex = 4;
+            // 
+            // tableLayoutPanel6
+            // 
+            this.tableLayoutPanel6.ColumnCount = 1;
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel6.Controls.Add(this.scaleLabel3, 0, 0);
+            this.tableLayoutPanel6.Controls.Add(this.myPanel1, 0, 1);
+            this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel6.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel6.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel6.Name = "tableLayoutPanel6";
+            this.tableLayoutPanel6.RowCount = 2;
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 22F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 78F));
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(277, 187);
+            this.tableLayoutPanel6.TabIndex = 4;
+            // 
+            // scaleLabel3
+            // 
+            this.scaleLabel3.AutoSize = true;
+            this.scaleLabel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scaleLabel3.Factor = 0.4F;
+            this.scaleLabel3.Font = new System.Drawing.Font("微軟正黑體", 16.4F, System.Drawing.FontStyle.Bold);
+            this.scaleLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.scaleLabel3.Location = new System.Drawing.Point(3, 0);
+            this.scaleLabel3.Name = "scaleLabel3";
+            this.scaleLabel3.Size = new System.Drawing.Size(271, 41);
+            this.scaleLabel3.TabIndex = 3;
+            this.scaleLabel3.Text = "選擇派車節點";
+            this.scaleLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // myPanel1
+            // 
+            this.myPanel1.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.myPanel1.Controls.Add(this.tableLayoutPanel3);
+            this.myPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.myPanel1.Location = new System.Drawing.Point(0, 51);
+            this.myPanel1.Margin = new System.Windows.Forms.Padding(0, 10, 0, 10);
+            this.myPanel1.Name = "myPanel1";
+            this.myPanel1.Radius = 10;
+            this.myPanel1.Size = new System.Drawing.Size(277, 126);
+            this.myPanel1.TabIndex = 4;
             // 
             // tableLayoutPanel3
             // 
@@ -253,85 +277,6 @@
             this.go_direction.TabStop = false;
             this.go_direction.Tag = ((object)(resources.GetObject("go_direction.Tag")));
             // 
-            // kukaRobotStatus1
-            // 
-            this.kukaRobotStatus1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kukaRobotStatus1.Location = new System.Drawing.Point(3, 44);
-            this.kukaRobotStatus1.Name = "kukaRobotStatus1";
-            this.kukaRobotStatus1.Size = new System.Drawing.Size(265, 296);
-            this.kukaRobotStatus1.TabIndex = 4;
-            // 
-            // tableLayoutPanel5
-            // 
-            this.tableLayoutPanel5.ColumnCount = 1;
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel5.Controls.Add(this.tableLayoutPanel2, 0, 1);
-            this.tableLayoutPanel5.Controls.Add(this.scaleLabel2, 0, 0);
-            this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(35, 21);
-            this.tableLayoutPanel5.Name = "tableLayoutPanel5";
-            this.tableLayoutPanel5.RowCount = 2;
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 92F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(735, 536);
-            this.tableLayoutPanel5.TabIndex = 5;
-            // 
-            // scaleLabel2
-            // 
-            this.scaleLabel2.AutoSize = true;
-            this.scaleLabel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scaleLabel2.Factor = 0.4F;
-            this.scaleLabel2.Font = new System.Drawing.Font("微軟正黑體", 16.8F, System.Drawing.FontStyle.Bold);
-            this.scaleLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.scaleLabel2.Location = new System.Drawing.Point(3, 0);
-            this.scaleLabel2.Name = "scaleLabel2";
-            this.scaleLabel2.Size = new System.Drawing.Size(729, 42);
-            this.scaleLabel2.TabIndex = 2;
-            this.scaleLabel2.Text = "區域總覽";
-            this.scaleLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tableLayoutPanel6
-            // 
-            this.tableLayoutPanel6.ColumnCount = 1;
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel6.Controls.Add(this.scaleLabel3, 0, 0);
-            this.tableLayoutPanel6.Controls.Add(this.myPanel1, 0, 1);
-            this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel6.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel6.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel6.Name = "tableLayoutPanel6";
-            this.tableLayoutPanel6.RowCount = 2;
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 22F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 78F));
-            this.tableLayoutPanel6.Size = new System.Drawing.Size(277, 187);
-            this.tableLayoutPanel6.TabIndex = 4;
-            // 
-            // scaleLabel3
-            // 
-            this.scaleLabel3.AutoSize = true;
-            this.scaleLabel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scaleLabel3.Factor = 0.4F;
-            this.scaleLabel3.Font = new System.Drawing.Font("微軟正黑體", 16.4F, System.Drawing.FontStyle.Bold);
-            this.scaleLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.scaleLabel3.Location = new System.Drawing.Point(3, 0);
-            this.scaleLabel3.Name = "scaleLabel3";
-            this.scaleLabel3.Size = new System.Drawing.Size(271, 41);
-            this.scaleLabel3.TabIndex = 3;
-            this.scaleLabel3.Text = "選擇派車節點";
-            this.scaleLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // myPanel1
-            // 
-            this.myPanel1.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.myPanel1.Controls.Add(this.tableLayoutPanel3);
-            this.myPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.myPanel1.Location = new System.Drawing.Point(0, 51);
-            this.myPanel1.Margin = new System.Windows.Forms.Padding(0, 10, 0, 10);
-            this.myPanel1.Name = "myPanel1";
-            this.myPanel1.Radius = 10;
-            this.myPanel1.Size = new System.Drawing.Size(277, 126);
-            this.myPanel1.TabIndex = 4;
-            // 
             // tableLayoutPanel7
             // 
             this.tableLayoutPanel7.ColumnCount = 1;
@@ -361,6 +306,65 @@
             this.scaleLabel1.Text = "機器人狀態";
             this.scaleLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // kuka_area3
+            // 
+            this.kuka_area3.AreaName = "成品區";
+            this.kuka_area3.AreaNode = new string[] {
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47"};
+            this.kuka_area3.Checked = false;
+            this.kuka_area3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kuka_area3.Location = new System.Drawing.Point(10, 254);
+            this.kuka_area3.Margin = new System.Windows.Forms.Padding(10);
+            this.kuka_area3.Name = "kuka_area3";
+            this.kuka_area3.NodeStatus = new int[0];
+            this.kuka_area3.Size = new System.Drawing.Size(344, 224);
+            this.kuka_area3.TabIndex = 2;
+            // 
+            // kuka_area2
+            // 
+            this.kuka_area2.AreaName = "組裝區";
+            this.kuka_area2.AreaNode = new string[] {
+        "36",
+        "37",
+        "38",
+        "39"};
+            this.kuka_area2.Checked = false;
+            this.kuka_area2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kuka_area2.Location = new System.Drawing.Point(374, 10);
+            this.kuka_area2.Margin = new System.Windows.Forms.Padding(10);
+            this.kuka_area2.Name = "kuka_area2";
+            this.kuka_area2.NodeStatus = new int[0];
+            this.kuka_area2.Size = new System.Drawing.Size(345, 224);
+            this.kuka_area2.TabIndex = 1;
+            // 
+            // kuka_area1
+            // 
+            this.kuka_area1.AreaName = "加工區";
+            this.kuka_area1.AreaNode = new string[] {
+        "25",
+        "26"};
+            this.kuka_area1.Checked = false;
+            this.kuka_area1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kuka_area1.Location = new System.Drawing.Point(10, 10);
+            this.kuka_area1.Margin = new System.Windows.Forms.Padding(10);
+            this.kuka_area1.Name = "kuka_area1";
+            this.kuka_area1.NodeStatus = new int[0];
+            this.kuka_area1.Size = new System.Drawing.Size(344, 224);
+            this.kuka_area1.TabIndex = 0;
+            // 
+            // kukaRobotStatus1
+            // 
+            this.kukaRobotStatus1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kukaRobotStatus1.Location = new System.Drawing.Point(3, 44);
+            this.kukaRobotStatus1.Name = "kukaRobotStatus1";
+            this.kukaRobotStatus1.Size = new System.Drawing.Size(265, 296);
+            this.kukaRobotStatus1.TabIndex = 4;
+            // 
             // f01_ManualApi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -372,17 +376,17 @@
             this.Name = "f01_ManualApi";
             this.Text = "手動派車";
             this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel5.ResumeLayout(false);
+            this.tableLayoutPanel5.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.tableLayoutPanel4.ResumeLayout(false);
-            this.tableLayoutPanel3.ResumeLayout(false);
-            this.tableLayoutPanel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.go_direction)).EndInit();
-            this.tableLayoutPanel5.ResumeLayout(false);
-            this.tableLayoutPanel5.PerformLayout();
             this.tableLayoutPanel6.ResumeLayout(false);
             this.tableLayoutPanel6.PerformLayout();
             this.myPanel1.ResumeLayout(false);
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.tableLayoutPanel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.go_direction)).EndInit();
             this.tableLayoutPanel7.ResumeLayout(false);
             this.tableLayoutPanel7.PerformLayout();
             this.ResumeLayout(false);

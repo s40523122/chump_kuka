@@ -41,6 +41,7 @@ namespace Chump_kuka
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.logWindow1 = new Chump_kuka.Controls.LogWindow();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -61,7 +62,6 @@ namespace Chump_kuka
             this.panel1.Controls.Add(this.pictureBox2);
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Size = new System.Drawing.Size(959, 689);
-            this.panel1.Controls.SetChildIndex(this.enable_side, 0);
             this.panel1.Controls.SetChildIndex(this.pictureBox1, 0);
             this.panel1.Controls.SetChildIndex(this.pictureBox2, 0);
             this.panel1.Controls.SetChildIndex(this.pictureBox3, 0);
@@ -72,6 +72,7 @@ namespace Chump_kuka
             this.panel1.Controls.SetChildIndex(this.textBox1, 0);
             this.panel1.Controls.SetChildIndex(this.button2, 0);
             this.panel1.Controls.SetChildIndex(this.logWindow1, 0);
+            this.panel1.Controls.SetChildIndex(this.enable_side, 0);
             // 
             // enable_side
             // 
@@ -96,6 +97,7 @@ namespace Chump_kuka
             this.pictureBox1.Size = new System.Drawing.Size(56, 56);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Visible = false;
             // 
             // pictureBox2
             // 
@@ -105,6 +107,7 @@ namespace Chump_kuka
             this.pictureBox2.Size = new System.Drawing.Size(56, 56);
             this.pictureBox2.TabIndex = 1;
             this.pictureBox2.TabStop = false;
+            this.pictureBox2.Visible = false;
             // 
             // pictureBox3
             // 
@@ -114,6 +117,7 @@ namespace Chump_kuka
             this.pictureBox3.Size = new System.Drawing.Size(56, 56);
             this.pictureBox3.TabIndex = 1;
             this.pictureBox3.TabStop = false;
+            this.pictureBox3.Visible = false;
             // 
             // pictureBox4
             // 
@@ -123,6 +127,7 @@ namespace Chump_kuka
             this.pictureBox4.Size = new System.Drawing.Size(56, 56);
             this.pictureBox4.TabIndex = 1;
             this.pictureBox4.TabStop = false;
+            this.pictureBox4.Visible = false;
             // 
             // btStart
             // 
@@ -132,6 +137,7 @@ namespace Chump_kuka
             this.btStart.TabIndex = 2;
             this.btStart.Text = "start";
             this.btStart.UseVisualStyleBackColor = true;
+            this.btStart.Visible = false;
             this.btStart.Click += new System.EventHandler(this.btStart_Click);
             // 
             // btStop
@@ -142,6 +148,7 @@ namespace Chump_kuka
             this.btStop.TabIndex = 2;
             this.btStop.Text = "stop";
             this.btStop.UseVisualStyleBackColor = true;
+            this.btStop.Visible = false;
             this.btStop.Click += new System.EventHandler(this.btStop_Click);
             // 
             // timer1
@@ -156,6 +163,7 @@ namespace Chump_kuka
             this.label2.Size = new System.Drawing.Size(33, 12);
             this.label2.TabIndex = 3;
             this.label2.Text = "label2";
+            this.label2.Visible = false;
             // 
             // textBox1
             // 
@@ -163,6 +171,7 @@ namespace Chump_kuka
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(89, 22);
             this.textBox1.TabIndex = 4;
+            this.textBox1.Visible = false;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // button2
@@ -183,14 +192,29 @@ namespace Chump_kuka
             this.logWindow1.Size = new System.Drawing.Size(681, 359);
             this.logWindow1.TabIndex = 7;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.checkBox1.Location = new System.Drawing.Point(717, 65);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(91, 43);
+            this.checkBox1.TabIndex = 46;
+            this.checkBox1.Text = "log";
+            this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1231, 820);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button1);
             this.Name = "Form1";
             this.Controls.SetChildIndex(this.panel1, 0);
             this.Controls.SetChildIndex(this.button1, 0);
+            this.Controls.SetChildIndex(this.checkBox1, 0);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -216,6 +240,7 @@ namespace Chump_kuka
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button button2;
         private Controls.LogWindow logWindow1;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 

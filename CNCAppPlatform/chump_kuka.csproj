@@ -222,6 +222,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DI_DOManager.cs" />
+    <Compile Include="Services\IOHandle.cs" />
     <Compile Include="Services\KukaApiHandle.cs" />
     <Compile Include="Services\Log.cs" />
     <Compile Include="Services\myEventArgs.cs" />

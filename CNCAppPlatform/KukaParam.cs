@@ -1,6 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Chump_kuka;
+using CookComputing.XmlRpc;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 /// <summary>
 /// KukaParm 類別 (全域設定管理)
@@ -19,12 +23,17 @@ using System.ComponentModel;
 public static class KukaParm
 {
     public static event PropertyChangedEventHandler PropertyChanged;
-    
+    public static event PropertyChangedEventHandler AreaChanged;
+
+    public static string StartNode;     // 手動派車起點
+    public static string GoalNode;      // 手動派車終點
+
     private static string _volume;
     private static string _robot_status_feedback_time = "--";
     private static JArray _robot_status_infos = new JArray();
-    private static bool _isDarkMode;
-    
+    private static List<KukaAreaModel> _kuka_areas = new List<KukaAreaModel>();
+
+
 
     public static string Volume
     {
@@ -64,15 +73,15 @@ public static class KukaParm
         }
     }
 
-    public static bool IsDarkMode
+    public static List<KukaAreaModel> KukaAreas
     {
-        get => _isDarkMode;
+        get => _kuka_areas;
         set
         {
-            if (_isDarkMode != value)
+            if (_kuka_areas != value)
             {
-                _isDarkMode = value;
-                OnPropertyChanged(nameof(IsDarkMode));
+                _kuka_areas = value;
+                if (_kuka_areas[0].NodeList.Count != 0) OnAreaChanged(nameof(KukaAreas));
             }
         }
     }
@@ -81,4 +90,44 @@ public static class KukaParm
     {
         PropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
     }
+
+    private static void OnAreaChanged(string propertyName)
+    {
+        AreaChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
+    }
+}
+
+public class KukaAreaModel : ICloneable
+{
+    /// <summary>
+    /// 區域編碼 ex: area001
+    /// </summary>
+    public string AreaCode { get; set; }
+
+    /// <summary>
+    /// 區域名稱 ex: 加工區
+    /// </summary>
+    public string AreaName { get; set; }
+
+    /// <summary>
+    /// 區域類型 {1: 庫區, 2: 作業區, 3: 暫存區, 4: 緩存區}
+    /// </summary>
+    public int AreaType { get; set; }
+
+    /// <summary>
+    /// 點位集合
+    /// </summary>
+    public List<string> NodeList { get; set; } = new List<string>();
+
+    public KukaAreaModel(JObject json_object = null)
+    {
+        if (json_object == null) return;
+                
+        AreaCode = json_object["areaCode"].ToString();
+        AreaName = json_object["areaName"].ToString();
+        NodeList = json_object["areaCode"].ToObject<List<string>>();      // 集合查詢到的區域代碼為列表
+
+    }
+
+    public object Clone() => new KukaAreaModel { AreaCode = this.AreaCode, AreaName = this.AreaName, AreaType = this.AreaType, NodeList = this.NodeList };
 }

@@ -83,8 +83,10 @@ namespace Chump_kuka.Controls
 
             // 將搜尋到的機器人名稱整理成 list
             List<string> robotIds = KukaParm.RobotStatusInfos
-                                  .Select(obj => obj["robotId"].ToObject<string>())
+                                  .Select(item => item["robotId"]?.ToString())
+                                  .Where(id => !string.IsNullOrEmpty(id))
                                   .ToList();
+            
 
             // 刪除不存在於 List 中的 TabPage
             tabControl1.TabPages

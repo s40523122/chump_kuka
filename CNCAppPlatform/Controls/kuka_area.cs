@@ -62,6 +62,24 @@ namespace Chump_kuka.Controls
         }
         private bool _checked = false;
 
+        [Description("設定節點狀態。"), Category("自訂值")]
+        public int[] NodeStatus
+        {
+            get { return _node_status; }
+            set
+            {
+                if (value == _node_status) return;
+                if (value.Length < _nodes.Length)
+                {
+                    MessageBox.Show("節點狀態與節點數量不吻合");
+                    return;
+                }
+                UpdateContainerImage(value);
+            }
+                
+        }
+        private int[] _node_status = new int[] { };
+
         public string Type { get { return "NODE_AREA"; } }
         public string AreaCode = "";
 
@@ -74,6 +92,8 @@ namespace Chump_kuka.Controls
         public kuka_area()
         {
             InitializeComponent();
+            Controls.Remove(samplePanel);
+            custom_border.Dock = DockStyle.Fill;
             SizeChanged += Kuka_area_SizeChanged;
         }
 
@@ -96,9 +116,7 @@ namespace Chump_kuka.Controls
                         // 已入料
                         _container.ContainerImage = doubleImg1.SubImg;
                         break;
-
                 }
-                
             }
         }
         private void Container_ContainerClick(object sender, ControlClickEventArgs e)

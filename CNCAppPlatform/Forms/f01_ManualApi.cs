@@ -1,5 +1,6 @@
 ﻿using CefSharp.DevTools.CSS;
 using Chump_kuka.Controls;
+using Chump_kuka.Services;
 using iCAPS;
 using Newtonsoft.Json.Linq;
 using System;
@@ -24,7 +25,36 @@ namespace Chump_kuka.Forms
             InitializeComponent();
 
             Load += F01_ManualApi_Load;
-            VisibleChanged += F01_ManualApi_VisibleChanged;
+            //VisibleChanged += F01_ManualApi_VisibleChanged;
+            KukaParm.AreaChanged += KukaParm_AreaChanged;
+        }
+
+        private void KukaParm_AreaChanged(object sender, PropertyChangedEventArgs e)
+        {
+            tableLayoutPanel2.Controls.Clear();
+            selected_1.Tag = selected_2.Tag = null;
+            selected_1.Text = selected_2.Text = "null";
+
+            /* 加入區域 Control */
+            // 目前只支援到 4 組，超過可能會有 UI 顯示問題
+            foreach (KukaAreaModel area in KukaParm.KukaAreas)
+            {
+                tableLayoutPanel2.Controls.Add(new kuka_area
+                {
+                    AreaName = area.AreaName,
+                    Dock = DockStyle.Fill,
+                    Margin = new Padding(10),
+                    AreaCode = area.AreaCode,
+                    AreaNode = area.NodeList.ToArray()
+                });
+            }
+
+            // 加上點擊事件
+            foreach (kuka_area area in tableLayoutPanel2.Controls)
+            {
+                area.ContainerClick += Kuka_area1_ContainerClick;
+                area.AreaClick += Area_AreaClick;
+            }
         }
 
         private void F01_ManualApi_Load(object sender, EventArgs e)
@@ -39,7 +69,8 @@ namespace Chump_kuka.Forms
         private async void F01_ManualApi_VisibleChanged(object sender, EventArgs e)
         {
             // 當切換至當前分頁時，執行以下動作
-            // if (Visible) MessageBox.Show("Show");
+            KukaParm.StartNode = null;
+            KukaParm.GoalNode = null;
 
             if (Env.enble_kuka_api)
             {
@@ -313,6 +344,11 @@ namespace Chump_kuka.Forms
                 return;
             }
             MessageBox.Show("OK");
+        }
+
+        private void scaleLabel2_Click(object sender, EventArgs e)
+        {
+            KukaApiHandle.AppendAreaTask();
         }
     }
 }
