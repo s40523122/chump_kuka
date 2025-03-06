@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Chump_kuka.Controls
 {
-    public partial class kuka_area : UserControl
+    public partial class KukaAreaControl : UserControl
     {
         [Description("區域名稱。"), Category("自訂值")]
         public string AreaName
@@ -37,6 +37,7 @@ namespace Chump_kuka.Controls
                     container.ContainerClick += Container_ContainerClick;
                     containerPanel.Controls.Add(container);
                 }
+                _node_status = new int[_nodes.Length];
             }
         }
         private string[] _nodes = new string[] { };
@@ -89,7 +90,7 @@ namespace Chump_kuka.Controls
         public event EventHandler<ControlClickEventArgs> ContainerClick;
         public event EventHandler<ControlClickEventArgs> AreaClick;
 
-        public kuka_area()
+        public KukaAreaControl()
         {
             InitializeComponent();
             Controls.Remove(samplePanel);
@@ -142,5 +143,13 @@ namespace Chump_kuka.Controls
             AreaClick?.Invoke(this, new ControlClickEventArgs(Name, this));
 
         }
+
+        /// <summary>
+        /// 找尋列表中符合區域名稱的模型
+        /// </summary>
+        /// <param name="target_area"></param>
+        /// <param name="areas"></param>
+        /// <returns></returns>
+        public static KukaAreaControl Find(string target_name, List<KukaAreaControl> controls) => controls.FirstOrDefault(control => control.AreaName == target_name);
     }
 }

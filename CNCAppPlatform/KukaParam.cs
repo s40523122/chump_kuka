@@ -1,4 +1,5 @@
 ﻿using Chump_kuka;
+using Chump_kuka.Controls;
 using CookComputing.XmlRpc;
 using Newtonsoft.Json.Linq;
 using System;
@@ -22,31 +23,18 @@ using System.Linq;
 
 public static class KukaParm
 {
-    public static event PropertyChangedEventHandler PropertyChanged;
+    public static event PropertyChangedEventHandler RobotStatusChanged;
     public static event PropertyChangedEventHandler AreaChanged;
 
     public static string StartNode;     // 手動派車起點
     public static string GoalNode;      // 手動派車終點
 
-    private static string _volume;
+    //private static string _volume;
     private static string _robot_status_feedback_time = "--";
     private static JArray _robot_status_infos = new JArray();
-    private static List<KukaAreaModel> _kuka_areas = new List<KukaAreaModel>();
+    private static List<KukaAreaModel> _kuka_area_models = new List<KukaAreaModel>();
 
-
-
-    public static string Volume
-    {
-        get => _volume;
-        set
-        {
-            if (_volume != value)
-            {
-                _volume = value;
-                OnPropertyChanged(nameof(Volume));
-            }
-        }
-    }
+    public static List<KukaAreaControl> AreaControls = new List<KukaAreaControl>();     // 已記錄的區域控制項
 
     public static string RobotStatusFeedbackTime
     {
@@ -56,10 +44,11 @@ public static class KukaParm
             if (_robot_status_feedback_time != value)
             {
                 _robot_status_feedback_time = value;
-                OnPropertyChanged(nameof(RobotStatusFeedbackTime));
+                OnRobotChanged(nameof(RobotStatusFeedbackTime));
             }
         }
     }
+
     public static JArray RobotStatusInfos
     {
         get => _robot_status_infos;
@@ -68,27 +57,27 @@ public static class KukaParm
             if (_robot_status_infos != value)
             {
                 _robot_status_infos = value;
-                OnPropertyChanged(nameof(RobotStatusInfos));
+                OnRobotChanged(nameof(RobotStatusInfos));
             }
         }
     }
 
-    public static List<KukaAreaModel> KukaAreas
+    public static List<KukaAreaModel> KukaAreaModels
     {
-        get => _kuka_areas;
+        get => _kuka_area_models;
         set
         {
-            if (_kuka_areas != value)
+            if (_kuka_area_models != value)
             {
-                _kuka_areas = value;
-                if (_kuka_areas[0].NodeList.Count != 0) OnAreaChanged(nameof(KukaAreas));
+                _kuka_area_models = value;
+                if (_kuka_area_models[0].NodeList.Count != 0) OnAreaChanged(nameof(KukaAreaModels));
             }
         }
     }
 
-    private static void OnPropertyChanged(string propertyName)
+    private static void OnRobotChanged(string propertyName)
     {
-        PropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
+        RobotStatusChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
     }
 
     private static void OnAreaChanged(string propertyName)
@@ -119,15 +108,28 @@ public class KukaAreaModel : ICloneable
     /// </summary>
     public List<string> NodeList { get; set; } = new List<string>();
 
+    /// <summary>
+    /// 貨架狀態 {0: 空, 1: 空貨架, 2: 滿貨架}
+    /// </summary>
+    public List<int> NodeStatus { get; set; } = new List<int>();
+
     public KukaAreaModel(JObject json_object = null)
     {
         if (json_object == null) return;
                 
         AreaCode = json_object["areaCode"].ToString();
         AreaName = json_object["areaName"].ToString();
-        NodeList = json_object["areaCode"].ToObject<List<string>>();      // 集合查詢到的區域代碼為列表
+        NodeList = json_object["nodeList"].ToObject<List<string>>();      // 集合查詢到的區域代碼為列表
 
     }
 
     public object Clone() => new KukaAreaModel { AreaCode = this.AreaCode, AreaName = this.AreaName, AreaType = this.AreaType, NodeList = this.NodeList };
+
+    /// <summary>
+    /// 找尋列表中符合區域名稱的模型
+    /// </summary>
+    /// <param name="target_area"></param>
+    /// <param name="areas"></param>
+    /// <returns></returns>
+    public static KukaAreaModel Find(string target_area, List<KukaAreaModel> areas) => areas.FirstOrDefault(area => area.AreaName == target_area);
 }

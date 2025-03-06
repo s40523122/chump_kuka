@@ -86,7 +86,7 @@ namespace Chump_kuka
         {
             var request_body = new
             {
-                areaCodes = KukaParm.KukaAreas.Select(a => a.AreaCode).ToList()
+                areaCodes = KukaParm.KukaAreaModels.Select(a => a.AreaCode).ToList()
             };
 
             apiQueue.Enqueue(() => RequestApiAsync("areaNodesQuery", request_body, HandleNodesResponse));
@@ -180,7 +180,7 @@ namespace Chump_kuka
                     return;
                 }
 
-                KukaParm.KukaAreas = resp_json["data"].ToObject<List<KukaAreaModel>>();
+                KukaParm.KukaAreaModels = resp_json["data"].ToObject<List<KukaAreaModel>>();
 
                 // 加入節點查詢
                 AppendNodesTask();
@@ -206,7 +206,7 @@ namespace Chump_kuka
 
                 var nodeData = resp_json["data"].ToObject<List<dynamic>>();
 
-                List<KukaAreaModel> _kuka_areas = KukaParm.KukaAreas.Select(area => (KukaAreaModel)area.Clone()).ToList();
+                List<KukaAreaModel> _kuka_areas = KukaParm.KukaAreaModels.Select(area => (KukaAreaModel)area.Clone()).ToList();
 
                 // 將第二個 JSON 的 nodeList 合併進 areas
                 foreach (var area in _kuka_areas)
@@ -219,7 +219,7 @@ namespace Chump_kuka
                     }
                 }
 
-                KukaParm.KukaAreas = _kuka_areas;
+                KukaParm.KukaAreaModels = _kuka_areas;
             }
             catch
             {

@@ -139,11 +139,11 @@
     <Compile Include="Controls\KukaRobotStatus.Designer.cs">
       <DependentUpon>KukaRobotStatus.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\kuka_area.cs">
+    <Compile Include="Controls\KukaAreaControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\kuka_area.Designer.cs">
-      <DependentUpon>kuka_area.cs</DependentUpon>
+    <Compile Include="Controls\KukaAreaControl.Designer.cs">
+      <DependentUpon>KukaAreaControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\LogWindow.cs">
       <SubType>UserControl</SubType>
@@ -175,12 +175,6 @@
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\f00_Test.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\f00_Test.Designer.cs">
-      <DependentUpon>f00_Test.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\f02_MainMission.cs">
       <SubType>Form</SubType>
@@ -221,9 +215,9 @@
     <Compile Include="KukaParam.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\DI_DOManager.cs" />
-    <Compile Include="Services\IOHandle.cs" />
-    <Compile Include="Services\KukaApiHandle.cs" />
+    <Compile Include="Services\ModbusTCP_Master_Service.cs" />
+    <Compile Include="Handle\IOHandle.cs" />
+    <Compile Include="Handle\KukaApiHandle.cs" />
     <Compile Include="Services\Log.cs" />
     <Compile Include="Services\myEventArgs.cs" />
     <EmbeddedResource Include="Controls\Container.resx">
@@ -232,8 +226,8 @@
     <EmbeddedResource Include="Controls\KukaRobotStatus.resx">
       <DependentUpon>KukaRobotStatus.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\kuka_area.resx">
-      <DependentUpon>kuka_area.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\KukaAreaControl.resx">
+      <DependentUpon>KukaAreaControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\LogWindow.resx">
       <DependentUpon>LogWindow.cs</DependentUpon>
@@ -249,9 +243,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\f00_Test.resx">
-      <DependentUpon>f00_Test.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\f02_MainMission.resx">
       <DependentUpon>f02_MainMission.cs</DependentUpon>

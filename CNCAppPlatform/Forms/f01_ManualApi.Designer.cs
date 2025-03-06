@@ -33,6 +33,9 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.kuka_area3 = new Chump_kuka.Controls.KukaAreaControl();
+            this.kuka_area2 = new Chump_kuka.Controls.KukaAreaControl();
+            this.kuka_area1 = new Chump_kuka.Controls.KukaAreaControl();
             this.scaleLabel2 = new iCAPS.ScaleLabel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
@@ -44,11 +47,8 @@
             this.selected_1 = new iCAPS.ScaleLabel();
             this.go_direction = new iCAPS.DoubleImg();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
-            this.scaleLabel1 = new iCAPS.ScaleLabel();
-            this.kuka_area3 = new Chump_kuka.Controls.kuka_area();
-            this.kuka_area2 = new Chump_kuka.Controls.kuka_area();
-            this.kuka_area1 = new Chump_kuka.Controls.kuka_area();
             this.kukaRobotStatus1 = new Chump_kuka.Controls.KukaRobotStatus();
+            this.scaleLabel1 = new iCAPS.ScaleLabel();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -129,6 +129,69 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 18F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(729, 488);
             this.tableLayoutPanel2.TabIndex = 1;
+            // 
+            // kuka_area3
+            // 
+            this.kuka_area3.AreaName = "成品區";
+            this.kuka_area3.AreaNode = new string[] {
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47"};
+            this.kuka_area3.Checked = false;
+            this.kuka_area3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kuka_area3.Location = new System.Drawing.Point(10, 254);
+            this.kuka_area3.Margin = new System.Windows.Forms.Padding(10);
+            this.kuka_area3.Name = "kuka_area3";
+            this.kuka_area3.NodeStatus = new int[] {
+        0,
+        0,
+        0,
+        0,
+        0,
+        0};
+            this.kuka_area3.Size = new System.Drawing.Size(344, 224);
+            this.kuka_area3.TabIndex = 2;
+            // 
+            // kuka_area2
+            // 
+            this.kuka_area2.AreaName = "組裝區";
+            this.kuka_area2.AreaNode = new string[] {
+        "36",
+        "37",
+        "38",
+        "39"};
+            this.kuka_area2.Checked = false;
+            this.kuka_area2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kuka_area2.Location = new System.Drawing.Point(374, 10);
+            this.kuka_area2.Margin = new System.Windows.Forms.Padding(10);
+            this.kuka_area2.Name = "kuka_area2";
+            this.kuka_area2.NodeStatus = new int[] {
+        0,
+        0,
+        0,
+        0};
+            this.kuka_area2.Size = new System.Drawing.Size(345, 224);
+            this.kuka_area2.TabIndex = 1;
+            // 
+            // kuka_area1
+            // 
+            this.kuka_area1.AreaName = "加工區";
+            this.kuka_area1.AreaNode = new string[] {
+        "25",
+        "26"};
+            this.kuka_area1.Checked = false;
+            this.kuka_area1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kuka_area1.Location = new System.Drawing.Point(10, 10);
+            this.kuka_area1.Margin = new System.Windows.Forms.Padding(10);
+            this.kuka_area1.Name = "kuka_area1";
+            this.kuka_area1.NodeStatus = new int[] {
+        0,
+        0};
+            this.kuka_area1.Size = new System.Drawing.Size(344, 224);
+            this.kuka_area1.TabIndex = 0;
             // 
             // scaleLabel2
             // 
@@ -292,6 +355,14 @@
             this.tableLayoutPanel7.Size = new System.Drawing.Size(271, 343);
             this.tableLayoutPanel7.TabIndex = 5;
             // 
+            // kukaRobotStatus1
+            // 
+            this.kukaRobotStatus1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kukaRobotStatus1.Location = new System.Drawing.Point(3, 44);
+            this.kukaRobotStatus1.Name = "kukaRobotStatus1";
+            this.kukaRobotStatus1.Size = new System.Drawing.Size(265, 296);
+            this.kukaRobotStatus1.TabIndex = 4;
+            // 
             // scaleLabel1
             // 
             this.scaleLabel1.AutoSize = true;
@@ -305,65 +376,6 @@
             this.scaleLabel1.TabIndex = 4;
             this.scaleLabel1.Text = "機器人狀態";
             this.scaleLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // kuka_area3
-            // 
-            this.kuka_area3.AreaName = "成品區";
-            this.kuka_area3.AreaNode = new string[] {
-        "42",
-        "43",
-        "44",
-        "45",
-        "46",
-        "47"};
-            this.kuka_area3.Checked = false;
-            this.kuka_area3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kuka_area3.Location = new System.Drawing.Point(10, 254);
-            this.kuka_area3.Margin = new System.Windows.Forms.Padding(10);
-            this.kuka_area3.Name = "kuka_area3";
-            this.kuka_area3.NodeStatus = new int[0];
-            this.kuka_area3.Size = new System.Drawing.Size(344, 224);
-            this.kuka_area3.TabIndex = 2;
-            // 
-            // kuka_area2
-            // 
-            this.kuka_area2.AreaName = "組裝區";
-            this.kuka_area2.AreaNode = new string[] {
-        "36",
-        "37",
-        "38",
-        "39"};
-            this.kuka_area2.Checked = false;
-            this.kuka_area2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kuka_area2.Location = new System.Drawing.Point(374, 10);
-            this.kuka_area2.Margin = new System.Windows.Forms.Padding(10);
-            this.kuka_area2.Name = "kuka_area2";
-            this.kuka_area2.NodeStatus = new int[0];
-            this.kuka_area2.Size = new System.Drawing.Size(345, 224);
-            this.kuka_area2.TabIndex = 1;
-            // 
-            // kuka_area1
-            // 
-            this.kuka_area1.AreaName = "加工區";
-            this.kuka_area1.AreaNode = new string[] {
-        "25",
-        "26"};
-            this.kuka_area1.Checked = false;
-            this.kuka_area1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kuka_area1.Location = new System.Drawing.Point(10, 10);
-            this.kuka_area1.Margin = new System.Windows.Forms.Padding(10);
-            this.kuka_area1.Name = "kuka_area1";
-            this.kuka_area1.NodeStatus = new int[0];
-            this.kuka_area1.Size = new System.Drawing.Size(344, 224);
-            this.kuka_area1.TabIndex = 0;
-            // 
-            // kukaRobotStatus1
-            // 
-            this.kukaRobotStatus1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kukaRobotStatus1.Location = new System.Drawing.Point(3, 44);
-            this.kukaRobotStatus1.Name = "kukaRobotStatus1";
-            this.kukaRobotStatus1.Size = new System.Drawing.Size(265, 296);
-            this.kukaRobotStatus1.TabIndex = 4;
             // 
             // f01_ManualApi
             // 
@@ -398,9 +410,9 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private Controls.kuka_area kuka_area3;
-        private Controls.kuka_area kuka_area2;
-        private Controls.kuka_area kuka_area1;
+        private Controls.KukaAreaControl kuka_area3;
+        private Controls.KukaAreaControl kuka_area2;
+        private Controls.KukaAreaControl kuka_area1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private iCAPS.ScaleLabel selected_2;
         private System.Windows.Forms.Panel panel1;

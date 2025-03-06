@@ -1,6 +1,5 @@
 ﻿using CefSharp.DevTools.CSS;
 using Chump_kuka.Controls;
-using Chump_kuka.Services;
 using iCAPS;
 using Newtonsoft.Json.Linq;
 using System;
@@ -31,26 +30,31 @@ namespace Chump_kuka.Forms
 
         private void KukaParm_AreaChanged(object sender, PropertyChangedEventArgs e)
         {
+            KukaParm.AreaControls.Clear();
             tableLayoutPanel2.Controls.Clear();
+
             selected_1.Tag = selected_2.Tag = null;
             selected_1.Text = selected_2.Text = "null";
 
             /* 加入區域 Control */
             // 目前只支援到 4 組，超過可能會有 UI 顯示問題
-            foreach (KukaAreaModel area in KukaParm.KukaAreas)
+            foreach (KukaAreaModel area in KukaParm.KukaAreaModels)
             {
-                tableLayoutPanel2.Controls.Add(new kuka_area
+                KukaAreaControl kuka_area = new KukaAreaControl
                 {
                     AreaName = area.AreaName,
                     Dock = DockStyle.Fill,
                     Margin = new Padding(10),
                     AreaCode = area.AreaCode,
                     AreaNode = area.NodeList.ToArray()
-                });
+                };
+                
+                KukaParm.AreaControls.Add(kuka_area);
             }
+            tableLayoutPanel2.Controls.AddRange(KukaParm.AreaControls.ToArray());
 
             // 加上點擊事件
-            foreach (kuka_area area in tableLayoutPanel2.Controls)
+            foreach (KukaAreaControl area in KukaParm.AreaControls)
             {
                 area.ContainerClick += Kuka_area1_ContainerClick;
                 area.AreaClick += Area_AreaClick;
@@ -59,7 +63,7 @@ namespace Chump_kuka.Forms
 
         private void F01_ManualApi_Load(object sender, EventArgs e)
         {
-            foreach (kuka_area area in tableLayoutPanel2.Controls)
+            foreach (KukaAreaControl area in KukaParm.AreaControls)
             {
                 area.ContainerClick += Kuka_area1_ContainerClick;
                 area.AreaClick += Area_AreaClick;
@@ -72,7 +76,7 @@ namespace Chump_kuka.Forms
             KukaParm.StartNode = null;
             KukaParm.GoalNode = null;
 
-            if (Env.enble_kuka_api)
+            if (KukaApiHandle.Enable)
             {
                 tableLayoutPanel2.Controls.Clear();
                 selected_1.Tag = selected_2.Tag = null;
@@ -150,7 +154,7 @@ namespace Chump_kuka.Forms
                 // 目前只支援到 4 組，超過可能會有 UI 顯示問題
                 foreach (JObject node_info in node_infos)
                 {
-                    tableLayoutPanel2.Controls.Add(new kuka_area
+                    tableLayoutPanel2.Controls.Add(new KukaAreaControl
                     {
                         AreaName = areaDictionary[(string)node_info["areaCode"]],
                         Dock = DockStyle.Fill,
@@ -161,7 +165,7 @@ namespace Chump_kuka.Forms
                 }
 
                 // 加上點擊事件
-                foreach (kuka_area area in tableLayoutPanel2.Controls)
+                foreach (KukaAreaControl area in tableLayoutPanel2.Controls)
                 {
                     area.ContainerClick += Kuka_area1_ContainerClick;
                     area.AreaClick += Area_AreaClick;
@@ -171,7 +175,7 @@ namespace Chump_kuka.Forms
 
         private void Area_AreaClick(object sender, ControlClickEventArgs e)
         {
-            kuka_area area = e.Control as kuka_area;
+            KukaAreaControl area = e.Control as KukaAreaControl;
 
             if (area.Checked)
             {
@@ -248,14 +252,14 @@ namespace Chump_kuka.Forms
         private string GetTagType(object tag)
         {
             if (tag is Container obj1) return obj1.Type;
-            if (tag is kuka_area obj2) return obj2.Type;
+            if (tag is KukaAreaControl obj2) return obj2.Type;
             return string.Empty; // 預設值
         }
 
         private string GetTagCode(object tag)
         {
             if (tag is Container obj1) return obj1.ContainerName;
-            if (tag is kuka_area obj2) return obj2.AreaCode;
+            if (tag is KukaAreaControl obj2) return obj2.AreaCode;
             return string.Empty; // 預設值
         }
 
@@ -285,7 +289,7 @@ namespace Chump_kuka.Forms
                 return;
             }
 
-            if (!Env.enble_kuka_api)
+            if (!KukaApiHandle.Enable)
             {
                 MsgBox.Show("尚未開啟 kuka api");
                 return;

@@ -61,7 +61,7 @@ namespace Chump_kuka.Controls
             Resize += KukaRobotStatus_Resize;       // 自動調整分頁字體大小
 
             tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;       // 切換分頁時，顯示內容
-            KukaParm.PropertyChanged += KukaParm_PropertyChanged;       // 自動更新機器人資訊
+            KukaParm.RobotStatusChanged += KukaParm_PropertyChanged;       // 自動更新機器人資訊
         }
 
         private void KukaParm_PropertyChanged(object sender, PropertyChangedEventArgs e)

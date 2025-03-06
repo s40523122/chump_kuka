@@ -1,6 +1,6 @@
 ﻿namespace Chump_kuka.Controls
 {
-    partial class kuka_area
+    partial class KukaAreaControl
     {
         /// <summary> 
         /// 設計工具所需的變數。
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(kuka_area));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KukaAreaControl));
             this.myPanel1 = new iCAPS.myPanel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.containerPanel = new System.Windows.Forms.FlowLayoutPanel();

@@ -8,12 +8,10 @@ using System.IO;
 using System.Reflection;
 using iCAPS;
 using System.Windows.Documents;
-using ModbusTCP_Master;
 using Modbus.Device;
 using System.Net.Sockets;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
-using Chump_kuka.Services;
 
 namespace Chump_kuka
 {
@@ -23,23 +21,24 @@ namespace Chump_kuka
         {
             InitializeComponent();
             
-            if (!Debugger.IsAttached) { button1.Visible = false; }
+            // Debug模式下，手動開啟 api 連線
+            if (!Debugger.IsAttached) { enable_api_btn.Visible = false; }
 
 
-            modbusService = new ModbusService();
+            modbusService = new ModbusTCP_Master_Service();
             Load += Form1_Load;
-
-            logWindow1.Visible = false;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Env.enble_kuka_api = true;
+            //Env.enble_kuka_api = true;
             KukaApiHandle.Enable = true;
+
+            IOHandle.Enable = true;
         }
 
 
-        private ModbusService modbusService;
+        private ModbusTCP_Master_Service modbusService;
         private bool NetworkIsOk = false;
         private List<PictureBox> listDI;
         private List<PictureBox> listDO;
@@ -48,8 +47,6 @@ namespace Chump_kuka
         {
             listDI = new List<PictureBox> { pictureBox1, pictureBox2, pictureBox3, pictureBox4 };
             //listDO = new List<PictureBox> { DO0, DO1, DO2, DO3 };
-
-
         }
 
         private async void btStart_Click(object sender, EventArgs e)
@@ -108,11 +105,6 @@ namespace Chump_kuka
             listDO[index].BackColor = !currentState ? Color.Red : Color.Maroon;
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            KukaParm.Volume = textBox1.Text;
-        }
-
         private void button2_Click(object sender, EventArgs e)
         {
             Log.Append("這是一個測試訊息", "Test", "Form1");
@@ -157,7 +149,7 @@ namespace Chump_kuka
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            logWindow1.Visible = checkBox1.Checked;
+            logWindow1.Visible = open_log_button.Checked;
         }
     }
 }

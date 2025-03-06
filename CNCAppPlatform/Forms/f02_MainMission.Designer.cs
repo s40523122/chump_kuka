@@ -51,7 +51,7 @@
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel9 = new iCAPS.ScaleLabel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.kuka_area1 = new Chump_kuka.Controls.kuka_area();
+            this.kuka_area1 = new Chump_kuka.Controls.KukaAreaControl();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.myPanel1.SuspendLayout();
@@ -455,7 +455,7 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private Controls.kuka_area kuka_area1;
+        private Controls.KukaAreaControl kuka_area1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private iCAPS.ScaleLabel scaleLabel1;
         private iCAPS.ScaleLabel scaleLabel2;

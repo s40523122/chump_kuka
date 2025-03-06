@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Modbus.Device;
 
-namespace ModbusTCP_Master
+namespace Chump_kuka
 {
     /// <summary>
     /// 負責 Modbus TCP 通訊的後端邏輯，獨立於 UI 介面。
     /// </summary>
-    public class ModbusService
+    public class ModbusTCP_Master_Service
     {
+        public bool isConnected = false;
+
         private ModbusIpMaster master;
         private TcpClient tcpClient;
         private byte slaveID = 1; // 預設 Modbus Slave ID
@@ -32,11 +34,14 @@ namespace ModbusTCP_Master
                 master = ModbusIpMaster.CreateIp(tcpClient);
                 master.Transport.Retries = 0;
                 master.Transport.ReadTimeout = 1500;
+
+                isConnected = true;
                 return true;
             }
             catch (TimeoutException)
             {
-                MessageBox.Show("ModbusService Error: 連線超過時間，已被中斷");
+                // MessageBox.Show("ModbusService Error: 連線超過時間，已被中斷");
+                Log.Append("ModbusService Error: 連線超過時間，已被中斷", "Error", this.GetType().Name);
             }
 
             catch (Exception ex)
@@ -66,6 +71,7 @@ namespace ModbusTCP_Master
         /// </summary>
         public void Disconnect()
         {
+            isConnected = false;
             master?.Dispose();
             tcpClient?.Close();
         }

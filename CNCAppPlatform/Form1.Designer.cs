@@ -29,7 +29,7 @@ namespace Chump_kuka
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.button1 = new System.Windows.Forms.Button();
+            this.enable_api_btn = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
@@ -37,11 +37,9 @@ namespace Chump_kuka
             this.btStart = new System.Windows.Forms.Button();
             this.btStop = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
+            this.open_log_button = new System.Windows.Forms.CheckBox();
             this.logWindow1 = new Chump_kuka.Controls.LogWindow();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -53,8 +51,6 @@ namespace Chump_kuka
             // 
             this.panel1.Controls.Add(this.logWindow1);
             this.panel1.Controls.Add(this.button2);
-            this.panel1.Controls.Add(this.textBox1);
-            this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.btStop);
             this.panel1.Controls.Add(this.btStart);
             this.panel1.Controls.Add(this.pictureBox4);
@@ -68,26 +64,19 @@ namespace Chump_kuka
             this.panel1.Controls.SetChildIndex(this.pictureBox4, 0);
             this.panel1.Controls.SetChildIndex(this.btStart, 0);
             this.panel1.Controls.SetChildIndex(this.btStop, 0);
-            this.panel1.Controls.SetChildIndex(this.label2, 0);
-            this.panel1.Controls.SetChildIndex(this.textBox1, 0);
             this.panel1.Controls.SetChildIndex(this.button2, 0);
             this.panel1.Controls.SetChildIndex(this.logWindow1, 0);
             this.panel1.Controls.SetChildIndex(this.enable_side, 0);
             // 
-            // enable_side
+            // enable_api_btn
             // 
-            this.enable_side.Checked = true;
-            this.enable_side.CheckState = System.Windows.Forms.CheckState.Checked;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(586, 66);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(109, 43);
-            this.button1.TabIndex = 45;
-            this.button1.Text = "enble api";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.enable_api_btn.Location = new System.Drawing.Point(586, 66);
+            this.enable_api_btn.Name = "enable_api_btn";
+            this.enable_api_btn.Size = new System.Drawing.Size(109, 43);
+            this.enable_api_btn.TabIndex = 45;
+            this.enable_api_btn.Text = "enable api";
+            this.enable_api_btn.UseVisualStyleBackColor = true;
+            this.enable_api_btn.Click += new System.EventHandler(this.button1_Click);
             // 
             // pictureBox1
             // 
@@ -155,25 +144,6 @@ namespace Chump_kuka
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(51, 320);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(33, 12);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "label2";
-            this.label2.Visible = false;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(52, 356);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(89, 22);
-            this.textBox1.TabIndex = 4;
-            this.textBox1.Visible = false;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(708, 411);
@@ -182,7 +152,21 @@ namespace Chump_kuka
             this.button2.TabIndex = 6;
             this.button2.Text = "button2";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Visible = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // open_log_button
+            // 
+            this.open_log_button.Appearance = System.Windows.Forms.Appearance.Button;
+            this.open_log_button.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.open_log_button.Location = new System.Drawing.Point(717, 65);
+            this.open_log_button.Name = "open_log_button";
+            this.open_log_button.Size = new System.Drawing.Size(91, 43);
+            this.open_log_button.TabIndex = 46;
+            this.open_log_button.Text = "log";
+            this.open_log_button.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.open_log_button.UseVisualStyleBackColor = true;
+            this.open_log_button.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // logWindow1
             // 
@@ -191,30 +175,18 @@ namespace Chump_kuka
             this.logWindow1.Name = "logWindow1";
             this.logWindow1.Size = new System.Drawing.Size(681, 359);
             this.logWindow1.TabIndex = 7;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.checkBox1.Location = new System.Drawing.Point(717, 65);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(91, 43);
-            this.checkBox1.TabIndex = 46;
-            this.checkBox1.Text = "log";
-            this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.logWindow1.Visible = false;
             // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1231, 820);
-            this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.open_log_button);
+            this.Controls.Add(this.enable_api_btn);
             this.Name = "Form1";
             this.Controls.SetChildIndex(this.panel1, 0);
-            this.Controls.SetChildIndex(this.button1, 0);
-            this.Controls.SetChildIndex(this.checkBox1, 0);
+            this.Controls.SetChildIndex(this.enable_api_btn, 0);
+            this.Controls.SetChildIndex(this.open_log_button, 0);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -228,7 +200,7 @@ namespace Chump_kuka
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button enable_api_btn;
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox2;
@@ -236,11 +208,9 @@ namespace Chump_kuka
         private System.Windows.Forms.Button btStop;
         private System.Windows.Forms.Button btStart;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button button2;
         private Controls.LogWindow logWindow1;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox open_log_button;
     }
 }
 
