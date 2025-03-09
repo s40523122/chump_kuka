@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Reactive;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,10 +20,7 @@ namespace Chump_kuka
         // Api 啟用狀態
         public static bool Enable
         {
-            get
-            {
-                return _enable;
-            }
+            get => _enable;
             set
             {
                 if (value == _enable) return;
@@ -38,6 +36,7 @@ namespace Chump_kuka
         private static Timer apiTimer;
         private static Queue<Func<Task>> apiQueue = new Queue<Func<Task>>(); // API 任務佇列
 
+
         static KukaApiHandle() 
         {
             // 設定計時器
@@ -48,10 +47,39 @@ namespace Chump_kuka
             //apiTimer.Start();
 
             // 加入 API 任務到佇列
-            AppendRobotStatusTask();        // 加入機器人狀態任務查詢
+            // AppendRobotStatusTask();        // 加入機器人狀態任務查詢
 
             //apiQueue.Enqueue(() => RequestApiAsync("API2", "https://api.example.com/data2", HandleApi2Response));
             //apiQueue.Enqueue(() => RequestApiAsync("API3", "https://api.example.com/data3", HandleApi3Response));
+        }
+
+        /// <summary>
+        /// 將機器人狀態查詢請求加入 API 等待列表
+        /// </summary>
+        public static async Task<bool> CheckConnect()
+        {
+            apiTimer.Stop();
+            try
+            {
+                int response_code = 0;
+                response_code = await Env.kuka_api.GetResponse("areaQuery");
+
+
+                if (response_code != 200)
+                {
+                    Log.Append(Env.kuka_api.ResponseMessage, "ERROR", "KUKA API Conn Test");
+                    Enable = false;
+                    return false;
+                }
+                apiTimer.Start();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Append($"訪問 KUKA API 失敗: {ex.Message}", "ERROR", "Connect Test");
+                Enable = false;
+                return false;
+            }
         }
 
         /// <summary>
@@ -94,6 +122,58 @@ namespace Chump_kuka
         }
 
         /// <summary>
+        /// 將派車任務請求加入 API 等待列表
+        /// </summary>
+        public static void AppendCarryTask()
+        {
+            long timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+            var request_body = new
+            {
+                orgId = "chump",     //"9001",
+                requestId = $"request{timestamp}",
+                missionCode = $"mission{timestamp}",
+                missionType = "RACK_MOVE",
+                viewBoardType = "",
+                robotType = "LIFT",
+                robotModels = new string[] { },
+                robotIds = new string[] {"1"},
+                priority = 1,
+                containerType = "",
+                containerCode = "",
+                templateCode = "",
+                lockRobotAfterFinish = false,
+                unlockRobotId = "",
+                unlockMissionCode = "",
+                idleNode = "",
+                missionData = new[]
+                {
+                    new
+                    {
+                        sequence = 1,
+                        position = KukaParm.StartNode.Code,     //"A000000002",
+                        type = KukaParm.StartNode.Type,     // "NODE_AREA",
+                        putDown = false,
+                        passStrategy = "AUTO",
+                        waitingMillis = 0
+                    },
+                    new
+                    {
+                        sequence = 2,
+                        position = KukaParm.GoalNode.Code,     //"A000000003",
+                        type = KukaParm.GoalNode.Type,     // "NODE_AREA",
+                        putDown = true,
+                        passStrategy = "AUTO",
+                        waitingMillis = 0
+                    }
+                }
+            };
+
+            apiQueue.Enqueue(() => RequestApiAsync("submitMission", request_body, HandleCarryResponse));
+            Log.Append("已加入 /submitMission 於請求等待列表", "INFO", "KukaAPiHandle");
+        }
+
+        /// <summary>
         /// 依序處理 API 請求
         /// </summary>
         private static async void ProcessNextApiAsync(object sender, EventArgs e)
@@ -103,7 +183,7 @@ namespace Chump_kuka
 
             while (apiQueue.Count > 0)
             {
-                var apiTask = apiQueue.Dequeue();
+                var apiTask = apiQueue.Dequeue();       // 取出等待列表中第一筆資料
                 await apiTask();
             }
 
@@ -220,6 +300,27 @@ namespace Chump_kuka
                 }
 
                 KukaParm.KukaAreaModels = _kuka_areas;
+            }
+            catch
+            {
+                // MessageBox.Show($"KukaRobotStatus控制項嘗試訪問 /areaQuery 時發生異常。{responseBody}", "robot_state error");
+                Log.Append($"訪問 KUKA API 發生異常。 [{responseBody}]", "ERROR", "/areaNodesQuery");
+            }
+        }
+
+        private static void HandleCarryResponse(string responseBody)
+        {
+            try
+            {
+                JObject resp_json = JObject.Parse(responseBody);
+                if (!(bool)resp_json["success"])
+                {
+                    Log.Append($"訪問 /submitMission 時發生異常 [{(string)resp_json["code"]}] {(string)resp_json["message"]}", "Error", "");
+                }
+                else
+                {
+                    Log.Append($"已成功派發任務", "Info", "");
+                }
             }
             catch
             {

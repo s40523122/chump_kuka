@@ -1,4 +1,5 @@
 ﻿using Chump_kuka.Controls;
+using iCAPS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,6 +30,7 @@ namespace Chump_kuka.Forms
 
         private void DataGridView1_Resize(object sender, EventArgs e)
         {
+            if (ParentForm.WindowState == FormWindowState.Minimized) return;
             int totalHeight = dataGridView1.ClientSize.Height; // 可用高度
             int rowCount = dataGridView1.RowCount;
             int rowHeight = totalHeight / 10; // 等比例分配
@@ -38,18 +40,13 @@ namespace Chump_kuka.Forms
             dataGridView1.ColumnHeadersHeight = rowHeight;
             dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("微軟正黑體", rowHeight/3, FontStyle.Bold);
             dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            
-            dataGridView1.DefaultCellStyle.Font = new Font("微軟正黑體", rowHeight / 3, FontStyle.Regular);
-            dataGridView1.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            if (rowCount > 0)
+            dataGridView1.DefaultCellStyle = new DataGridViewCellStyle()
             {
-                
-                foreach (DataGridViewRow row in dataGridView1.Rows)
-                {
-                    row.Height = rowHeight;
-                }
-            }
+                Font = new Font("微軟正黑體", rowHeight / 3, FontStyle.Regular),
+                Alignment = DataGridViewContentAlignment.MiddleCenter,
+            };
+            dataGridView1.RowTemplate.Height = rowHeight;
         }
 
         private void F02_MainMission_Load(object sender, EventArgs e)
@@ -90,10 +87,10 @@ namespace Chump_kuka.Forms
             dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
 
 
-            for (int i = 0;  i < 30; i++)
-            {
-                dataGridView1.Rows.Add(i, $"25", $"加工區", DateTime.Now.AddHours(i*0.6).ToString(@"yyyy/MM/dd HH:mm"), "");
-            }
+            //for (int i = 0;  i < 30; i++)
+            //{
+            //    dataGridView1.Rows.Add(i, $"25", $"加工區", DateTime.Now.AddHours(i*0.6).ToString(@"yyyy/MM/dd HH:mm"), "");
+            //}
 
         }
 
@@ -107,6 +104,43 @@ namespace Chump_kuka.Forms
         {
             MessageBox.Show("Click");
             dataGridView1.Rows.Add(dataGridView1.Rows.Count, $"25", $"加工區", DateTime.Now.ToString(@"yyyy/MM/dd HH:mm"), "");
+        }
+
+        private void scaleButton1_Click(object sender, EventArgs e)
+        {
+            //MsgBox.ShowFlash("準備按鈕已按下", "", 1000);
+
+            // TODO: 怎麼判定目前區域
+            // 1. 獲取當前節點
+            // 2. 獲取目標區域
+            // 3. 透過 laser 判定目標區域是否滿載
+
+
+            KukaParm.StartNode = new CarryNode()
+            {
+                Code = "100",
+                Name = "100",
+                Type = "NODE_POINT"
+            };
+            KukaParm.GoalNode = new CarryNode()
+            {
+                Code = "A000000002",
+                Name = "倉庫區",
+                Type = "NODE_AREA"
+            };
+
+            DialogResult dialogResult = MessageBox.Show($"{KukaParm.StartNode?.Name} => {KukaParm.GoalNode?.Name}", "Some Title", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                // KukaApiHandle.AppendCarryTask();
+                dataGridView1.Rows.Insert(0, new object[] { dataGridView1.Rows.Count, KukaParm.StartNode.Name, KukaParm.GoalNode.Name, DateTime.Now.ToString(@"yyyy/MM/dd HH:mm") });
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                //do something else
+            }
+
+            
         }
     }
 }

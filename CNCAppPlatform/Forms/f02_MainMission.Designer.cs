@@ -51,6 +51,7 @@
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel9 = new iCAPS.ScaleLabel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.scaleButton1 = new iCAPS.ScaleButton();
             this.kuka_area1 = new Chump_kuka.Controls.KukaAreaControl();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
@@ -344,12 +345,14 @@
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel5.Controls.Add(this.scaleLabel8, 0, 0);
             this.tableLayoutPanel5.Controls.Add(this.kuka_area1, 0, 1);
+            this.tableLayoutPanel5.Controls.Add(this.scaleButton1, 0, 2);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(37, 216);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
-            this.tableLayoutPanel5.RowCount = 2;
+            this.tableLayoutPanel5.RowCount = 3;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 87.5F));
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 75F));
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
             this.tableLayoutPanel5.Size = new System.Drawing.Size(503, 436);
             this.tableLayoutPanel5.TabIndex = 0;
             // 
@@ -406,6 +409,20 @@
             this.dataGridView1.Size = new System.Drawing.Size(567, 376);
             this.dataGridView1.TabIndex = 1;
             // 
+            // scaleButton1
+            // 
+            this.scaleButton1.BackColor = System.Drawing.SystemColors.Control;
+            this.scaleButton1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scaleButton1.Factor = 0.35F;
+            this.scaleButton1.Font = new System.Drawing.Font("微軟正黑體", 17.15F);
+            this.scaleButton1.Location = new System.Drawing.Point(3, 384);
+            this.scaleButton1.Name = "scaleButton1";
+            this.scaleButton1.Size = new System.Drawing.Size(497, 49);
+            this.scaleButton1.TabIndex = 1;
+            this.scaleButton1.Text = "Ready";
+            this.scaleButton1.UseVisualStyleBackColor = false;
+            this.scaleButton1.Click += new System.EventHandler(this.scaleButton1_Click);
+            // 
             // kuka_area1
             // 
             this.kuka_area1.AreaName = "scaleLabel1";
@@ -418,7 +435,11 @@
             this.kuka_area1.Location = new System.Drawing.Point(0, 54);
             this.kuka_area1.Margin = new System.Windows.Forms.Padding(0);
             this.kuka_area1.Name = "kuka_area1";
-            this.kuka_area1.Size = new System.Drawing.Size(503, 382);
+            this.kuka_area1.NodeStatus = new int[] {
+        0,
+        0,
+        0};
+            this.kuka_area1.Size = new System.Drawing.Size(503, 327);
             this.kuka_area1.TabIndex = 0;
             this.kuka_area1.Click += new System.EventHandler(this.kuka_area1_Click);
             // 
@@ -477,5 +498,6 @@
         private iCAPS.ScaleLabel scaleLabel9;
         private iCAPS.myPanel myPanel1;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private iCAPS.ScaleButton scaleButton1;
     }
 }

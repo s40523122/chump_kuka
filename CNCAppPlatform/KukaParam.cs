@@ -22,14 +22,34 @@ using System.Linq;
 /// </summary>
 
 public static class KukaParm
-{
-    public static event PropertyChangedEventHandler RobotStatusChanged;
-    public static event PropertyChangedEventHandler AreaChanged;
+{ 
+    public static CarryNode StartNode       // 手動派車起點
+    {
+        get => _start_node;
+        set
+        {
+            if (_start_node != value)
+            {
+                _start_node = value;
+                OnCarryChanged(nameof(StartNode));
+            }
+        }
+    }
+    public static CarryNode GoalNode      // 手動派車終點
+    {
+        get => _goal_node;
+        set
+        {
+            if (_goal_node != value)
+            {
+                _goal_node = value;
+                OnCarryChanged(nameof(GoalNode));
+            }
+        }
+    }
 
-    public static string StartNode;     // 手動派車起點
-    public static string GoalNode;      // 手動派車終點
-
-    //private static string _volume;
+    private static CarryNode _start_node = new CarryNode();
+    private static CarryNode _goal_node = new CarryNode();
     private static string _robot_status_feedback_time = "--";
     private static JArray _robot_status_infos = new JArray();
     private static List<KukaAreaModel> _kuka_area_models = new List<KukaAreaModel>();
@@ -75,6 +95,12 @@ public static class KukaParm
         }
     }
 
+    public static event PropertyChangedEventHandler RobotStatusChanged;
+    /// <summary>
+    /// 當取得的區域列表發生變化時
+    /// </summary>
+    public static event PropertyChangedEventHandler AreaChanged;
+    public static event PropertyChangedEventHandler CarryChanged;
     private static void OnRobotChanged(string propertyName)
     {
         RobotStatusChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
@@ -83,6 +109,11 @@ public static class KukaParm
     private static void OnAreaChanged(string propertyName)
     {
         AreaChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private static void OnCarryChanged(string propertyName)
+    {
+        CarryChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
     }
 }
 
@@ -132,4 +163,15 @@ public class KukaAreaModel : ICloneable
     /// <param name="areas"></param>
     /// <returns></returns>
     public static KukaAreaModel Find(string target_area, List<KukaAreaModel> areas) => areas.FirstOrDefault(area => area.AreaName == target_area);
+}
+public class CarryNode
+{
+    public string Code { get; set; }
+    public string Type { get; set; }
+    public string Name { get; set; } = "null";
+
+    public void Exchange(CarryNode node1, CarryNode node2) 
+    { 
+        // TODO 確認是否有指標功能
+    }
 }

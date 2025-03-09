@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CefSharp.DevTools.IO;
 using Modbus.Device;
 
 namespace Chump_kuka
@@ -29,13 +31,48 @@ namespace Chump_kuka
             try
             {
                 tcpClient = new TcpClient();
-                await ExecuteWithTimeout(() => Task.Run(() => tcpClient.Connect(ipAddress, 502)), 3000); // 設定 timeout 為 3 秒
-                //await Task.Run(() => tcpClient.Connect(ipAddress, 502)); // 設定 timeout 為 3 秒
-                master = ModbusIpMaster.CreateIp(tcpClient);
-                master.Transport.Retries = 0;
-                master.Transport.ReadTimeout = 1500;
+                MessageBox.Show("hi");
+                //bool isConnected = await ExecuteWithTimeout(async () =>
+                //{
+                //    try
+                //    {
+                //        await tcpClient.ConnectAsync(ipAddress, 502); // 確保支援取消
+                //        return true;
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        MessageBox.Show(ex.Message);
+                //        return false;
+                //    }
+                //}, 3000);
 
-                isConnected = true;
+                var timeOut = TimeSpan.FromSeconds(3);
+                var cancellationCompletionSource = new TaskCompletionSource<bool>();
+                using (var cts = new CancellationTokenSource(timeOut))
+                {
+                    using (var client = new TcpClient())
+                    {
+                        var task = client.ConnectAsync(ipAddress, 502);
+
+                        using (cts.Token.Register(() => cancellationCompletionSource.TrySetResult(true)))
+                        {
+                            if (task != await Task.WhenAny(task, cancellationCompletionSource.Task))
+                            {
+                                throw new OperationCanceledException(cts.Token);
+                            }
+                        }
+                    }
+                }
+
+                //await Task.Run(() => tcpClient.Connect(ipAddress, 502)); // 設定 timeout 為 3 秒
+
+                if (!isConnected) return false;
+
+                master = ModbusIpMaster.CreateIp(tcpClient);
+                master.Transport.Retries = 0;       // 請求失敗重試次數
+                master.Transport.ReadTimeout = 1500;        // 設定 Modbus 訊息的讀取超時時間（毫秒）
+
+                //isConnected = true;
                 return true;
             }
             catch (TimeoutException)
@@ -53,17 +90,19 @@ namespace Chump_kuka
         }
 
         // 設定超時的函數，接受 Task 類型的 lambda
-        static async Task ExecuteWithTimeout(Func<Task> taskFunc, int timeout)
+        static async Task<bool> ExecuteWithTimeout(Func<Task<bool>> taskFunc, int timeout)
         {
-            var task = taskFunc(); // 呼叫傳入的 lambda 以獲得 Task
+
+            var task = taskFunc();
             if (await Task.WhenAny(task, Task.Delay(timeout)) == task)
             {
-                await task; // 只有當 task 完成時才繼續
+                return await task; // 執行成功，回傳結果
             }
             else
             {
-                throw new TimeoutException("操作超過指定時間");
+                return false; // 超時回傳 false
             }
+
         }
 
         /// <summary>

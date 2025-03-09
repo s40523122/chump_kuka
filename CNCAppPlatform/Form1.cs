@@ -34,7 +34,7 @@ namespace Chump_kuka
             //Env.enble_kuka_api = true;
             KukaApiHandle.Enable = true;
 
-            IOHandle.Enable = true;
+            //IOHandle.Enable = true;
         }
 
 

@@ -26,6 +26,13 @@ namespace Chump_kuka.Forms
             Load += F01_ManualApi_Load;
             //VisibleChanged += F01_ManualApi_VisibleChanged;
             KukaParm.AreaChanged += KukaParm_AreaChanged;
+            KukaParm.CarryChanged += KukaParm_CarryChanged;
+        }
+
+        private void KukaParm_CarryChanged(object sender, PropertyChangedEventArgs e)
+        {
+            selected_1.Text = KukaParm.StartNode?.Name ?? "null";
+            selected_2.Text = KukaParm.GoalNode?.Name ?? "null";
         }
 
         private void KukaParm_AreaChanged(object sender, PropertyChangedEventArgs e)
@@ -33,8 +40,9 @@ namespace Chump_kuka.Forms
             KukaParm.AreaControls.Clear();
             tableLayoutPanel2.Controls.Clear();
 
-            selected_1.Tag = selected_2.Tag = null;
-            selected_1.Text = selected_2.Text = "null";
+            //selected_1.Tag = selected_2.Tag = null;
+            //selected_1.Text = selected_2.Text = "null";
+            KukaParm.StartNode = KukaParm.GoalNode = null;
 
             /* 加入區域 Control */
             // 目前只支援到 4 組，超過可能會有 UI 顯示問題
@@ -73,14 +81,13 @@ namespace Chump_kuka.Forms
         private async void F01_ManualApi_VisibleChanged(object sender, EventArgs e)
         {
             // 當切換至當前分頁時，執行以下動作
-            KukaParm.StartNode = null;
-            KukaParm.GoalNode = null;
+            KukaParm.StartNode = KukaParm.GoalNode = null;
 
             if (KukaApiHandle.Enable)
             {
                 tableLayoutPanel2.Controls.Clear();
-                selected_1.Tag = selected_2.Tag = null;
-                selected_1.Text = selected_2.Text = "null";
+                //selected_1.Tag = selected_2.Tag = null;
+                //selected_1.Text = selected_2.Text = "null";
 
 
                 /* 取得區域列表   */
@@ -179,15 +186,32 @@ namespace Chump_kuka.Forms
 
             if (area.Checked)
             {
-                if (selected_1.Tag == null)
+                
+                if (KukaParm.StartNode == null)     //if (selected_1.Tag == null)
                 {
-                    selected_1.Tag = area;
-                    selected_1.Text = area.AreaName;
+                    //selected_1.Tag = area;
+                    //selected_1.Text = area.AreaName;
+
+                    // Test
+                    KukaParm.StartNode = new CarryNode
+                    {
+                        Code = area.AreaCode,
+                        Type = area.Type,
+                        Name = area.AreaName,
+                    };
                 }
-                else if (selected_2.Tag == null)
+                else if (KukaParm.GoalNode == null)        // else if (selected_2.Tag == null)
                 {
-                    selected_2.Tag = area;
-                    selected_2.Text = area.AreaName;
+                    //selected_2.Tag = area;
+                    //selected_2.Text = area.AreaName;
+
+                    // Test
+                    KukaParm.GoalNode = new CarryNode
+                    {
+                        Code = area.AreaCode,
+                        Type = area.Type,
+                        Name = area.AreaName,
+                    };
                 }
                 else
                 {
@@ -200,14 +224,23 @@ namespace Chump_kuka.Forms
                 // 如果觸發點擊的容器被取消選取，
                 // 判斷該容器是否存在於 selected_1 或 selected_2 的 Tag中，
                 // 若存在，清空該 selected_1 或 selected_2
-                new List<Label> { selected_1, selected_2 }
-                .Where(c => c.Tag == area)
-                .ToList()
-                .ForEach(c =>
+                //new List<Label> { selected_1, selected_2 }
+                //.Where(c => c.Tag == area)
+                //.ToList()
+                //.ForEach(c =>
+                //{
+                //    c.Tag = null;
+                //    c.Text = "null";
+                //});
+                if (KukaParm.StartNode != null && KukaParm.StartNode.Name == area.AreaName)
                 {
-                    c.Tag = null;
-                    c.Text = "null";
-                });
+                    KukaParm.StartNode = null; // 把 StartNode 設為 null
+                }
+
+                else if (KukaParm.GoalNode != null && KukaParm.GoalNode.Name == area.AreaName)
+                {
+                    KukaParm.GoalNode = null; // 把 GoalNode 設為 null
+                }
             }
         }
 
@@ -217,15 +250,31 @@ namespace Chump_kuka.Forms
 
             if (container.Checked)
             {
-                if (selected_1.Tag == null)
+                if (KukaParm.StartNode == null)     //if (selected_1.Tag == null)
                 {
-                    selected_1.Tag = container;
-                    selected_1.Text = container.ContainerName;
+                    //selected_1.Tag = container;
+                    //selected_1.Text = container.ContainerName;
+
+                    // Test
+                    KukaParm.StartNode = new CarryNode
+                    {
+                        Code = container.ContainerName,
+                        Type = container.Type,
+                        Name = container.ContainerName,
+                    };
                 }
-                else if (selected_2.Tag == null)
+                else if (KukaParm.GoalNode == null)     //else if (selected_2.Tag == null)
                 {
-                    selected_2.Tag = container;
-                    selected_2.Text = container.ContainerName;
+                    //selected_2.Tag = container;
+                    //selected_2.Text = container.ContainerName;
+
+                    // Test
+                    KukaParm.GoalNode = new CarryNode
+                    {
+                        Code = container.ContainerName,
+                        Type = container.Type,
+                        Name = container.ContainerName,
+                    };
                 }
                 else
                 {
@@ -238,14 +287,23 @@ namespace Chump_kuka.Forms
                 // 如果觸發點擊的容器被取消選取，
                 // 判斷該容器是否存在於 selected_1 或 selected_2 的 Tag中，
                 // 若存在，清空該 selected_1 或 selected_2
-                new List<Label> { selected_1, selected_2 }
-                .Where(c => c.Tag == container)
-                .ToList()
-                .ForEach(c =>
+                //new List<Label> { selected_1, selected_2 }
+                //.Where(c => c.Tag == container)
+                //.ToList()
+                //.ForEach(c =>
+                //{
+                //    c.Tag = null;
+                //    c.Text = "null";
+                //});
+                if (KukaParm.StartNode != null && KukaParm.StartNode.Name == container.ContainerName)
                 {
-                    c.Tag = null;
-                    c.Text = "null";
-                });
+                    KukaParm.StartNode = null; // 把 StartNode 設為 null
+                }
+
+                else if (KukaParm.GoalNode != null && KukaParm.GoalNode.Name == container.ContainerName)
+                {
+                    KukaParm.GoalNode = null; // 把 GoalNode 設為 null
+                }
             }
         }
 
@@ -263,91 +321,97 @@ namespace Chump_kuka.Forms
             return string.Empty; // 預設值
         }
 
-        private async void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            if (selected_1.Tag == null || selected_2.Tag == null)
-            {
-                MsgBox.Show("派車前，必須先選取兩節點。");
-                return;
-            }
-
-            long timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            List<string> positions = new List<string>() { GetTagCode(selected_1.Tag), GetTagCode(selected_2.Tag) };
-            List<string> types = new List<string>() { GetTagType(selected_1.Tag), GetTagType(selected_2.Tag) };
-            List<string> texts = new List<string>() { selected_1.Text, selected_2.Text };
-
-            if (go_direction.Change)
-            {
-                positions.Reverse();
-                types.Reverse();
-                texts.Reverse();
-            }
-
-            DialogResult dialogResult = MessageBox.Show($"是否執行派車任務?\n{texts[0]} -> {texts[1]}", "info", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.No)
-            {
-                return;
-            }
-
             if (!KukaApiHandle.Enable)
             {
                 MsgBox.Show("尚未開啟 kuka api");
                 return;
             }
 
-            var body = new
+            if (KukaParm.StartNode == null || KukaParm.GoalNode == null)
             {
-                orgId = "chump",     //"9001",
-                requestId = $"request{timestamp}",
-                missionCode = $"mission{timestamp}",
-                missionType = "RACK_MOVE",
-                viewBoardType = "",
-                robotType = "LIFT",
-                robotModels = new string[] { },
-                robotIds = new string[] { },
-                priority = 1,
-                containerType = "",
-                containerCode = "",
-                templateCode = "",
-                lockRobotAfterFinish = false,
-                unlockRobotId = "",
-                unlockMissionCode = "",
-                idleNode = "",
-                missionData = new[]
-                {
-                    new
-                    {
-                        sequence = 1,
-                        position = positions[0],     //"A000000002",
-                        type = types[0],     // "NODE_AREA",
-                        putDown = false,
-                        passStrategy = "AUTO",
-                        waitingMillis = 0
-                    },
-                    new
-                    {
-                        sequence = 2,
-                        position = positions[1],     //"A000000003",
-                        type = types[1],     // "NODE_AREA",
-                        putDown = true,
-                        passStrategy = "AUTO",
-                        waitingMillis = 0
-                    }
-                }
-            };
-
-            int response_code = await Env.kuka_api.PostRequest("submitMission", body);       // 等待 api 回應
-            if (response_code != 200) return;
-
-            string responseBody = Env.kuka_api.ResponseMessage;
-
-            JObject resp_json = JObject.Parse(responseBody);
-            if (!(bool)resp_json["success"])
-            {
-                MsgBox.Show($"訪問 /submitMission 時發生異常 [{(string)resp_json["code"]}] {(string)resp_json["message"]}");
+                MsgBox.Show("派車前，必須先選取兩節點。");
                 return;
             }
-            MessageBox.Show("OK");
+
+            //long timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            //List<string> positions = new List<string>() { GetTagCode(selected_1.Tag), GetTagCode(selected_2.Tag) };
+            //List<string> types = new List<string>() { GetTagType(selected_1.Tag), GetTagType(selected_2.Tag) };
+            //List<string> texts = new List<string>() { selected_1.Text, selected_2.Text };
+
+            if (go_direction.Change)
+            {
+                //positions.Reverse();
+                //types.Reverse();
+                //texts.Reverse();
+                (KukaParm.StartNode, KukaParm.GoalNode) = (KukaParm.GoalNode, KukaParm.StartNode);
+                go_direction.Change = !go_direction.Change;
+            }
+
+            //DialogResult dialogResult = MessageBox.Show($"是否執行派車任務?\n{texts[0]} -> {texts[1]}", "info", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult dialogResult = MessageBox.Show($"是否執行派車任務?\n{KukaParm.StartNode.Name} -> {KukaParm.GoalNode.Name}", "info", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.Yes)
+            {
+                KukaApiHandle.AppendCarryTask();
+                MsgBox.ShowFlash("已加入等候任務", "手動派車", 1000);
+            }
+
+            
+
+            //var body = new
+            //{
+            //    orgId = "chump",     //"9001",
+            //    requestId = $"request{timestamp}",
+            //    missionCode = $"mission{timestamp}",
+            //    missionType = "RACK_MOVE",
+            //    viewBoardType = "",
+            //    robotType = "LIFT",
+            //    robotModels = new string[] { },
+            //    robotIds = new string[] { },
+            //    priority = 1,
+            //    containerType = "",
+            //    containerCode = "",
+            //    templateCode = "",
+            //    lockRobotAfterFinish = false,
+            //    unlockRobotId = "",
+            //    unlockMissionCode = "",
+            //    idleNode = "",
+            //    missionData = new[]
+            //    {
+            //        new
+            //        {
+            //            sequence = 1,
+            //            position = positions[0],     //"A000000002",
+            //            type = types[0],     // "NODE_AREA",
+            //            putDown = false,
+            //            passStrategy = "AUTO",
+            //            waitingMillis = 0
+            //        },
+            //        new
+            //        {
+            //            sequence = 2,
+            //            position = positions[1],     //"A000000003",
+            //            type = types[1],     // "NODE_AREA",
+            //            putDown = true,
+            //            passStrategy = "AUTO",
+            //            waitingMillis = 0
+            //        }
+            //    }
+            //};
+
+            //int response_code = await Env.kuka_api.PostRequest("submitMission", body);       // 等待 api 回應
+            //if (response_code != 200) return;
+
+            //string responseBody = Env.kuka_api.ResponseMessage;
+
+            //JObject resp_json = JObject.Parse(responseBody);
+            //if (!(bool)resp_json["success"])
+            //{
+            //    MsgBox.Show($"訪問 /submitMission 時發生異常 [{(string)resp_json["code"]}] {(string)resp_json["message"]}");
+            //    return;
+            //}
+            
         }
 
         private void scaleLabel2_Click(object sender, EventArgs e)

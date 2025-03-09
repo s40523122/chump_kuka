@@ -57,11 +57,11 @@ namespace Chump_kuka
 
         private static async void RequestTimer_Tick(object sender, EventArgs e)
         {
-            if (!_enable) return;
             if (!modbusService.isConnected)
             {
+                requestTimer.Stop();
                 // 若無法與 tcp 建立通訊則禁用
-                Enable = await modbusService.Connect(ModbusTcpIp.ToString());
+                requestTimer.Enabled = Enable = await modbusService.Connect(ModbusTcpIp.ToString());
             }
 
             bool[] status = modbusService.ReadDI(4);

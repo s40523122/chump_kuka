@@ -176,6 +176,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\f00_test.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\f00_test.Designer.cs">
+      <DependentUpon>f00_test.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\f02_MainMission.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -215,6 +221,7 @@
     <Compile Include="KukaParam.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\KukaTaskManager.cs" />
     <Compile Include="Services\ModbusTCP_Master_Service.cs" />
     <Compile Include="Handle\IOHandle.cs" />
     <Compile Include="Handle\KukaApiHandle.cs" />
