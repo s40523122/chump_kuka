@@ -173,5 +173,23 @@ namespace Chump_kuka.Forms
 
             
         }
+
+        private void led_bot_in_Click(object sender, EventArgs e)
+        {
+            if (KukaParm.BindStationNo != 0) 
+                SocketDispatcher.Send($"station{KukaParm.BindStationNo}_agv_star");
+        }
+
+        private void led_bot_out_Click(object sender, EventArgs e)
+        {
+            if (KukaParm.BindStationNo != 0)
+                SocketDispatcher.Send($"station{KukaParm.BindStationNo}_agv_begin");
+        }
+
+        private void led_task_over_Click(object sender, EventArgs e)
+        {
+            if (KukaParm.BindStationNo != 0)
+                SocketDispatcher.Send($"station{KukaParm.BindStationNo}_agv_end");
+        }
     }
 }

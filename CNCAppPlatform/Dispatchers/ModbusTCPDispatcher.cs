@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace Chump_kuka
 {
-    internal class ModbusTCPManager
+    internal class ModbusTCPDispatcher
     {
         // public static string BindArea = "倉庫區";
         // public static IPEndPoint ConnectInfo = null;        // 連線資訊
@@ -45,15 +45,15 @@ namespace Chump_kuka
 
         private static System.Windows.Forms.Timer requestTimer;
 
-        private static ModbusTCP_Master_Service modbusService;
-        static ModbusTCPManager()
+        private static ModbusTCPMasterManager modbusService;
+        static ModbusTCPDispatcher()
         {
             // 設定計時器
             requestTimer = new System.Windows.Forms.Timer();
             requestTimer.Interval = 1000; // 每 1 秒請求一次
             requestTimer.Tick += RequestTimer_Tick; ;
 
-            modbusService = new ModbusTCP_Master_Service();
+            modbusService = new ModbusTCPMasterManager();
         }
 
         /// <summary>
@@ -101,8 +101,6 @@ namespace Chump_kuka
                 }
                 else requestTimer.Start();
             }
-
-            
 
             // 若無綁定區域，開啟彈出是視窗進行綁定
             if (string.IsNullOrEmpty(Env.BindAreaName))

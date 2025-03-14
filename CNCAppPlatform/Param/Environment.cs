@@ -20,7 +20,7 @@ namespace Chump_kuka
         
         private static string _kuka_api_url;
         private static IPEndPoint _sensor_modbus_tcp;
-        private static string _area_name;
+        private static string _area_name = "";
 
         public static event PropertyChangedEventHandler EnvChanged;
 
@@ -29,13 +29,13 @@ namespace Chump_kuka
             get
             {
                 string url_txt = INiReader.ReadINIFile(layout_path, "Control", "kuka_api_url");
-                KukaApiManager.kuka_api_server = new HttpRequest(url_txt);
+                KukaApiController.kuka_api_server = new HttpRequest(url_txt);
                 return url_txt;
             }
             set
             {
                 _kuka_api_url = value;
-                KukaApiManager.kuka_api_server = new HttpRequest(value);
+                KukaApiController.kuka_api_server = new HttpRequest(value);
                 INiReader.WriteINIFile(layout_path, "Control", "kuka_api_url", value);
             }
         }

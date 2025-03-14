@@ -13,7 +13,7 @@ namespace Chump_kuka
     /// <summary>
     /// 負責 Modbus TCP 通訊的後端邏輯，獨立於 UI 介面。
     /// </summary>
-    public class ModbusTCP_Master_Service
+    public class ModbusTCPMasterManager
     {
         public bool isConnected = false;
 

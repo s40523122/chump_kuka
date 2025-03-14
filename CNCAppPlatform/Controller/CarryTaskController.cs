@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Chump_kuka
 {
-    internal class CarryTaskManager
+    internal class CarryTaskController
     {
 
     }

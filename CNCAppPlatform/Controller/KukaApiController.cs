@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Chump_kuka
 {
-    internal class KukaApiManager
+    internal class KukaApiController
     {
         public static HttpRequest kuka_api_server ;
 
@@ -38,7 +38,7 @@ namespace Chump_kuka
         private static Timer apiTimer;
         private static ConcurrentQueue<Func<Task>> apiQueue = new ConcurrentQueue<Func<Task>>();
 
-        static KukaApiManager() 
+        static KukaApiController() 
         {
             // 設定計時器
             apiTimer = new System.Windows.Forms.Timer();
@@ -62,26 +62,38 @@ namespace Chump_kuka
             // 透過向 /areaQuery 請求，判定是否通訊正常，
             // 此函數執行時會中斷計時器，管理器的所有動作將會失效
             apiTimer.Stop();
-            try
-            {
-                int response_code = await kuka_api_server.GetResponse("areaQuery");
+            //try
+            //{
+            //    int response_code = await kuka_api_server.GetResponse("areaQuery");
 
-                // 若通訊異常，關閉管理器
-                if (response_code != 200)
-                {
-                    Log.Append(kuka_api_server.ResponseMessage, "ERROR", "KUKA API Conn Test");
-                    Enable = false;
-                    return false;
-                }
+            //    // 若通訊異常，關閉管理器
+            //    if (response_code != 200)
+            //    {
+            //        Log.Append(kuka_api_server.ResponseMessage, "ERROR", "KUKA API Conn Test");
+            //        Enable = false;
+            //        return false;
+            //    }
+            //    apiTimer.Start();
+            //    return true;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Append($"訪問 KUKA API 失敗: {ex.Message}", "ERROR", "Connect Test");
+            //    Enable = false;
+            //    return false;
+            //}
+            await RequestApiAsync("areaQuery", null, HandleAreaResponse);
+            var request_body = new
+            {
+                areaCodes = KukaParm.KukaAreaModels.Select(a => a.AreaCode).ToList()
+            };
+            await RequestApiAsync("areaNodesQuery", request_body, HandleNodesResponse);
+            if (KukaParm.KukaAreaModels.Count > 0)
+            {
                 apiTimer.Start();
                 return true;
             }
-            catch (Exception ex)
-            {
-                Log.Append($"訪問 KUKA API 失敗: {ex.Message}", "ERROR", "Connect Test");
-                Enable = false;
-                return false;
-            }
+            return false;
         }
 
         /// <summary>

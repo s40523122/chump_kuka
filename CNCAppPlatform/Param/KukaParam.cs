@@ -44,18 +44,31 @@ public static class KukaParm
     public static event PropertyChangedEventHandler NodeStatusChanged;
     public static event PropertyChangedEventHandler CarryChanged;
 
-
+    public static int BindStationNo { get; set; } = 0;
     public static KukaAreaModel BindArea
     {
         get => _bind_area;
         set
         {
+            if (_bind_area != null && Chump_kuka.Env.BindAreaName == value.AreaName) return;        // 非首次綁定時，跳過資料相同的處理
+
             Chump_kuka.Env.BindAreaName = value.AreaName;
             _bind_area = value;
+
+            switch (value.AreaName)
+            {
+                case "产线作业区":
+                    BindStationNo = 1;
+                    break;
+                case "产线上料区":
+                    BindStationNo = 2;
+                    break;
+                default:
+                    BindStationNo = 0;
+                    break;
+            }
         }
     }
-
-
     public static CarryNode StartNode       // 手動派車起點
     {
         get => _start_node;
@@ -199,10 +212,7 @@ public class KukaAreaModel
             }
         }
     }
-
-
     public static List<int> RecordNodeStatus { get; set; }
-
     public KukaAreaModel(JObject json_object = null)
     {
         if (json_object == null) return;
@@ -211,8 +221,6 @@ public class KukaAreaModel
         AreaName = json_object["areaName"].ToString();
         NodeList = json_object["nodeList"].ToObject<List<string>>();      // 集合查詢到的區域代碼為列表
     }
-
-    // public object Clone() => new KukaAreaModel { AreaCode = this.AreaCode, AreaName = this.AreaName, AreaType = this.AreaType, NodeList = this.NodeList };
 
     /// <summary>
     /// 找尋列表中符合區域名稱的模型
@@ -285,9 +293,4 @@ public class CarryNode
     public string Code { get; set; }
     public string Type { get; set; }
     public string Name { get; set; } = "null";
-
-    public void Exchange(CarryNode node1, CarryNode node2) 
-    { 
-        // TODO 確認是否有指標功能
-    }
 }

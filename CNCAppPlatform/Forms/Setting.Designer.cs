@@ -31,18 +31,12 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Setting));
             this.scalePadding1 = new iCAPS.ScalePadding();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.scaleLabel13 = new iCAPS.ScaleLabel();
-            this.scaleLabel14 = new iCAPS.ScaleLabel();
-            this.textBox8 = new System.Windows.Forms.TextBox();
-            this.textBox9 = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel9 = new iCAPS.ScaleLabel();
             this.scaleLabel10 = new iCAPS.ScaleLabel();
             this.modbus_ip = new System.Windows.Forms.TextBox();
             this.modbus_port = new System.Windows.Forms.TextBox();
             this.scaleLabel2 = new iCAPS.ScaleLabel();
-            this.scaleLabel1 = new iCAPS.ScaleLabel();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.progress_msg = new iCAPS.ScaleLabel();
             this.kuka_api_check = new iCAPS.DoubleImg();
@@ -57,23 +51,21 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.scaleLabel6 = new iCAPS.ScaleLabel();
             this.scaleButton1 = new iCAPS.ScaleButton();
-            this.doubleImg1 = new iCAPS.DoubleImg();
             this.sensor_check = new iCAPS.DoubleImg();
-            this.doubleImg3 = new iCAPS.DoubleImg();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.scaleLabel8 = new iCAPS.ScaleLabel();
-            this.scaleLabel7 = new iCAPS.ScaleLabel();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.server_check = new iCAPS.DoubleImg();
             this.textBox5 = new System.Windows.Forms.TextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.scaleLabel7 = new iCAPS.ScaleLabel();
+            this.scaleLabel8 = new iCAPS.ScaleLabel();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.scaleLabel1 = new iCAPS.ScaleLabel();
             this.scalePadding1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel5.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.kuka_api_check)).BeginInit();
             this.radio_button_group.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sensor_check)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.server_check)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -110,6 +102,12 @@
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.SetColumnRatio = 5F;
             this.scalePadding1.SetRowRatio = 3F;
             this.scalePadding1.Size = new System.Drawing.Size(981, 580);
@@ -121,26 +119,24 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel5, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.scaleLabel2, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.scaleLabel1, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.progressBar1, 0, 10);
             this.tableLayoutPanel1.Controls.Add(this.progress_msg, 0, 9);
-            this.tableLayoutPanel1.Controls.Add(this.kuka_api_check, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lable1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.scaleLabel3, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.scaleLabel4, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.scaleLabel5, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.kuka_api_url, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.radio_button_group, 1, 3);
             this.tableLayoutPanel1.Controls.Add(this.comboBox1, 1, 7);
             this.tableLayoutPanel1.Controls.Add(this.scaleLabel6, 0, 7);
-            this.tableLayoutPanel1.Controls.Add(this.scaleButton1, 1, 6);
-            this.tableLayoutPanel1.Controls.Add(this.doubleImg1, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.sensor_check, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.doubleImg3, 2, 4);
+            this.tableLayoutPanel1.Controls.Add(this.server_check, 2, 1);
+            this.tableLayoutPanel1.Controls.Add(this.scaleLabel3, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.radio_button_group, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.scaleLabel1, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lable1, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.kuka_api_url, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.scaleLabel4, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.scaleLabel2, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.kuka_api_check, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.sensor_check, 2, 3);
+            this.tableLayoutPanel1.Controls.Add(this.scaleButton1, 1, 5);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(49, 17);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
@@ -160,70 +156,6 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(882, 545);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // tableLayoutPanel5
-            // 
-            this.tableLayoutPanel5.ColumnCount = 4;
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.63636F));
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45.45454F));
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.63636F));
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.27273F));
-            this.tableLayoutPanel5.Controls.Add(this.scaleLabel13, 2, 0);
-            this.tableLayoutPanel5.Controls.Add(this.scaleLabel14, 0, 0);
-            this.tableLayoutPanel5.Controls.Add(this.textBox8, 1, 0);
-            this.tableLayoutPanel5.Controls.Add(this.textBox9, 3, 0);
-            this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(267, 155);
-            this.tableLayoutPanel5.Name = "tableLayoutPanel5";
-            this.tableLayoutPanel5.RowCount = 1;
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(435, 32);
-            this.tableLayoutPanel5.TabIndex = 15;
-            // 
-            // scaleLabel13
-            // 
-            this.scaleLabel13.AutoSize = true;
-            this.scaleLabel13.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scaleLabel13.Factor = 0.25F;
-            this.scaleLabel13.Font = new System.Drawing.Font("微軟正黑體", 8F);
-            this.scaleLabel13.Location = new System.Drawing.Point(259, 0);
-            this.scaleLabel13.Name = "scaleLabel13";
-            this.scaleLabel13.Size = new System.Drawing.Size(53, 32);
-            this.scaleLabel13.TabIndex = 11;
-            this.scaleLabel13.Text = "Port";
-            this.scaleLabel13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // scaleLabel14
-            // 
-            this.scaleLabel14.AutoSize = true;
-            this.scaleLabel14.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scaleLabel14.Factor = 0.25F;
-            this.scaleLabel14.Font = new System.Drawing.Font("微軟正黑體", 8F);
-            this.scaleLabel14.Location = new System.Drawing.Point(3, 0);
-            this.scaleLabel14.Name = "scaleLabel14";
-            this.scaleLabel14.Size = new System.Drawing.Size(53, 32);
-            this.scaleLabel14.TabIndex = 10;
-            this.scaleLabel14.Text = "IP";
-            this.scaleLabel14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // textBox8
-            // 
-            this.textBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox8.Location = new System.Drawing.Point(62, 5);
-            this.textBox8.Name = "textBox8";
-            this.textBox8.Size = new System.Drawing.Size(191, 22);
-            this.textBox8.TabIndex = 9;
-            this.textBox8.Text = "192.168.68.22";
-            // 
-            // textBox9
-            // 
-            this.textBox9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox9.Enabled = false;
-            this.textBox9.Location = new System.Drawing.Point(318, 5);
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(114, 22);
-            this.textBox9.TabIndex = 9;
-            this.textBox9.Text = "5000";
-            // 
             // tableLayoutPanel3
             // 
             this.tableLayoutPanel3.ColumnCount = 4;
@@ -236,7 +168,7 @@
             this.tableLayoutPanel3.Controls.Add(this.modbus_ip, 1, 0);
             this.tableLayoutPanel3.Controls.Add(this.modbus_port, 3, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(267, 79);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(267, 117);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -290,29 +222,15 @@
             // 
             // scaleLabel2
             // 
-            this.scaleLabel2.AutoSize = true;
             this.scaleLabel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.scaleLabel2.Factor = 0.25F;
             this.scaleLabel2.Font = new System.Drawing.Font("微軟正黑體", 9.5F, System.Drawing.FontStyle.Bold);
-            this.scaleLabel2.Location = new System.Drawing.Point(3, 76);
+            this.scaleLabel2.Location = new System.Drawing.Point(3, 114);
             this.scaleLabel2.Name = "scaleLabel2";
             this.scaleLabel2.Size = new System.Drawing.Size(258, 38);
             this.scaleLabel2.TabIndex = 10;
             this.scaleLabel2.Text = "感測模組 Modbus TCP";
             this.scaleLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // scaleLabel1
-            // 
-            this.scaleLabel1.AutoSize = true;
-            this.scaleLabel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scaleLabel1.Factor = 0.25F;
-            this.scaleLabel1.Font = new System.Drawing.Font("微軟正黑體", 9.5F, System.Drawing.FontStyle.Bold);
-            this.scaleLabel1.Location = new System.Drawing.Point(3, 38);
-            this.scaleLabel1.Name = "scaleLabel1";
-            this.scaleLabel1.Size = new System.Drawing.Size(258, 38);
-            this.scaleLabel1.TabIndex = 8;
-            this.scaleLabel1.Text = "PMC 伺服器";
-            this.scaleLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // progressBar1
             // 
@@ -345,7 +263,7 @@
             this.kuka_api_check.Change = false;
             this.kuka_api_check.EnableCilck = true;
             this.kuka_api_check.Image = ((System.Drawing.Image)(resources.GetObject("kuka_api_check.Image")));
-            this.kuka_api_check.Location = new System.Drawing.Point(710, 5);
+            this.kuka_api_check.Location = new System.Drawing.Point(710, 81);
             this.kuka_api_check.Margin = new System.Windows.Forms.Padding(5);
             this.kuka_api_check.Name = "kuka_api_check";
             this.kuka_api_check.SetSquare = true;
@@ -359,11 +277,10 @@
             // 
             // lable1
             // 
-            this.lable1.AutoSize = true;
             this.lable1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lable1.Factor = 0.25F;
             this.lable1.Font = new System.Drawing.Font("微軟正黑體", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lable1.Location = new System.Drawing.Point(3, 0);
+            this.lable1.Location = new System.Drawing.Point(3, 76);
             this.lable1.Name = "lable1";
             this.lable1.Size = new System.Drawing.Size(258, 38);
             this.lable1.TabIndex = 3;
@@ -372,11 +289,10 @@
             // 
             // scaleLabel3
             // 
-            this.scaleLabel3.AutoSize = true;
             this.scaleLabel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.scaleLabel3.Factor = 0.25F;
             this.scaleLabel3.Font = new System.Drawing.Font("微軟正黑體", 9.5F, System.Drawing.FontStyle.Bold);
-            this.scaleLabel3.Location = new System.Drawing.Point(3, 114);
+            this.scaleLabel3.Location = new System.Drawing.Point(3, 0);
             this.scaleLabel3.Name = "scaleLabel3";
             this.scaleLabel3.Size = new System.Drawing.Size(258, 38);
             this.scaleLabel3.TabIndex = 3;
@@ -393,12 +309,10 @@
             this.scaleLabel4.Name = "scaleLabel4";
             this.scaleLabel4.Size = new System.Drawing.Size(258, 38);
             this.scaleLabel4.TabIndex = 3;
-            this.scaleLabel4.Text = "伺服器 IP";
             this.scaleLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // scaleLabel5
             // 
-            this.scaleLabel5.AutoSize = true;
             this.scaleLabel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.scaleLabel5.Factor = 0.25F;
             this.scaleLabel5.Font = new System.Drawing.Font("微軟正黑體", 9.5F, System.Drawing.FontStyle.Bold);
@@ -411,7 +325,7 @@
             // kuka_api_url
             // 
             this.kuka_api_url.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.kuka_api_url.Location = new System.Drawing.Point(267, 8);
+            this.kuka_api_url.Location = new System.Drawing.Point(267, 84);
             this.kuka_api_url.Name = "kuka_api_url";
             this.kuka_api_url.Size = new System.Drawing.Size(435, 22);
             this.kuka_api_url.TabIndex = 4;
@@ -427,7 +341,7 @@
             this.radio_button_group.Controls.Add(this.radioButton1, 1, 0);
             this.radio_button_group.Controls.Add(this.radioButton2, 2, 0);
             this.radio_button_group.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.radio_button_group.Location = new System.Drawing.Point(264, 114);
+            this.radio_button_group.Location = new System.Drawing.Point(264, 0);
             this.radio_button_group.Margin = new System.Windows.Forms.Padding(0);
             this.radio_button_group.Name = "radio_button_group";
             this.radio_button_group.RowCount = 1;
@@ -473,7 +387,6 @@
             // 
             // scaleLabel6
             // 
-            this.scaleLabel6.AutoSize = true;
             this.scaleLabel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.scaleLabel6.Factor = 0.25F;
             this.scaleLabel6.Font = new System.Drawing.Font("微軟正黑體", 9.5F, System.Drawing.FontStyle.Bold);
@@ -490,33 +403,13 @@
             this.scaleButton1.AutoSize = true;
             this.scaleButton1.Factor = 0.3F;
             this.scaleButton1.Font = new System.Drawing.Font("微軟正黑體", 9.6F);
-            this.scaleButton1.Location = new System.Drawing.Point(422, 231);
+            this.scaleButton1.Location = new System.Drawing.Point(422, 193);
             this.scaleButton1.Name = "scaleButton1";
             this.scaleButton1.Size = new System.Drawing.Size(124, 32);
             this.scaleButton1.TabIndex = 7;
             this.scaleButton1.Text = "通訊測試";
             this.scaleButton1.UseVisualStyleBackColor = true;
             this.scaleButton1.Click += new System.EventHandler(this.scaleButton1_Click);
-            // 
-            // doubleImg1
-            // 
-            this.doubleImg1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.doubleImg1.Change = false;
-            this.doubleImg1.EnableCilck = true;
-            this.doubleImg1.Image = ((System.Drawing.Image)(resources.GetObject("doubleImg1.Image")));
-            this.doubleImg1.Location = new System.Drawing.Point(710, 43);
-            this.doubleImg1.Margin = new System.Windows.Forms.Padding(5);
-            this.doubleImg1.Name = "doubleImg1";
-            this.doubleImg1.SetSquare = true;
-            this.doubleImg1.Size = new System.Drawing.Size(28, 28);
-            this.doubleImg1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.doubleImg1.SubImg = ((System.Drawing.Image)(resources.GetObject("doubleImg1.SubImg")));
-            this.doubleImg1.TabIndex = 2;
-            this.doubleImg1.TabStop = false;
-            this.doubleImg1.Tag = ((object)(resources.GetObject("doubleImg1.Tag")));
-            this.doubleImg1.Visible = false;
             // 
             // sensor_check
             // 
@@ -526,7 +419,7 @@
             this.sensor_check.Change = false;
             this.sensor_check.EnableCilck = true;
             this.sensor_check.Image = ((System.Drawing.Image)(resources.GetObject("sensor_check.Image")));
-            this.sensor_check.Location = new System.Drawing.Point(710, 81);
+            this.sensor_check.Location = new System.Drawing.Point(710, 119);
             this.sensor_check.Margin = new System.Windows.Forms.Padding(5);
             this.sensor_check.Name = "sensor_check";
             this.sensor_check.SetSquare = true;
@@ -538,25 +431,70 @@
             this.sensor_check.Tag = ((object)(resources.GetObject("sensor_check.Tag")));
             this.sensor_check.Visible = false;
             // 
-            // doubleImg3
+            // server_check
             // 
-            this.doubleImg3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.server_check.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.doubleImg3.Change = false;
-            this.doubleImg3.EnableCilck = true;
-            this.doubleImg3.Image = ((System.Drawing.Image)(resources.GetObject("doubleImg3.Image")));
-            this.doubleImg3.Location = new System.Drawing.Point(710, 157);
-            this.doubleImg3.Margin = new System.Windows.Forms.Padding(5);
-            this.doubleImg3.Name = "doubleImg3";
-            this.doubleImg3.SetSquare = true;
-            this.doubleImg3.Size = new System.Drawing.Size(28, 28);
-            this.doubleImg3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.doubleImg3.SubImg = ((System.Drawing.Image)(resources.GetObject("doubleImg3.SubImg")));
-            this.doubleImg3.TabIndex = 2;
-            this.doubleImg3.TabStop = false;
-            this.doubleImg3.Tag = ((object)(resources.GetObject("doubleImg3.Tag")));
-            this.doubleImg3.Visible = false;
+            this.server_check.Change = false;
+            this.server_check.EnableCilck = true;
+            this.server_check.Image = ((System.Drawing.Image)(resources.GetObject("server_check.Image")));
+            this.server_check.Location = new System.Drawing.Point(710, 43);
+            this.server_check.Margin = new System.Windows.Forms.Padding(5);
+            this.server_check.Name = "server_check";
+            this.server_check.SetSquare = true;
+            this.server_check.Size = new System.Drawing.Size(28, 28);
+            this.server_check.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.server_check.SubImg = ((System.Drawing.Image)(resources.GetObject("server_check.SubImg")));
+            this.server_check.TabIndex = 2;
+            this.server_check.TabStop = false;
+            this.server_check.Tag = ((object)(resources.GetObject("server_check.Tag")));
+            this.server_check.Visible = false;
+            // 
+            // textBox5
+            // 
+            this.textBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox5.Enabled = false;
+            this.textBox5.Location = new System.Drawing.Point(318, 5);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.Size = new System.Drawing.Size(114, 22);
+            this.textBox5.TabIndex = 9;
+            this.textBox5.Text = "6500";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox1.Location = new System.Drawing.Point(62, 5);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(191, 22);
+            this.textBox1.TabIndex = 9;
+            this.textBox1.Text = "192.168.68.22";
+            // 
+            // scaleLabel7
+            // 
+            this.scaleLabel7.AutoSize = true;
+            this.scaleLabel7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scaleLabel7.Factor = 0.25F;
+            this.scaleLabel7.Font = new System.Drawing.Font("微軟正黑體", 8F);
+            this.scaleLabel7.Location = new System.Drawing.Point(3, 0);
+            this.scaleLabel7.Name = "scaleLabel7";
+            this.scaleLabel7.Size = new System.Drawing.Size(53, 32);
+            this.scaleLabel7.TabIndex = 10;
+            this.scaleLabel7.Text = "IP";
+            this.scaleLabel7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // scaleLabel8
+            // 
+            this.scaleLabel8.AutoSize = true;
+            this.scaleLabel8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scaleLabel8.Factor = 0.25F;
+            this.scaleLabel8.Font = new System.Drawing.Font("微軟正黑體", 8F);
+            this.scaleLabel8.Location = new System.Drawing.Point(259, 0);
+            this.scaleLabel8.Name = "scaleLabel8";
+            this.scaleLabel8.Size = new System.Drawing.Size(53, 32);
+            this.scaleLabel8.TabIndex = 11;
+            this.scaleLabel8.Text = "Port";
+            this.scaleLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel2
             // 
@@ -577,50 +515,17 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(435, 32);
             this.tableLayoutPanel2.TabIndex = 12;
             // 
-            // scaleLabel8
+            // scaleLabel1
             // 
-            this.scaleLabel8.AutoSize = true;
-            this.scaleLabel8.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scaleLabel8.Factor = 0.25F;
-            this.scaleLabel8.Font = new System.Drawing.Font("微軟正黑體", 8F);
-            this.scaleLabel8.Location = new System.Drawing.Point(259, 0);
-            this.scaleLabel8.Name = "scaleLabel8";
-            this.scaleLabel8.Size = new System.Drawing.Size(53, 32);
-            this.scaleLabel8.TabIndex = 11;
-            this.scaleLabel8.Text = "Port";
-            this.scaleLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // scaleLabel7
-            // 
-            this.scaleLabel7.AutoSize = true;
-            this.scaleLabel7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scaleLabel7.Factor = 0.25F;
-            this.scaleLabel7.Font = new System.Drawing.Font("微軟正黑體", 8F);
-            this.scaleLabel7.Location = new System.Drawing.Point(3, 0);
-            this.scaleLabel7.Name = "scaleLabel7";
-            this.scaleLabel7.Size = new System.Drawing.Size(53, 32);
-            this.scaleLabel7.TabIndex = 10;
-            this.scaleLabel7.Text = "IP";
-            this.scaleLabel7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(62, 5);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(191, 22);
-            this.textBox1.TabIndex = 9;
-            this.textBox1.Text = "192.168.68.22";
-            // 
-            // textBox5
-            // 
-            this.textBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox5.Enabled = false;
-            this.textBox5.Location = new System.Drawing.Point(318, 5);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(114, 22);
-            this.textBox5.TabIndex = 9;
-            this.textBox5.Text = "6500";
+            this.scaleLabel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scaleLabel1.Factor = 0.25F;
+            this.scaleLabel1.Font = new System.Drawing.Font("微軟正黑體", 9.5F, System.Drawing.FontStyle.Bold);
+            this.scaleLabel1.Location = new System.Drawing.Point(3, 38);
+            this.scaleLabel1.Name = "scaleLabel1";
+            this.scaleLabel1.Size = new System.Drawing.Size(258, 38);
+            this.scaleLabel1.TabIndex = 8;
+            this.scaleLabel1.Text = "伺服器 IP";
+            this.scaleLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Setting
             // 
@@ -633,16 +538,13 @@
             this.scalePadding1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.tableLayoutPanel5.ResumeLayout(false);
-            this.tableLayoutPanel5.PerformLayout();
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.kuka_api_check)).EndInit();
             this.radio_button_group.ResumeLayout(false);
             this.radio_button_group.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.sensor_check)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.server_check)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
@@ -665,27 +567,21 @@
         private System.Windows.Forms.TableLayoutPanel radio_button_group;
         private System.Windows.Forms.ComboBox comboBox1;
         private iCAPS.ScaleButton scaleButton1;
-        private System.Windows.Forms.TextBox textBox1;
-        private iCAPS.ScaleLabel scaleLabel1;
         private iCAPS.ScaleLabel scaleLabel2;
-        private iCAPS.DoubleImg doubleImg1;
         private iCAPS.DoubleImg sensor_check;
-        private iCAPS.DoubleImg doubleImg3;
+        private iCAPS.DoubleImg server_check;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private iCAPS.ScaleLabel scaleLabel8;
-        private iCAPS.ScaleLabel scaleLabel7;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
-        private iCAPS.ScaleLabel scaleLabel13;
-        private iCAPS.ScaleLabel scaleLabel14;
-        private System.Windows.Forms.TextBox textBox8;
-        private System.Windows.Forms.TextBox textBox9;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private iCAPS.ScaleLabel scaleLabel9;
         private iCAPS.ScaleLabel scaleLabel10;
         private System.Windows.Forms.TextBox modbus_ip;
         private System.Windows.Forms.TextBox modbus_port;
+        private iCAPS.ScaleLabel scaleLabel1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private iCAPS.ScaleLabel scaleLabel8;
+        private iCAPS.ScaleLabel scaleLabel7;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBox5;
     }
 }

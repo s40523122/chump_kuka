@@ -67,37 +67,44 @@ namespace Chump_kuka.Forms
 
             progress_msg.Text = "等待 KUKA API 連線...";
             progressBar1.Value = 15;
-            KukaApiManager.Enable = true;
-            isconn = await KukaApiManager.CheckConnect();
+            KukaApiController.Enable = true;
+            isconn = await KukaApiController.CheckConnect();
             kuka_api_check.Change = isconn;
             kuka_api_check.Visible = true;
             
             // 若成功連線則加入區域查詢，作為稍後綁定區域的依據
             // 反之，回朔暫存資料
-            if (isconn) KukaApiManager.AppendAreaTask();
+            if (isconn) KukaApiController.AppendAreaTask();
             else Env.KukaApiUrl = kuka_url_temp;
             progressBar1.Value = 25;
 
-            progress_msg.Text = "等待 PMC API 連線...";
+            progress_msg.Text = "等待 iCAPS 伺服器連線...";
             progressBar1.Value = 40;
-            await Task.Delay(1000);
             bool IcapsServer = bool.TryParse(radio_button_group.Controls        // 判定是否指定為 iCaps 伺服器
                                                  .OfType<RadioButton>()
                                                  .FirstOrDefault(rb => rb.Checked)
                                                  .Tag.ToString(),
                                              out IcapsServer);
+            if (IcapsServer)
+            {
+                //SocketDispatcher _icaps_socket = new SocketDispatcher();
+                isconn = await SocketDispatcher.StartServer();
+            }
+            server_check.Change = isconn;
+            server_check.Visible = true;
             progressBar1.Value = 50;
 
             progress_msg.Text = "等待 Modbus 連線...";
             progressBar1.Value = 65;
-            ModbusTCPManager.Enable = true;
-            isconn = await ModbusTCPManager.CheckConnect();
+            ModbusTCPDispatcher.Enable = true;
+            isconn = await ModbusTCPDispatcher.CheckConnect();
             sensor_check.Change = isconn;
             sensor_check.Visible = true;
             if (!isconn) Env.SensorModbusTcp = modbus_temp;
             progressBar1.Value = 75;
 
-            progress_msg.Text = "等待 iCAPS 伺服器連線...";
+
+            progress_msg.Text = "等待 PMC API 連線...";
             progressBar1.Value = 90;
             await Task.Delay(1000);
             progressBar1.Value = 100;

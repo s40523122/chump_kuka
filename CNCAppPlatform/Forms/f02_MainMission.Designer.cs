@@ -40,12 +40,12 @@
             this.scaleLabel4 = new iCAPS.ScaleLabel();
             this.scaleLabel5 = new iCAPS.ScaleLabel();
             this.scaleLabel6 = new iCAPS.ScaleLabel();
-            this.doubleImg1 = new iCAPS.DoubleImg();
-            this.doubleImg2 = new iCAPS.DoubleImg();
-            this.doubleImg3 = new iCAPS.DoubleImg();
-            this.doubleImg4 = new iCAPS.DoubleImg();
-            this.doubleImg5 = new iCAPS.DoubleImg();
-            this.doubleImg6 = new iCAPS.DoubleImg();
+            this.led_idle = new iCAPS.DoubleImg();
+            this.led_turtle_in = new iCAPS.DoubleImg();
+            this.led_bot_move = new iCAPS.DoubleImg();
+            this.led_bot_in = new iCAPS.DoubleImg();
+            this.led_bot_out = new iCAPS.DoubleImg();
+            this.led_task_over = new iCAPS.DoubleImg();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel8 = new iCAPS.ScaleLabel();
             this.kuka_area1 = new Chump_kuka.Controls.KukaAreaControl();
@@ -57,12 +57,12 @@
             this.tableLayoutPanel4.SuspendLayout();
             this.myPanel1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.led_idle)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.led_turtle_in)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.led_bot_move)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.led_bot_in)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.led_bot_out)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.led_task_over)).BeginInit();
             this.tableLayoutPanel5.SuspendLayout();
             this.tableLayoutPanel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -148,12 +148,12 @@
             this.tableLayoutPanel3.Controls.Add(this.scaleLabel4, 3, 2);
             this.tableLayoutPanel3.Controls.Add(this.scaleLabel5, 4, 2);
             this.tableLayoutPanel3.Controls.Add(this.scaleLabel6, 5, 2);
-            this.tableLayoutPanel3.Controls.Add(this.doubleImg1, 0, 1);
-            this.tableLayoutPanel3.Controls.Add(this.doubleImg2, 1, 1);
-            this.tableLayoutPanel3.Controls.Add(this.doubleImg3, 2, 1);
-            this.tableLayoutPanel3.Controls.Add(this.doubleImg4, 3, 1);
-            this.tableLayoutPanel3.Controls.Add(this.doubleImg5, 4, 1);
-            this.tableLayoutPanel3.Controls.Add(this.doubleImg6, 5, 1);
+            this.tableLayoutPanel3.Controls.Add(this.led_idle, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.led_turtle_in, 1, 1);
+            this.tableLayoutPanel3.Controls.Add(this.led_bot_move, 2, 1);
+            this.tableLayoutPanel3.Controls.Add(this.led_bot_in, 3, 1);
+            this.tableLayoutPanel3.Controls.Add(this.led_bot_out, 4, 1);
+            this.tableLayoutPanel3.Controls.Add(this.led_task_over, 5, 1);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
@@ -243,101 +243,104 @@
             this.scaleLabel6.Text = "物料送達";
             this.scaleLabel6.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // doubleImg1
+            // led_idle
             // 
-            this.doubleImg1.Change = false;
-            this.doubleImg1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.doubleImg1.EnableCilck = true;
-            this.doubleImg1.Image = ((System.Drawing.Image)(resources.GetObject("doubleImg1.Image")));
-            this.doubleImg1.Location = new System.Drawing.Point(3, 25);
-            this.doubleImg1.Name = "doubleImg1";
-            this.doubleImg1.SetSquare = false;
-            this.doubleImg1.Size = new System.Drawing.Size(173, 37);
-            this.doubleImg1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.doubleImg1.SubImg = ((System.Drawing.Image)(resources.GetObject("doubleImg1.SubImg")));
-            this.doubleImg1.TabIndex = 1;
-            this.doubleImg1.TabStop = false;
-            this.doubleImg1.Tag = ((object)(resources.GetObject("doubleImg1.Tag")));
+            this.led_idle.Change = false;
+            this.led_idle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.led_idle.EnableCilck = true;
+            this.led_idle.Image = ((System.Drawing.Image)(resources.GetObject("led_idle.Image")));
+            this.led_idle.Location = new System.Drawing.Point(3, 25);
+            this.led_idle.Name = "led_idle";
+            this.led_idle.SetSquare = false;
+            this.led_idle.Size = new System.Drawing.Size(173, 37);
+            this.led_idle.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.led_idle.SubImg = ((System.Drawing.Image)(resources.GetObject("led_idle.SubImg")));
+            this.led_idle.TabIndex = 1;
+            this.led_idle.TabStop = false;
+            this.led_idle.Tag = ((object)(resources.GetObject("led_idle.Tag")));
             // 
-            // doubleImg2
+            // led_turtle_in
             // 
-            this.doubleImg2.Change = false;
-            this.doubleImg2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.doubleImg2.EnableCilck = true;
-            this.doubleImg2.Image = ((System.Drawing.Image)(resources.GetObject("doubleImg2.Image")));
-            this.doubleImg2.Location = new System.Drawing.Point(182, 25);
-            this.doubleImg2.Name = "doubleImg2";
-            this.doubleImg2.SetSquare = false;
-            this.doubleImg2.Size = new System.Drawing.Size(173, 37);
-            this.doubleImg2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.doubleImg2.SubImg = ((System.Drawing.Image)(resources.GetObject("doubleImg2.SubImg")));
-            this.doubleImg2.TabIndex = 1;
-            this.doubleImg2.TabStop = false;
-            this.doubleImg2.Tag = ((object)(resources.GetObject("doubleImg2.Tag")));
+            this.led_turtle_in.Change = false;
+            this.led_turtle_in.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.led_turtle_in.EnableCilck = true;
+            this.led_turtle_in.Image = ((System.Drawing.Image)(resources.GetObject("led_turtle_in.Image")));
+            this.led_turtle_in.Location = new System.Drawing.Point(182, 25);
+            this.led_turtle_in.Name = "led_turtle_in";
+            this.led_turtle_in.SetSquare = false;
+            this.led_turtle_in.Size = new System.Drawing.Size(173, 37);
+            this.led_turtle_in.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.led_turtle_in.SubImg = ((System.Drawing.Image)(resources.GetObject("led_turtle_in.SubImg")));
+            this.led_turtle_in.TabIndex = 1;
+            this.led_turtle_in.TabStop = false;
+            this.led_turtle_in.Tag = ((object)(resources.GetObject("led_turtle_in.Tag")));
             // 
-            // doubleImg3
+            // led_bot_move
             // 
-            this.doubleImg3.Change = false;
-            this.doubleImg3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.doubleImg3.EnableCilck = true;
-            this.doubleImg3.Image = ((System.Drawing.Image)(resources.GetObject("doubleImg3.Image")));
-            this.doubleImg3.Location = new System.Drawing.Point(361, 25);
-            this.doubleImg3.Name = "doubleImg3";
-            this.doubleImg3.SetSquare = false;
-            this.doubleImg3.Size = new System.Drawing.Size(173, 37);
-            this.doubleImg3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.doubleImg3.SubImg = ((System.Drawing.Image)(resources.GetObject("doubleImg3.SubImg")));
-            this.doubleImg3.TabIndex = 1;
-            this.doubleImg3.TabStop = false;
-            this.doubleImg3.Tag = ((object)(resources.GetObject("doubleImg3.Tag")));
+            this.led_bot_move.Change = false;
+            this.led_bot_move.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.led_bot_move.EnableCilck = true;
+            this.led_bot_move.Image = ((System.Drawing.Image)(resources.GetObject("led_bot_move.Image")));
+            this.led_bot_move.Location = new System.Drawing.Point(361, 25);
+            this.led_bot_move.Name = "led_bot_move";
+            this.led_bot_move.SetSquare = false;
+            this.led_bot_move.Size = new System.Drawing.Size(173, 37);
+            this.led_bot_move.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.led_bot_move.SubImg = ((System.Drawing.Image)(resources.GetObject("led_bot_move.SubImg")));
+            this.led_bot_move.TabIndex = 1;
+            this.led_bot_move.TabStop = false;
+            this.led_bot_move.Tag = ((object)(resources.GetObject("led_bot_move.Tag")));
             // 
-            // doubleImg4
+            // led_bot_in
             // 
-            this.doubleImg4.Change = false;
-            this.doubleImg4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.doubleImg4.EnableCilck = true;
-            this.doubleImg4.Image = ((System.Drawing.Image)(resources.GetObject("doubleImg4.Image")));
-            this.doubleImg4.Location = new System.Drawing.Point(540, 25);
-            this.doubleImg4.Name = "doubleImg4";
-            this.doubleImg4.SetSquare = false;
-            this.doubleImg4.Size = new System.Drawing.Size(173, 37);
-            this.doubleImg4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.doubleImg4.SubImg = ((System.Drawing.Image)(resources.GetObject("doubleImg4.SubImg")));
-            this.doubleImg4.TabIndex = 1;
-            this.doubleImg4.TabStop = false;
-            this.doubleImg4.Tag = ((object)(resources.GetObject("doubleImg4.Tag")));
+            this.led_bot_in.Change = false;
+            this.led_bot_in.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.led_bot_in.EnableCilck = true;
+            this.led_bot_in.Image = ((System.Drawing.Image)(resources.GetObject("led_bot_in.Image")));
+            this.led_bot_in.Location = new System.Drawing.Point(540, 25);
+            this.led_bot_in.Name = "led_bot_in";
+            this.led_bot_in.SetSquare = false;
+            this.led_bot_in.Size = new System.Drawing.Size(173, 37);
+            this.led_bot_in.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.led_bot_in.SubImg = ((System.Drawing.Image)(resources.GetObject("led_bot_in.SubImg")));
+            this.led_bot_in.TabIndex = 1;
+            this.led_bot_in.TabStop = false;
+            this.led_bot_in.Tag = ((object)(resources.GetObject("led_bot_in.Tag")));
+            this.led_bot_in.Click += new System.EventHandler(this.led_bot_in_Click);
             // 
-            // doubleImg5
+            // led_bot_out
             // 
-            this.doubleImg5.Change = false;
-            this.doubleImg5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.doubleImg5.EnableCilck = true;
-            this.doubleImg5.Image = ((System.Drawing.Image)(resources.GetObject("doubleImg5.Image")));
-            this.doubleImg5.Location = new System.Drawing.Point(719, 25);
-            this.doubleImg5.Name = "doubleImg5";
-            this.doubleImg5.SetSquare = false;
-            this.doubleImg5.Size = new System.Drawing.Size(173, 37);
-            this.doubleImg5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.doubleImg5.SubImg = ((System.Drawing.Image)(resources.GetObject("doubleImg5.SubImg")));
-            this.doubleImg5.TabIndex = 1;
-            this.doubleImg5.TabStop = false;
-            this.doubleImg5.Tag = ((object)(resources.GetObject("doubleImg5.Tag")));
+            this.led_bot_out.Change = false;
+            this.led_bot_out.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.led_bot_out.EnableCilck = true;
+            this.led_bot_out.Image = ((System.Drawing.Image)(resources.GetObject("led_bot_out.Image")));
+            this.led_bot_out.Location = new System.Drawing.Point(719, 25);
+            this.led_bot_out.Name = "led_bot_out";
+            this.led_bot_out.SetSquare = false;
+            this.led_bot_out.Size = new System.Drawing.Size(173, 37);
+            this.led_bot_out.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.led_bot_out.SubImg = ((System.Drawing.Image)(resources.GetObject("led_bot_out.SubImg")));
+            this.led_bot_out.TabIndex = 1;
+            this.led_bot_out.TabStop = false;
+            this.led_bot_out.Tag = ((object)(resources.GetObject("led_bot_out.Tag")));
+            this.led_bot_out.Click += new System.EventHandler(this.led_bot_out_Click);
             // 
-            // doubleImg6
+            // led_task_over
             // 
-            this.doubleImg6.Change = false;
-            this.doubleImg6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.doubleImg6.EnableCilck = true;
-            this.doubleImg6.Image = ((System.Drawing.Image)(resources.GetObject("doubleImg6.Image")));
-            this.doubleImg6.Location = new System.Drawing.Point(898, 25);
-            this.doubleImg6.Name = "doubleImg6";
-            this.doubleImg6.SetSquare = false;
-            this.doubleImg6.Size = new System.Drawing.Size(175, 37);
-            this.doubleImg6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.doubleImg6.SubImg = ((System.Drawing.Image)(resources.GetObject("doubleImg6.SubImg")));
-            this.doubleImg6.TabIndex = 1;
-            this.doubleImg6.TabStop = false;
-            this.doubleImg6.Tag = ((object)(resources.GetObject("doubleImg6.Tag")));
+            this.led_task_over.Change = false;
+            this.led_task_over.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.led_task_over.EnableCilck = true;
+            this.led_task_over.Image = ((System.Drawing.Image)(resources.GetObject("led_task_over.Image")));
+            this.led_task_over.Location = new System.Drawing.Point(898, 25);
+            this.led_task_over.Name = "led_task_over";
+            this.led_task_over.SetSquare = false;
+            this.led_task_over.Size = new System.Drawing.Size(175, 37);
+            this.led_task_over.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.led_task_over.SubImg = ((System.Drawing.Image)(resources.GetObject("led_task_over.SubImg")));
+            this.led_task_over.TabIndex = 1;
+            this.led_task_over.TabStop = false;
+            this.led_task_over.Tag = ((object)(resources.GetObject("led_task_over.Tag")));
+            this.led_task_over.Click += new System.EventHandler(this.led_task_over_Click);
             // 
             // tableLayoutPanel5
             // 
@@ -456,12 +459,12 @@
             this.myPanel1.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.led_idle)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.led_turtle_in)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.led_bot_move)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.led_bot_in)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.led_bot_out)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.led_task_over)).EndInit();
             this.tableLayoutPanel5.ResumeLayout(false);
             this.tableLayoutPanel5.PerformLayout();
             this.tableLayoutPanel6.ResumeLayout(false);
@@ -483,12 +486,12 @@
         private iCAPS.ScaleLabel scaleLabel4;
         private iCAPS.ScaleLabel scaleLabel5;
         private iCAPS.ScaleLabel scaleLabel6;
-        private iCAPS.DoubleImg doubleImg1;
-        private iCAPS.DoubleImg doubleImg2;
-        private iCAPS.DoubleImg doubleImg3;
-        private iCAPS.DoubleImg doubleImg4;
-        private iCAPS.DoubleImg doubleImg5;
-        private iCAPS.DoubleImg doubleImg6;
+        private iCAPS.DoubleImg led_idle;
+        private iCAPS.DoubleImg led_turtle_in;
+        private iCAPS.DoubleImg led_bot_move;
+        private iCAPS.DoubleImg led_bot_in;
+        private iCAPS.DoubleImg led_bot_out;
+        private iCAPS.DoubleImg led_task_over;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private iCAPS.ScaleLabel scaleLabel7;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;

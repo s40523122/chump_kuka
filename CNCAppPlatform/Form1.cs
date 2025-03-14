@@ -25,20 +25,20 @@ namespace Chump_kuka
             if (!Debugger.IsAttached) { enable_api_btn.Visible = false; }
 
 
-            modbusService = new ModbusTCP_Master_Service();
+            modbusService = new ModbusTCPMasterManager();
             Load += Form1_Load;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             //Env.enble_kuka_api = true;
-            KukaApiManager.Enable = true;
+            KukaApiController.Enable = true;
 
             //IOHandle.Enable = true;
         }
 
 
-        private ModbusTCP_Master_Service modbusService;
+        private ModbusTCPMasterManager modbusService;
         private bool NetworkIsOk = false;
         private List<PictureBox> listDI;
         private List<PictureBox> listDO;
