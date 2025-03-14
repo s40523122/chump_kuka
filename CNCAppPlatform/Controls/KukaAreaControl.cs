@@ -103,21 +103,25 @@ namespace Chump_kuka.Controls
             int i = 0;
             foreach (Container _container in containerPanel.Controls)
             {
-                switch (container_status[i++]) 
-                { 
-                    case 0:
-                        // 無交換站
-                        _container.ContainerImage = null;
-                        break;
-                    case 1:
-                        // 僅交換站
-                        _container.ContainerImage = doubleImg1.Image;
-                        break;
-                    case 2:
-                        // 已入料
-                        _container.ContainerImage = doubleImg1.SubImg;
-                        break;
+                try
+                {
+                    switch (container_status[i++])
+                    {
+                        case 0:
+                            // 無交換站
+                            _container.ContainerImage = null;
+                            break;
+                        case 1:
+                            // 僅交換站
+                            _container.ContainerImage = doubleImg1.Image;
+                            break;
+                        case 2:
+                            // 已入料
+                            _container.ContainerImage = doubleImg1.SubImg;
+                            break;
+                    }
                 }
+                catch { }
             }
         }
         private void Container_ContainerClick(object sender, ControlClickEventArgs e)

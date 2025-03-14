@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Windows.Forms;
 
 namespace Chump_kuka.Forms
@@ -15,6 +16,8 @@ namespace Chump_kuka.Forms
     public partial class f02_MainMission : Form
     {
         SidePanel1 sidePanel = new SidePanel1();
+        private string _bind_area = "";
+
         public f02_MainMission()
         {
             InitializeComponent();
@@ -24,8 +27,25 @@ namespace Chump_kuka.Forms
 
 
             Load += F02_MainMission_Load;
+            VisibleChanged += F02_MainMission_VisibleChanged;
+            
 
             dataGridView1.Resize += DataGridView1_Resize;
+
+            // 訂閱 ModbusTCP 以更新貨架狀態圖片
+            KukaParm.NodeStatusChanged += (_sender, _e) => kuka_area1.UpdateContainerImage(KukaParm.BindArea.NodeStatus.ToArray());
+        }
+
+        private void F02_MainMission_VisibleChanged(object sender, EventArgs e)
+        {
+            // 判定綁定區域是否存在/更新
+            if (KukaParm.BindArea == null || _bind_area.Equals(KukaParm.BindArea.AreaName)) return;
+
+            // 如果綁定區域更新，更新綁定區域資訊
+            kuka_area1.AreaName = _bind_area = KukaParm.BindArea.AreaName;
+            kuka_area1.AreaCode = KukaParm.BindArea.AreaCode;
+            kuka_area1.AreaNode = KukaParm.BindArea.NodeList.ToArray();
+            kuka_area1.UpdateContainerImage(KukaParm.BindArea.NodeStatus.ToArray());        // 初次建立，更新圖片
         }
 
         private void DataGridView1_Resize(object sender, EventArgs e)
@@ -52,6 +72,19 @@ namespace Chump_kuka.Forms
         private void F02_MainMission_Load(object sender, EventArgs e)
         {
             SetupDataGridView();
+
+            if (KukaParm.BindArea == null) return;
+
+            // 如果有綁定區域，加入綁定區域資訊
+            kuka_area1.AreaName = _bind_area = KukaParm.BindArea.AreaName;
+            kuka_area1.Dock = DockStyle.Fill;
+            kuka_area1.Margin = new Padding(10);
+            kuka_area1.AreaCode = KukaParm.BindArea.AreaCode;
+            kuka_area1.AreaNode = KukaParm.BindArea.NodeList.ToArray();
+            kuka_area1.UpdateContainerImage(KukaParm.BindArea.NodeStatus.ToArray());        // 初次建立，更新圖片
+
+            // 訂閱 ModbusTCP 以更新貨架狀態圖片
+            //KukaParm.NodeStatusChanged += (_sender, _e) => kuka_area1.UpdateContainerImage(KukaParm.BindArea.NodeStatus.ToArray());
         }
 
         private void SetupDataGridView()
@@ -100,26 +133,24 @@ namespace Chump_kuka.Forms
             sidePanel.Start = true;
         }
 
-        private void kuka_area1_Click(object sender, EventArgs e)
+        private async void scaleButton1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Click");
-            dataGridView1.Rows.Add(dataGridView1.Rows.Count, $"25", $"加工區", DateTime.Now.ToString(@"yyyy/MM/dd HH:mm"), "");
-        }
+            await MsgBox.ShowFlash("準備按鈕已按下", "", 1000);
 
-        private void scaleButton1_Click(object sender, EventArgs e)
-        {
-            //MsgBox.ShowFlash("準備按鈕已按下", "", 1000);
+            // 取得可搬運貨架位置
+            string get_node = KukaParm.BindArea?.GetTaskNode();
+            if (string.IsNullOrEmpty(get_node))
+                return;     // 無可指定貨架，結束動作
 
             // TODO: 怎麼判定目前區域
-            // 1. 獲取當前節點
+            // 1. 獲取當前節點 OK
             // 2. 獲取目標區域
-            // 3. 透過 laser 判定目標區域是否滿載
-
+            // 3. 透過 laser 判定目標區域是否滿載 
 
             KukaParm.StartNode = new CarryNode()
             {
-                Code = "100",
-                Name = "100",
+                Code = get_node,
+                Name = get_node,
                 Type = "NODE_POINT"
             };
             KukaParm.GoalNode = new CarryNode()
@@ -129,7 +160,7 @@ namespace Chump_kuka.Forms
                 Type = "NODE_AREA"
             };
 
-            DialogResult dialogResult = MessageBox.Show($"{KukaParm.StartNode?.Name} => {KukaParm.GoalNode?.Name}", "Some Title", MessageBoxButtons.YesNo);
+            DialogResult dialogResult = MessageBox.Show($"{KukaParm.StartNode?.Name} => {KukaParm.GoalNode?.Name}", "搬運任務", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
                 // KukaApiHandle.AppendCarryTask();

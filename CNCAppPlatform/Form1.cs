@@ -32,7 +32,7 @@ namespace Chump_kuka
         private void button1_Click(object sender, EventArgs e)
         {
             //Env.enble_kuka_api = true;
-            KukaApiHandle.Enable = true;
+            KukaApiManager.Enable = true;
 
             //IOHandle.Enable = true;
         }
@@ -52,7 +52,7 @@ namespace Chump_kuka
         private async void btStart_Click(object sender, EventArgs e)
         {
             // NetworkIsOk = modbusService.Connect(txtIP.Text);
-            NetworkIsOk = await modbusService.Connect("192.168.255.1");
+            NetworkIsOk = await modbusService.Connect("169.254.64.100");     // "192.168.255.1"
             if (NetworkIsOk)
             {
                 timer1.Interval = 1000;

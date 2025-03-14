@@ -27,6 +27,14 @@ namespace Chump_kuka.Forms
             //VisibleChanged += F01_ManualApi_VisibleChanged;
             KukaParm.AreaChanged += KukaParm_AreaChanged;
             KukaParm.CarryChanged += KukaParm_CarryChanged;
+            KukaParm.NodeStatusChanged += KukaParm_NodeStatusChanged;
+        }
+
+        private void KukaParm_NodeStatusChanged(object sender, PropertyChangedEventArgs e)
+        {
+            List<KukaAreaControl> areas = tableLayoutPanel2.Controls.OfType<KukaAreaControl>().ToList();
+            KukaAreaControl bind_area = KukaAreaControl.Find(KukaParm.BindArea.AreaName, areas);
+            bind_area.UpdateContainerImage(KukaParm.BindArea.NodeStatus.ToArray());
         }
 
         private void KukaParm_CarryChanged(object sender, PropertyChangedEventArgs e)
@@ -36,8 +44,8 @@ namespace Chump_kuka.Forms
         }
 
         private void KukaParm_AreaChanged(object sender, PropertyChangedEventArgs e)
-        {
-            KukaParm.AreaControls.Clear();
+        {            
+            // KukaParm.AreaControls.Clear();
             tableLayoutPanel2.Controls.Clear();
 
             //selected_1.Tag = selected_2.Tag = null;
@@ -56,128 +64,30 @@ namespace Chump_kuka.Forms
                     AreaCode = area.AreaCode,
                     AreaNode = area.NodeList.ToArray()
                 };
-                
-                KukaParm.AreaControls.Add(kuka_area);
+
+                kuka_area.ContainerClick += Kuka_area1_ContainerClick;
+                kuka_area.AreaClick += Area_AreaClick;
+
+                // KukaParm.AreaControls.Add(kuka_area);
+                tableLayoutPanel2.Controls.Add(kuka_area);
             }
-            tableLayoutPanel2.Controls.AddRange(KukaParm.AreaControls.ToArray());
+            // tableLayoutPanel2.Controls.AddRange(KukaParm.AreaControls.ToArray());
 
             // 加上點擊事件
-            foreach (KukaAreaControl area in KukaParm.AreaControls)
-            {
-                area.ContainerClick += Kuka_area1_ContainerClick;
-                area.AreaClick += Area_AreaClick;
-            }
+            //foreach (KukaAreaControl area in KukaParm.AreaControls)
+            //{
+            //    area.ContainerClick += Kuka_area1_ContainerClick;
+            //    area.AreaClick += Area_AreaClick;
+            //}
         }
 
         private void F01_ManualApi_Load(object sender, EventArgs e)
         {
-            foreach (KukaAreaControl area in KukaParm.AreaControls)
-            {
-                area.ContainerClick += Kuka_area1_ContainerClick;
-                area.AreaClick += Area_AreaClick;
-            }
-        }
-
-        private async void F01_ManualApi_VisibleChanged(object sender, EventArgs e)
-        {
-            // 當切換至當前分頁時，執行以下動作
-            KukaParm.StartNode = KukaParm.GoalNode = null;
-
-            if (KukaApiHandle.Enable)
-            {
-                tableLayoutPanel2.Controls.Clear();
-                //selected_1.Tag = selected_2.Tag = null;
-                //selected_1.Text = selected_2.Text = "null";
-
-
-                /* 取得區域列表   */
-                
-                int area_response_code = await Env.kuka_api.GetResponse("areaQuery");     // 等待 api 回應
-                if (area_response_code != 200) return;
-
-                string area_responseBody = Env.kuka_api.ResponseMessage;
-                /* 沒連接 api 時，測試用
-                string area_responseBody = @"{""code"": ""0"", 
-                                              ""message"": """", 
-                                              ""success"": true, 
-                                              ""data"":[{ 
-                                                            ""areaName"":""加工區"", 
-                                                            ""areaType"":2, 
-                                                            ""areaCode"" : ""area001"" 
-                                                        },{ 
-                                                            ""areaName"":""成品區"", 
-                                                            ""areaType"":2, 
-                                                            ""areaCode"" : ""area002"" 
-                                                        }]}";*/
-
-                JObject resp_json = JObject.Parse(area_responseBody);
-
-                if (!(bool)resp_json["success"])
-                {
-                    MsgBox.Show($"手動派車頁面訪問 /areaQuery 時發生異常 [{(string)resp_json["code"]}] {(string)resp_json["message"]}");
-                    return;
-                }
-
-                JArray area_infos = (JArray)resp_json["data"];
-                List<string> area_codes = area_infos.Select(area => (string)area["areaCode"]).ToList();      // 集合查詢到的區域代碼為列表
-                Dictionary<string, string> areaDictionary = area_infos
-                .ToDictionary(
-                    area => (string)area["areaCode"],
-                    area => (string)area["areaName"]
-                );
-
-                /* 取得區域內的節點 */
-                var body = new
-                {
-                    areaCodes = area_codes
-                };
-
-                int node_response_code = await Env.kuka_api.PostRequest("areaNodesQuery", body);       // 等待 api 回應
-                if (node_response_code != 200) return;
-
-                string node_responseBody = Env.kuka_api.ResponseMessage;
-                /* 沒連接 api 時，測試用
-                string node_responseBody = @"{""code"": ""0"", 
-                                              ""message"": """", 
-                                              ""success"": true, 
-                                              ""data"":[{ 
-                                                            ""areaCode"" : ""area001"", 
-                                                            ""nodeList"":[""node1"",""node2""] 
-                                                        },{ 
-                                                            ""areaCode"" : ""area002"", 
-                                                            ""nodeList"":[""node3"",""node4""] 
-                                                        }]} ";*/
-
-                resp_json = JObject.Parse(node_responseBody);
-                if (!(bool)resp_json["success"])
-                {
-                    MsgBox.Show($"手動派車頁面訪問 /areaNodesQuery 時發生異常 [{(string)resp_json["code"]}] {(string)resp_json["message"]}");
-                    return;
-                }
-
-                JArray node_infos = (JArray)resp_json["data"];
-
-                /* 加入區域 Control */
-                // 目前只支援到 4 組，超過可能會有 UI 顯示問題
-                foreach (JObject node_info in node_infos)
-                {
-                    tableLayoutPanel2.Controls.Add(new KukaAreaControl
-                    {
-                        AreaName = areaDictionary[(string)node_info["areaCode"]],
-                        Dock = DockStyle.Fill,
-                        Margin = new Padding(10),
-                        AreaCode = (string)node_info["areaCode"],
-                        AreaNode = ((JArray)node_info["nodeList"]).Select(item => (string)item).ToArray()
-                    });
-                }
-
-                // 加上點擊事件
-                foreach (KukaAreaControl area in tableLayoutPanel2.Controls)
-                {
-                    area.ContainerClick += Kuka_area1_ContainerClick;
-                    area.AreaClick += Area_AreaClick;
-                }
-            }
+            //foreach (KukaAreaControl area in KukaParm.AreaControls)
+            //{
+            //    area.ContainerClick += Kuka_area1_ContainerClick;
+            //    area.AreaClick += Area_AreaClick;
+            //}
         }
 
         private void Area_AreaClick(object sender, ControlClickEventArgs e)
@@ -323,7 +233,7 @@ namespace Chump_kuka.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (!KukaApiHandle.Enable)
+            if (!KukaApiManager.Enable)
             {
                 MsgBox.Show("尚未開啟 kuka api");
                 return;
@@ -353,7 +263,7 @@ namespace Chump_kuka.Forms
             DialogResult dialogResult = MessageBox.Show($"是否執行派車任務?\n{KukaParm.StartNode.Name} -> {KukaParm.GoalNode.Name}", "info", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
             {
-                KukaApiHandle.AppendCarryTask();
+                KukaApiManager.AppendCarryTask();
                 MsgBox.ShowFlash("已加入等候任務", "手動派車", 1000);
             }
 
@@ -416,7 +326,7 @@ namespace Chump_kuka.Forms
 
         private void scaleLabel2_Click(object sender, EventArgs e)
         {
-            KukaApiHandle.AppendAreaTask();
+            KukaApiManager.AppendAreaTask();
         }
     }
 }

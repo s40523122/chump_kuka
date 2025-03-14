@@ -26,12 +26,11 @@ namespace Chump_kuka
         /// </summary>
         /// <param name="ipAddress">伺服器 IP 地址</param>
         /// <returns>是否連線成功</returns>
-        public async Task<bool> Connect(string ipAddress)
+        public async Task<bool> Connect(string ipAddress, int port=502)
         {
             try
             {
                 tcpClient = new TcpClient();
-                MessageBox.Show("hi");
                 //bool isConnected = await ExecuteWithTimeout(async () =>
                 //{
                 //    try
@@ -50,22 +49,18 @@ namespace Chump_kuka
                 var cancellationCompletionSource = new TaskCompletionSource<bool>();
                 using (var cts = new CancellationTokenSource(timeOut))
                 {
-                    using (var client = new TcpClient())
-                    {
-                        var task = client.ConnectAsync(ipAddress, 502);
+                    var task = tcpClient.ConnectAsync(ipAddress, port);
 
-                        using (cts.Token.Register(() => cancellationCompletionSource.TrySetResult(true)))
+                    using (cts.Token.Register(() => cancellationCompletionSource.TrySetResult(true)))
+                    {
+                        if (task != await Task.WhenAny(task, cancellationCompletionSource.Task))
                         {
-                            if (task != await Task.WhenAny(task, cancellationCompletionSource.Task))
-                            {
-                                throw new OperationCanceledException(cts.Token);
-                            }
+                            throw new OperationCanceledException(cts.Token);
                         }
                     }
+
                 }
-
-                //await Task.Run(() => tcpClient.Connect(ipAddress, 502)); // 設定 timeout 為 3 秒
-
+                isConnected = tcpClient.Connected;
                 if (!isConnected) return false;
 
                 master = ModbusIpMaster.CreateIp(tcpClient);
@@ -112,7 +107,7 @@ namespace Chump_kuka
         {
             isConnected = false;
             master?.Dispose();
-            tcpClient?.Close();
+            if (tcpClient.Connected) tcpClient?.Close();
         }
 
         /// <summary>

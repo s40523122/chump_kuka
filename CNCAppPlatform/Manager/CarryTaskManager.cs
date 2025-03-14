@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chump_kuka.Services
+namespace Chump_kuka
 {
-    internal class KukaTaskManager
+    internal class CarryTaskManager
     {
 
     }

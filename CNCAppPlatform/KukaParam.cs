@@ -1,11 +1,17 @@
 ﻿using Chump_kuka;
 using Chump_kuka.Controls;
 using CookComputing.XmlRpc;
+using iCAPS;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interop;
+using System.Xml.Linq;
 
 /// <summary>
 /// KukaParm 類別 (全域設定管理)
@@ -22,7 +28,34 @@ using System.Linq;
 /// </summary>
 
 public static class KukaParm
-{ 
+{
+    private static CarryNode _start_node = new CarryNode();
+    private static CarryNode _goal_node = new CarryNode();
+    private static string _robot_status_feedback_time = "--";
+    private static JArray _robot_status_infos = new JArray();
+    private static List<KukaAreaModel> _kuka_area_models = new List<KukaAreaModel>();
+    private static KukaAreaModel _bind_area = null;
+
+    // public static List<KukaAreaControl> AreaControls = new List<KukaAreaControl>();     // 已記錄的區域控制項
+
+    
+    public static event PropertyChangedEventHandler RobotStatusChanged;
+    public static event PropertyChangedEventHandler AreaChanged;
+    public static event PropertyChangedEventHandler NodeStatusChanged;
+    public static event PropertyChangedEventHandler CarryChanged;
+
+
+    public static KukaAreaModel BindArea
+    {
+        get => _bind_area;
+        set
+        {
+            Chump_kuka.Env.BindAreaName = value.AreaName;
+            _bind_area = value;
+        }
+    }
+
+
     public static CarryNode StartNode       // 手動派車起點
     {
         get => _start_node;
@@ -48,20 +81,12 @@ public static class KukaParm
         }
     }
 
-    private static CarryNode _start_node = new CarryNode();
-    private static CarryNode _goal_node = new CarryNode();
-    private static string _robot_status_feedback_time = "--";
-    private static JArray _robot_status_infos = new JArray();
-    private static List<KukaAreaModel> _kuka_area_models = new List<KukaAreaModel>();
-
-    public static List<KukaAreaControl> AreaControls = new List<KukaAreaControl>();     // 已記錄的區域控制項
-
     public static string RobotStatusFeedbackTime
     {
         get => _robot_status_feedback_time;
         set
         {
-            if (_robot_status_feedback_time != value)
+            if (!_robot_status_feedback_time.Equals(value))
             {
                 _robot_status_feedback_time = value;
                 OnRobotChanged(nameof(RobotStatusFeedbackTime));
@@ -74,7 +99,7 @@ public static class KukaParm
         get => _robot_status_infos;
         set
         {
-            if (_robot_status_infos != value)
+            if (!_robot_status_infos.SequenceEqual(value)) 
             {
                 _robot_status_infos = value;
                 OnRobotChanged(nameof(RobotStatusInfos));
@@ -87,28 +112,31 @@ public static class KukaParm
         get => _kuka_area_models;
         set
         {
-            if (_kuka_area_models != value)
+            if (KukaAreaModel.CompareData(_kuka_area_models, value)) return;
+            
+            _kuka_area_models = value;
+            //if (_kuka_area_models[0].NodeList.Count != 0)
+            //    AreaChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(KukaAreaModels)));
+            
+            foreach (KukaAreaModel model in _kuka_area_models)
             {
-                _kuka_area_models = value;
-                if (_kuka_area_models[0].NodeList.Count != 0) OnAreaChanged(nameof(KukaAreaModels));
+                model.AreaChanged += (sender, e) =>
+                {
+                    AreaChanged?.Invoke(sender, e);  // sender 直接就是 Model
+                };
+
+                // 訂閱模型的 PropertyChanged 事件，並轉發給 ModelManager 的事件
+                model.NodeStatusChanged += (sender, e) =>
+                {
+                    NodeStatusChanged?.Invoke(sender, e);  // sender 直接就是 Model
+                };
+                
             }
         }
     }
-
-    public static event PropertyChangedEventHandler RobotStatusChanged;
-    /// <summary>
-    /// 當取得的區域列表發生變化時
-    /// </summary>
-    public static event PropertyChangedEventHandler AreaChanged;
-    public static event PropertyChangedEventHandler CarryChanged;
     private static void OnRobotChanged(string propertyName)
     {
         RobotStatusChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
-    }
-
-    private static void OnAreaChanged(string propertyName)
-    {
-        AreaChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
     }
 
     private static void OnCarryChanged(string propertyName)
@@ -117,8 +145,14 @@ public static class KukaParm
     }
 }
 
-public class KukaAreaModel : ICloneable
+public class KukaAreaModel
 {
+    public event PropertyChangedEventHandler NodeStatusChanged;
+    public event PropertyChangedEventHandler AreaChanged;
+
+    private List<int> _node_status = new List<int>();
+    private List<string> _node_list = new List<string>();
+
     /// <summary>
     /// 區域編碼 ex: area001
     /// </summary>
@@ -137,12 +171,37 @@ public class KukaAreaModel : ICloneable
     /// <summary>
     /// 點位集合
     /// </summary>
-    public List<string> NodeList { get; set; } = new List<string>();
+    public List<string> NodeList
+    {
+        get => _node_list;
+        set
+        {
+            if (!_node_list.SequenceEqual(value))
+            {
+                _node_list = value;
+                AreaChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeList)));
+            }
+        }
+    }
 
     /// <summary>
-    /// 貨架狀態 {0: 空, 1: 空貨架, 2: 滿貨架}
+    /// 貨架狀態 {0: 無貨架, 1: 空貨架, 2: 滿貨架}
     /// </summary>
-    public List<int> NodeStatus { get; set; } = new List<int>();
+    public List<int> NodeStatus 
+    { 
+        get => _node_status;
+        set
+        {
+            if (!_node_status.SequenceEqual(value))
+            {
+                _node_status = value;
+                NodeStatusChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeStatus)));
+            }
+        }
+    }
+
+
+    public static List<int> RecordNodeStatus { get; set; }
 
     public KukaAreaModel(JObject json_object = null)
     {
@@ -151,10 +210,9 @@ public class KukaAreaModel : ICloneable
         AreaCode = json_object["areaCode"].ToString();
         AreaName = json_object["areaName"].ToString();
         NodeList = json_object["nodeList"].ToObject<List<string>>();      // 集合查詢到的區域代碼為列表
-
     }
 
-    public object Clone() => new KukaAreaModel { AreaCode = this.AreaCode, AreaName = this.AreaName, AreaType = this.AreaType, NodeList = this.NodeList };
+    // public object Clone() => new KukaAreaModel { AreaCode = this.AreaCode, AreaName = this.AreaName, AreaType = this.AreaType, NodeList = this.NodeList };
 
     /// <summary>
     /// 找尋列表中符合區域名稱的模型
@@ -163,6 +221,64 @@ public class KukaAreaModel : ICloneable
     /// <param name="areas"></param>
     /// <returns></returns>
     public static KukaAreaModel Find(string target_area, List<KukaAreaModel> areas) => areas.FirstOrDefault(area => area.AreaName == target_area);
+
+    public static bool CompareData(List<KukaAreaModel> sourceData, List<KukaAreaModel> targetData) => sourceData.Select(m => m.AreaName).SequenceEqual(targetData.Select(m => m.AreaName));
+
+    public string GetTaskNode()
+    {
+        List<int> current_status = NodeStatus;
+
+        if (RecordNodeStatus == null)
+        {
+            RecordNodeStatus = current_status;
+            return "";
+        }
+
+        if (RecordNodeStatus.SequenceEqual(current_status)) 
+        {
+            MsgBox.Show("沒有變化", "區域貨架異常");
+            return "";
+        }
+
+        var rules = new Dictionary<(int, int), int>
+        {
+            { (0, 0), 0 },      // 無變化
+            { (0, 1), 2 },      // 錯誤
+            { (0, 2), 0 },      // 貨架進站
+            { (1, 0), 2 },      // 錯誤
+            { (1, 1), 0 },      // 無變化
+            { (1, 2), 1 },      // 入貨
+            { (2, 0), 0 },      // 貨架出站
+            { (2, 1), 0 },      // 取貨
+            { (2, 2), 0 }       // 無變化
+        };
+
+        List<int> result = new List<int>();
+
+        for (int i = 0; i < current_status.Count; i++)
+        {
+            if (rules.TryGetValue((RecordNodeStatus[i], current_status[i]), out int value))
+                result.Add(value);
+            else
+                result.Add(0);
+        }
+
+        RecordNodeStatus = current_status;
+
+        if (result.Contains(2) || result.Count(n => n == 1) >= 2)
+        {
+            MsgBox.Show("資料異常", "區域貨架異常");
+            return "";
+        }
+        else if (result.Contains(1))
+        {
+            return NodeList[result.IndexOf(1)];
+        }
+
+        
+        return "";
+        //Console.WriteLine("不同的索引：" + string.Join(", ", diffIndexes));
+    }
 }
 public class CarryNode
 {

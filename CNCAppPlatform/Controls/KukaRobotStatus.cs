@@ -62,6 +62,8 @@ namespace Chump_kuka.Controls
 
             tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;       // 切換分頁時，顯示內容
             KukaParm.RobotStatusChanged += KukaParm_PropertyChanged;       // 自動更新機器人資訊
+            
+            KukaApiManager.AppendRobotStatusTask();     // 加入機器人資訊訪問
         }
 
         private void KukaParm_PropertyChanged(object sender, PropertyChangedEventArgs e)
