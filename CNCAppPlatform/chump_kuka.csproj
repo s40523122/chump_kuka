@@ -124,6 +124,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\BindAreaController.cs" />
     <Compile Include="Controls\Container.cs">
       <SubType>UserControl</SubType>
     </Compile>

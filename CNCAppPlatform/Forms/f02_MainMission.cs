@@ -1,4 +1,5 @@
-﻿using Chump_kuka.Controls;
+﻿using Chump_kuka.Controller;
+using Chump_kuka.Controls;
 using iCAPS;
 using System;
 using System.Collections.Generic;
@@ -26,26 +27,25 @@ namespace Chump_kuka.Forms
             Controls.Add(sidePanel);
 
 
-            Load += F02_MainMission_Load;
-            VisibleChanged += F02_MainMission_VisibleChanged;
+            //Load += F02_MainMission_Load;
+            //VisibleChanged += F02_MainMission_VisibleChanged;
             
+            // 當綁定區域更新時，同步更新控制項 UI
+            BindAreaController.BindChanged += 
+                (s, e) => BindAreaController.UpdateControl(bind_area_control);    
 
+            SetupDataGridView();
             dataGridView1.Resize += DataGridView1_Resize;
 
+
             // 訂閱 ModbusTCP 以更新貨架狀態圖片
-            KukaParm.NodeStatusChanged += (_sender, _e) => kuka_area1.UpdateContainerImage(KukaParm.BindArea.NodeStatus.ToArray());
+            //KukaParm.AreaStatusChanged += (_sender, _e) => bind_area_control.UpdateContainerImage(BindAreaController.BindArea.NodeStatus.ToArray());
         }
 
         private void F02_MainMission_VisibleChanged(object sender, EventArgs e)
         {
-            // 判定綁定區域是否存在/更新
-            if (KukaParm.BindArea == null || _bind_area.Equals(KukaParm.BindArea.AreaName)) return;
-
-            // 如果綁定區域更新，更新綁定區域資訊
-            kuka_area1.AreaName = _bind_area = KukaParm.BindArea.AreaName;
-            kuka_area1.AreaCode = KukaParm.BindArea.AreaCode;
-            kuka_area1.AreaNode = KukaParm.BindArea.NodeList.ToArray();
-            kuka_area1.UpdateContainerImage(KukaParm.BindArea.NodeStatus.ToArray());        // 初次建立，更新圖片
+            // 切換視窗時，更新區域控制項內容
+            BindAreaController.UpdateControl(bind_area_control);
         }
 
         private void DataGridView1_Resize(object sender, EventArgs e)
@@ -72,19 +72,8 @@ namespace Chump_kuka.Forms
         private void F02_MainMission_Load(object sender, EventArgs e)
         {
             SetupDataGridView();
-
-            if (KukaParm.BindArea == null) return;
-
-            // 如果有綁定區域，加入綁定區域資訊
-            kuka_area1.AreaName = _bind_area = KukaParm.BindArea.AreaName;
-            kuka_area1.Dock = DockStyle.Fill;
-            kuka_area1.Margin = new Padding(10);
-            kuka_area1.AreaCode = KukaParm.BindArea.AreaCode;
-            kuka_area1.AreaNode = KukaParm.BindArea.NodeList.ToArray();
-            kuka_area1.UpdateContainerImage(KukaParm.BindArea.NodeStatus.ToArray());        // 初次建立，更新圖片
-
-            // 訂閱 ModbusTCP 以更新貨架狀態圖片
-            //KukaParm.NodeStatusChanged += (_sender, _e) => kuka_area1.UpdateContainerImage(KukaParm.BindArea.NodeStatus.ToArray());
+            // BindAreaController.BindArea?.UserControls.Add(bind_area_control);
+            // BindAreaController.UpdateControl(bind_area_control);
         }
 
         private void SetupDataGridView()
@@ -127,39 +116,14 @@ namespace Chump_kuka.Forms
 
         }
 
-        private void scaleLabel7_Click(object sender, EventArgs e)
-        {
-            
-            sidePanel.Start = true;
-        }
-
         private async void scaleButton1_Click(object sender, EventArgs e)
         {
             await MsgBox.ShowFlash("準備按鈕已按下", "", 1000);
 
             // 取得可搬運貨架位置
-            string get_node = KukaParm.BindArea?.GetTaskNode();
-            if (string.IsNullOrEmpty(get_node))
-                return;     // 無可指定貨架，結束動作
+            bool can_carry = BindAreaController.GetTaskNode();
 
-            // TODO: 怎麼判定目前區域
-            // 1. 獲取當前節點 OK
-            // 2. 獲取目標區域
-            // 3. 透過 laser 判定目標區域是否滿載 
-
-            KukaParm.StartNode = new CarryNode()
-            {
-                Code = get_node,
-                Name = get_node,
-                Type = "NODE_POINT"
-            };
-            KukaParm.GoalNode = new CarryNode()
-            {
-                Code = "A000000002",
-                Name = "倉庫區",
-                Type = "NODE_AREA"
-            };
-
+            if (!can_carry) return;
             DialogResult dialogResult = MessageBox.Show($"{KukaParm.StartNode?.Name} => {KukaParm.GoalNode?.Name}", "搬運任務", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
@@ -170,26 +134,26 @@ namespace Chump_kuka.Forms
             {
                 //do something else
             }
-
-            
         }
 
         private void led_bot_in_Click(object sender, EventArgs e)
         {
-            if (KukaParm.BindStationNo != 0) 
-                SocketDispatcher.Send($"station{KukaParm.BindStationNo}_agv_star");
+            BindAreaController.PubRobotIn();
         }
 
         private void led_bot_out_Click(object sender, EventArgs e)
         {
-            if (KukaParm.BindStationNo != 0)
-                SocketDispatcher.Send($"station{KukaParm.BindStationNo}_agv_begin");
+            BindAreaController.PubRobotOut();
         }
 
         private void led_task_over_Click(object sender, EventArgs e)
         {
-            if (KukaParm.BindStationNo != 0)
-                SocketDispatcher.Send($"station{KukaParm.BindStationNo}_agv_end");
+            BindAreaController.PubCarryOver();
+        }
+
+        private void scaleLabel7_Click(object sender, EventArgs e)
+        {
+            sidePanel.Start = true;
         }
     }
 }

@@ -13,17 +13,28 @@ namespace Chump_kuka.Controls
 {
     public partial class KukaAreaControl : UserControl
     {
+        private string[] _nodes = new string[] { };
+        private bool _checked = false;
+        private int[] _node_status = new int[] { };
+
+        // 定義事件，使用自定義參數
+        public event EventHandler<ControlClickEventArgs> ContainerClick;
+        public event EventHandler<ControlClickEventArgs> AreaClick;
+
+        public string Type { get { return "NODE_AREA"; } }
+        public string AreaCode = "";
+
         [Description("區域名稱。"), Category("自訂值")]
         public string AreaName
         {
-            get { return label1.Text; }
+            get => label1.Text; 
             set { label1.Text = value; }
         }
 
         [Description("區域中的節點。"), Category("自訂值")]
         public string[] AreaNode
         {
-            get { return _nodes; }
+            get => _nodes; 
             set 
             {
                 if (_nodes == value) return;        // 如果資訊未更新，不處理
@@ -40,12 +51,11 @@ namespace Chump_kuka.Controls
                 _node_status = new int[_nodes.Length];
             }
         }
-        private string[] _nodes = new string[] { };
 
         [Description("表示元件是否為已核取狀態。"), Category("自訂值")]
         public bool Checked
         {
-            get { return _checked; }
+            get => _checked; 
             set
             {
                 // 當控制項被點擊後，點亮外框
@@ -61,12 +71,11 @@ namespace Chump_kuka.Controls
                 }
             }
         }
-        private bool _checked = false;
 
         [Description("設定節點狀態。"), Category("自訂值")]
         public int[] NodeStatus
         {
-            get { return _node_status; }
+            get => _node_status; 
             set
             {
                 if (value == _node_status) return;
@@ -77,19 +86,7 @@ namespace Chump_kuka.Controls
                 }
                 UpdateContainerImage(value);
             }
-                
         }
-        private int[] _node_status = new int[] { };
-
-        public string Type { get { return "NODE_AREA"; } }
-        public string AreaCode = "";
-
-        
-
-        // 定義事件，使用自定義參數
-        public event EventHandler<ControlClickEventArgs> ContainerClick;
-        public event EventHandler<ControlClickEventArgs> AreaClick;
-
         public KukaAreaControl()
         {
             InitializeComponent();
@@ -98,6 +95,10 @@ namespace Chump_kuka.Controls
             SizeChanged += Kuka_area_SizeChanged;
         }
 
+        /// <summary>
+        /// 更新容器圖片
+        /// </summary>
+        /// <param name="container_status"></param>
         public void UpdateContainerImage(int[] container_status)
         {
             int i = 0;
@@ -112,16 +113,19 @@ namespace Chump_kuka.Controls
                             _container.ContainerImage = null;
                             break;
                         case 1:
-                            // 僅交換站
+                            // 有交換站 & 無料
                             _container.ContainerImage = doubleImg1.Image;
                             break;
                         case 2:
-                            // 已入料
+                            // 有交換站 & 有料
                             _container.ContainerImage = doubleImg1.SubImg;
                             break;
                     }
                 }
-                catch { }
+                catch 
+                {
+                    // 輸入 container_status 數量少於區域內的容器
+                }
             }
         }
         private void Container_ContainerClick(object sender, ControlClickEventArgs e)
@@ -148,12 +152,5 @@ namespace Chump_kuka.Controls
 
         }
 
-        /// <summary>
-        /// 找尋列表中符合區域名稱的模型
-        /// </summary>
-        /// <param name="target_area"></param>
-        /// <param name="areas"></param>
-        /// <returns></returns>
-        public static KukaAreaControl Find(string target_name, List<KukaAreaControl> controls) => controls.FirstOrDefault(control => control.AreaName == target_name);
     }
 }

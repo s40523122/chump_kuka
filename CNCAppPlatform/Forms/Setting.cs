@@ -1,4 +1,5 @@
-﻿using Chump_kuka.Controls;
+﻿using Chump_kuka.Controller;
+using Chump_kuka.Controls;
 using Modbus.Device;
 using System;
 using System.Collections.Generic;
@@ -114,7 +115,7 @@ namespace Chump_kuka.Forms
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            KukaParm.BindArea = KukaAreaModel.Find(comboBox1.Text, KukaParm.KukaAreaModels);
+            BindAreaController.BindArea = KukaAreaModel.Find(comboBox1.Text, KukaParm.KukaAreaModels);
         }
     }
 }

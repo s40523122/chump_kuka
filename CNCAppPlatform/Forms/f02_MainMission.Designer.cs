@@ -48,7 +48,7 @@
             this.led_task_over = new iCAPS.DoubleImg();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel8 = new iCAPS.ScaleLabel();
-            this.kuka_area1 = new Chump_kuka.Controls.KukaAreaControl();
+            this.bind_area_control = new Chump_kuka.Controls.KukaAreaControl();
             this.scaleButton1 = new iCAPS.ScaleButton();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel9 = new iCAPS.ScaleLabel();
@@ -347,7 +347,7 @@
             this.tableLayoutPanel5.ColumnCount = 1;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel5.Controls.Add(this.scaleLabel8, 0, 0);
-            this.tableLayoutPanel5.Controls.Add(this.kuka_area1, 0, 1);
+            this.tableLayoutPanel5.Controls.Add(this.bind_area_control, 0, 1);
             this.tableLayoutPanel5.Controls.Add(this.scaleButton1, 0, 2);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(37, 216);
@@ -373,24 +373,24 @@
             this.scaleLabel8.Text = "區域狀態";
             this.scaleLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // kuka_area1
+            // bind_area_control
             // 
-            this.kuka_area1.AreaName = "scaleLabel1";
-            this.kuka_area1.AreaNode = new string[] {
+            this.bind_area_control.AreaName = "scaleLabel1";
+            this.bind_area_control.AreaNode = new string[] {
         "1",
         "2",
         "3"};
-            this.kuka_area1.Checked = false;
-            this.kuka_area1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kuka_area1.Location = new System.Drawing.Point(0, 54);
-            this.kuka_area1.Margin = new System.Windows.Forms.Padding(0);
-            this.kuka_area1.Name = "kuka_area1";
-            this.kuka_area1.NodeStatus = new int[] {
+            this.bind_area_control.Checked = false;
+            this.bind_area_control.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bind_area_control.Location = new System.Drawing.Point(0, 54);
+            this.bind_area_control.Margin = new System.Windows.Forms.Padding(0);
+            this.bind_area_control.Name = "bind_area_control";
+            this.bind_area_control.NodeStatus = new int[] {
         0,
         0,
         0};
-            this.kuka_area1.Size = new System.Drawing.Size(503, 327);
-            this.kuka_area1.TabIndex = 0;
+            this.bind_area_control.Size = new System.Drawing.Size(503, 327);
+            this.bind_area_control.TabIndex = 0;
             // 
             // scaleButton1
             // 
@@ -478,7 +478,7 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private Controls.KukaAreaControl kuka_area1;
+        private Controls.KukaAreaControl bind_area_control;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private iCAPS.ScaleLabel scaleLabel1;
         private iCAPS.ScaleLabel scaleLabel2;

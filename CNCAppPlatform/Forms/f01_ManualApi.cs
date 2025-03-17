@@ -27,14 +27,16 @@ namespace Chump_kuka.Forms
             //VisibleChanged += F01_ManualApi_VisibleChanged;
             KukaParm.AreaChanged += KukaParm_AreaChanged;
             KukaParm.CarryChanged += KukaParm_CarryChanged;
-            KukaParm.NodeStatusChanged += KukaParm_NodeStatusChanged;
+            //KukaParm.AreaStatusChanged += KukaParm_NodeStatusChanged;
         }
 
         private void KukaParm_NodeStatusChanged(object sender, PropertyChangedEventArgs e)
         {
-            List<KukaAreaControl> areas = tableLayoutPanel2.Controls.OfType<KukaAreaControl>().ToList();
-            KukaAreaControl bind_area = KukaAreaControl.Find(KukaParm.BindArea.AreaName, areas);
-            bind_area.UpdateContainerImage(KukaParm.BindArea.NodeStatus.ToArray());
+            //List<KukaAreaControl> areas = tableLayoutPanel2.Controls.OfType<KukaAreaControl>().ToList();
+            //KukaAreaControl bind_area = KukaAreaControl.Find(KukaParm.BindArea.AreaName, areas);
+
+            //KukaAreaControl change_control = (sender as KukaAreaModel).UserControl;
+            //change_control.UpdateContainerImage((sender as KukaAreaModel).NodeStatus.ToArray());
         }
 
         private void KukaParm_CarryChanged(object sender, PropertyChangedEventArgs e)
@@ -44,12 +46,9 @@ namespace Chump_kuka.Forms
         }
 
         private void KukaParm_AreaChanged(object sender, PropertyChangedEventArgs e)
-        {            
-            // KukaParm.AreaControls.Clear();
+        {
             tableLayoutPanel2.Controls.Clear();
 
-            //selected_1.Tag = selected_2.Tag = null;
-            //selected_1.Text = selected_2.Text = "null";
             KukaParm.StartNode = KukaParm.GoalNode = null;
 
             /* 加入區域 Control */
@@ -68,17 +67,12 @@ namespace Chump_kuka.Forms
                 kuka_area.ContainerClick += Kuka_area1_ContainerClick;
                 kuka_area.AreaClick += Area_AreaClick;
 
+                kuka_area.UpdateContainerImage(area.NodeStatus.ToArray());        // 初次建立，更新圖片
+                area.UserControls.Add(kuka_area);       // 將建立的使用者控制項與模型綁定
+
                 // KukaParm.AreaControls.Add(kuka_area);
                 tableLayoutPanel2.Controls.Add(kuka_area);
             }
-            // tableLayoutPanel2.Controls.AddRange(KukaParm.AreaControls.ToArray());
-
-            // 加上點擊事件
-            //foreach (KukaAreaControl area in KukaParm.AreaControls)
-            //{
-            //    area.ContainerClick += Kuka_area1_ContainerClick;
-            //    area.AreaClick += Area_AreaClick;
-            //}
         }
 
         private void F01_ManualApi_Load(object sender, EventArgs e)
@@ -217,19 +211,7 @@ namespace Chump_kuka.Forms
             }
         }
 
-        private string GetTagType(object tag)
-        {
-            if (tag is Container obj1) return obj1.Type;
-            if (tag is KukaAreaControl obj2) return obj2.Type;
-            return string.Empty; // 預設值
-        }
-
-        private string GetTagCode(object tag)
-        {
-            if (tag is Container obj1) return obj1.ContainerName;
-            if (tag is KukaAreaControl obj2) return obj2.AreaCode;
-            return string.Empty; // 預設值
-        }
+       
 
         private void button1_Click(object sender, EventArgs e)
         {
