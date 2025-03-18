@@ -68,15 +68,17 @@ namespace Chump_kuka.Forms
 
             progress_msg.Text = "等待 KUKA API 連線...";
             progressBar1.Value = 15;
-            KukaApiController.Enable = true;
-            isconn = await KukaApiController.CheckConnect();
+            //KukaApiController.Enable = true;
+            isconn = await KukaApiController.ConnectAndCheck();
             kuka_api_check.Change = isconn;
             kuka_api_check.Visible = true;
             
             // 若成功連線則加入區域查詢，作為稍後綁定區域的依據
             // 反之，回朔暫存資料
-            if (isconn) KukaApiController.AppendAreaTask();
+            if (isconn) KukaApiController.GetAreaInfo();
             else Env.KukaApiUrl = kuka_url_temp;
+
+            KukaApiController.GetRobotStatus();
             progressBar1.Value = 25;
 
             progress_msg.Text = "等待 iCAPS 伺服器連線...";
@@ -115,7 +117,7 @@ namespace Chump_kuka.Forms
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BindAreaController.BindArea = KukaAreaModel.Find(comboBox1.Text, KukaParm.KukaAreaModels);
+            LocalAreaController.BindArea = KukaAreaModel.Find(comboBox1.Text, KukaParm.KukaAreaModels);
         }
     }
 }

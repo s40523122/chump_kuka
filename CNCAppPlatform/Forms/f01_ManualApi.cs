@@ -213,13 +213,13 @@ namespace Chump_kuka.Forms
 
        
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btn_send_carry_Click(object sender, EventArgs e)
         {
-            if (!KukaApiController.Enable)
-            {
-                MsgBox.Show("尚未開啟 kuka api");
-                return;
-            }
+            //if (!KukaApiController.Enable)
+            //{
+            //    MsgBox.Show("尚未開啟 kuka api");
+            //    return;
+            //}
 
             if (KukaParm.StartNode == null || KukaParm.GoalNode == null)
             {
@@ -245,7 +245,7 @@ namespace Chump_kuka.Forms
             DialogResult dialogResult = MessageBox.Show($"是否執行派車任務?\n{KukaParm.StartNode.Name} -> {KukaParm.GoalNode.Name}", "info", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
             {
-                KukaApiController.AppendCarryTask();
+                KukaApiController.SendCarryTask();
                 MsgBox.ShowFlash("已加入等候任務", "手動派車", 1000);
             }
 
@@ -308,7 +308,7 @@ namespace Chump_kuka.Forms
 
         private void scaleLabel2_Click(object sender, EventArgs e)
         {
-            KukaApiController.AppendAreaTask();
+            KukaApiController.GetAreaInfo();
         }
     }
 }

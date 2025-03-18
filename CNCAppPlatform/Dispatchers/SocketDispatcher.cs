@@ -5,13 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static iCAPS.SocketManager;
 
 namespace Chump_kuka
 {
     internal class SocketDispatcher
     {
-        private const int PORT = 5000;      // 設定連線 port
+        private const int PORT = 6500;      // 設定連線 port
         private static SocketManager.Server _server = new SocketManager.Server(PORT);     // 設定 port 為 5000
 
         static SocketDispatcher()

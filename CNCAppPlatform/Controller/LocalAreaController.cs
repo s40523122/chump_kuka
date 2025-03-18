@@ -1,5 +1,4 @@
-﻿using CefSharp.DevTools.Accessibility;
-using Chump_kuka.Controls;
+﻿using Chump_kuka.Controls;
 using iCAPS;
 using System;
 using System.Collections.Generic;
@@ -11,19 +10,22 @@ using System.Windows.Forms;
 
 namespace Chump_kuka.Controller
 {
-    internal class BindAreaController
+    internal class LocalAreaController
     {
         private static KukaAreaModel _bind_area = null;
-        private static List<int> RecordNodeStatus = null;      // 紀錄的區域狀態
-        
-        public static event PropertyChangedEventHandler BindChanged;
+        private static List<int> _record_node_status = null;      // 紀錄的區域狀態
+        private static int _bind_station_no = 0;
 
-        public static int BindStationNo { get; set; } = 0;
+        // 事件
+        public static event PropertyChangedEventHandler BindChanged;        // 當綁定區域改變後
+
+        
         public static KukaAreaModel BindArea
         {
             get => _bind_area;
             set
             {
+                if (value == null) return;
                 if (_bind_area != null && Env.BindAreaName == value.AreaName) return;        // 非首次綁定時，跳過資料相同的處理
 
                 Env.BindAreaName = value.AreaName;
@@ -32,13 +34,13 @@ namespace Chump_kuka.Controller
                 switch (value.AreaName)
                 {
                     case "产线作业区":
-                        BindStationNo = 1;
+                        _bind_station_no = 1;
                         break;
                     case "产线上料区":
-                        BindStationNo = 2;
+                        _bind_station_no = 2;
                         break;
                     default:
-                        BindStationNo = 0;
+                        _bind_station_no = 0;
                         break;
                 }
                 BindChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(BindArea)));
@@ -67,18 +69,19 @@ namespace Chump_kuka.Controller
         {
             List<int> current_status = _bind_area.NodeStatus;
 
-            if (RecordNodeStatus == null)
+            if (_record_node_status == null)
             {
-                RecordNodeStatus = current_status;
+                _record_node_status = current_status;
                 return false;
             }
 
-            if (RecordNodeStatus.SequenceEqual(current_status))
+            if (_record_node_status.SequenceEqual(current_status))
             {
                 MsgBox.Show("沒有變化", "區域貨架異常");
                 return false;
             }
 
+            // 分析貨架前後變化，判定目前工作狀態
             var rules = new Dictionary<(int, int), int>
             {
                 { (0, 0), 0 },      // 無變化
@@ -96,13 +99,13 @@ namespace Chump_kuka.Controller
 
             for (int i = 0; i < current_status.Count; i++)
             {
-                if (rules.TryGetValue((RecordNodeStatus[i], current_status[i]), out int value))
+                if (rules.TryGetValue((_record_node_status[i], current_status[i]), out int value))
                     result.Add(value);
                 else
                     result.Add(0);
             }
 
-            RecordNodeStatus = current_status;
+            _record_node_status = current_status;
 
             if (result.Contains(2) || result.Count(n => n == 1) >= 2)
             {
@@ -137,20 +140,20 @@ namespace Chump_kuka.Controller
 
         public static void PubRobotIn()
         {
-            if (BindStationNo != 0)
-                SocketDispatcher.Send($"station{BindAreaController.BindStationNo}_agv_star");
+            if (_bind_station_no != 0)
+                SocketDispatcher.Send($"station{_bind_station_no}_agv_star");
         }
 
         public static void PubRobotOut()
         {
-            if (BindStationNo != 0)
-                SocketDispatcher.Send($"station{BindAreaController.BindStationNo}_agv_begin");
+            if (_bind_station_no != 0)
+                SocketDispatcher.Send($"station{_bind_station_no}_agv_begin");
         }
 
         public static void PubCarryOver()
         {
-            if (BindStationNo != 0)
-                SocketDispatcher.Send($"station{BindAreaController.BindStationNo}_agv_end");
+            if (_bind_station_no != 0)
+                SocketDispatcher.Send($"station{_bind_station_no}_agv_end");
         }
 
         /// <summary>

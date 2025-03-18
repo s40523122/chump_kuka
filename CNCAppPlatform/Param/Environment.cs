@@ -29,13 +29,13 @@ namespace Chump_kuka
             get
             {
                 string url_txt = INiReader.ReadINIFile(layout_path, "Control", "kuka_api_url");
-                KukaApiController.kuka_api_server = new HttpRequest(url_txt);
+                // KukaApiController.kuka_api_server = new HttpRequest(url_txt);
                 return url_txt;
             }
             set
             {
                 _kuka_api_url = value;
-                KukaApiController.kuka_api_server = new HttpRequest(value);
+                // KukaApiController.kuka_api_server = new HttpRequest(value);
                 INiReader.WriteINIFile(layout_path, "Control", "kuka_api_url", value);
             }
         }

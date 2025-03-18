@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(f01_ManualApi));
-            this.button1 = new System.Windows.Forms.Button();
+            this.btn_send_carry = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -61,20 +61,20 @@
             this.tableLayoutPanel7.SuspendLayout();
             this.SuspendLayout();
             // 
-            // button1
+            // btn_send_carry
             // 
-            this.button1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button1.BackgroundImage")));
-            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.tableLayoutPanel3.SetColumnSpan(this.button1, 3);
-            this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button1.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.button1.Location = new System.Drawing.Point(40, 70);
-            this.button1.Margin = new System.Windows.Forms.Padding(40, 14, 40, 14);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(197, 42);
-            this.button1.TabIndex = 0;
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btn_send_carry.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_send_carry.BackgroundImage")));
+            this.btn_send_carry.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.tableLayoutPanel3.SetColumnSpan(this.btn_send_carry, 3);
+            this.btn_send_carry.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_send_carry.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btn_send_carry.Location = new System.Drawing.Point(40, 70);
+            this.btn_send_carry.Margin = new System.Windows.Forms.Padding(40, 14, 40, 14);
+            this.btn_send_carry.Name = "btn_send_carry";
+            this.btn_send_carry.Size = new System.Drawing.Size(197, 42);
+            this.btn_send_carry.TabIndex = 0;
+            this.btn_send_carry.UseVisualStyleBackColor = true;
+            this.btn_send_carry.Click += new System.EventHandler(this.btn_send_carry_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -281,7 +281,7 @@
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
-            this.tableLayoutPanel3.Controls.Add(this.button1, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.btn_send_carry, 0, 1);
             this.tableLayoutPanel3.Controls.Add(this.selected_2, 2, 0);
             this.tableLayoutPanel3.Controls.Add(this.selected_1, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.go_direction, 1, 0);
@@ -407,7 +407,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btn_send_carry;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private Controls.KukaAreaControl kuka_area3;

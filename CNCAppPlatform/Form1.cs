@@ -32,7 +32,7 @@ namespace Chump_kuka
         private void button1_Click(object sender, EventArgs e)
         {
             //Env.enble_kuka_api = true;
-            KukaApiController.Enable = true;
+            //KukaApiController.Enable = true;
 
             //IOHandle.Enable = true;
         }

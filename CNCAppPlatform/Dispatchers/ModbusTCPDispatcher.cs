@@ -115,7 +115,7 @@ namespace Chump_kuka
                 {
                     comboBox.Items.Add(area.AreaName);
                 }
-                comboBox.SelectedValueChanged += (_sender, _e) => BindAreaController.BindArea = KukaAreaModel.Find(comboBox.Text, KukaParm.KukaAreaModels);
+                comboBox.SelectedValueChanged += (_sender, _e) => LocalAreaController.BindArea = KukaAreaModel.Find(comboBox.Text, KukaParm.KukaAreaModels);
 
                 FlowLayoutPanel flowLayoutPanel = new FlowLayoutPanel();
                 flowLayoutPanel.Controls.AddRange(new Control[2] { new Label() { Text = "請選擇綁定區域" }, comboBox });
@@ -124,7 +124,7 @@ namespace Chump_kuka
 
                 form.ShowDialog();
 
-                if (string.IsNullOrEmpty(BindAreaController.BindArea?.AreaName))
+                if (string.IsNullOrEmpty(LocalAreaController.BindArea?.AreaName))
                 {
                     Enable = false;
                     return;
@@ -134,8 +134,8 @@ namespace Chump_kuka
             }
             else
             {
-                BindAreaController.BindArea = KukaAreaModel.Find(Env.BindAreaName, KukaParm.KukaAreaModels);
-                if (string.IsNullOrEmpty(BindAreaController.BindArea?.AreaName))
+                LocalAreaController.BindArea = KukaAreaModel.Find(Env.BindAreaName, KukaParm.KukaAreaModels);
+                if (string.IsNullOrEmpty(LocalAreaController.BindArea?.AreaName))
                 {
                     Enable = false;
                     return;
@@ -144,13 +144,13 @@ namespace Chump_kuka
                     requestTimer.Start();
             }
 
-            bool[] status = modbusService.ReadDI(BindAreaController.BindArea.NodeList.Count * 2);
+            bool[] status = modbusService.ReadDI(LocalAreaController.BindArea.NodeList.Count * 2);
 
             //KukaAreaControl control = KukaAreaControl.Find(KukaParm.BindArea.AreaName, KukaParm.AreaControls);
             //areas.FirstOrDefault(area => area.AreaName == target_area);
-            if (BindAreaController.BindArea == null) Log.Append("綁定區域不存在", "Error", "IOHandle.cs");
+            if (LocalAreaController.BindArea == null) Log.Append("綁定區域不存在", "Error", "IOHandle.cs");
             // else KukaParm.BindArea.UpdateContainerImage(ToNodeStatus(status).ToArray());
-            else BindAreaController.BindArea.NodeStatus = ToNodeStatus(status);
+            else LocalAreaController.BindArea.NodeStatus = ToNodeStatus(status);
 
             // Console.WriteLine(string.Join("", status.Select(b => b ? "1" : "0")));
         }

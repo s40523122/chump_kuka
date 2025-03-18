@@ -31,8 +31,8 @@ namespace Chump_kuka.Forms
             //VisibleChanged += F02_MainMission_VisibleChanged;
             
             // 當綁定區域更新時，同步更新控制項 UI
-            BindAreaController.BindChanged += 
-                (s, e) => BindAreaController.UpdateControl(bind_area_control);    
+            LocalAreaController.BindChanged += 
+                (s, e) => LocalAreaController.UpdateControl(bind_area_control);    
 
             SetupDataGridView();
             dataGridView1.Resize += DataGridView1_Resize;
@@ -45,7 +45,7 @@ namespace Chump_kuka.Forms
         private void F02_MainMission_VisibleChanged(object sender, EventArgs e)
         {
             // 切換視窗時，更新區域控制項內容
-            BindAreaController.UpdateControl(bind_area_control);
+            LocalAreaController.UpdateControl(bind_area_control);
         }
 
         private void DataGridView1_Resize(object sender, EventArgs e)
@@ -121,7 +121,7 @@ namespace Chump_kuka.Forms
             await MsgBox.ShowFlash("準備按鈕已按下", "", 1000);
 
             // 取得可搬運貨架位置
-            bool can_carry = BindAreaController.GetTaskNode();
+            bool can_carry = LocalAreaController.GetTaskNode();
 
             if (!can_carry) return;
             DialogResult dialogResult = MessageBox.Show($"{KukaParm.StartNode?.Name} => {KukaParm.GoalNode?.Name}", "搬運任務", MessageBoxButtons.YesNo);
@@ -138,17 +138,17 @@ namespace Chump_kuka.Forms
 
         private void led_bot_in_Click(object sender, EventArgs e)
         {
-            BindAreaController.PubRobotIn();
+            LocalAreaController.PubRobotIn();
         }
 
         private void led_bot_out_Click(object sender, EventArgs e)
         {
-            BindAreaController.PubRobotOut();
+            LocalAreaController.PubRobotOut();
         }
 
         private void led_task_over_Click(object sender, EventArgs e)
         {
-            BindAreaController.PubCarryOver();
+            LocalAreaController.PubCarryOver();
         }
 
         private void scaleLabel7_Click(object sender, EventArgs e)
