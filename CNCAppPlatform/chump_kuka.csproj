@@ -61,6 +61,12 @@
     <Reference Include="CookComputing.XmlRpcV2, Version=3.0.0.0, Culture=neutral, PublicKeyToken=a7d6e17aa302004d, processorArchitecture=MSIL">
       <HintPath>..\packages\xmlrpcnet.3.0.0.266\lib\net20\CookComputing.XmlRpcV2.dll</HintPath>
     </Reference>
+    <Reference Include="EmitterSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EmitterSharp.1.1.1.1\lib\net45\EmitterSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="EngineIOSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EngineIOSharp.2.0.0.1\lib\net45\EngineIOSharp.dll</HintPath>
+    </Reference>
     <Reference Include="HZH_Controls">
       <HintPath>..\..\..\上研機電產創\Toptek\CNCAppPlatform\Controls\HZH_Controls.dll</HintPath>
     </Reference>
@@ -89,6 +95,12 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="SimpleThreadMonitor, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleThreadMonitor.1.0.2.1\lib\net45\SimpleThreadMonitor.dll</HintPath>
+    </Reference>
+    <Reference Include="SocketIOSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SocketIOSharp.2.0.3\lib\net45\SocketIOSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -105,6 +117,9 @@
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Security" />
     <Reference Include="System.Threading.Tasks" />
+    <Reference Include="System.Threading.Tasks.Dataflow, Version=4.6.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Dataflow.4.8.0\lib\netstandard2.0\System.Threading.Tasks.Dataflow.dll</HintPath>
+    </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
@@ -120,6 +135,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WebSocketSharp.CustomHeaders.CustomHttpServer, Version=1.0.2.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebSocketSharp.CustomHeaders.CustomHttpServer.1.0.2.3\lib\net45\WebSocketSharp.CustomHeaders.CustomHttpServer.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
@@ -230,6 +248,9 @@
     <Compile Include="Controller\KukaApiController.cs" />
     <Compile Include="Controller\Log.cs" />
     <Compile Include="Services\myEventArgs.cs" />
+    <Compile Include="Services\TcpTest.cs" />
+    <Compile Include="Services\WebSocketIOManager.cs" />
+    <Compile Include="Services\WebSocketManager.cs" />
     <EmbeddedResource Include="Controls\Container.resx">
       <DependentUpon>Container.cs</DependentUpon>
     </EmbeddedResource>
