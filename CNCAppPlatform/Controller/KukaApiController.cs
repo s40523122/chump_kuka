@@ -15,11 +15,11 @@ namespace Chump_kuka
         private static bool _conn = false;
         private static KukaApiDispatcher _api_task;
 
-        public static async Task<bool> ConnectAndCheck()
+        public static async Task<bool> ConnectAndCheck(string url)
         {
             if (!_conn)
             {
-                _api_task = new KukaApiDispatcher(Env.KukaApiUrl);
+                _api_task = new KukaApiDispatcher(url);
                 _conn = await _api_task.Start();
             }
             return _conn;

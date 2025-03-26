@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chump_kuka.Dispatchers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,13 @@ namespace Chump_kuka
 {
     internal class CarryTaskController
     {
-
+        public async static Task<bool> StartListenKuka(string url)
+        {
+            return await HttpListenerDispatcher.StartKukaListener(url);
+        }
     }
+
+    
 
     class KukaTask
     {

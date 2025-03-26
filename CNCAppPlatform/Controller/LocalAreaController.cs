@@ -141,19 +141,19 @@ namespace Chump_kuka.Controller
         public static void PubRobotIn()
         {
             if (_bind_station_no != 0)
-                SocketDispatcher.Send($"station{_bind_station_no}_agv_star");
+                SocketDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_star");
         }
 
         public static void PubRobotOut()
         {
             if (_bind_station_no != 0)
-                SocketDispatcher.Send($"station{_bind_station_no}_agv_begin");
+                SocketDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_begin");
         }
 
         public static void PubCarryOver()
         {
             if (_bind_station_no != 0)
-                SocketDispatcher.Send($"station{_bind_station_no}_agv_end");
+                SocketDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_end");
         }
 
         /// <summary>

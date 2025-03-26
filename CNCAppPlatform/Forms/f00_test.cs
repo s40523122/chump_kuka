@@ -30,7 +30,7 @@ namespace Chump_kuka.Forms
         private void StartListener()
         {
             _listener = new HttpListener();
-            _listener.Prefixes.Add("http://192.168.68.66:8899/missionStateCallback/"); // 設定伺服器監聽的地址
+            _listener.Prefixes.Add("http://192.168.68.66:8898/missionStateCallback/"); // 設定伺服器監聽的地址
 
             _listenerThread = new Thread(new ThreadStart(ListenForRequests));
             _listenerThread.Start();

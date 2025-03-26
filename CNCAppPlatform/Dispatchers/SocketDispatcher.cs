@@ -2,63 +2,66 @@
 using iCAPS;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WebSocketSharp.Server;
 
 namespace Chump_kuka
 {
     internal class SocketDispatcher
     {
-        private const int PORT = 6500;      // 設定連線 port
+        //private const int PORT = 6500;      // 設定連線 port
         //private static WebSocketManager.Server _server = new WebSocketManager.Server(PORT);     // 創建伺服器實例，監聽區域網路的所有IP
+        private static TcpListenerManager order_record_listener;
 
-        public static async Task<bool> StartServer()
+        public static async Task<bool> StartRecordListener(int listen_port)
         {
-            //if (_server.IsRunning) return true;
+            order_record_listener = new TcpListenerManager(listen_port);       // 6400
+            
+            // 開啟監聽
+            order_record_listener.Start();
+            
+            await order_record_listener.WaitForServerToStartAsync();
 
-            //// 等待伺服器啟動並開始監聽
-            //_server.Start();
-            //await _server.WaitForServerToStartAsync();
-            //if (_server.IsRunning)
-            //{
-            //    Console.WriteLine("已開啟 WebSocket 伺服器!");
-
-            //    // 註冊事件處理並啟動伺服器
-            //    _server.ClientConnected += (sender, e) =>
-            //    {
-            //        Console.WriteLine($"客戶端 {e.RemoteEndPoint} 已連線");
-            //    };
-
-            //    _server.MessageReceived += ServerMessageReceived;
-            //}
-
-            //return _server.IsRunning;
-
-            TcpTest.Start();
-            await TcpTest.WaitForServerToStartAsync();
-            return true;
+            order_record_listener.MessageReceived += Order_record_listener_MessageReceived;
+            return order_record_listener.IsRunning;
         }
 
-        public static async void Send(string msg)
+        public static async void SendToRecordSystem(string msg)
         {
             // 不論如何，送送訊息給已連接的 client
             //await _server.SendToAllClients(msg);
 
-            await TcpTest.SendMessageAsync(msg);
+            await order_record_listener.SendMessageAsync(msg);
         }
-        private static async void ServerMessageReceived(object sender, WebSocketManager.WebSocketMessageEventArgs e)
+
+        private static async void Order_record_listener_MessageReceived(object sender, TcpMessageEventArgs e)
         {
-            //string response = "Received message: " + e.Message;
-            //if (e.Message == "station1_call")
-            //{
-            //    await _server.SendToClient(e.Client, "station1_agv_ready");
-            //}
-            //else if (e.Message == "station2_call")
-            //{
-            //    await _server.SendToClient(e.Client, "station2_agv_ready");
-            //}
+            string message = e.Message.Trim().ToLower();
+            TcpListenerManager listener = sender as TcpListenerManager;
+
+            switch (message)
+            {
+                case "exit":
+                    Console.WriteLine("Client requested to close connection.");
+                    break;
+                case "station1_call":
+                    // 發送 station1_agv_ready
+                    await listener.SendMessageAsync("station1_agv_ready");
+                    break;
+                case "station2_call":
+                    // 發送 station1_agv_ready
+                    await listener.SendMessageAsync("station2_agv_ready");
+                    break;
+                default:
+                    // 回傳確認訊息
+                    await listener.SendMessageAsync("ACK: " + message);
+                    break;
+            }
         }
     }
 }

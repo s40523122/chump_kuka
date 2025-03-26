@@ -188,6 +188,7 @@
     <Compile Include="Controls\UserControl1.Designer.cs">
       <DependentUpon>UserControl1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dispatchers\HttpListenerDispatcher.cs" />
     <Compile Include="Dispatchers\KukaApiDispatcher.cs" />
     <Compile Include="Dispatchers\SocketDispatcher.cs" />
     <Compile Include="Param\Environment.cs" />
@@ -243,14 +244,16 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controller\CarryTaskController.cs" />
-    <Compile Include="Services\ModbusTCPMasterManager.cs" />
+    <Compile Include="Services\Managers\HttpListenerManager.cs" />
+    <Compile Include="Services\Managers\ModbusTCPMasterManager.cs" />
     <Compile Include="Dispatchers\ModbusTCPDispatcher.cs" />
     <Compile Include="Controller\KukaApiController.cs" />
     <Compile Include="Controller\Log.cs" />
     <Compile Include="Services\myEventArgs.cs" />
+    <Compile Include="Services\Managers\TcpListenerManager.cs" />
     <Compile Include="Services\TcpTest.cs" />
-    <Compile Include="Services\WebSocketIOManager.cs" />
-    <Compile Include="Services\WebSocketManager.cs" />
+    <Compile Include="Services\Managers\WebSocketIOManager.cs" />
+    <Compile Include="Services\Managers\WebSocketManager.cs" />
     <EmbeddedResource Include="Controls\Container.resx">
       <DependentUpon>Container.cs</DependentUpon>
     </EmbeddedResource>

@@ -39,7 +39,7 @@ namespace Chump_kuka
                 INiReader.WriteINIFile(layout_path, "Control", "kuka_api_url", value);
             }
         }
-        // public static HttpRequest pmc_api = new HttpRequest("http://127.0.0.1:10870");
+        public static HttpRequest pmc_api = new HttpRequest("http://127.0.0.1:10870");
 
         public static IPEndPoint SensorModbusTcp        // IO 模組 Modbus TCP 連線參數
         {
