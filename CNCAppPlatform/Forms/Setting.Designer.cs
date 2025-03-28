@@ -39,8 +39,8 @@
             this.server_check = new iCAPS.DoubleImg();
             this.scaleLabel3 = new iCAPS.ScaleLabel();
             this.radio_button_group = new System.Windows.Forms.TableLayoutPanel();
-            this.is_sever_check = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.switch_sever = new System.Windows.Forms.RadioButton();
+            this.switch_client = new System.Windows.Forms.RadioButton();
             this.scaleLabel1 = new iCAPS.ScaleLabel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel8 = new iCAPS.ScaleLabel();
@@ -92,6 +92,12 @@
             this.scalePadding1.Location = new System.Drawing.Point(0, 0);
             this.scalePadding1.Name = "scalePadding1";
             this.scalePadding1.RowCount = 3;
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
@@ -294,8 +300,8 @@
             this.radio_button_group.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.radio_button_group.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.radio_button_group.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
-            this.radio_button_group.Controls.Add(this.is_sever_check, 1, 0);
-            this.radio_button_group.Controls.Add(this.radioButton2, 2, 0);
+            this.radio_button_group.Controls.Add(this.switch_sever, 1, 0);
+            this.radio_button_group.Controls.Add(this.switch_client, 2, 0);
             this.radio_button_group.Dock = System.Windows.Forms.DockStyle.Fill;
             this.radio_button_group.Location = new System.Drawing.Point(264, 0);
             this.radio_button_group.Margin = new System.Windows.Forms.Padding(0);
@@ -305,31 +311,32 @@
             this.radio_button_group.Size = new System.Drawing.Size(441, 38);
             this.radio_button_group.TabIndex = 5;
             // 
-            // is_sever_check
+            // switch_sever
             // 
-            this.is_sever_check.AutoSize = true;
-            this.is_sever_check.Checked = true;
-            this.is_sever_check.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.is_sever_check.Location = new System.Drawing.Point(25, 3);
-            this.is_sever_check.Name = "is_sever_check";
-            this.is_sever_check.Size = new System.Drawing.Size(104, 32);
-            this.is_sever_check.TabIndex = 12;
-            this.is_sever_check.TabStop = true;
-            this.is_sever_check.Tag = "True";
-            this.is_sever_check.Text = "是";
-            this.is_sever_check.UseVisualStyleBackColor = true;
+            this.switch_sever.AutoSize = true;
+            this.switch_sever.Checked = true;
+            this.switch_sever.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.switch_sever.Location = new System.Drawing.Point(25, 3);
+            this.switch_sever.Name = "switch_sever";
+            this.switch_sever.Size = new System.Drawing.Size(104, 32);
+            this.switch_sever.TabIndex = 12;
+            this.switch_sever.TabStop = true;
+            this.switch_sever.Tag = "True";
+            this.switch_sever.Text = "是";
+            this.switch_sever.UseVisualStyleBackColor = true;
             // 
-            // radioButton2
+            // switch_client
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.radioButton2.Location = new System.Drawing.Point(135, 3);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(104, 32);
-            this.radioButton2.TabIndex = 12;
-            this.radioButton2.Tag = "False";
-            this.radioButton2.Text = "否";
-            this.radioButton2.UseVisualStyleBackColor = true;
+            this.switch_client.AutoSize = true;
+            this.switch_client.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.switch_client.Location = new System.Drawing.Point(135, 3);
+            this.switch_client.Name = "switch_client";
+            this.switch_client.Size = new System.Drawing.Size(104, 32);
+            this.switch_client.TabIndex = 12;
+            this.switch_client.Tag = "False";
+            this.switch_client.Text = "否";
+            this.switch_client.UseVisualStyleBackColor = true;
+            this.switch_client.CheckedChanged += new System.EventHandler(this.switch_client_CheckedChanged);
             // 
             // scaleLabel1
             // 
@@ -340,7 +347,7 @@
             this.scaleLabel1.Name = "scaleLabel1";
             this.scaleLabel1.Size = new System.Drawing.Size(258, 38);
             this.scaleLabel1.TabIndex = 8;
-            this.scaleLabel1.Text = "伺服器 IP";
+            this.scaleLabel1.Text = "iCAPS 伺服器 TCP";
             this.scaleLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tableLayoutPanel2
@@ -439,7 +446,7 @@
             this.scaleLabel4.Name = "scaleLabel4";
             this.scaleLabel4.Size = new System.Drawing.Size(258, 38);
             this.scaleLabel4.TabIndex = 3;
-            this.scaleLabel4.Text = "工時監測伺服器";
+            this.scaleLabel4.Text = "工時監測伺服器 TCP";
             this.scaleLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // scaleLabel2
@@ -733,8 +740,8 @@
         private iCAPS.ScaleLabel scaleLabel2;
         private iCAPS.DoubleImg sensor_check;
         private iCAPS.DoubleImg server_check;
-        private System.Windows.Forms.RadioButton is_sever_check;
-        private System.Windows.Forms.RadioButton radioButton2;
+        private System.Windows.Forms.RadioButton switch_sever;
+        private System.Windows.Forms.RadioButton switch_client;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private iCAPS.ScaleLabel scaleLabel9;
         private iCAPS.ScaleLabel scaleLabel10;

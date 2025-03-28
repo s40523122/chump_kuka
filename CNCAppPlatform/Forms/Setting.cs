@@ -1,5 +1,6 @@
 ﻿using Chump_kuka.Controller;
 using Chump_kuka.Controls;
+using iCAPS;
 using Modbus.Device;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace Chump_kuka.Forms
 
         private void Setting_Load(object sender, EventArgs e)
         {
+            switch_client.Checked = !Env.ICapsServer;
             udp_server_ip.Text = Env.IcapsServerUdpIp ?? "";
             upd_server_port.Text = Env.IcapsServerUdpPort ?? "5700";
             kuka_request_url.Text = Env.KukaApiUrl;
@@ -66,6 +68,9 @@ namespace Chump_kuka.Forms
 
         private async Task KukaApiTask()
         {
+            if (!Env.ICapsServer)
+                return;
+            // TODO 關閉現有連線
             bool isconn = await KukaApiController.ConnectAndCheck(kuka_request_url.Text);
             kuka_api_check.Change = isconn;
             kuka_api_check.Visible = true;
@@ -92,8 +97,8 @@ namespace Chump_kuka.Forms
 
 
             IPEndPoint listen_ipep = new IPEndPoint(IPAddress.Parse(udp_server_ip.Text), int.Parse(upd_server_port.Text));       // 開啟 UDP 監聽
-            bool is_server = is_sever_check.Checked;
-            CommController.Init(is_server, listen_ipep);
+
+            CommController.Init(Env.ICapsServer, listen_ipep);
 
             Env.IcapsServerUdpIp = udp_server_ip.Text;
             Env.IcapsServerUdpPort = upd_server_port.Text;
@@ -104,20 +109,14 @@ namespace Chump_kuka.Forms
 
         private async Task RecordLogTask()
         {
-            bool record_log_server = bool.TryParse(radio_button_group.Controls        // 判定是否指定為 iCaps 伺服器
-                                                 .OfType<RadioButton>()
-                                                 .FirstOrDefault(rb => rb.Checked)
-                                                 .Tag.ToString(),
-                                             out record_log_server);
-            bool isconn = false;
-            if (record_log_server)
+            if (!Env.ICapsServer)
+                return;
+            
+            // SocketDispatcher _icaps_socket = new SocketDispatcher();
+            bool isconn = await SocketDispatcher.StartRecordListener(int.Parse(tcp_record_port.Text));
+            if (isconn)
             {
-                // SocketDispatcher _icaps_socket = new SocketDispatcher();
-                isconn = await SocketDispatcher.StartRecordListener(int.Parse(tcp_record_port.Text));
-                if (isconn)
-                {
-                    Env.RecordLogTcpPort = tcp_record_port.Text;
-                }
+                Env.RecordLogTcpPort = tcp_record_port.Text;
             }
 
             record_log_check.Change = isconn;
@@ -136,6 +135,9 @@ namespace Chump_kuka.Forms
 
         private async Task KukaResponseTask()
         {
+            if (!Env.ICapsServer)
+                return;
+
             bool isconn = await CarryTaskController.StartListenKuka(kuka_response_url.Text);
             kuka_response_check.Change = isconn;
             kuka_response_check.Visible = true;
@@ -148,6 +150,7 @@ namespace Chump_kuka.Forms
 
         private async void scaleButton1_Click(object sender, EventArgs e)
         {
+            kuka_api_check.Visible = kuka_response_check.Visible = record_log_check.Visible = sensor_check.Visible = server_check.Visible = false;
             // 依序執行連線任務
             await RunTask(15, 20, "等待 iCAPS 伺服器開啟...", ServerTask());
             await RunTask(35, 40, "等待 KUKA API 連線...", KukaApiTask());
@@ -161,6 +164,12 @@ namespace Chump_kuka.Forms
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             LocalAreaController.BindArea = KukaAreaModel.Find(comboBox1.Text, KukaParm.KukaAreaModels);
+        }
+
+        private void switch_client_CheckedChanged(object sender, EventArgs e)
+        {
+            Env.ICapsServer = switch_sever.Checked;
+            kuka_request_url.Enabled = tcp_record_ip.Enabled = kuka_response_url.Enabled = Env.ICapsServer;
         }
     }
 }
