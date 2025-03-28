@@ -34,32 +34,42 @@ namespace iCAPS.Managers
         }
         public void Start()
         {
-            _listener = new HttpListener();
-            _listener.Prefixes.Add(_listen_url); // 設定伺服器監聽的地址
+            if (IsRunning) return;
 
-            _listener.Start();
-            IsRunning = _listener.IsListening;
+            try
+            {
+                _listener = new HttpListener();
+                _listener.Prefixes.Add(_listen_url); // 設定伺服器監聽的地址
 
+                _listener.Start();
+                IsRunning = _listener.IsListening;
+
+                
+                Console.WriteLine("C# TCP Server started...");
+
+                Task.Run(async () =>
+                {
+                    while (true)
+                    {
+                        // 等待 HTTP 請求
+                        HttpListenerContext context = _listener.GetContext();
+
+                        // 獲取客戶端的 IP 地址
+                        //IPEndPoint remoteEndPoint = (IPEndPoint)client.Client.RemoteEndPoint;
+                        //ClientConnected?.Invoke(this, new TcpConnectionEventArgs(client, remoteEndPoint));
+
+
+                        // 開新 Task 處理客戶端
+                        await HandleClientAsync(context);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             // 當伺服器啟動並開始監聽時，設定 TaskCompletionSource 為成功
             startCompletionSource.SetResult(true);
-            Console.WriteLine("C# TCP Server started...");
-
-            Task.Run(async () =>
-            {
-                while (true)
-                {
-                    // 等待 HTTP 請求
-                    HttpListenerContext context = _listener.GetContext();
-
-                    // 獲取客戶端的 IP 地址
-                    //IPEndPoint remoteEndPoint = (IPEndPoint)client.Client.RemoteEndPoint;
-                    //ClientConnected?.Invoke(this, new TcpConnectionEventArgs(client, remoteEndPoint));
-                    
-                    
-                    // 開新 Task 處理客戶端
-                    await HandleClientAsync(context);
-                }
-            });
         }
 
         /// <summary>

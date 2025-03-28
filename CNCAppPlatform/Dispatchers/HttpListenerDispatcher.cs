@@ -1,5 +1,4 @@
-﻿using CefSharp;
-using iCAPS.Managers;
+﻿using iCAPS.Managers;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System;
@@ -17,6 +16,8 @@ namespace Chump_kuka.Dispatchers
 
         public static async Task<bool> StartKukaListener(string url)
         {
+            if (_kuka_listener != null && _kuka_listener.IsRunning) return true;
+
             _kuka_listener = new HttpListenerManager(url);
             _kuka_listener.Start();
 

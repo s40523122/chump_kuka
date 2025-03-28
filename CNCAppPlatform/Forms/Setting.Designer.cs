@@ -45,7 +45,7 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel8 = new iCAPS.ScaleLabel();
             this.scaleLabel7 = new iCAPS.ScaleLabel();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.server_ip = new System.Windows.Forms.TextBox();
             this.tcp_server_port = new System.Windows.Forms.TextBox();
             this.lable1 = new iCAPS.ScaleLabel();
             this.kuka_request_url = new System.Windows.Forms.TextBox();
@@ -61,12 +61,12 @@
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel11 = new iCAPS.ScaleLabel();
             this.scaleLabel12 = new iCAPS.ScaleLabel();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.tcp_record_ip = new System.Windows.Forms.TextBox();
             this.tcp_record_port = new System.Windows.Forms.TextBox();
             this.scaleButton1 = new iCAPS.ScaleButton();
             this.kuka_response_url = new System.Windows.Forms.TextBox();
-            this.doubleImg1 = new iCAPS.DoubleImg();
-            this.kuka_response_status = new iCAPS.DoubleImg();
+            this.record_log_check = new iCAPS.DoubleImg();
+            this.kuka_response_check = new iCAPS.DoubleImg();
             this.scalePadding1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.server_check)).BeginInit();
@@ -76,8 +76,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.kuka_api_check)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sensor_check)).BeginInit();
             this.tableLayoutPanel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.kuka_response_status)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.record_log_check)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.kuka_response_check)).BeginInit();
             this.SuspendLayout();
             // 
             // scalePadding1
@@ -92,6 +92,18 @@
             this.scalePadding1.Location = new System.Drawing.Point(0, 0);
             this.scalePadding1.Name = "scalePadding1";
             this.scalePadding1.RowCount = 3;
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
@@ -162,8 +174,8 @@
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel4, 1, 4);
             this.tableLayoutPanel1.Controls.Add(this.scaleButton1, 1, 6);
             this.tableLayoutPanel1.Controls.Add(this.kuka_response_url, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.doubleImg1, 2, 4);
-            this.tableLayoutPanel1.Controls.Add(this.kuka_response_status, 2, 5);
+            this.tableLayoutPanel1.Controls.Add(this.record_log_check, 2, 4);
+            this.tableLayoutPanel1.Controls.Add(this.kuka_response_check, 2, 5);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(49, 17);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
@@ -337,7 +349,7 @@
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.27273F));
             this.tableLayoutPanel2.Controls.Add(this.scaleLabel8, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.scaleLabel7, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.textBox1, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.server_ip, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.tcp_server_port, 3, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(267, 41);
@@ -374,14 +386,14 @@
             this.scaleLabel7.Text = "IP";
             this.scaleLabel7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // textBox1
+            // server_ip
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(62, 5);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(191, 22);
-            this.textBox1.TabIndex = 9;
-            this.textBox1.Text = "192.168.68.22";
+            this.server_ip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.server_ip.Location = new System.Drawing.Point(62, 5);
+            this.server_ip.Name = "server_ip";
+            this.server_ip.Size = new System.Drawing.Size(191, 22);
+            this.server_ip.TabIndex = 9;
+            this.server_ip.Text = "192.168.68.22";
             // 
             // tcp_server_port
             // 
@@ -552,7 +564,7 @@
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.27273F));
             this.tableLayoutPanel4.Controls.Add(this.scaleLabel11, 2, 0);
             this.tableLayoutPanel4.Controls.Add(this.scaleLabel12, 0, 0);
-            this.tableLayoutPanel4.Controls.Add(this.textBox2, 1, 0);
+            this.tableLayoutPanel4.Controls.Add(this.tcp_record_ip, 1, 0);
             this.tableLayoutPanel4.Controls.Add(this.tcp_record_port, 3, 0);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(267, 155);
@@ -589,14 +601,14 @@
             this.scaleLabel12.Text = "IP";
             this.scaleLabel12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // textBox2
+            // tcp_record_ip
             // 
-            this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox2.Location = new System.Drawing.Point(62, 5);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(191, 22);
-            this.textBox2.TabIndex = 9;
-            this.textBox2.Text = "192.168.68.22";
+            this.tcp_record_ip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tcp_record_ip.Location = new System.Drawing.Point(62, 5);
+            this.tcp_record_ip.Name = "tcp_record_ip";
+            this.tcp_record_ip.Size = new System.Drawing.Size(191, 22);
+            this.tcp_record_ip.TabIndex = 9;
+            this.tcp_record_ip.Text = "192.168.68.22";
             // 
             // tcp_record_port
             // 
@@ -631,45 +643,45 @@
             this.kuka_response_url.TabIndex = 4;
             this.kuka_response_url.Text = "http://192.168.68.66:8899/missionStateCallback/";
             // 
-            // doubleImg1
+            // record_log_check
             // 
-            this.doubleImg1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.record_log_check.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.doubleImg1.Change = false;
-            this.doubleImg1.EnableCilck = true;
-            this.doubleImg1.Image = ((System.Drawing.Image)(resources.GetObject("doubleImg1.Image")));
-            this.doubleImg1.Location = new System.Drawing.Point(710, 157);
-            this.doubleImg1.Margin = new System.Windows.Forms.Padding(5);
-            this.doubleImg1.Name = "doubleImg1";
-            this.doubleImg1.SetSquare = true;
-            this.doubleImg1.Size = new System.Drawing.Size(28, 28);
-            this.doubleImg1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.doubleImg1.SubImg = ((System.Drawing.Image)(resources.GetObject("doubleImg1.SubImg")));
-            this.doubleImg1.TabIndex = 2;
-            this.doubleImg1.TabStop = false;
-            this.doubleImg1.Tag = ((object)(resources.GetObject("doubleImg1.Tag")));
-            this.doubleImg1.Visible = false;
+            this.record_log_check.Change = false;
+            this.record_log_check.EnableCilck = true;
+            this.record_log_check.Image = ((System.Drawing.Image)(resources.GetObject("record_log_check.Image")));
+            this.record_log_check.Location = new System.Drawing.Point(710, 157);
+            this.record_log_check.Margin = new System.Windows.Forms.Padding(5);
+            this.record_log_check.Name = "record_log_check";
+            this.record_log_check.SetSquare = true;
+            this.record_log_check.Size = new System.Drawing.Size(28, 28);
+            this.record_log_check.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.record_log_check.SubImg = ((System.Drawing.Image)(resources.GetObject("record_log_check.SubImg")));
+            this.record_log_check.TabIndex = 2;
+            this.record_log_check.TabStop = false;
+            this.record_log_check.Tag = ((object)(resources.GetObject("record_log_check.Tag")));
+            this.record_log_check.Visible = false;
             // 
-            // kuka_response_status
+            // kuka_response_check
             // 
-            this.kuka_response_status.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.kuka_response_check.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.kuka_response_status.Change = false;
-            this.kuka_response_status.EnableCilck = true;
-            this.kuka_response_status.Image = ((System.Drawing.Image)(resources.GetObject("kuka_response_status.Image")));
-            this.kuka_response_status.Location = new System.Drawing.Point(710, 195);
-            this.kuka_response_status.Margin = new System.Windows.Forms.Padding(5);
-            this.kuka_response_status.Name = "kuka_response_status";
-            this.kuka_response_status.SetSquare = true;
-            this.kuka_response_status.Size = new System.Drawing.Size(28, 28);
-            this.kuka_response_status.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.kuka_response_status.SubImg = ((System.Drawing.Image)(resources.GetObject("kuka_response_status.SubImg")));
-            this.kuka_response_status.TabIndex = 2;
-            this.kuka_response_status.TabStop = false;
-            this.kuka_response_status.Tag = ((object)(resources.GetObject("kuka_response_status.Tag")));
-            this.kuka_response_status.Visible = false;
+            this.kuka_response_check.Change = false;
+            this.kuka_response_check.EnableCilck = true;
+            this.kuka_response_check.Image = ((System.Drawing.Image)(resources.GetObject("kuka_response_check.Image")));
+            this.kuka_response_check.Location = new System.Drawing.Point(710, 195);
+            this.kuka_response_check.Margin = new System.Windows.Forms.Padding(5);
+            this.kuka_response_check.Name = "kuka_response_check";
+            this.kuka_response_check.SetSquare = true;
+            this.kuka_response_check.Size = new System.Drawing.Size(28, 28);
+            this.kuka_response_check.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.kuka_response_check.SubImg = ((System.Drawing.Image)(resources.GetObject("kuka_response_check.SubImg")));
+            this.kuka_response_check.TabIndex = 2;
+            this.kuka_response_check.TabStop = false;
+            this.kuka_response_check.Tag = ((object)(resources.GetObject("kuka_response_check.Tag")));
+            this.kuka_response_check.Visible = false;
             // 
             // Setting
             // 
@@ -693,8 +705,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.sensor_check)).EndInit();
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.kuka_response_status)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.record_log_check)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.kuka_response_check)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -729,15 +741,15 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private iCAPS.ScaleLabel scaleLabel8;
         private iCAPS.ScaleLabel scaleLabel7;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox server_ip;
         private System.Windows.Forms.TextBox tcp_server_port;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private iCAPS.ScaleLabel scaleLabel11;
         private iCAPS.ScaleLabel scaleLabel12;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox tcp_record_ip;
         private System.Windows.Forms.TextBox tcp_record_port;
         private System.Windows.Forms.TextBox kuka_response_url;
-        private iCAPS.DoubleImg doubleImg1;
-        private iCAPS.DoubleImg kuka_response_status;
+        private iCAPS.DoubleImg record_log_check;
+        private iCAPS.DoubleImg kuka_response_check;
     }
 }

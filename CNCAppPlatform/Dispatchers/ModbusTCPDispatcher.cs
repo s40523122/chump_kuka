@@ -19,6 +19,7 @@ namespace Chump_kuka
         // public static IPEndPoint ConnectInfo = null;        // 連線資訊
 
         private static bool _try_conn = false;      // 是否已嘗試連線
+        private static IPEndPoint _sensor_modbus_tcp;
 
         // Api 啟用狀態
         public static bool Enable
@@ -60,11 +61,14 @@ namespace Chump_kuka
         /// <summary>
         /// 確認通訊是否正常
         /// </summary>
-        public static async Task<bool> CheckConnect()
+        public static async Task<bool> CheckConnect(IPEndPoint sensor_modbus_tcp)
         {
             // 透過向 /areaQuery 請求，判定是否通訊正常，
             // 此函數執行時會中斷計時器，管理器的所有動作將會失效
             //requestTimer.Stop();
+            if (_enable) return true;
+
+            _sensor_modbus_tcp = sensor_modbus_tcp;
 
             int elapsed = 0;
             int interval = 100; // 每 100ms 檢查一次
@@ -88,16 +92,16 @@ namespace Chump_kuka
             if (!modbusService.isConnected)
             {
                 requestTimer.Stop();
-                if (Env.SensorModbusTcp == null)
+                if (_sensor_modbus_tcp == null)
                 {
                     Log.Append("尚未設定 Modbus TCP 連接資訊", "Error", "ModbusTCPManager.cs");
                     return;
                 }
-                bool conn = await modbusService.Connect(Env.SensorModbusTcp.Address.ToString(), Env.SensorModbusTcp.Port);
+                bool conn = await modbusService.Connect(_sensor_modbus_tcp.Address.ToString(), _sensor_modbus_tcp.Port);
                 _try_conn = true;
                 if (!conn)
                 {
-                    Log.Append($"無法建立 Modbus TCP 連線。({Env.SensorModbusTcp.ToString()})", "Error", "ModbusTCPManager.cs");
+                    Log.Append($"無法建立 Modbus TCP 連線。({_sensor_modbus_tcp.ToString()})", "Error", "ModbusTCPManager.cs");
                     return;
                 }
                 else requestTimer.Start();

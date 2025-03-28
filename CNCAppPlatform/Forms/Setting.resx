@@ -2188,7 +2188,7 @@
         iIiIiIiIiErQe97z/wNmqCSteaNg0wAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="doubleImg1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="record_log_check.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
         vAAADrwBlbxySQAAK3JJREFUeF7t3XmYXGWd6HFDCESQLYTRK8Kd61X0Po5cJEP6nNMJNkmfc7ozAtma
@@ -2379,7 +2379,7 @@
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAApOFjH/t/Z2p9txFHJeAAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="doubleImg1.SubImg" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="record_log_check.SubImg" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
         vAAADrwBlbxySQAAL8JJREFUeF7t3Ql8XWWd8HFTWqCURRBqRXBYHH2HGeyoqK/6Krh9ZnSWV51hnLY5
@@ -2589,7 +2589,7 @@
         FJqqZxWLwKcAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="doubleImg1.Tag" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="record_log_check.Tag" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
         vAAADrwBlbxySQAAQlRJREFUeF7t3QecHWW9+H+TgDQBESzgFUVEsSGWq96feoUL+hcrV101yc48z2yS
@@ -2878,7 +2878,7 @@
         iIiIiIiIiErQe97z/wNmqCSteaNg0wAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="kuka_response_status.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="kuka_response_check.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
         vAAADrwBlbxySQAAK3JJREFUeF7t3XmYXGWd6HFDCESQLYTRK8Kd61X0Po5cJEP6nNMJNkmfc7ozAtma
@@ -3069,7 +3069,7 @@
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAApOFjH/t/Z2p9txFHJeAAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="kuka_response_status.SubImg" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="kuka_response_check.SubImg" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
         vAAADrwBlbxySQAAL8JJREFUeF7t3Ql8XWWd8HFTWqCURRBqRXBYHH2HGeyoqK/6Krh9ZnSWV51hnLY5
@@ -3279,7 +3279,7 @@
         FJqqZxWLwKcAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="kuka_response_status.Tag" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="kuka_response_check.Tag" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
         vAAADrwBlbxySQAAQlRJREFUeF7t3QecHWW9+H+TgDQBESzgFUVEsSGWq96feoUL+hcrV101yc48z2yS

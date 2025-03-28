@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Security.Policy;
 using CefSharp.DevTools.Security;
 using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 
 namespace Chump_kuka
 {
@@ -35,6 +36,7 @@ namespace Chump_kuka
             // 當伺服器啟動並開始監聽時，設定 TaskCompletionSource 為成功
             startCompletionSource.SetResult(true);
             Console.WriteLine("C# TCP Server started...");
+            IsRunning = listener.Server.IsBound;
 
             Task.Run(async () =>
             {
@@ -45,7 +47,7 @@ namespace Chump_kuka
                     // 獲取客戶端的 IP 地址
                     IPEndPoint remoteEndPoint = (IPEndPoint)client.Client.RemoteEndPoint;
                     ClientConnected?.Invoke(this, new TcpConnectionEventArgs(client, remoteEndPoint));
-                    IsRunning = client.Connected;
+                    
                     // 開新 Task 處理客戶端
                     await HandleClientAsync(client); 
                 }

@@ -20,6 +20,8 @@ namespace Chump_kuka
 
         public static async Task<bool> StartRecordListener(int listen_port)
         {
+            if (order_record_listener != null && order_record_listener.IsRunning) return true;
+
             order_record_listener = new TcpListenerManager(listen_port);       // 6400
             
             // 開啟監聽

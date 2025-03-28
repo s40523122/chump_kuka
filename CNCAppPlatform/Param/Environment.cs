@@ -49,7 +49,7 @@ namespace Chump_kuka
                 {
                     string address = INiReader.ReadINIFile(layout_path, "Control", "sensor_modbus_ip");
                     string port = INiReader.ReadINIFile(layout_path, "Control", "sensor_modbus_port");
-                    if(address!= "" && port!="") _sensor_modbus_tcp = new IPEndPoint(IPAddress.Parse(address), int.Parse(port));
+                    if (address != "" && port != "") _sensor_modbus_tcp = new IPEndPoint(IPAddress.Parse(address), int.Parse(port));
                 }
 
                 return _sensor_modbus_tcp;
@@ -63,18 +63,42 @@ namespace Chump_kuka
             }
         }
 
-        public static string PmcApiUrl
+        public static string IcapsServerTcpPort
         {
             get
             {
-                string url_txt = INiReader.ReadINIFile(layout_path, "Control", "pmc_api_url");
-                //KukaApiManager.kuka_api_server = new HttpRequest(url_txt);
-                return url_txt;
+                string text = INiReader.ReadINIFile(layout_path, "Control", "icaps_server_tcp_port");
+                return string.IsNullOrEmpty(text) ? null : text;
             }
             set
             {
-                //KukaApiManager.kuka_api_server = new HttpRequest(value);
-                INiReader.WriteINIFile(layout_path, "Control", "pmc_api_url", value);
+                INiReader.WriteINIFile(layout_path, "Control", "icaps_server_tcp_port", value);
+            }
+        }
+
+        public static string RecordLogTcpPort
+        {
+            get
+            {
+                string text = INiReader.ReadINIFile(layout_path, "Control", "record_log_tcp_port");
+                return string.IsNullOrEmpty(text) ? null : text;
+            }
+            set
+            {
+                INiReader.WriteINIFile(layout_path, "Control", "record_log_tcp_port", value);
+            }
+        }
+
+        public static string KukaResponseUrl
+        {
+            get
+            {
+                string text = INiReader.ReadINIFile(layout_path, "Control", "kuka_response_url");
+                return text;
+            }
+            set
+            {
+                INiReader.WriteINIFile(layout_path, "Control", "kuka_response_url", value);
             }
         }
 
