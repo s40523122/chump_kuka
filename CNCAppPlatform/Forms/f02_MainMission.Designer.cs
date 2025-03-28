@@ -258,6 +258,7 @@
             this.led_idle.TabIndex = 1;
             this.led_idle.TabStop = false;
             this.led_idle.Tag = ((object)(resources.GetObject("led_idle.Tag")));
+            this.led_idle.Click += new System.EventHandler(this.led_idle_Click);
             // 
             // led_turtle_in
             // 

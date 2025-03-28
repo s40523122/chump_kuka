@@ -40,7 +40,8 @@ namespace Chump_kuka.Forms
 
         private void Setting_Load(object sender, EventArgs e)
         {
-            tcp_server_port.Text = Env.IcapsServerTcpPort ?? "5700";
+            udp_server_ip.Text = Env.IcapsServerUdpIp ?? "";
+            upd_server_port.Text = Env.IcapsServerUdpPort ?? "5700";
             kuka_request_url.Text = Env.KukaApiUrl;
             modbus_ip.Text = Env.SensorModbusTcp?.Address.ToString();
             modbus_port.Text = Env.SensorModbusTcp?.Port.ToString() ?? "502";
@@ -80,23 +81,24 @@ namespace Chump_kuka.Forms
         }
         private async Task ServerTask()
         {
-            bool icaps_server = bool.TryParse(radio_button_group.Controls        // 判定是否指定為 iCaps 伺服器
-                                                 .OfType<RadioButton>()
-                                                 .FirstOrDefault(rb => rb.Checked)
-                                                 .Tag.ToString(),
-                                             out icaps_server);
-            bool isconn = false;
-            if (icaps_server)
-            {
-                // SocketDispatcher _icaps_socket = new SocketDispatcher();
-                isconn = await SocketDispatcher.StartRecordListener(int.Parse(tcp_server_port.Text));
-                if (isconn)
-                {
-                    Env.IcapsServerTcpPort = tcp_server_port.Text;
-                }
-            }
+            //bool is_icaps_server = bool.TryParse(radio_button_group.Controls        // 判定是否指定為 iCaps 伺服器
+            //                                     .OfType<RadioButton>()
+            //                                     .FirstOrDefault(rb => rb.Checked)
+            //                                     .Tag.ToString(),
+            //                                 out is_icaps_server);
 
-            server_check.Change = isconn;
+            // SocketDispatcher _icaps_socket = new SocketDispatcher();
+            //isconn = await SocketDispatcher.StartRecordListener(int.Parse(tcp_server_port.Text));
+
+
+            IPEndPoint listen_ipep = new IPEndPoint(IPAddress.Parse(udp_server_ip.Text), int.Parse(upd_server_port.Text));       // 開啟 UDP 監聽
+            bool is_server = is_sever_check.Checked;
+            CommController.Init(is_server, listen_ipep);
+
+            Env.IcapsServerUdpIp = udp_server_ip.Text;
+            Env.IcapsServerUdpPort = upd_server_port.Text;
+            
+            server_check.Change = true;
             server_check.Visible = true;
         }
 

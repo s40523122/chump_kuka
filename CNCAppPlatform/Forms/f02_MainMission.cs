@@ -155,5 +155,10 @@ namespace Chump_kuka.Forms
         {
             sidePanel.Start = true;
         }
+
+        private void led_idle_Click(object sender, EventArgs e)
+        {
+            CommController.Send("Hi");
+        }
     }
 }

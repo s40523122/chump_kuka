@@ -63,16 +63,29 @@ namespace Chump_kuka
             }
         }
 
-        public static string IcapsServerTcpPort
+        public static string IcapsServerUdpIp
         {
             get
             {
-                string text = INiReader.ReadINIFile(layout_path, "Control", "icaps_server_tcp_port");
+                string text = INiReader.ReadINIFile(layout_path, "Control", "icaps_server_udp_ip");
                 return string.IsNullOrEmpty(text) ? null : text;
             }
             set
             {
-                INiReader.WriteINIFile(layout_path, "Control", "icaps_server_tcp_port", value);
+                INiReader.WriteINIFile(layout_path, "Control", "icaps_server_udp_ip", value);
+            }
+        }
+
+        public static string IcapsServerUdpPort
+        {
+            get
+            {
+                string text = INiReader.ReadINIFile(layout_path, "Control", "icaps_server_udp_port");
+                return string.IsNullOrEmpty(text) ? null : text;
+            }
+            set
+            {
+                INiReader.WriteINIFile(layout_path, "Control", "icaps_server_udp_port", value);
             }
         }
 

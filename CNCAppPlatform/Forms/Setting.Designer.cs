@@ -39,14 +39,14 @@
             this.server_check = new iCAPS.DoubleImg();
             this.scaleLabel3 = new iCAPS.ScaleLabel();
             this.radio_button_group = new System.Windows.Forms.TableLayoutPanel();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.is_sever_check = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.scaleLabel1 = new iCAPS.ScaleLabel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel8 = new iCAPS.ScaleLabel();
             this.scaleLabel7 = new iCAPS.ScaleLabel();
-            this.server_ip = new System.Windows.Forms.TextBox();
-            this.tcp_server_port = new System.Windows.Forms.TextBox();
+            this.udp_server_ip = new System.Windows.Forms.TextBox();
+            this.upd_server_port = new System.Windows.Forms.TextBox();
             this.lable1 = new iCAPS.ScaleLabel();
             this.kuka_request_url = new System.Windows.Forms.TextBox();
             this.scaleLabel4 = new iCAPS.ScaleLabel();
@@ -92,6 +92,9 @@
             this.scalePadding1.Location = new System.Drawing.Point(0, 0);
             this.scalePadding1.Name = "scalePadding1";
             this.scalePadding1.RowCount = 3;
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
@@ -291,7 +294,7 @@
             this.radio_button_group.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.radio_button_group.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.radio_button_group.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
-            this.radio_button_group.Controls.Add(this.radioButton1, 1, 0);
+            this.radio_button_group.Controls.Add(this.is_sever_check, 1, 0);
             this.radio_button_group.Controls.Add(this.radioButton2, 2, 0);
             this.radio_button_group.Dock = System.Windows.Forms.DockStyle.Fill;
             this.radio_button_group.Location = new System.Drawing.Point(264, 0);
@@ -302,19 +305,19 @@
             this.radio_button_group.Size = new System.Drawing.Size(441, 38);
             this.radio_button_group.TabIndex = 5;
             // 
-            // radioButton1
+            // is_sever_check
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Checked = true;
-            this.radioButton1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.radioButton1.Location = new System.Drawing.Point(25, 3);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(104, 32);
-            this.radioButton1.TabIndex = 12;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Tag = "True";
-            this.radioButton1.Text = "是";
-            this.radioButton1.UseVisualStyleBackColor = true;
+            this.is_sever_check.AutoSize = true;
+            this.is_sever_check.Checked = true;
+            this.is_sever_check.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.is_sever_check.Location = new System.Drawing.Point(25, 3);
+            this.is_sever_check.Name = "is_sever_check";
+            this.is_sever_check.Size = new System.Drawing.Size(104, 32);
+            this.is_sever_check.TabIndex = 12;
+            this.is_sever_check.TabStop = true;
+            this.is_sever_check.Tag = "True";
+            this.is_sever_check.Text = "是";
+            this.is_sever_check.UseVisualStyleBackColor = true;
             // 
             // radioButton2
             // 
@@ -349,8 +352,8 @@
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.27273F));
             this.tableLayoutPanel2.Controls.Add(this.scaleLabel8, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.scaleLabel7, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.server_ip, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.tcp_server_port, 3, 0);
+            this.tableLayoutPanel2.Controls.Add(this.udp_server_ip, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.upd_server_port, 3, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(267, 41);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -386,24 +389,24 @@
             this.scaleLabel7.Text = "IP";
             this.scaleLabel7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // server_ip
+            // udp_server_ip
             // 
-            this.server_ip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.server_ip.Location = new System.Drawing.Point(62, 5);
-            this.server_ip.Name = "server_ip";
-            this.server_ip.Size = new System.Drawing.Size(191, 22);
-            this.server_ip.TabIndex = 9;
-            this.server_ip.Text = "192.168.68.22";
+            this.udp_server_ip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.udp_server_ip.Location = new System.Drawing.Point(62, 5);
+            this.udp_server_ip.Name = "udp_server_ip";
+            this.udp_server_ip.Size = new System.Drawing.Size(191, 22);
+            this.udp_server_ip.TabIndex = 9;
+            this.udp_server_ip.Text = "192.168.68.22";
             // 
-            // tcp_server_port
+            // upd_server_port
             // 
-            this.tcp_server_port.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tcp_server_port.Enabled = false;
-            this.tcp_server_port.Location = new System.Drawing.Point(318, 5);
-            this.tcp_server_port.Name = "tcp_server_port";
-            this.tcp_server_port.Size = new System.Drawing.Size(114, 22);
-            this.tcp_server_port.TabIndex = 9;
-            this.tcp_server_port.Text = "5700";
+            this.upd_server_port.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.upd_server_port.Enabled = false;
+            this.upd_server_port.Location = new System.Drawing.Point(318, 5);
+            this.upd_server_port.Name = "upd_server_port";
+            this.upd_server_port.Size = new System.Drawing.Size(114, 22);
+            this.upd_server_port.TabIndex = 9;
+            this.upd_server_port.Text = "5700";
             // 
             // lable1
             // 
@@ -730,7 +733,7 @@
         private iCAPS.ScaleLabel scaleLabel2;
         private iCAPS.DoubleImg sensor_check;
         private iCAPS.DoubleImg server_check;
-        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton is_sever_check;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private iCAPS.ScaleLabel scaleLabel9;
@@ -741,8 +744,8 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private iCAPS.ScaleLabel scaleLabel8;
         private iCAPS.ScaleLabel scaleLabel7;
-        private System.Windows.Forms.TextBox server_ip;
-        private System.Windows.Forms.TextBox tcp_server_port;
+        private System.Windows.Forms.TextBox udp_server_ip;
+        private System.Windows.Forms.TextBox upd_server_port;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private iCAPS.ScaleLabel scaleLabel11;
         private iCAPS.ScaleLabel scaleLabel12;

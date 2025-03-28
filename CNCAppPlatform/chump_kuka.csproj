@@ -142,6 +142,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\CommController.cs" />
     <Compile Include="Controller\LocalAreaController.cs" />
     <Compile Include="Controls\Container.cs">
       <SubType>UserControl</SubType>
@@ -191,6 +192,7 @@
     <Compile Include="Dispatchers\HttpListenerDispatcher.cs" />
     <Compile Include="Dispatchers\KukaApiDispatcher.cs" />
     <Compile Include="Dispatchers\SocketDispatcher.cs" />
+    <Compile Include="Dispatchers\UdpDispatcher.cs" />
     <Compile Include="Param\Environment.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -249,6 +251,7 @@
     <Compile Include="Dispatchers\ModbusTCPDispatcher.cs" />
     <Compile Include="Controller\KukaApiController.cs" />
     <Compile Include="Controller\Log.cs" />
+    <Compile Include="Services\Managers\UdpManager.cs" />
     <Compile Include="Services\myEventArgs.cs" />
     <Compile Include="Services\Managers\TcpListenerManager.cs" />
     <Compile Include="Services\TcpTest.cs" />
