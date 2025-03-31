@@ -104,6 +104,10 @@ namespace Chump_kuka.Forms
             
             server_check.Change = true;
             server_check.Visible = true;
+            
+            // TODO
+            // 等待訊息回應，目前透過等待 1 秒完成此效果
+            await Task.Delay(1000);
         }
 
         private async Task RecordLogTask()
@@ -124,6 +128,7 @@ namespace Chump_kuka.Forms
 
         private async Task SensorModbusTask()
         {
+            Console.WriteLine(KukaParm.KukaAreaModels);
             IPEndPoint ip = new IPEndPoint(IPAddress.Parse(modbus_ip.Text), int.Parse(modbus_port.Text));
             bool isconn = await LocalAreaController.BuildBindArea(ip);
 
