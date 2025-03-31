@@ -1,7 +1,6 @@
 ﻿using Chump_kuka.Controller;
 using Chump_kuka.Controls;
 using iCAPS;
-using Modbus.Device;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

@@ -24,6 +24,7 @@ namespace Chump_kuka
                 if (_icaps_server != null)
                     return _icaps_server.Value;
                 string text = INiReader.ReadINIFile(layout_path, "Control", "icaps_server");
+                if (text == "") text = "true";
                 return bool.Parse(text);
             }
             set

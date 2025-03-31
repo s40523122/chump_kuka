@@ -70,9 +70,9 @@
     <Reference Include="HZH_Controls">
       <HintPath>..\..\..\上研機電產創\Toptek\CNCAppPlatform\Controls\HZH_Controls.dll</HintPath>
     </Reference>
-    <Reference Include="iCAPS_template, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="iCAPS_template, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\iCAPS_template\iCAPS_template\bin\Debug\iCAPS_template.dll</HintPath>
+      <HintPath>..\..\..\iCAPS_template\iCAPS_template_git\iCAPS_template\bin\Debug\iCAPS_template.dll</HintPath>
     </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
@@ -89,6 +89,9 @@
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NModbus4, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NModbus4.2.1.0\lib\net40\NModbus4.dll</HintPath>
     </Reference>
     <Reference Include="nmodbuspc">
       <HintPath>..\packages\nmodbuspc.dll</HintPath>

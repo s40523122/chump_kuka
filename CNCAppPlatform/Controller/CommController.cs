@@ -1,5 +1,6 @@
 ﻿using CefSharp.DevTools.CSS;
 using Chump_kuka.Dispatchers;
+using LiveCharts.Definitions.Series;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -156,6 +157,10 @@ namespace Chump_kuka.Controller
                 case "area":
                     // 若字串為區域類別，解析資料訊息後，將比較後差異處，更新為接收資料
                     List<KukaAreaModel> areas = JsonConvert.DeserializeObject<List<KukaAreaModel>>(response_body.Message);
+
+                    if (KukaParm.KukaAreaModels.Count == 0)
+                        KukaParm.KukaAreaModels = areas;
+                    
                     foreach (KukaAreaModel source_area in areas)
                     {
                         var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaName == source_area.AreaName);

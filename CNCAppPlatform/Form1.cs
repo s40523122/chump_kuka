@@ -8,7 +8,6 @@ using System.IO;
 using System.Reflection;
 using iCAPS;
 using System.Windows.Documents;
-using Modbus.Device;
 using System.Net.Sockets;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
