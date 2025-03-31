@@ -53,7 +53,7 @@ namespace Chump_kuka.Controller
 
             if (KukaParm.BindAreaModel == null)
             {
-                Log.Append("綁定區域不存在", "Error", "LocalAreaController.cs");
+                Log.Append($"綁定區域({Env.BindAreaName})不存在", "Error", "LocalAreaController.cs");
                 return false;
             }
 

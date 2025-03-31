@@ -1,5 +1,6 @@
 ﻿using CefSharp.DevTools.CSS;
 using Chump_kuka.Dispatchers;
+using iCAPS;
 using LiveCharts.Definitions.Series;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -120,7 +121,7 @@ namespace Chump_kuka.Controller
             switch (response_body.Type)
             {
                 case "info":
-                    MessageBox.Show(e.Message);
+                    //MsgBox.Show("e.Message","Server");
                     KukaParm_AreaChanged(sender, null);
                     break;
 
