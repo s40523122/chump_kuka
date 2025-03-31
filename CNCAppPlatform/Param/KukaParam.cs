@@ -210,8 +210,9 @@ public class KukaAreaModel
 
                 foreach (KukaAreaControl area in UserControls)
                 {
-                    area.UpdateContainerImage(value.ToArray());
+                    area.UpdateContainerImage(value.ToArray());     // 更新圖片
                 }
+                ModelChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeStatus)));
             }
         }
     }
