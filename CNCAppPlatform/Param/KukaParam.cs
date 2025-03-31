@@ -43,7 +43,7 @@ public static class KukaParm
 
     public static event PropertyChangedEventHandler RobotStatusChanged;
     public static event PropertyChangedEventHandler AreaChanged;
-    //public static event PropertyChangedEventHandler AreaStatusChanged;
+    public static event PropertyChangedEventHandler AreaStatusChanged;
     public static event PropertyChangedEventHandler CarryChanged;
     public static event PropertyChangedEventHandler BindChanged;        // 當綁定區域改變後
 
@@ -118,10 +118,10 @@ public static class KukaParm
                 };
 
                 // 訂閱模型的 PropertyChanged 事件，並轉發給 ModelManager 的事件
-                //model.NodeStatusChanged += (sender, e) =>
-                //{
-                //    AreaStatusChanged?.Invoke(sender, e);  // sender 直接就是 Model
-                //};
+                model.NodeStatusChanged += (sender, e) =>
+                {
+                    AreaStatusChanged?.Invoke(sender, e);  // sender 直接就是 Model
+                };
 
             }
         }
@@ -155,7 +155,7 @@ public static class KukaParm
 
 public class KukaAreaModel
 {
-    //public event PropertyChangedEventHandler NodeStatusChanged;
+    public event PropertyChangedEventHandler NodeStatusChanged;
     public event PropertyChangedEventHandler ModelChanged;
 
     private List<int> _node_status = new List<int>();
@@ -212,7 +212,7 @@ public class KukaAreaModel
                 {
                     area.UpdateContainerImage(value.ToArray());     // 更新圖片
                 }
-                //NodeStatusChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeStatus)));
+                NodeStatusChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeStatus)));
             }
         }
     }

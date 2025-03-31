@@ -44,7 +44,7 @@ namespace Chump_kuka.Controller
             }
         }
 
-        private static void KukaParm_AreaChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private static void KukaParm_AreaStatusChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             try
             {
@@ -91,7 +91,7 @@ namespace Chump_kuka.Controller
                 _udp_listener.MessageReceived += when_server_MessageReceived;
             }
 
-            KukaParm.AreaChanged += KukaParm_AreaChanged;       // 無論是否為伺服器，都需要更新區域資料
+            KukaParm.AreaStatusChanged += KukaParm_AreaStatusChanged;       // 無論是否為伺服器，都需要更新區域資料
         }
 
         public static void SayHi()
@@ -123,7 +123,7 @@ namespace Chump_kuka.Controller
                 case "info":
                     //MsgBox.Show("e.Message","Server");
                     Console.WriteLine(response_body.Message);
-                    KukaParm_AreaChanged(sender, null);
+                    KukaParm_AreaStatusChanged(sender, null);
                     break;
 
                 case "area":
