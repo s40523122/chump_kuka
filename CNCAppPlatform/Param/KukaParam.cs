@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -72,18 +73,18 @@ public static class KukaParm
         }
     }
 
-    public static string RobotStatusFeedbackTime
-    {
-        get => _robot_status_feedback_time;
-        set
-        {
-            if (!_robot_status_feedback_time.Equals(value))
-            {
-                _robot_status_feedback_time = value;
-                OnRobotChanged(nameof(RobotStatusFeedbackTime));
-            }
-        }
-    }
+    //public static string RobotStatusFeedbackTime
+    //{
+    //    get => _robot_status_feedback_time;
+    //    set
+    //    {
+    //        if (!_robot_status_feedback_time.Equals(value))
+    //        {
+    //            _robot_status_feedback_time = value;
+    //            OnRobotChanged(nameof(RobotStatusFeedbackTime));
+    //        }
+    //    }
+    //}
 
     public static JArray RobotStatusInfos
     {
@@ -221,6 +222,24 @@ public class KukaAreaModel
         AreaCode = json_object["areaCode"].ToString();
         AreaName = json_object["areaName"].ToString();
         NodeList = json_object["nodeList"].ToObject<List<string>>();      // 集合查詢到的區域代碼為列表
+    }
+
+    public void CompareAndUpdate(KukaAreaModel source_model)
+    {
+        if (source_model != null)
+        {
+            foreach (PropertyInfo prop in typeof(KukaAreaModel).GetProperties())
+            {
+                var this_value = prop.GetValue(this);
+                var source_value = prop.GetValue(source_model);
+
+                if (source_value != null && !source_value.Equals(this_value))
+                {
+                    prop.SetValue(this_value, source_value);
+                }
+            }
+        }
+        
     }
 
     /// <summary>

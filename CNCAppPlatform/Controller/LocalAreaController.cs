@@ -44,14 +44,13 @@ namespace Chump_kuka.Controller
                 form.Controls.Add(flowLayoutPanel);
 
                 comboBox.SelectedValueChanged += (_sender, _e) =>
-                    KukaParm.BindAreaModel = KukaAreaModel.Find(comboBox.Text, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
+                    Env.BindAreaName = comboBox.Text;
+                    // KukaParm.BindAreaModel = KukaAreaModel.Find(comboBox.Text, KukaParm.KukaAreaModels);
 
                 form.ShowDialog();
             }
-            else
-            {
-                KukaParm.BindAreaModel = KukaAreaModel.Find(Env.BindAreaName, KukaParm.KukaAreaModels);
-            }
+            
+            KukaParm.BindAreaModel = KukaAreaModel.Find(Env.BindAreaName, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
 
             if (KukaParm.BindAreaModel == null)
             {
