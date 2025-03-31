@@ -71,6 +71,7 @@ namespace Chump_kuka.Controller
 
             // 初始化，移除所有綁定事件
             KukaParm.RobotStatusChanged -= KukaParm_RobotStatusChanged;
+            KukaParm.AreaStatusChanged -= KukaParm_AreaStatusChanged;
 
             // 重新建立新的 UDP 伺服器實例
             _udp_listener?.Close();
