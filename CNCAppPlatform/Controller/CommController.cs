@@ -155,29 +155,36 @@ namespace Chump_kuka.Controller
         {
             // 解析回應字串
             MyCommModel response_body = JsonConvert.DeserializeObject<MyCommModel>(e.Message);
-            switch (response_body.Type)
+            try
             {
-                case "info":
-                    MessageBox.Show(e.Message);
-                    break;
+                switch (response_body.Type)
+                {
+                    case "info":
+                        MessageBox.Show(e.Message);
+                        break;
 
-                case "robot":
-                    KukaParm.RobotStatusInfos = JsonConvert.DeserializeObject<JArray>(response_body.Message);
-                     
-                    break;
-                case "area":
-                    // 若字串為區域類別，解析資料訊息後，將比較後差異處，更新為接收資料
-                    List<KukaAreaModel> areas = JsonConvert.DeserializeObject<List<KukaAreaModel>>(response_body.Message);
+                    case "robot":
+                        KukaParm.RobotStatusInfos = JsonConvert.DeserializeObject<JArray>(response_body.Message);
 
-                    if (KukaParm.KukaAreaModels.Count == 0)
-                        KukaParm.KukaAreaModels = areas;
-                    
-                    foreach (KukaAreaModel source_area in areas)
-                    {
-                        var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaName == source_area.AreaName);
-                        base_model.CompareAndUpdate(source_area);
-                    }
-                    break;
+                        break;
+                    case "area":
+                        // 若字串為區域類別，解析資料訊息後，將比較後差異處，更新為接收資料
+                        List<KukaAreaModel> areas = JsonConvert.DeserializeObject<List<KukaAreaModel>>(response_body.Message);
+
+                        if (KukaParm.KukaAreaModels.Count == 0)
+                            KukaParm.KukaAreaModels = areas;
+
+                        foreach (KukaAreaModel source_area in areas)
+                        {
+                            var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaName == source_area.AreaName);
+                            base_model.CompareAndUpdate(source_area);
+                        }
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
