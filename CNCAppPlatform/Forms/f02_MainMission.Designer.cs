@@ -275,6 +275,7 @@
             this.led_turtle_in.TabIndex = 1;
             this.led_turtle_in.TabStop = false;
             this.led_turtle_in.Tag = ((object)(resources.GetObject("led_turtle_in.Tag")));
+            this.led_turtle_in.Click += new System.EventHandler(this.led_turtle_in_Click);
             // 
             // led_bot_move
             // 

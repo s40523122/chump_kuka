@@ -120,6 +120,7 @@ namespace Chump_kuka.Controller
             switch (response_body.Type)
             {
                 case "info":
+                    MessageBox.Show(e.Message);
                     KukaParm_AreaChanged(sender, null);
                     break;
 

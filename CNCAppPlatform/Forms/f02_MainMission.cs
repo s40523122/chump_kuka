@@ -160,5 +160,11 @@ namespace Chump_kuka.Forms
         {
             CommController.Send("Hi");
         }
+
+        private void led_turtle_in_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("確定發送 UDP?");
+            CommController.SayHi();
+        }
     }
 }
