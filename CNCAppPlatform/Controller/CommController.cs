@@ -122,16 +122,24 @@ namespace Chump_kuka.Controller
             {
                 case "info":
                     //MsgBox.Show("e.Message","Server");
+                    Console.WriteLine(response_body.Message);
                     KukaParm_AreaChanged(sender, null);
                     break;
 
                 case "area":
                     // 若字串為區域類別，解析資料訊息後，將比較後差異處，更新為接收資料
                     areas = JsonConvert.DeserializeObject<List<KukaAreaModel>>(response_body.Message);
-                    foreach(KukaAreaModel source_area in areas)
+                    try
                     {
-                        var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaName == source_area.AreaName);
-                        base_model.CompareAndUpdate(source_area);
+                        foreach (KukaAreaModel source_area in areas)
+                        {
+                            var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaCode == source_area.AreaCode);
+                            base_model.CompareAndUpdate(source_area);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
                     }
                     break;
             }

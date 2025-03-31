@@ -122,7 +122,7 @@ public static class KukaParm
                 //{
                 //    AreaStatusChanged?.Invoke(sender, e);  // sender 直接就是 Model
                 //};
-                
+
             }
         }
     }
@@ -155,7 +155,7 @@ public static class KukaParm
 
 public class KukaAreaModel
 {
-    public event PropertyChangedEventHandler NodeStatusChanged;
+    //public event PropertyChangedEventHandler NodeStatusChanged;
     public event PropertyChangedEventHandler ModelChanged;
 
     private List<int> _node_status = new List<int>();
@@ -212,7 +212,7 @@ public class KukaAreaModel
                 {
                     area.UpdateContainerImage(value.ToArray());     // 更新圖片
                 }
-                ModelChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeStatus)));
+                //NodeStatusChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeStatus)));
             }
         }
     }
@@ -227,19 +227,33 @@ public class KukaAreaModel
 
     public void CompareAndUpdate(KukaAreaModel source_model)
     {
-        if (source_model != null)
-        {
-            foreach (PropertyInfo prop in typeof(KukaAreaModel).GetProperties())
-            {
-                var this_value = prop.GetValue(this);
-                var source_value = prop.GetValue(source_model);
-
-                if (source_value != null && !source_value.Equals(this_value))
-                {
-                    prop.SetValue(this_value, source_value);
-                }
-            }
-        }
+        //if (source_model != null)
+        //{
+        //    foreach (PropertyInfo prop in typeof(KukaAreaModel).GetProperties())
+        //    {
+        //        if (prop.Name == "UserControls") continue;
+        //        var this_value = prop.GetValue(this);
+        //        var source_value = prop.GetValue(source_model);
+        //        try
+        //        {
+        //            if (source_value != null && !source_value.Equals(this_value))
+        //            {
+        //                prop.SetValue(this_value, source_value);
+        //            }
+        //        }
+        //        catch
+        //        {
+        //            if (source_value != null && (List<int>)source_value.SequenceEqual((List<int>)this_value))
+        //            {
+        //                prop.SetValue(this_value, source_value);
+        //            }
+        //        }
+        //    }
+        //}
+        this.AreaName = source_model.AreaName;
+        this.AreaType = source_model.AreaType;
+        this.NodeList = source_model.NodeList;
+        this.NodeStatus = source_model.NodeStatus;
         
     }
 
