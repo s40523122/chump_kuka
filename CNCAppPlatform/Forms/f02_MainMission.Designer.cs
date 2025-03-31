@@ -376,7 +376,7 @@
             // 
             // bind_area_control
             // 
-            this.bind_area_control.AreaName = "scaleLabel1";
+            this.bind_area_control.AreaName = "No Area Bind";
             this.bind_area_control.AreaNode = new string[] {
         "1",
         "2",

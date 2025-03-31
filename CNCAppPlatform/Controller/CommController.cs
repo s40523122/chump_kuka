@@ -1,5 +1,6 @@
 ﻿using CefSharp.DevTools.CSS;
 using Chump_kuka.Dispatchers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,26 @@ namespace Chump_kuka.Controller
     {
         private static UdpDispatcher _udp_listener;
         private static bool _is_server = false;
+        static CommController()
+        {
+            KukaParm.AreaChanged += KukaParm_AreaChanged;
+        }
+
+        private static void KukaParm_AreaChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            try
+            {
+                string jsonOutput = JsonConvert.SerializeObject(KukaParm.KukaAreaModels, Formatting.Indented);
+                Send(jsonOutput);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("JSON 序列化失敗：" + ex.Message, "錯誤");
+            }   
+
+            
+
+        }
 
         public static void Init(bool  is_server, IPEndPoint listen_info)
         {

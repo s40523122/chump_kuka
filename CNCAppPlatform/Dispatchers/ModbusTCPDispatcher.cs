@@ -21,7 +21,7 @@ namespace Chump_kuka
         private static bool _try_conn = false;      // 是否已嘗試連線
         private static IPEndPoint _sensor_modbus_tcp;
 
-        // Api 啟用狀態
+        // 啟用狀態
         public static bool Enable
         {
             get => _enable;
@@ -119,7 +119,7 @@ namespace Chump_kuka
                 {
                     comboBox.Items.Add(area.AreaName);
                 }
-                comboBox.SelectedValueChanged += (_sender, _e) => LocalAreaController.BindArea = KukaAreaModel.Find(comboBox.Text, KukaParm.KukaAreaModels);
+                comboBox.SelectedValueChanged += (_sender, _e) => LocalAreaController.BindAreaModel = KukaAreaModel.Find(comboBox.Text, KukaParm.KukaAreaModels);
 
                 FlowLayoutPanel flowLayoutPanel = new FlowLayoutPanel();
                 flowLayoutPanel.Controls.AddRange(new Control[2] { new Label() { Text = "請選擇綁定區域" }, comboBox });
@@ -128,7 +128,7 @@ namespace Chump_kuka
 
                 form.ShowDialog();
 
-                if (string.IsNullOrEmpty(LocalAreaController.BindArea?.AreaName))
+                if (string.IsNullOrEmpty(LocalAreaController.BindAreaModel?.AreaName))
                 {
                     Enable = false;
                     return;
@@ -138,8 +138,8 @@ namespace Chump_kuka
             }
             else
             {
-                LocalAreaController.BindArea = KukaAreaModel.Find(Env.BindAreaName, KukaParm.KukaAreaModels);
-                if (string.IsNullOrEmpty(LocalAreaController.BindArea?.AreaName))
+                LocalAreaController.BindAreaModel = KukaAreaModel.Find(Env.BindAreaName, KukaParm.KukaAreaModels);
+                if (string.IsNullOrEmpty(LocalAreaController.BindAreaModel?.AreaName))
                 {
                     Enable = false;
                     return;
@@ -148,13 +148,13 @@ namespace Chump_kuka
                     requestTimer.Start();
             }
 
-            bool[] status = modbusService.ReadDI(LocalAreaController.BindArea.NodeList.Count * 2);
+            bool[] status = modbusService.ReadDI(LocalAreaController.BindAreaModel.NodeList.Count * 2);
 
             //KukaAreaControl control = KukaAreaControl.Find(KukaParm.BindArea.AreaName, KukaParm.AreaControls);
             //areas.FirstOrDefault(area => area.AreaName == target_area);
-            if (LocalAreaController.BindArea == null) Log.Append("綁定區域不存在", "Error", "IOHandle.cs");
+            if (LocalAreaController.BindAreaModel == null) Log.Append("綁定區域不存在", "Error", "IOHandle.cs");
             // else KukaParm.BindArea.UpdateContainerImage(ToNodeStatus(status).ToArray());
-            else LocalAreaController.BindArea.NodeStatus = ToNodeStatus(status);
+            else LocalAreaController.BindAreaModel.NodeStatus = ToNodeStatus(status);
 
             // Console.WriteLine(string.Join("", status.Select(b => b ? "1" : "0")));
         }

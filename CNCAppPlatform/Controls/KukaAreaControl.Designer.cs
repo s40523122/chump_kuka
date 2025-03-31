@@ -32,10 +32,10 @@
             this.myPanel1 = new iCAPS.myPanel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.containerPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.container1 = new Chump_kuka.Container();
-            this.doubleImg1 = new iCAPS.DoubleImg();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new iCAPS.ScaleLabel();
+            this.container1 = new Chump_kuka.Container();
+            this.doubleImg1 = new iCAPS.DoubleImg();
             this.custom_border = new iCAPS.myPanel();
             this.samplePanel = new System.Windows.Forms.Panel();
             this.myPanel1.SuspendLayout();
@@ -91,6 +91,32 @@
             this.containerPanel.TabIndex = 2;
             this.containerPanel.Click += new System.EventHandler(this.flowLayoutPanel1_Click);
             // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.HotTrack;
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(2, 53);
+            this.panel1.Margin = new System.Windows.Forms.Padding(2);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(207, 6);
+            this.panel1.TabIndex = 2;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.label1, 2);
+            this.label1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Factor = 0.5F;
+            this.label1.Font = new System.Drawing.Font("微軟正黑體", 25.5F, System.Drawing.FontStyle.Bold);
+            this.label1.Location = new System.Drawing.Point(3, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(505, 51);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "scaleLabel1";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label1.Click += new System.EventHandler(this.flowLayoutPanel1_Click);
+            // 
             // container1
             // 
             this.container1.Checked = false;
@@ -119,31 +145,6 @@
             this.doubleImg1.TabStop = false;
             this.doubleImg1.Tag = ((object)(resources.GetObject("doubleImg1.Tag")));
             // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(2, 53);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(207, 6);
-            this.panel1.TabIndex = 2;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Factor = 0.5F;
-            this.label1.Font = new System.Drawing.Font("微軟正黑體", 25.5F, System.Drawing.FontStyle.Bold);
-            this.label1.Location = new System.Drawing.Point(3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(205, 51);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "scaleLabel1";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label1.Click += new System.EventHandler(this.flowLayoutPanel1_Click);
-            // 
             // custom_border
             // 
             this.custom_border.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -164,14 +165,14 @@
             this.samplePanel.Size = new System.Drawing.Size(151, 374);
             this.samplePanel.TabIndex = 5;
             // 
-            // kuka_area
+            // KukaAreaControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.samplePanel);
             this.Controls.Add(this.custom_border);
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "kuka_area";
+            this.Name = "KukaAreaControl";
             this.Size = new System.Drawing.Size(718, 382);
             this.myPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);

@@ -2,6 +2,7 @@
 using Chump_kuka.Controls;
 using CookComputing.XmlRpc;
 using iCAPS;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -157,6 +158,7 @@ public class KukaAreaModel
     /// </summary>
     public int AreaType { get; set; }
 
+    [JsonIgnore]        // 避免序列化循環引用
     public List<KukaAreaControl> UserControls { get; set; } = new List<KukaAreaControl>();
 
     /// <summary>

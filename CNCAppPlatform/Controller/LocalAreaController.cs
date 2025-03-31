@@ -20,7 +20,7 @@ namespace Chump_kuka.Controller
         public static event PropertyChangedEventHandler BindChanged;        // 當綁定區域改變後
 
         
-        public static KukaAreaModel BindArea
+        public static KukaAreaModel BindAreaModel
         {
             get => _bind_area;
             set
@@ -43,7 +43,7 @@ namespace Chump_kuka.Controller
                         _bind_station_no = 0;
                         break;
                 }
-                BindChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(BindArea)));
+                BindChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(BindAreaModel)));
             }
         }
 

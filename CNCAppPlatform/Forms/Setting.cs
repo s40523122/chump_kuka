@@ -163,7 +163,7 @@ namespace Chump_kuka.Forms
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LocalAreaController.BindArea = KukaAreaModel.Find(comboBox1.Text, KukaParm.KukaAreaModels);
+            LocalAreaController.BindAreaModel = KukaAreaModel.Find(comboBox1.Text, KukaParm.KukaAreaModels);
         }
 
         private void switch_client_CheckedChanged(object sender, EventArgs e)

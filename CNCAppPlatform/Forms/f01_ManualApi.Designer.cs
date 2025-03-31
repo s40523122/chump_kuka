@@ -132,7 +132,7 @@
             // 
             // kuka_area3
             // 
-            this.kuka_area3.AreaName = "成品區";
+            this.kuka_area3.AreaName = "Area_3";
             this.kuka_area3.AreaNode = new string[] {
         "42",
         "43",
@@ -157,7 +157,7 @@
             // 
             // kuka_area2
             // 
-            this.kuka_area2.AreaName = "組裝區";
+            this.kuka_area2.AreaName = "Area_2";
             this.kuka_area2.AreaNode = new string[] {
         "36",
         "37",
@@ -178,7 +178,7 @@
             // 
             // kuka_area1
             // 
-            this.kuka_area1.AreaName = "加工區";
+            this.kuka_area1.AreaName = "Area_1";
             this.kuka_area1.AreaNode = new string[] {
         "25",
         "26"};
