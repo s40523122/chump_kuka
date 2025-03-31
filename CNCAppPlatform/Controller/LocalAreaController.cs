@@ -1,9 +1,12 @@
-﻿using Chump_kuka.Controls;
+﻿using CefSharp.DevTools.CSS;
+using Chump_kuka.Controls;
 using iCAPS;
+using Modbus.Device;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,62 +15,109 @@ namespace Chump_kuka.Controller
 {
     internal class LocalAreaController
     {
-        private static KukaAreaModel _bind_area = null;
+        private static ModbusTCPDispatcher _sensor_dispatcher = null;
         private static List<int> _record_node_status = null;      // 紀錄的區域狀態
-        private static int _bind_station_no = 0;
 
-        // 事件
-        public static event PropertyChangedEventHandler BindChanged;        // 當綁定區域改變後
-
-        
-        public static KukaAreaModel BindAreaModel
+        static LocalAreaController()
         {
-            get => _bind_area;
-            set
+            _sensor_dispatcher = new ModbusTCPDispatcher();
+        }
+
+        public async static Task<bool> BuildBindArea(IPEndPoint modbus_tco_ip)
+        {
+            // 確認是否已經指定綁定區域名稱
+            // 如果未指定名稱，開啟詢問表單
+            // 反之，建立模型副本
+            if (string.IsNullOrEmpty(Env.BindAreaName))
             {
-                if (value == null) return;
-                if (_bind_area != null && Env.BindAreaName == value.AreaName) return;        // 非首次綁定時，跳過資料相同的處理
+                Form form = new Form() { StartPosition = FormStartPosition.CenterParent };
 
-                Env.BindAreaName = value.AreaName;
-                _bind_area = value;
-
-                switch (value.AreaName)
+                ComboBox comboBox = new ComboBox();
+                foreach (KukaAreaModel area in KukaParm.KukaAreaModels)
                 {
-                    case "产线作业区":
-                        _bind_station_no = 1;
-                        break;
-                    case "产线上料区":
-                        _bind_station_no = 2;
-                        break;
-                    default:
-                        _bind_station_no = 0;
-                        break;
+                    comboBox.Items.Add(area.AreaName);
                 }
-                BindChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(BindAreaModel)));
+
+                FlowLayoutPanel flowLayoutPanel = new FlowLayoutPanel();
+                flowLayoutPanel.Controls.AddRange(new Control[2] { new Label() { Text = "請選擇綁定區域" }, comboBox });
+
+                form.Controls.Add(flowLayoutPanel);
+
+                comboBox.SelectedValueChanged += (_sender, _e) =>
+                    KukaParm.BindAreaModel = KukaAreaModel.Find(comboBox.Text, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
+
+                form.ShowDialog();
             }
+            else
+            {
+                KukaParm.BindAreaModel = KukaAreaModel.Find(Env.BindAreaName, KukaParm.KukaAreaModels);
+            }
+
+            if (KukaParm.BindAreaModel == null)
+            {
+                Log.Append("綁定區域不存在", "Error", "LocalAreaController.cs");
+                return false;
+            }
+
+            // sensor_dispatcher.Enable = true;
+            bool isconn = await _sensor_dispatcher.Start(modbus_tco_ip);
+            if (isconn)
+            {
+                _sensor_dispatcher.RegisterCount = KukaParm.KukaAreaModels.Count * 2 + 1;      // 每個工作站 2 個 sensor + 按鈕 1 個
+                _sensor_dispatcher.SensorRead += ModbusTCPDispatcher_SensorRead;
+            }
+
+            return isconn;
+        }
+
+        /// <summary>
+        /// 接收感測器資訊事件時，更新綁定模型資料
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void ModbusTCPDispatcher_SensorRead(object sender, SensorDataEventArgs e)
+        {
+            KukaParm.BindAreaModel.NodeStatus = ToNodeStatus(e.Data);
+        }
+        private static List<int> ToNodeStatus(bool[] input_readers)
+        {
+            List<int> status = new List<int>();
+            for (int i = 0; i < input_readers.Length - 1; i += 2)
+            {
+                bool turtle_sensor = input_readers[i];    // 先取出當前索引的值，並遞增索引
+                bool rack_sensor = input_readers[i + 1];    // 取得遞增後的索引值
+
+                /*
+                - 若 rack_sensor 為 false，代表無貨架，狀態設定為 0。
+                - 若 rack_sensor 為 true 且 turtle_sensor 為 false，代表有貨架但無烏龜車，狀態設定為 1。
+                - 若 rack_sensor 為 true 且 turtle_sensor 為 true，代表有貨架且有烏龜車，狀態設定為 2。
+                */
+                status.Add(!rack_sensor ? 0 : (!turtle_sensor ? 1 : 2));
+            }
+            return status;
         }
 
         public static void UpdateControl(KukaAreaControl bind_control)
         {
             // 判定綁定區域是否存在/更新
-            if (_bind_area == null) return;
+            if (KukaParm.BindAreaModel == null) return;
             
             // 如果控制項已綁定，不做後續動作
-            if (_bind_area.UserControls.Contains(bind_control)) return;
+            if (KukaParm.BindAreaModel.UserControls.Contains(bind_control)) return;
 
             // 更新控制項為綁定區域資訊
             bind_control.Dock = DockStyle.Fill;
             bind_control.Margin = new Padding(10);
-            bind_control.AreaName = _bind_area.AreaName;
-            bind_control.AreaCode = _bind_area.AreaCode;
-            bind_control.AreaNode = _bind_area.NodeList.ToArray();
-            bind_control.UpdateContainerImage(_bind_area.NodeStatus.ToArray());        // 初次建立，更新圖片
-            _bind_area.UserControls.Add(bind_control);
+            bind_control.AreaName = KukaParm.BindAreaModel.AreaName;
+            bind_control.AreaCode = KukaParm.BindAreaModel.AreaCode;
+            bind_control.AreaNode = KukaParm.BindAreaModel.NodeList.ToArray();
+            bind_control.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus.ToArray());        // 初次建立，更新圖片
+            KukaParm.BindAreaModel.UserControls.Add(bind_control);
         }
 
         public static bool GetTaskNode()
         {
-            List<int> current_status = _bind_area.NodeStatus;
+            List<int> current_status = KukaParm.BindAreaModel.NodeStatus;
 
             if (_record_node_status == null)
             {
@@ -114,7 +164,7 @@ namespace Chump_kuka.Controller
             else if (result.Contains(1))
             {
                 // return _bind_area.NodeList[result.IndexOf(1)];
-                string carry_node = _bind_area.NodeList[result.IndexOf(1)];
+                string carry_node = KukaParm.BindAreaModel.NodeList[result.IndexOf(1)];
                 // TODO: 怎麼判定目前區域
                 // 1. 獲取當前節點 OK
                 // 2. 獲取目標區域
@@ -138,31 +188,37 @@ namespace Chump_kuka.Controller
             return false;
         }
 
+        public static int GetStationNo()
+        {
+            switch (KukaParm.BindAreaModel.AreaName)
+            {
+                case "产线作业区":
+                    return  1;
+                case "产线上料区":
+                    return 2;
+                default:
+                    return 0;
+            }
+        }
         public static void PubRobotIn()
         {
+            int _bind_station_no = GetStationNo();
             if (_bind_station_no != 0)
                 SocketDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_star");
         }
 
         public static void PubRobotOut()
         {
+            int _bind_station_no = GetStationNo();
             if (_bind_station_no != 0)
                 SocketDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_begin");
         }
 
         public static void PubCarryOver()
         {
+            int _bind_station_no = GetStationNo();
             if (_bind_station_no != 0)
                 SocketDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_end");
         }
-
-        /// <summary>
-        /// 找尋列表中符合區域名稱的模型
-        /// </summary>
-        /// <param name="target_area"></param>
-        /// <param name="areas"></param>
-        /// <returns></returns>
-        public KukaAreaControl Find(List<KukaAreaControl> controls) => controls.FirstOrDefault(control => control.AreaName == _bind_area?.AreaName);
-
     }
 }

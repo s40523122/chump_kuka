@@ -35,16 +35,18 @@ public static class KukaParm
     private static string _robot_status_feedback_time = "--";
     private static JArray _robot_status_infos = new JArray();
     private static List<KukaAreaModel> _kuka_area_models = new List<KukaAreaModel>();
+    private static KukaAreaModel _bind_area = null;
 
     // public static List<KukaAreaControl> AreaControls = new List<KukaAreaControl>();     // 已記錄的區域控制項
 
-    
+
     public static event PropertyChangedEventHandler RobotStatusChanged;
     public static event PropertyChangedEventHandler AreaChanged;
     //public static event PropertyChangedEventHandler AreaStatusChanged;
     public static event PropertyChangedEventHandler CarryChanged;
+    public static event PropertyChangedEventHandler BindChanged;        // 當綁定區域改變後
 
-    
+
     public static CarryNode StartNode       // 手動派車起點
     {
         get => _start_node;
@@ -121,6 +123,21 @@ public static class KukaParm
                 //};
                 
             }
+        }
+    }
+
+    public static KukaAreaModel BindAreaModel
+    {
+        get => _bind_area;
+        set
+        {
+            if (value == null) return;
+            if (_bind_area != null && Chump_kuka.Env.BindAreaName == value.AreaName) return;        // 非首次綁定時，跳過資料相同的處理
+
+            Chump_kuka.Env.BindAreaName = value.AreaName;
+            _bind_area = value;
+
+            BindChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(BindAreaModel)));
         }
     }
 

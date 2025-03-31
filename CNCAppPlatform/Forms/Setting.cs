@@ -125,9 +125,9 @@ namespace Chump_kuka.Forms
 
         private async Task SensorModbusTask()
         {
-            ModbusTCPDispatcher.Enable = true;
             IPEndPoint ip = new IPEndPoint(IPAddress.Parse(modbus_ip.Text), int.Parse(modbus_port.Text));
-            bool isconn = await ModbusTCPDispatcher.CheckConnect(ip);
+            bool isconn = await LocalAreaController.BuildBindArea(ip);
+
             sensor_check.Change = isconn;
             sensor_check.Visible = true;
             if (isconn) Env.SensorModbusTcp = ip;
@@ -163,7 +163,7 @@ namespace Chump_kuka.Forms
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LocalAreaController.BindAreaModel = KukaAreaModel.Find(comboBox1.Text, KukaParm.KukaAreaModels);
+            KukaParm.BindAreaModel = KukaAreaModel.Find(comboBox1.Text, KukaParm.KukaAreaModels);
         }
 
         private void switch_client_CheckedChanged(object sender, EventArgs e)

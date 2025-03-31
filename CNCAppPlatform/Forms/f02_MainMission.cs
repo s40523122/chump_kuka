@@ -31,7 +31,7 @@ namespace Chump_kuka.Forms
             //VisibleChanged += F02_MainMission_VisibleChanged;
             
             // 當綁定區域更新時，同步更新控制項 UI
-            LocalAreaController.BindChanged += 
+            KukaParm.BindChanged += 
                 (s, e) => LocalAreaController.UpdateControl(bind_area_control);    
 
             SetupDataGridView();
