@@ -38,6 +38,7 @@ public static class KukaParm
     private static JArray _robot_status_infos = new JArray();
     private static List<KukaAreaModel> _kuka_area_models = new List<KukaAreaModel>();
     private static KukaAreaModel _bind_area = null;
+    private static KukaAreaModel _target_area = null;
 
     // public static List<KukaAreaControl> AreaControls = new List<KukaAreaControl>();     // 已記錄的區域控制項
 
@@ -148,6 +149,19 @@ public static class KukaParm
             _bind_area = value;
 
             BindChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(BindAreaModel)));
+        }
+    }
+
+    public static KukaAreaModel TargetAreaModel
+    {
+        get => _target_area;
+        set
+        {
+            if (value == null) return;
+            if (_target_area != null && Chump_kuka.Env.BindAreaName == value.AreaName) return;        // 非首次綁定時，跳過資料相同的處理
+
+            Chump_kuka.Env.TargetAreaName = value.AreaName;
+            _target_area = value;
         }
     }
 

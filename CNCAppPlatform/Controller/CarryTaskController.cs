@@ -9,10 +9,7 @@ namespace Chump_kuka
 {
     internal class CarryTaskController
     {
-        public async static Task<bool> StartListenKuka(string url)
-        {
-            return await HttpListenerDispatcher.StartKukaListener(url);
-        }
+        
     }
 
     

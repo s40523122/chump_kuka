@@ -7,6 +7,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,6 +20,11 @@ namespace Chump_kuka
         private static KukaApiDispatcher _api_task;
 
         public static event PropertyChangedEventHandler CarryTaskPub;
+
+        public static async Task<bool> StartListen(string url)
+        {
+            return await HttpListenerDispatcher.StartKukaListener(url);
+        }
 
         public static async Task<bool> ConnectAndCheck(string url)
         {
@@ -55,13 +62,14 @@ namespace Chump_kuka
             if (_conn)
             {
                 _api_task.AppendCarryTask();
-                CarryTaskPub?.Invoke(null, null);
             }
             else
             {
                 // 傳送節點資訊，讓伺服器處理
                 CommController.SendCarryTask();
-            }  
+            }
+
+            CarryTaskPub?.Invoke(null, null);
         }
     }
 }

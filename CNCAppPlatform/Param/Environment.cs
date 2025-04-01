@@ -14,6 +14,7 @@ namespace Chump_kuka
         private static string _kuka_api_url;
         private static IPEndPoint _sensor_modbus_tcp;
         private static string _area_name = "";
+        private static string _target_name = "";
 
         public static event PropertyChangedEventHandler EnvChanged;
 
@@ -145,6 +146,26 @@ namespace Chump_kuka
 
                 EnvChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(BindAreaName)));
                 INiReader.WriteINIFile(layout_path, "Control", "bind_area_name", value);
+            }
+        }
+        
+        public static string TargetAreaName
+        {
+            get
+            {
+                // 首次訪問才需要讀取文件，降低文件讀寫頻率
+                if (string.IsNullOrEmpty(_target_name))
+                    _target_name = INiReader.ReadINIFile(layout_path, "Control", "target_area_name");
+
+                return _target_name;
+            }
+            set
+            {
+                // 如果更新資料同原始，不做任動作
+                if (_target_name != value)
+                    _target_name = value;
+
+                INiReader.WriteINIFile(layout_path, "Control", "target_area_name", value);
             }
         }
     }

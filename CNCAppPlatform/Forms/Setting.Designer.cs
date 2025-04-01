@@ -34,7 +34,7 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.progress_msg = new iCAPS.ScaleLabel();
             this.scaleLabel5 = new iCAPS.ScaleLabel();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.bind_comboBox = new System.Windows.Forms.ComboBox();
             this.scaleLabel6 = new iCAPS.ScaleLabel();
             this.server_check = new iCAPS.DoubleImg();
             this.scaleLabel3 = new iCAPS.ScaleLabel();
@@ -67,6 +67,8 @@
             this.kuka_response_url = new System.Windows.Forms.TextBox();
             this.record_log_check = new iCAPS.DoubleImg();
             this.kuka_response_check = new iCAPS.DoubleImg();
+            this.scaleLabel13 = new iCAPS.ScaleLabel();
+            this.target_comboBox = new System.Windows.Forms.ComboBox();
             this.scalePadding1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.server_check)).BeginInit();
@@ -155,6 +157,9 @@
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.SetColumnRatio = 5F;
             this.scalePadding1.SetRowRatio = 3F;
             this.scalePadding1.Size = new System.Drawing.Size(981, 580);
@@ -166,10 +171,10 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel1.Controls.Add(this.progressBar1, 0, 10);
-            this.tableLayoutPanel1.Controls.Add(this.progress_msg, 0, 9);
+            this.tableLayoutPanel1.Controls.Add(this.progressBar1, 0, 11);
+            this.tableLayoutPanel1.Controls.Add(this.progress_msg, 0, 10);
             this.tableLayoutPanel1.Controls.Add(this.scaleLabel5, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.comboBox1, 1, 7);
+            this.tableLayoutPanel1.Controls.Add(this.bind_comboBox, 1, 7);
             this.tableLayoutPanel1.Controls.Add(this.scaleLabel6, 0, 7);
             this.tableLayoutPanel1.Controls.Add(this.server_check, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.scaleLabel3, 0, 0);
@@ -188,11 +193,13 @@
             this.tableLayoutPanel1.Controls.Add(this.kuka_response_url, 1, 5);
             this.tableLayoutPanel1.Controls.Add(this.record_log_check, 2, 4);
             this.tableLayoutPanel1.Controls.Add(this.kuka_response_check, 2, 5);
+            this.tableLayoutPanel1.Controls.Add(this.scaleLabel13, 0, 8);
+            this.tableLayoutPanel1.Controls.Add(this.target_comboBox, 1, 8);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(49, 17);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 11;
+            this.tableLayoutPanel1.RowCount = 12;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
@@ -201,7 +208,8 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 39F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 32F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 2F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(882, 545);
@@ -242,15 +250,15 @@
             this.scaleLabel5.Text = "KUKA API 回應 URL";
             this.scaleLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // comboBox1
+            // bind_comboBox
             // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(267, 275);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(435, 20);
-            this.comboBox1.TabIndex = 6;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.bind_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.bind_comboBox.FormattingEnabled = true;
+            this.bind_comboBox.Location = new System.Drawing.Point(267, 275);
+            this.bind_comboBox.Name = "bind_comboBox";
+            this.bind_comboBox.Size = new System.Drawing.Size(435, 20);
+            this.bind_comboBox.TabIndex = 6;
+            this.bind_comboBox.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // scaleLabel6
             // 
@@ -261,7 +269,7 @@
             this.scaleLabel6.Name = "scaleLabel6";
             this.scaleLabel6.Size = new System.Drawing.Size(258, 38);
             this.scaleLabel6.TabIndex = 3;
-            this.scaleLabel6.Text = "綁定區域";
+            this.scaleLabel6.Text = "綁定當前區域";
             this.scaleLabel6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // server_check
@@ -350,7 +358,7 @@
             this.scaleLabel1.Name = "scaleLabel1";
             this.scaleLabel1.Size = new System.Drawing.Size(258, 38);
             this.scaleLabel1.TabIndex = 8;
-            this.scaleLabel1.Text = "iCAPS 伺服器 TCP";
+            this.scaleLabel1.Text = "iCAPS 伺服器 UDP";
             this.scaleLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tableLayoutPanel2
@@ -696,6 +704,28 @@
             this.kuka_response_check.Tag = ((object)(resources.GetObject("kuka_response_check.Tag")));
             this.kuka_response_check.Visible = false;
             // 
+            // scaleLabel13
+            // 
+            this.scaleLabel13.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scaleLabel13.Factor = 0.25F;
+            this.scaleLabel13.Font = new System.Drawing.Font("微軟正黑體", 9.5F, System.Drawing.FontStyle.Bold);
+            this.scaleLabel13.Location = new System.Drawing.Point(3, 304);
+            this.scaleLabel13.Name = "scaleLabel13";
+            this.scaleLabel13.Size = new System.Drawing.Size(258, 38);
+            this.scaleLabel13.TabIndex = 3;
+            this.scaleLabel13.Text = "搬運目標區域";
+            this.scaleLabel13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // target_comboBox
+            // 
+            this.target_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.target_comboBox.FormattingEnabled = true;
+            this.target_comboBox.Location = new System.Drawing.Point(267, 313);
+            this.target_comboBox.Name = "target_comboBox";
+            this.target_comboBox.Size = new System.Drawing.Size(435, 20);
+            this.target_comboBox.TabIndex = 6;
+            this.target_comboBox.SelectedIndexChanged += new System.EventHandler(this.target_comboBox_SelectedIndexChanged);
+            // 
             // Setting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -738,7 +768,7 @@
         private iCAPS.ScaleLabel scaleLabel6;
         private System.Windows.Forms.TextBox kuka_request_url;
         private System.Windows.Forms.TableLayoutPanel radio_button_group;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox bind_comboBox;
         private iCAPS.ScaleButton scaleButton1;
         private iCAPS.ScaleLabel scaleLabel2;
         private iCAPS.DoubleImg sensor_check;
@@ -764,5 +794,7 @@
         private System.Windows.Forms.TextBox kuka_response_url;
         private iCAPS.DoubleImg record_log_check;
         private iCAPS.DoubleImg kuka_response_check;
+        private iCAPS.ScaleLabel scaleLabel13;
+        private System.Windows.Forms.ComboBox target_comboBox;
     }
 }

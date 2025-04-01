@@ -38,9 +38,36 @@ namespace Chump_kuka.Forms
             dataGridView1.Resize += DataGridView1_Resize;
 
             KukaApiController.CarryTaskPub += KukaApiController_CarryTaskPub;
+            LocalAreaController.StepChanged += LocalAreaController_StepChanged;
+            LocalAreaController.ButtonPush += (s, e) => scaleButton1_Click(s, e);
 
             // 訂閱 ModbusTCP 以更新貨架狀態圖片
             //KukaParm.AreaStatusChanged += (_sender, _e) => bind_area_control.UpdateContainerImage(BindAreaController.BindArea.NodeStatus.ToArray());
+        }
+
+        private void LocalAreaController_StepChanged(object sender, Dispatchers.HttpListenerDispatcher.HeardEventArgs e)
+        {
+            switch (e.Step)
+            {
+                case 1:
+                    Light(2);
+                    break;
+                case 2:
+                    Light(3);
+                    LocalAreaController.PubRobotIn();
+                    break;
+                case 4:
+                    Light(4);
+                    LocalAreaController.PubRobotOut();
+                    break;
+                case 5:
+                    Light(5);
+                    LocalAreaController.PubCarryOver();
+                    break;
+                case 7:
+                    Light(0);
+                    break;
+            }
         }
 
         private void F02_MainMission_VisibleChanged(object sender, EventArgs e)
@@ -138,6 +165,20 @@ namespace Chump_kuka.Forms
             else if (dialogResult == DialogResult.No)
             {
                 //do something else
+            }
+        }
+
+        public void Light(int index)
+        {
+            DoubleImg[] list = new DoubleImg[] { led_idle, led_turtle_in, led_bot_move, led_bot_in, led_bot_out, led_task_over};
+            for (int i = 0; i < list.Length; i++)
+            {
+                if (i == index)
+                {
+                    list[i].Change = true;
+                    continue;
+                }
+                list[i].Change = false;
             }
         }
 

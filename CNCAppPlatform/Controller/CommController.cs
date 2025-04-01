@@ -19,9 +19,32 @@ namespace Chump_kuka.Controller
     {
         private static UdpDispatcher _udp_listener;
         private static bool _is_server = false;
+
+        public static event EventHandler<HttpListenerDispatcher.HeardEventArgs> StepChanged;
+
         static CommController()
         {
-            
+            HttpListenerDispatcher.Heard += HttpListenerDispatcher_Heard; ;
+        }
+
+        private static void HttpListenerDispatcher_Heard(object sender, HttpListenerDispatcher.HeardEventArgs e)
+        {
+            if (e.AreaCode == KukaParm.BindAreaModel.AreaCode)
+            {
+                PubToLocalController(sender, e);     // 傳送至下一階段
+            }
+            else
+            {
+                // 若為其他區域，則傳送至其他模組中
+                string message = JsonConvert.SerializeObject(e, Formatting.Indented);
+
+                Send("heard", message);
+            }
+        }
+
+        private static void PubToLocalController(object sender, HttpListenerDispatcher.HeardEventArgs e)
+        {
+            StepChanged?.Invoke(sender, e);     // 傳送至下一階段
         }
 
         public static void Init(bool  is_server, IPEndPoint listen_info)
@@ -120,10 +143,15 @@ namespace Chump_kuka.Controller
 
             // 解析回應字串
             MyCommModel response_body = JsonConvert.DeserializeObject<MyCommModel>(e.Message);
+
             switch (response_body.Type)
             {
                 case "carry":
-                    await MsgBox.ShowFlash("接收到搬運任務", "Sever", 1500);
+                    MsgBox.Show("接收到搬運任務", "Sever");
+                    List<CarryNode> nodes = JsonConvert.DeserializeObject<List<CarryNode>>(response_body.Message);
+                    KukaParm.StartNode = nodes[0];
+                    KukaParm.GoalNode = nodes[1];
+                    KukaApiController.SendCarryTask();
                     break;
                 case "info":
                     //MsgBox.Show("e.Message","Server");
@@ -163,6 +191,13 @@ namespace Chump_kuka.Controller
             {
                 switch (response_body.Type)
                 {
+                    case "heard":
+                        HttpListenerDispatcher.HeardEventArgs data = JsonConvert.DeserializeObject<HttpListenerDispatcher.HeardEventArgs>(response_body.Message);
+                        if (data.AreaCode == KukaParm.BindAreaModel.AreaCode)
+                        {
+                            PubToLocalController(sender, data);     // 傳送至下一階段
+                        }
+                        break;
                     case "info":
                         MessageBox.Show(e.Message);
                         break;
@@ -225,6 +260,7 @@ namespace Chump_kuka.Controller
                 _udp_listener?.SendToServer(msg);
             }
         }
+
         public static void Send(string type, string msg)
         {
             // 將訊息封裝成 MyCommModel 後，透過 UDP 傳送

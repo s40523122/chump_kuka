@@ -24,9 +24,15 @@ namespace Chump_kuka.Forms
             InitializeComponent();
 
             //Load += F01_ManualApi_Load;
-            //VisibleChanged += F01_ManualApi_VisibleChanged;
+            VisibleChanged += F01_ManualApi_VisibleChanged; ;
             KukaParm.AreaChanged += KukaParm_AreaChanged;
             KukaParm.CarryChanged += KukaParm_CarryChanged;
+        }
+
+        private void F01_ManualApi_VisibleChanged(object sender, EventArgs e)
+        {
+            KukaParm.StartNode = null;
+            KukaParm.GoalNode = null;
         }
 
         private void KukaParm_CarryChanged(object sender, PropertyChangedEventArgs e)

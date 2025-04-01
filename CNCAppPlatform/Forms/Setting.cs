@@ -21,22 +21,24 @@ namespace Chump_kuka.Forms
             InitializeComponent();
             Load += Setting_Load;
 
-            Env.EnvChanged += (s, e) => comboBox1.Text = Env.BindAreaName;
+            Env.EnvChanged += (s, e) => bind_comboBox.Text = Env.BindAreaName;
             KukaParm.AreaChanged += AreaChanged; ;
             // VisibleChanged += (s, e) => comboBox1.Text = KukaParm.BindArea?.AreaName;
 
-            comboBox1.Items.Add("加工區");
+            bind_comboBox.Items.Add("加工區");
         }
 
         private void AreaChanged(object sender, PropertyChangedEventArgs e)
         {
-            comboBox1.Invoke(new Action(() =>
+            bind_comboBox.Invoke(new Action(() =>
             {
                 // 當區域列表出現變化時，同步更新綁定區域的下拉式選單，以便及時更改綁定區域
-                comboBox1.Items.Clear();
+                bind_comboBox.Items.Clear();
+                target_comboBox.Items.Clear();
                 foreach (KukaAreaModel area in KukaParm.KukaAreaModels)
                 {
-                    comboBox1.Items.Add(area.AreaName);
+                    bind_comboBox.Items.Add(area.AreaName);
+                    target_comboBox.Items.Add(area.AreaName);
                 }
             }));
             
@@ -53,7 +55,8 @@ namespace Chump_kuka.Forms
             tcp_record_port.Text = Env.RecordLogTcpPort ?? "6400";
             kuka_response_url.Text = Env.KukaResponseUrl ?? "";
 
-            comboBox1.Text = Env.BindAreaName ?? "";
+            bind_comboBox.Text = Env.BindAreaName ?? "";
+            target_comboBox.Text = Env.TargetAreaName ?? "";
         }
 
         private async Task RunTask(int start_val, int end_val, string running_msg, Task task)
@@ -146,7 +149,7 @@ namespace Chump_kuka.Forms
             if (!Env.ICapsServer)
                 return;
 
-            bool isconn = await CarryTaskController.StartListenKuka(kuka_response_url.Text);
+            bool isconn = await KukaApiController.StartListen(kuka_response_url.Text);
             kuka_response_check.Change = isconn;
             kuka_response_check.Visible = true;
 
@@ -171,7 +174,11 @@ namespace Chump_kuka.Forms
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            KukaParm.BindAreaModel = KukaAreaModel.Find(comboBox1.Text, KukaParm.KukaAreaModels);
+            KukaParm.BindAreaModel = KukaAreaModel.Find(bind_comboBox.Text, KukaParm.KukaAreaModels);
+        }
+        private void target_comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            KukaParm.TargetAreaModel = KukaAreaModel.Find(target_comboBox.Text, KukaParm.KukaAreaModels);
         }
 
         private void switch_client_CheckedChanged(object sender, EventArgs e)

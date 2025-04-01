@@ -48,11 +48,11 @@
             this.led_task_over = new iCAPS.DoubleImg();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel8 = new iCAPS.ScaleLabel();
-            this.bind_area_control = new Chump_kuka.Controls.KukaAreaControl();
             this.scaleButton1 = new iCAPS.ScaleButton();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel9 = new iCAPS.ScaleLabel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.bind_area_control = new Chump_kuka.Controls.KukaAreaControl();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.myPanel1.SuspendLayout();
@@ -375,25 +375,6 @@
             this.scaleLabel8.Text = "區域狀態";
             this.scaleLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // bind_area_control
-            // 
-            this.bind_area_control.AreaName = "No Area Bind";
-            this.bind_area_control.AreaNode = new string[] {
-        "1",
-        "2",
-        "3"};
-            this.bind_area_control.Checked = false;
-            this.bind_area_control.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bind_area_control.Location = new System.Drawing.Point(0, 54);
-            this.bind_area_control.Margin = new System.Windows.Forms.Padding(0);
-            this.bind_area_control.Name = "bind_area_control";
-            this.bind_area_control.NodeStatus = new int[] {
-        0,
-        0,
-        0};
-            this.bind_area_control.Size = new System.Drawing.Size(503, 327);
-            this.bind_area_control.TabIndex = 0;
-            // 
             // scaleButton1
             // 
             this.scaleButton1.BackColor = System.Drawing.SystemColors.Control;
@@ -446,6 +427,25 @@
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.Size = new System.Drawing.Size(567, 376);
             this.dataGridView1.TabIndex = 1;
+            // 
+            // bind_area_control
+            // 
+            this.bind_area_control.AreaName = "No Area Bind";
+            this.bind_area_control.AreaNode = new string[] {
+        "1",
+        "2",
+        "3"};
+            this.bind_area_control.Checked = false;
+            this.bind_area_control.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bind_area_control.Location = new System.Drawing.Point(0, 54);
+            this.bind_area_control.Margin = new System.Windows.Forms.Padding(0);
+            this.bind_area_control.Name = "bind_area_control";
+            this.bind_area_control.NodeStatus = new int[] {
+        0,
+        0,
+        0};
+            this.bind_area_control.Size = new System.Drawing.Size(503, 327);
+            this.bind_area_control.TabIndex = 0;
             // 
             // f02_MainMission
             // 

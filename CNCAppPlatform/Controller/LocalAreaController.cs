@@ -1,5 +1,6 @@
 ﻿using CefSharp.DevTools.CSS;
 using Chump_kuka.Controls;
+using Chump_kuka.Dispatchers;
 using iCAPS;
 using Newtonsoft.Json;
 using System;
@@ -18,9 +19,16 @@ namespace Chump_kuka.Controller
         private static ModbusTCPDispatcher _sensor_dispatcher = null;
         private static List<int> _record_node_status = null;      // 紀錄的區域狀態
 
+        public static event EventHandler<HttpListenerDispatcher.HeardEventArgs> StepChanged;
+        public static event EventHandler<ButtonPushEventArgs> ButtonPush;
+
         static LocalAreaController()
         {
             _sensor_dispatcher = new ModbusTCPDispatcher();
+
+            CommController.StepChanged += (s, e) => StepChanged?.Invoke(s, e);
+
+
         }
 
         public async static Task<bool> BuildBindArea(IPEndPoint modbus_tco_ip)
@@ -51,6 +59,7 @@ namespace Chump_kuka.Controller
             }
             
             KukaParm.BindAreaModel = KukaAreaModel.Find(Env.BindAreaName, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
+            KukaParm.TargetAreaModel = KukaAreaModel.Find(Env.TargetAreaName, KukaParm.KukaAreaModels);
 
             if (KukaParm.BindAreaModel == null)
             {
@@ -77,6 +86,9 @@ namespace Chump_kuka.Controller
         private static void ModbusTCPDispatcher_SensorRead(object sender, SensorDataEventArgs e)
         {
             KukaParm.BindAreaModel.NodeStatus = ToNodeStatus(e.Data);
+            int data_length = e.Data.Length;
+            ButtonPush?.Invoke(sender, new ButtonPushEventArgs(e.Data[data_length]));
+
         }
         private static List<int> ToNodeStatus(bool[] input_readers)
         {
@@ -177,8 +189,8 @@ namespace Chump_kuka.Controller
                 };
                 KukaParm.GoalNode = new CarryNode()
                 {
-                    Code = "A000000002",
-                    Name = "倉庫區",
+                    Code = KukaParm.TargetAreaModel.AreaCode,       // "A000000002",
+                    Name = KukaParm.TargetAreaModel.AreaName,       // "倉庫區",
                     Type = "NODE_AREA"
                 };
 
@@ -219,6 +231,16 @@ namespace Chump_kuka.Controller
             int _bind_station_no = GetStationNo();
             if (_bind_station_no != 0)
                 SocketDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_end");
+        }
+    }
+
+    public class ButtonPushEventArgs : EventArgs
+    {
+        public bool Status { get; }
+
+        public ButtonPushEventArgs(bool status)
+        {
+            Status = status;
         }
     }
 }
