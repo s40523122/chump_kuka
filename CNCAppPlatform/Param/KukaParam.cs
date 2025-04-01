@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Xml.Linq;
 
@@ -123,6 +124,14 @@ public static class KukaParm
                     AreaStatusChanged?.Invoke(sender, e);  // sender 直接就是 Model
                 };
 
+            }
+            try
+            {
+                AreaChanged?.Invoke(null, null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
         }
     }

@@ -30,12 +30,16 @@ namespace Chump_kuka.Forms
 
         private void AreaChanged(object sender, PropertyChangedEventArgs e)
         {
-            // 當區域列表出現變化時，同步更新綁定區域的下拉式選單，以便及時更改綁定區域
-            comboBox1.Items.Clear();
-            foreach (KukaAreaModel area in KukaParm.KukaAreaModels)
+            comboBox1.Invoke(new Action(() =>
             {
-                comboBox1.Items.Add(area.AreaName);
-            }
+                // 當區域列表出現變化時，同步更新綁定區域的下拉式選單，以便及時更改綁定區域
+                comboBox1.Items.Clear();
+                foreach (KukaAreaModel area in KukaParm.KukaAreaModels)
+                {
+                    comboBox1.Items.Add(area.AreaName);
+                }
+            }));
+            
         }
 
         private void Setting_Load(object sender, EventArgs e)

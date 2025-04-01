@@ -23,20 +23,10 @@ namespace Chump_kuka.Forms
         {
             InitializeComponent();
 
-            Load += F01_ManualApi_Load;
+            //Load += F01_ManualApi_Load;
             //VisibleChanged += F01_ManualApi_VisibleChanged;
             KukaParm.AreaChanged += KukaParm_AreaChanged;
             KukaParm.CarryChanged += KukaParm_CarryChanged;
-            //KukaParm.AreaStatusChanged += KukaParm_NodeStatusChanged;
-        }
-
-        private void KukaParm_NodeStatusChanged(object sender, PropertyChangedEventArgs e)
-        {
-            //List<KukaAreaControl> areas = tableLayoutPanel2.Controls.OfType<KukaAreaControl>().ToList();
-            //KukaAreaControl bind_area = KukaAreaControl.Find(KukaParm.BindArea.AreaName, areas);
-
-            //KukaAreaControl change_control = (sender as KukaAreaModel).UserControl;
-            //change_control.UpdateContainerImage((sender as KukaAreaModel).NodeStatus.ToArray());
         }
 
         private void KukaParm_CarryChanged(object sender, PropertyChangedEventArgs e)
