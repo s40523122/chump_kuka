@@ -61,7 +61,7 @@ namespace Chump_kuka.Controls
             Resize += KukaRobotStatus_Resize;       // 自動調整分頁字體大小
 
             tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;       // 切換分頁時，顯示內容
-            KukaParm.RobotStatusChanged += KukaParm_PropertyChanged;       // 自動更新機器人資訊
+            
             
             // KukaApiController.GetRobotStatus();     // 加入機器人資訊訪問
         }
@@ -96,35 +96,41 @@ namespace Chump_kuka.Controls
                 .Where(tab => !robotIds.Contains(tab.Text))
                 .ToList()
                 .ForEach(tab => tabControl1.TabPages.Remove(tab));
-
-            // 新增不存在於 TabControl 中的 TabPage
-            robotIds
-                .Where(tabName => !tabControl1.TabPages.Cast<TabPage>().Any(tab => tab.Text == tabName))
-                .ToList()
-                .ForEach(tabName => tabControl1.TabPages.Add(new TabPage(tabName) { BackColor = Color.White, Padding = new Padding(15) } ));
-
-            // 將按鈕的 Parent 設置為當前 TabPage
-            tableLayoutPanel1.Parent = tabControl1.SelectedTab;
-
-            // 因為 api 返回順序不固定，因此需要有一個尋找順序的機制
-            for (int current_index = 0; current_index < robotIds.Count; current_index++)
+            
+            tabControl1.Invoke(new Action(() =>
             {
-                if (robotIds[current_index] == tabControl1.SelectedTab.Text)
+                // 新增不存在於 TabControl 中的 TabPage
+                robotIds
+                    .Where(tabName => !tabControl1.TabPages.Cast<TabPage>().Any(tab => tab.Text == tabName))
+                    .ToList()
+                    .ForEach(tabName => tabControl1.TabPages.Add(new TabPage(tabName) { BackColor = Color.White, Padding = new Padding(15) }));
+
+                // 將按鈕的 Parent 設置為當前 TabPage
+                tableLayoutPanel1.Parent = tabControl1.SelectedTab;
+
+                // 因為 api 返回順序不固定，因此需要有一個尋找順序的機制
+                for (int current_index = 0; current_index < robotIds.Count; current_index++)
                 {
-                    robot_id.Text = (string)KukaParm.RobotStatusInfos[current_index]["robotId"];
-                    robot_type.Text = (string)KukaParm.RobotStatusInfos[current_index]["robotType"];
-                    container_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["containerCode"];
-                    map_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["mapCode"];
-                    Dictionary<string, string> status_dict = new Dictionary<string, string>() { { "1", "離場" }, { "2", "離線" }, { "3", "空閒" }, { "4", "任務中" }, { "5", "充電中" }, { "6", "更新中" }, { "7", "異常" } };
-                    status.Text = status_dict[(string)KukaParm.RobotStatusInfos[current_index]["status"]];
-                    Dictionary<string, string> occupy_dict = new Dictionary<string, string>() { { "0", "未占用" }, { "1", "占用中" } };
-                    occupy_status.Text = occupy_dict[(string)KukaParm.RobotStatusInfos[current_index]["occupyStatus"]];
-                    battery_level.Text = (string)KukaParm.RobotStatusInfos[current_index]["batteryLevel"];
-                    node_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["nodeCode"];
-                    update_time.Text = (string)KukaParm.RobotStatusInfos[current_index]["updateTime"];
-                    return ;
+                    if (robotIds[current_index] == tabControl1.SelectedTab.Text)
+                    {
+                        robot_id.Text = (string)KukaParm.RobotStatusInfos[current_index]["robotId"];
+                        robot_type.Text = (string)KukaParm.RobotStatusInfos[current_index]["robotType"];
+                        container_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["containerCode"];
+                        map_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["mapCode"];
+                        Dictionary<string, string> status_dict = new Dictionary<string, string>() { { "1", "離場" }, { "2", "離線" }, { "3", "空閒" }, { "4", "任務中" }, { "5", "充電中" }, { "6", "更新中" }, { "7", "異常" } };
+                        status.Text = status_dict[(string)KukaParm.RobotStatusInfos[current_index]["status"]];
+                        Dictionary<string, string> occupy_dict = new Dictionary<string, string>() { { "0", "未占用" }, { "1", "占用中" } };
+                        occupy_status.Text = occupy_dict[(string)KukaParm.RobotStatusInfos[current_index]["occupyStatus"]];
+                        battery_level.Text = (string)KukaParm.RobotStatusInfos[current_index]["batteryLevel"];
+                        node_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["nodeCode"];
+                        update_time.Text = (string)KukaParm.RobotStatusInfos[current_index]["updateTime"];
+                        return;
+                    }
                 }
-            }
+            }));
+            
+
+            
         }
 
         private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
@@ -145,6 +151,7 @@ namespace Chump_kuka.Controls
             if (DesignMode) return;     // 若在設計階段，不執行以下內容。( 需在 Load 事件中才有用)
 
             tabControl1.Controls.RemoveAt(0);
+            KukaParm.RobotStatusChanged += KukaParm_PropertyChanged;       // 自動更新機器人資訊
         }
 
         private void KukaRobotStatus_Resize(object sender, EventArgs e)
