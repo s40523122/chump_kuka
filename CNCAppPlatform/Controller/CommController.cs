@@ -24,6 +24,36 @@ namespace Chump_kuka.Controller
             
         }
 
+        public static void Init(bool  is_server, IPEndPoint listen_info)
+        {
+            _is_server = is_server;
+
+            // 初始化，移除所有綁定事件
+            KukaParm.RobotStatusChanged -= KukaParm_RobotStatusChanged;
+            KukaParm.AreaStatusChanged -= KukaParm_AreaStatusChanged;
+
+            // 重新建立新的 UDP 伺服器實例
+            _udp_listener?.Close();
+            _udp_listener = new UdpDispatcher(listen_info);
+
+            // 若模組被規劃為伺服器時，加入更新事件
+            // 反之，加入 UDP 群組，等待訊息
+            if (!is_server)
+            {
+                _udp_listener?.JoinGroup();
+                _udp_listener.MessageReceived += when_client_MessageReceived;
+                SayHi();
+            }
+
+            else
+            {
+                KukaParm.RobotStatusChanged += KukaParm_RobotStatusChanged;          // 伺服器機器人資訊更新時，發佈到客戶端
+                _udp_listener.MessageReceived += when_server_MessageReceived;
+            }
+
+            KukaParm.AreaStatusChanged += KukaParm_AreaStatusChanged;       // 當貨架狀態更新時，同步所有模組
+        }
+
         private static void KukaParm_RobotStatusChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             try
@@ -57,43 +87,13 @@ namespace Chump_kuka.Controller
                 };
 
                 string jsonOutput = JsonConvert.SerializeObject(comm_model, Formatting.Indented);
-                
+
                 Send(jsonOutput);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("JSON 序列化失敗：" + ex.Message, "錯誤");
-            }   
-        }
-
-        public static void Init(bool  is_server, IPEndPoint listen_info)
-        {
-            _is_server = is_server;
-
-            // 初始化，移除所有綁定事件
-            KukaParm.RobotStatusChanged -= KukaParm_RobotStatusChanged;
-            KukaParm.AreaStatusChanged -= KukaParm_AreaStatusChanged;
-
-            // 重新建立新的 UDP 伺服器實例
-            _udp_listener?.Close();
-            _udp_listener = new UdpDispatcher(listen_info);
-
-            // 若模組被規劃為伺服器時，加入更新事件
-            // 反之，加入 UDP 群組，等待訊息
-            if (!is_server)
-            {
-                _udp_listener?.JoinGroup();
-                _udp_listener.MessageReceived += when_client_MessageReceived;
-                SayHi();
             }
-
-            else
-            {
-                KukaParm.RobotStatusChanged += KukaParm_RobotStatusChanged;
-                _udp_listener.MessageReceived += when_server_MessageReceived;
-            }
-
-            KukaParm.AreaStatusChanged += KukaParm_AreaStatusChanged;       // 無論是否為伺服器，都需要更新區域資料
         }
 
         public static void SayHi()
