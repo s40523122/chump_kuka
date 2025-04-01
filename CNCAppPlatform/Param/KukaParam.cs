@@ -236,29 +236,6 @@ public class KukaAreaModel
 
     public void CompareAndUpdate(KukaAreaModel source_model)
     {
-        //if (source_model != null)
-        //{
-        //    foreach (PropertyInfo prop in typeof(KukaAreaModel).GetProperties())
-        //    {
-        //        if (prop.Name == "UserControls") continue;
-        //        var this_value = prop.GetValue(this);
-        //        var source_value = prop.GetValue(source_model);
-        //        try
-        //        {
-        //            if (source_value != null && !source_value.Equals(this_value))
-        //            {
-        //                prop.SetValue(this_value, source_value);
-        //            }
-        //        }
-        //        catch
-        //        {
-        //            if (source_value != null && (List<int>)source_value.SequenceEqual((List<int>)this_value))
-        //            {
-        //                prop.SetValue(this_value, source_value);
-        //            }
-        //        }
-        //    }
-        //}
         this.AreaName = source_model.AreaName;
         this.AreaType = source_model.AreaType;
         this.NodeList = source_model.NodeList;

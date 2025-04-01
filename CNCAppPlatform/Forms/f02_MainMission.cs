@@ -37,6 +37,7 @@ namespace Chump_kuka.Forms
             SetupDataGridView();
             dataGridView1.Resize += DataGridView1_Resize;
 
+            KukaApiController.CarryTaskPub += KukaApiController_CarryTaskPub;
 
             // 訂閱 ModbusTCP 以更新貨架狀態圖片
             //KukaParm.AreaStatusChanged += (_sender, _e) => bind_area_control.UpdateContainerImage(BindAreaController.BindArea.NodeStatus.ToArray());
@@ -115,6 +116,10 @@ namespace Chump_kuka.Forms
             //}
 
         }
+        private void KukaApiController_CarryTaskPub(object sender, PropertyChangedEventArgs e)
+        {
+            dataGridView1.Rows.Insert(0, new object[] { dataGridView1.Rows.Count, KukaParm.StartNode.Name, KukaParm.GoalNode.Name, DateTime.Now.ToString(@"yyyy/MM/dd HH:mm") });
+        }
 
         private async void scaleButton1_Click(object sender, EventArgs e)
         {
@@ -123,12 +128,12 @@ namespace Chump_kuka.Forms
             // 取得可搬運貨架位置
             bool can_carry = LocalAreaController.GetTaskNode();
 
-            if (!can_carry) return;
+            if (!can_carry) return;     // 不可搬運狀態，跳過
+
             DialogResult dialogResult = MessageBox.Show($"{KukaParm.StartNode?.Name} => {KukaParm.GoalNode?.Name}", "搬運任務", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
-                // KukaApiHandle.AppendCarryTask();
-                dataGridView1.Rows.Insert(0, new object[] { dataGridView1.Rows.Count, KukaParm.StartNode.Name, KukaParm.GoalNode.Name, DateTime.Now.ToString(@"yyyy/MM/dd HH:mm") });
+                KukaApiController.SendCarryTask();
             }
             else if (dialogResult == DialogResult.No)
             {

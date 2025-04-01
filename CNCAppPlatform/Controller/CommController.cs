@@ -114,7 +114,7 @@ namespace Chump_kuka.Controller
         /// <param name="sender"></param>
         /// <param name="e"></param>
         /// <exception cref="NotImplementedException"></exception>
-        private static void when_server_MessageReceived(object sender, Services.Managers.MessageIPEventArgs e)
+        private static async void when_server_MessageReceived(object sender, Services.Managers.MessageIPEventArgs e)
         {
             List<KukaAreaModel> areas;
 
@@ -122,6 +122,9 @@ namespace Chump_kuka.Controller
             MyCommModel response_body = JsonConvert.DeserializeObject<MyCommModel>(e.Message);
             switch (response_body.Type)
             {
+                case "carry":
+                    await MsgBox.ShowFlash("接收到搬運任務", "Sever", 1500);
+                    break;
                 case "info":
                     //MsgBox.Show("e.Message","Server");
                     Console.WriteLine(response_body.Message);
@@ -194,6 +197,23 @@ namespace Chump_kuka.Controller
             }
         }
 
+        public static void SendCarryTask()
+        {
+            CarryNode[] nodes = new CarryNode[2]
+            {
+                KukaParm.StartNode,
+                KukaParm.GoalNode
+            };
+
+            MyCommModel model = new MyCommModel()
+            {
+                Type = "carry",
+                Message = JsonConvert.SerializeObject(nodes, Formatting.Indented)
+            };
+
+            Send(JsonConvert.SerializeObject(model, Formatting.Indented));
+        }
+
         public static void Send(string msg)
         {
             if (_is_server)
@@ -205,6 +225,20 @@ namespace Chump_kuka.Controller
                 _udp_listener?.SendToServer(msg);
             }
         }
+        public static void Send(string type, string msg)
+        {
+            // 將訊息封裝成 MyCommModel 後，透過 UDP 傳送
+            MyCommModel comm_model = new MyCommModel()
+            {
+                Type = type,
+                Message = msg
+            };
+
+            string jsonOutput = JsonConvert.SerializeObject(comm_model, Formatting.Indented);
+
+            Send(jsonOutput);
+        }
+
         private class MyCommModel
         {
             public string Type { get; set; }

@@ -1,9 +1,11 @@
-﻿using Chump_kuka.Dispatchers;
+﻿using Chump_kuka.Controller;
+using Chump_kuka.Dispatchers;
 using iCAPS;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,6 +16,8 @@ namespace Chump_kuka
     {
         private static bool _conn = false;
         private static KukaApiDispatcher _api_task;
+
+        public static event PropertyChangedEventHandler CarryTaskPub;
 
         public static async Task<bool> ConnectAndCheck(string url)
         {
@@ -48,7 +52,16 @@ namespace Chump_kuka
         /// </summary>
         public static void SendCarryTask()
         {
-            _api_task.AppendCarryTask();
+            if (_conn)
+            {
+                _api_task.AppendCarryTask();
+                CarryTaskPub?.Invoke(null, null);
+            }
+            else
+            {
+                // 傳送節點資訊，讓伺服器處理
+                CommController.SendCarryTask();
+            }  
         }
     }
 }

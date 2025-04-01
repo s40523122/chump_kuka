@@ -1,6 +1,7 @@
 ﻿using CefSharp.DevTools.CSS;
 using Chump_kuka.Controls;
 using iCAPS;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -180,6 +181,7 @@ namespace Chump_kuka.Controller
                     Name = "倉庫區",
                     Type = "NODE_AREA"
                 };
+
                 return true;
             }
 
