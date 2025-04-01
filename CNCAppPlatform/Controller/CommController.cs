@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -171,8 +172,12 @@ namespace Chump_kuka.Controller
                         // 若字串為區域類別，解析資料訊息後，將比較後差異處，更新為接收資料
                         List<KukaAreaModel> areas = JsonConvert.DeserializeObject<List<KukaAreaModel>>(response_body.Message);
 
-                        if (KukaParm.KukaAreaModels.Count == 0)
-                            KukaParm.KukaAreaModels = areas;
+                        // 如果接收列表資訊與當前不同，更新當前列表
+                        //if (KukaParm.KukaAreaModels.Count == 0)
+                        //    KukaParm.KukaAreaModels = areas;
+                        string[] code_array = areas.Select(m => m.AreaCode).ToArray();       // 將所有代碼取出為陣列
+                        SyncListWithArray(KukaParm.KukaAreaModels, code_array);
+
 
                         foreach (KukaAreaModel source_area in areas)
                         {
@@ -186,6 +191,18 @@ namespace Chump_kuka.Controller
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private static void SyncListWithArray(List<KukaAreaModel> list, string[] array)
+        {
+            HashSet<string> arraySet = new HashSet<string>(array);
+            HashSet<string> listSet = new HashSet<string>(list.Select(x => x.AreaCode));
+
+            // 移除 `list` 裡 `Code` 不在 `array` 內的物件
+            list.RemoveAll(x => !arraySet.Contains(x.AreaCode));
+
+            // 新增 `array` 內但 `list` 沒有的 `Code`
+            list.AddRange(array.Where(x => !listSet.Contains(x)).Select(code => new KukaAreaModel { AreaCode = code }));
         }
 
         public static void Send(string msg)
