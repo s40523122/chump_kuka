@@ -66,7 +66,7 @@ namespace Chump_kuka
             else
             {
                 // 傳送節點資訊，讓伺服器處理
-                CommController.SendCarryTask();
+                ChatController.SendCarryTask();
             }
 
             CarryTaskPub?.Invoke(null, null);

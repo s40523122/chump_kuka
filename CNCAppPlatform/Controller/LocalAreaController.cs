@@ -26,7 +26,7 @@ namespace Chump_kuka.Controller
         {
             _sensor_dispatcher = new ModbusTCPDispatcher();
 
-            CommController.StepChanged += (s, e) => StepChanged?.Invoke(s, e);
+            ChatController.StepChanged += (s, e) => StepChanged?.Invoke(s, e);
 
 
         }
@@ -202,6 +202,9 @@ namespace Chump_kuka.Controller
 
         public static int GetStationNo()
         {
+            int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaName == KukaParm.BindAreaModel.AreaName);
+            return index == -1 ? 0 : index;
+
             switch (KukaParm.BindAreaModel.AreaName)
             {
                 case "产线作业区":

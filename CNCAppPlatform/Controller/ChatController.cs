@@ -15,14 +15,14 @@ using System.Windows;
 
 namespace Chump_kuka.Controller
 {
-    internal class CommController
+    internal class ChatController
     {
         private static UdpDispatcher _udp_listener;
         private static bool _is_server = false;
 
         public static event EventHandler<HttpListenerDispatcher.HeardEventArgs> StepChanged;
 
-        static CommController()
+        static ChatController()
         {
             HttpListenerDispatcher.Heard += HttpListenerDispatcher_Heard; ;
         }

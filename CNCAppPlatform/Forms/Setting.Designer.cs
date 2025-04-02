@@ -69,6 +69,7 @@
             this.kuka_response_check = new iCAPS.DoubleImg();
             this.scaleLabel13 = new iCAPS.ScaleLabel();
             this.target_comboBox = new System.Windows.Forms.ComboBox();
+            this.station_setting = new iCAPS.ScaleButton();
             this.scalePadding1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.server_check)).BeginInit();
@@ -171,10 +172,9 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel1.Controls.Add(this.progressBar1, 0, 11);
-            this.tableLayoutPanel1.Controls.Add(this.progress_msg, 0, 10);
+            this.tableLayoutPanel1.Controls.Add(this.progressBar1, 0, 12);
+            this.tableLayoutPanel1.Controls.Add(this.progress_msg, 0, 11);
             this.tableLayoutPanel1.Controls.Add(this.scaleLabel5, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.bind_comboBox, 1, 7);
             this.tableLayoutPanel1.Controls.Add(this.scaleLabel6, 0, 7);
             this.tableLayoutPanel1.Controls.Add(this.server_check, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.scaleLabel3, 0, 0);
@@ -195,11 +195,13 @@
             this.tableLayoutPanel1.Controls.Add(this.kuka_response_check, 2, 5);
             this.tableLayoutPanel1.Controls.Add(this.scaleLabel13, 0, 8);
             this.tableLayoutPanel1.Controls.Add(this.target_comboBox, 1, 8);
+            this.tableLayoutPanel1.Controls.Add(this.bind_comboBox, 1, 7);
+            this.tableLayoutPanel1.Controls.Add(this.station_setting, 1, 9);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(49, 17);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 12;
+            this.tableLayoutPanel1.RowCount = 13;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
@@ -209,7 +211,8 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 2F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(882, 545);
@@ -726,6 +729,20 @@
             this.target_comboBox.TabIndex = 6;
             this.target_comboBox.SelectedIndexChanged += new System.EventHandler(this.target_comboBox_SelectedIndexChanged);
             // 
+            // station_setting
+            // 
+            this.station_setting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.station_setting.AutoSize = true;
+            this.station_setting.Factor = 0.3F;
+            this.station_setting.Font = new System.Drawing.Font("微軟正黑體", 9.6F);
+            this.station_setting.Location = new System.Drawing.Point(422, 345);
+            this.station_setting.Name = "station_setting";
+            this.station_setting.Size = new System.Drawing.Size(124, 32);
+            this.station_setting.TabIndex = 7;
+            this.station_setting.Text = "區域站號設定";
+            this.station_setting.UseVisualStyleBackColor = true;
+            this.station_setting.Click += new System.EventHandler(this.station_setting_Click);
+            // 
             // Setting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -796,5 +813,6 @@
         private iCAPS.DoubleImg kuka_response_check;
         private iCAPS.ScaleLabel scaleLabel13;
         private System.Windows.Forms.ComboBox target_comboBox;
+        private iCAPS.ScaleButton station_setting;
     }
 }

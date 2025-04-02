@@ -104,7 +104,7 @@ namespace Chump_kuka.Forms
 
             IPEndPoint listen_ipep = new IPEndPoint(IPAddress.Parse(udp_server_ip.Text), int.Parse(upd_server_port.Text));       // 開啟 UDP 監聽
 
-            CommController.Init(Env.ICapsServer, listen_ipep);
+            ChatController.Init(Env.ICapsServer, listen_ipep);
 
             Env.IcapsServerUdpIp = udp_server_ip.Text;
             Env.IcapsServerUdpPort = upd_server_port.Text;
@@ -185,6 +185,17 @@ namespace Chump_kuka.Forms
         {
             Env.ICapsServer = switch_sever.Checked;
             kuka_request_url.Enabled = tcp_record_ip.Enabled = kuka_response_url.Enabled = Env.ICapsServer;
+        }
+
+        private void station_setting_Click(object sender, EventArgs e)
+        {
+            // List<string> items = new List<string> { "項目1", "項目2", "項目3", "項目4" };
+            List<string> list = KukaParm.KukaAreaModels.Select(m => m.AreaName).ToList();
+            List<string> sortedItems = SortableListForm.ShowDialogAndSort(list);
+
+            // 使用 Sort 來依照 sortedItems 調整順序
+            KukaParm.KukaAreaModels.Sort((a, b) => sortedItems.IndexOf(a.AreaName).CompareTo(sortedItems.IndexOf(b.AreaName)));
+            // MessageBox.Show(KukaParm.KukaAreaModels[0].AreaName);
         }
     }
 }

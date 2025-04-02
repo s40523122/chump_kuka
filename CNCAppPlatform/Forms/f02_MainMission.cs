@@ -204,13 +204,13 @@ namespace Chump_kuka.Forms
 
         private void led_idle_Click(object sender, EventArgs e)
         {
-            CommController.Send("Hi");
+            ChatController.Send("Hi");
         }
 
         private void led_turtle_in_Click(object sender, EventArgs e)
         {
             MessageBox.Show("確定發送 UDP?");
-            CommController.SayHi();
+            ChatController.SayHi();
         }
     }
 }
