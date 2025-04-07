@@ -27,8 +27,14 @@ namespace Chump_kuka.Controller
             HttpListenerDispatcher.Heard += HttpListenerDispatcher_Heard; ;
         }
 
+        /// <summary>
+        /// 監聽 http 訊息後，觸發事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private static void HttpListenerDispatcher_Heard(object sender, HttpListenerDispatcher.HeardEventArgs e)
         {
+            // 若監聽
             if (e.AreaCode == KukaParm.BindAreaModel.AreaCode)
             {
                 PubToLocalController(sender, e);     // 傳送至下一階段

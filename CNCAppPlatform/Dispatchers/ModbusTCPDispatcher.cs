@@ -56,6 +56,11 @@ namespace Chump_kuka
             return modbusService.isConnected;
         }
 
+        public void LightControl(bool state)
+        {
+            modbusService.WriteDO(0, state);
+        }
+
         private void RequestTimer_Tick(object sender, EventArgs e)
         {
             if (RegisterCount == 0) return;

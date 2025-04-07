@@ -117,7 +117,8 @@ namespace Chump_kuka
         /// <returns>DI 狀態陣列</returns>
         public bool[] ReadDI(int count)
         {
-            if (master == null) return new bool[count];
+            if (master == null) 
+                return new bool[count];
             return master.ReadInputs(slaveID, 0, (ushort)count);
         }
 

@@ -71,7 +71,7 @@ namespace Chump_kuka.Controller
             bool isconn = await _sensor_dispatcher.Start(modbus_tco_ip);
             if (isconn)
             {
-                _sensor_dispatcher.RegisterCount = KukaParm.KukaAreaModels.Count * 2 + 1;      // 每個工作站 2 個 sensor + 按鈕 1 個
+                _sensor_dispatcher.RegisterCount = KukaParm.BindAreaModel.NodeList.Count * 2 + 1;      // 每個工作站 2 個 sensor + 按鈕 1 個
                 _sensor_dispatcher.SensorRead += ModbusTCPDispatcher_SensorRead;
             }
 
@@ -86,14 +86,23 @@ namespace Chump_kuka.Controller
         private static void ModbusTCPDispatcher_SensorRead(object sender, SensorDataEventArgs e)
         {
             KukaParm.BindAreaModel.NodeStatus = ToNodeStatus(e.Data);
-            int data_length = e.Data.Length;
-            ButtonPush?.Invoke(sender, new ButtonPushEventArgs(e.Data[data_length]));
+            int data_length = e.Data.Length-1;
+
+            // TODO
+            // 若區域滿載達指定時數後，觸發亮燈
+
+            bool button_state = e.Data[data_length];
+            if (button_state)
+            {
+                ButtonPush?.Invoke(sender, new ButtonPushEventArgs(button_state));
+            }
 
         }
         private static List<int> ToNodeStatus(bool[] input_readers)
         {
             List<int> status = new List<int>();
-            for (int i = 0; i < input_readers.Length - 1; i += 2)
+            int length = input_readers.Length - 3;
+            for (int i = 0; i <= length; i += 2)
             {
                 bool turtle_sensor = input_readers[i];    // 先取出當前索引的值，並遞增索引
                 bool rack_sensor = input_readers[i + 1];    // 取得遞增後的索引值
@@ -105,6 +114,7 @@ namespace Chump_kuka.Controller
                 */
                 status.Add(!rack_sensor ? 0 : (!turtle_sensor ? 1 : 2));
             }
+            
             return status;
         }
 
@@ -198,6 +208,16 @@ namespace Chump_kuka.Controller
             }
 
             return false;
+        }
+
+        public static void TurnOnLight()
+        {
+            _sensor_dispatcher.LightControl(true);
+        }
+
+        public static void TurnOffLight()
+        {
+            _sensor_dispatcher.LightControl(false);
         }
 
         public static int GetStationNo()

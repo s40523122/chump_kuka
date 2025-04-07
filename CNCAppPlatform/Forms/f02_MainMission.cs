@@ -204,7 +204,8 @@ namespace Chump_kuka.Forms
 
         private void led_idle_Click(object sender, EventArgs e)
         {
-            ChatController.Send("Hi");
+            // ChatController.Send("Hi");
+            LocalAreaController.TurnOffLight();
         }
 
         private void led_turtle_in_Click(object sender, EventArgs e)

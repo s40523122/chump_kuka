@@ -192,7 +192,7 @@ namespace Chump_kuka.Dispatchers
                 viewBoardType = "",
                 robotType = "LIFT",
                 robotModels = new string[] { },
-                robotIds = new string[] { "1" },
+                robotIds = new string[] {},
                 priority = 1,
                 containerType = "",
                 containerCode = "",
