@@ -3,6 +3,7 @@ using Chump_kuka.Controls;
 using Chump_kuka.Dispatchers;
 using iCAPS;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +19,7 @@ namespace Chump_kuka.Controller
     {
         private static ModbusTCPDispatcher _sensor_dispatcher = null;
         private static List<int> _record_node_status = null;      // 紀錄的區域狀態
+        private static DateTime? full_time = null;
 
         public static event EventHandler<HttpListenerDispatcher.HeardEventArgs> StepChanged;
         public static event EventHandler<ButtonPushEventArgs> ButtonPush;
@@ -88,9 +90,15 @@ namespace Chump_kuka.Controller
             KukaParm.BindAreaModel.NodeStatus = ToNodeStatus(e.Data);
             int data_length = e.Data.Length-1;
 
-            // TODO
             // 若區域滿載達指定時數後，觸發亮燈
+            bool[] result = e.Data.Take(e.Data.Length - 1).ToArray();
+            bool is_alert = CheckFullAreaAndDuration(result.ToList(), 5);        // 等待5秒
+            if (is_alert)
+            {
+                TurnOnLight();
+            }
 
+            // 若按鈕狀態為 true ，觸發訊息
             bool button_state = e.Data[data_length];
             if (button_state)
             {
@@ -98,6 +106,27 @@ namespace Chump_kuka.Controller
             }
 
         }
+
+        private static bool CheckFullAreaAndDuration(List<bool> statusList, int requiredSeconds)
+        {
+            bool all_dectect = statusList.TrueForAll(x => x == true);
+
+            if (all_dectect)
+            {
+                if (full_time == null)
+                    full_time = DateTime.Now;
+                else if ((DateTime.Now - full_time.Value).TotalSeconds >= requiredSeconds)
+                    return true;
+            }
+            else
+            {
+                full_time = null;
+
+            }
+
+            return false;
+        }
+
         private static List<int> ToNodeStatus(bool[] input_readers)
         {
             List<int> status = new List<int>();
