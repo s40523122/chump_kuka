@@ -39,16 +39,17 @@ namespace Chump_kuka.Dispatchers
                 case 0:
                     if (task_status == "MOVE_BEGIN")
                     {
-                        _area_step++;
+                        area_code = "";
+                        _area_step += 1;
                         Log.Append("MOVE_BEGIN", "INFO", "HttpListenerDispatcher");
                     }
                     else
                         MessageBox.Show("Start -> " + task_status);
                     break;
                 case 1:
-                    if (task_status == "ARRIVED")
+                    if (task_status == "ARRIVE")
                     {
-                        _area_step++;
+                        _area_step += 1;
                         Log.Append("ARRIVED", "INFO", "HttpListenerDispatcher");
                     }
                     else
@@ -57,26 +58,26 @@ namespace Chump_kuka.Dispatchers
                 case 2:
                     if (task_status == "UP_CONTAINER")
                     {
-                        _area_step++;
+                        _area_step += 1;
                         Log.Append("UP_CONTAINER", "INFO", "HttpListenerDispatcher");
                     }
                     else
-                        MessageBox.Show("ARRIVED1 -> " + task_status);
+                        MessageBox.Show("ARRIVE1 -> " + task_status);
                     break;
                 case 3:
                     if (task_status == "MOVE_BEGIN")
                     {
-                        _area_step++;
+                        _area_step += 1;
                         Log.Append("MOVE_BEGIN", "INFO", "HttpListenerDispatcher");
                     }
                     else
                         MessageBox.Show("UP_CONTAINER -> " + task_status);
                     break;
                 case 4:
-                    if (task_status == "ARRIVED")
+                    if (task_status == "ARRIVE")
                     {
-                        _area_step++;
-                        Log.Append("ARRIVED", "INFO", "HttpListenerDispatcher");
+                        _area_step += 1;
+                        Log.Append("ARRIVE", "INFO", "HttpListenerDispatcher");
                     }
                     else
                         MessageBox.Show("MOVE_BEGIN2 -> " + task_status);
@@ -84,16 +85,16 @@ namespace Chump_kuka.Dispatchers
                 case 5:
                     if (task_status == "DOWN_CONTAINER")
                     {
-                        _area_step++;
+                        _area_step += 1;
                         Log.Append("DOWN_CONTAINER", "INFO", "HttpListenerDispatcher");
                     }
                     else
-                        MessageBox.Show("ARRIVED2 -> " + task_status);
+                        MessageBox.Show("ARRIVE2 -> " + task_status);
                     break;
                 case 6:
                     if (task_status == "COMPLETED")
                     {
-                        _area_step++;
+                        _area_step += 1;
                         Log.Append("COMPLETED", "INFO", "HttpListenerDispatcher");
                     }
                     else
@@ -101,6 +102,7 @@ namespace Chump_kuka.Dispatchers
                     break;
                 case 7:
                     // 等同於 case 0
+                    area_code = "";
                     if (task_status == "MOVE_BEGIN")
                     {
                         _area_step = 1;
@@ -111,6 +113,8 @@ namespace Chump_kuka.Dispatchers
                     break;
             }
         }
+
+        static string area_code = "";      // 任務起始區域編碼
 
         private static void _kuka_listener_MessageReceived(object sender, HttpMessageEventArgs e)
         {
@@ -148,7 +152,7 @@ namespace Chump_kuka.Dispatchers
             string task_status = jsonObj["missionStatus"].ToString();
             CalcAreaStep(task_status);      // 計算當前步數
 
-            string area_code = "";      // 任務起始區域編碼
+            
             
             // 從第2步(到達區域)判斷目前區域編碼
             if (_area_step == 2)
@@ -159,7 +163,10 @@ namespace Chump_kuka.Dispatchers
             }
 
             // 觸發接收事件
-            Heard.Invoke(sender, new HeardEventArgs(area_code, _area_step));
+            if (area_code != "")
+            {
+                Heard.Invoke(sender, new HeardEventArgs(area_code, _area_step));
+            }
         }
 
         private static void _kuka_listener_MessageReceived1(object sender, HttpMessageEventArgs e)

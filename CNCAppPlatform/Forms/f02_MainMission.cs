@@ -47,26 +47,33 @@ namespace Chump_kuka.Forms
 
         private void LocalAreaController_StepChanged(object sender, Dispatchers.HttpListenerDispatcher.HeardEventArgs e)
         {
-            switch (e.Step)
+            try
             {
-                case 1:
-                    Light(2);
-                    break;
-                case 2:
-                    Light(3);
-                    LocalAreaController.PubRobotIn();
-                    break;
-                case 4:
-                    Light(4);
-                    LocalAreaController.PubRobotOut();
-                    break;
-                case 5:
-                    Light(5);
-                    LocalAreaController.PubCarryOver();
-                    break;
-                case 7:
-                    Light(0);
-                    break;
+                switch (e.Step)
+                {
+                    case 1:
+                        Light(2);
+                        break;
+                    case 2:
+                        Light(3);
+                        LocalAreaController.PubRobotIn();
+                        break;
+                    case 4:
+                        Light(4);
+                        LocalAreaController.PubRobotOut();
+                        break;
+                    case 5:
+                        Light(5);
+                        LocalAreaController.PubCarryOver();
+                        break;
+                    case 7:
+                        Light(0);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
         }
 
@@ -171,15 +178,18 @@ namespace Chump_kuka.Forms
         public void Light(int index)
         {
             DoubleImg[] list = new DoubleImg[] { led_idle, led_turtle_in, led_bot_move, led_bot_in, led_bot_out, led_task_over};
-            for (int i = 0; i < list.Length; i++)
+            tableLayoutPanel3.Invoke(new Action(() =>
             {
-                if (i == index)
+                for (int i = 0; i < list.Length; i++)
                 {
-                    list[i].Change = true;
-                    continue;
+                    if (i == index)
+                    {
+                        list[i].Change = true;
+                        continue;
+                    }
+                    list[i].Change = false;
                 }
-                list[i].Change = false;
-            }
+            }));
         }
 
         private void led_bot_in_Click(object sender, EventArgs e)

@@ -97,6 +97,10 @@ namespace Chump_kuka.Controller
             {
                 TurnOnLight();
             }
+            else
+            {
+                TurnOffLight();
+            }
 
             // 若按鈕狀態為 true ，觸發訊息
             bool button_state = e.Data[data_length];

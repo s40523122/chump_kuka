@@ -34,7 +34,6 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.progress_msg = new iCAPS.ScaleLabel();
             this.scaleLabel5 = new iCAPS.ScaleLabel();
-            this.bind_comboBox = new System.Windows.Forms.ComboBox();
             this.scaleLabel6 = new iCAPS.ScaleLabel();
             this.server_check = new iCAPS.DoubleImg();
             this.scaleLabel3 = new iCAPS.ScaleLabel();
@@ -69,6 +68,7 @@
             this.kuka_response_check = new iCAPS.DoubleImg();
             this.scaleLabel13 = new iCAPS.ScaleLabel();
             this.target_comboBox = new System.Windows.Forms.ComboBox();
+            this.bind_comboBox = new System.Windows.Forms.ComboBox();
             this.station_setting = new iCAPS.ScaleButton();
             this.scalePadding1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -95,6 +95,9 @@
             this.scalePadding1.Location = new System.Drawing.Point(0, 0);
             this.scalePadding1.Name = "scalePadding1";
             this.scalePadding1.RowCount = 3;
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
@@ -252,16 +255,6 @@
             this.scaleLabel5.TabIndex = 3;
             this.scaleLabel5.Text = "KUKA API 回應 URL";
             this.scaleLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // bind_comboBox
-            // 
-            this.bind_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.bind_comboBox.FormattingEnabled = true;
-            this.bind_comboBox.Location = new System.Drawing.Point(267, 275);
-            this.bind_comboBox.Name = "bind_comboBox";
-            this.bind_comboBox.Size = new System.Drawing.Size(435, 20);
-            this.bind_comboBox.TabIndex = 6;
-            this.bind_comboBox.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // scaleLabel6
             // 
@@ -728,6 +721,16 @@
             this.target_comboBox.Size = new System.Drawing.Size(435, 20);
             this.target_comboBox.TabIndex = 6;
             this.target_comboBox.SelectedIndexChanged += new System.EventHandler(this.target_comboBox_SelectedIndexChanged);
+            // 
+            // bind_comboBox
+            // 
+            this.bind_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.bind_comboBox.FormattingEnabled = true;
+            this.bind_comboBox.Location = new System.Drawing.Point(267, 275);
+            this.bind_comboBox.Name = "bind_comboBox";
+            this.bind_comboBox.Size = new System.Drawing.Size(435, 20);
+            this.bind_comboBox.TabIndex = 6;
+            this.bind_comboBox.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // station_setting
             // 
