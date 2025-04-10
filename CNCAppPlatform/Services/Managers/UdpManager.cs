@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Chump_kuka.Services.Managers
 {
@@ -35,9 +36,17 @@ namespace Chump_kuka.Services.Managers
             {
                 while (true)
                 {
-                    UdpReceiveResult result = await _udp_client.ReceiveAsync();
-                    string message = Encoding.UTF8.GetString(result.Buffer);
-                    MessageReceived?.Invoke(this, new MessageIPEventArgs(result.RemoteEndPoint, message));
+                    try
+                    {
+                        UdpReceiveResult result = await _udp_client.ReceiveAsync();
+                        string message = Encoding.UTF8.GetString(result.Buffer);
+                        MessageReceived?.Invoke(this, new MessageIPEventArgs(result.RemoteEndPoint, message));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+                    
                 }
             });
         }
@@ -77,12 +86,21 @@ namespace Chump_kuka.Services.Managers
         /// <param name="message">要發送的訊息</param>
         public static void SendMulticast(string multicastIp, int port, string message)
         {
+            try
+            {
+                IPAddress multicastAddress = IPAddress.Parse(multicastIp);
+                IPEndPoint remoteEP = new IPEndPoint(multicastAddress, port);
 
-            IPAddress multicastAddress = IPAddress.Parse(multicastIp);
-            IPEndPoint remoteEP = new IPEndPoint(multicastAddress, port);
-
-            byte[] data = Encoding.UTF8.GetBytes(message);
-            _static_client.Send(data, data.Length, remoteEP);
+                byte[] data = Encoding.UTF8.GetBytes(message);
+                IPAddress localAddress = IPAddress.Parse("192.168.68.64");
+                _static_client.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastInterface, localAddress.GetAddressBytes());
+                _static_client.Ttl = 255; // 或更大值
+                _static_client.Send(data, data.Length, remoteEP);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
 
         }
 
@@ -92,8 +110,9 @@ namespace Chump_kuka.Services.Managers
         /// <param name="multicastIp">組播 IP</param>
         public void JoinMulticast(string multicastIp)
         {
+            IPAddress localInterface = IPAddress.Parse("192.168.68.66"); // 你有線網卡的 IP
             IPAddress multicastAddress = IPAddress.Parse(multicastIp);
-            _udp_client.JoinMulticastGroup(multicastAddress);
+            _udp_client.JoinMulticastGroup(multicastAddress, localInterface);
         }
 
         /// <summary>

@@ -54,6 +54,7 @@ namespace Chump_kuka
                 case "station1_call":
                     // 發送 station1_agv_ready
                     await listener.SendMessageAsync("station1_agv_ready");
+
                     break;
                 case "station2_call":
                     // 發送 station1_agv_ready

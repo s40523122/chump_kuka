@@ -18,6 +18,7 @@ namespace Chump_kuka.Forms
     {
         SidePanel1 sidePanel = new SidePanel1();
         private string _bind_area = "";
+        private Timer _idle_timer;
 
         public f02_MainMission()
         {
@@ -27,7 +28,7 @@ namespace Chump_kuka.Forms
             Controls.Add(sidePanel);
 
 
-            //Load += F02_MainMission_Load;
+            
             //VisibleChanged += F02_MainMission_VisibleChanged;
             
             // 當綁定區域更新時，同步更新控制項 UI
@@ -43,6 +44,20 @@ namespace Chump_kuka.Forms
 
             // 訂閱 ModbusTCP 以更新貨架狀態圖片
             //KukaParm.AreaStatusChanged += (_sender, _e) => bind_area_control.UpdateContainerImage(BindAreaController.BindArea.NodeStatus.ToArray());
+
+            Load += F02_MainMission_Load;
+        }
+
+        private void InitIdleTimer()
+        {
+            _idle_timer = new Timer();
+            _idle_timer.Interval = 10000; // 設定間隔為 10000 毫秒 (10 秒)
+            _idle_timer.Tick += (s, e) =>
+            {
+                Light(0);
+                _idle_timer.Enabled = false;
+            };
+            _idle_timer.Enabled = true;
         }
 
         private void LocalAreaController_StepChanged(object sender, Dispatchers.HttpListenerDispatcher.HeardEventArgs e)
@@ -51,20 +66,21 @@ namespace Chump_kuka.Forms
             {
                 switch (e.Step)
                 {
+                    case 0:
+                        LocalAreaController.GetTaskNode();      // 更新區域狀態
+                        break;
                     case 1:
                         Light(2);
                         break;
                     case 2:
                         Light(3);
-                        LocalAreaController.PubRobotIn();
                         break;
                     case 4:
                         Light(4);
-                        LocalAreaController.PubRobotOut();
                         break;
                     case 5:
                         Light(5);
-                        LocalAreaController.PubCarryOver();
+                        _idle_timer.Enabled = true;
                         break;
                     case 7:
                         Light(0);
@@ -106,9 +122,12 @@ namespace Chump_kuka.Forms
 
         private void F02_MainMission_Load(object sender, EventArgs e)
         {
-            SetupDataGridView();
+            // SetupDataGridView();
             // BindAreaController.BindArea?.UserControls.Add(bind_area_control);
             // BindAreaController.UpdateControl(bind_area_control);
+
+            InitIdleTimer();
+
         }
 
         private void SetupDataGridView()
@@ -167,6 +186,7 @@ namespace Chump_kuka.Forms
             DialogResult dialogResult = MessageBox.Show($"{KukaParm.StartNode?.Name} => {KukaParm.GoalNode?.Name}", "搬運任務", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
+                Light(1);       // 表示物料已進站
                 KukaApiController.SendCarryTask();
             }
             else if (dialogResult == DialogResult.No)
@@ -175,6 +195,10 @@ namespace Chump_kuka.Forms
             }
         }
 
+        /// <summary>
+        /// 流程燈號
+        /// </summary>
+        /// <param name="index"></param>
         public void Light(int index)
         {
             DoubleImg[] list = new DoubleImg[] { led_idle, led_turtle_in, led_bot_move, led_bot_in, led_bot_out, led_task_over};

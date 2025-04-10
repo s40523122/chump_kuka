@@ -8,6 +8,8 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -57,6 +59,8 @@ namespace Chump_kuka.Forms
 
             bind_comboBox.Text = Env.BindAreaName ?? "";
             target_comboBox.Text = Env.TargetAreaName ?? "";
+
+            LoadNetworkInterfaces();
         }
 
         private async Task RunTask(int start_val, int end_val, string running_msg, Task task)
@@ -196,6 +200,31 @@ namespace Chump_kuka.Forms
             // 使用 Sort 來依照 sortedItems 調整順序
             KukaParm.KukaAreaModels.Sort((a, b) => sortedItems.IndexOf(a.AreaName).CompareTo(sortedItems.IndexOf(b.AreaName)));
             // MessageBox.Show(KukaParm.KukaAreaModels[0].AreaName);
+        }
+
+        private void LoadNetworkInterfaces()
+        {
+            comboBox1.Items.Clear();
+
+            var interfaces = NetworkInterface.GetAllNetworkInterfaces()
+                .Where(ni =>
+                    ni.OperationalStatus == OperationalStatus.Up &&
+                    ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                .SelectMany(ni => ni.GetIPProperties().UnicastAddresses)
+                .Where(ip => ip.Address.AddressFamily == AddressFamily.InterNetwork)
+                .Select(ip => ip.Address.ToString())
+                .ToList();
+
+            if (interfaces.Count == 0)
+            {
+                comboBox1.Items.Add("沒有可用的 IPv4 網卡");
+                comboBox1.Enabled = false;
+            }
+            else
+            {
+                comboBox1.Items.AddRange(interfaces.ToArray());
+                comboBox1.SelectedIndex = 0;
+            }
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Chump_kuka.Dispatchers
 
         public KukaApiDispatcher(string url)
         {
-            _kuka_api_server = new HttpRequest(url, 60);
+            _kuka_api_server = new HttpRequest(url, 5);
 
             // 設定計時器
             _api_timer = new System.Windows.Forms.Timer();

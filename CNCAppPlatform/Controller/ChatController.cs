@@ -50,6 +50,24 @@ namespace Chump_kuka.Controller
 
         private static void PubToLocalController(object sender, HttpListenerDispatcher.HeardEventArgs e)
         {
+            switch (e.Step)
+            {
+                case 1:     // 
+                    break;
+                case 2:     // 機器人進站
+                    LocalAreaController.PubRobotIn();       // station_agv_star
+                    break;
+                case 4:     // 機器人出站
+                    LocalAreaController.PubRobotOut();      // station_agv_begin
+                    break;
+                case 5:     // 搬運任務完成
+                    LocalAreaController.PubCarryOver();
+                    SendCarryFinish(KukaParm.TargetAreaModel.AreaCode);
+                    break;
+                case 7:
+                    break;
+            }
+
             StepChanged?.Invoke(sender, e);     // 傳送至下一階段
         }
 
@@ -150,38 +168,46 @@ namespace Chump_kuka.Controller
             // 解析回應字串
             MyCommModel response_body = JsonConvert.DeserializeObject<MyCommModel>(e.Message);
 
-            switch (response_body.Type)
+            try
             {
-                case "carry":
-                    MsgBox.Show("接收到搬運任務", "Sever");
-                    List<CarryNode> nodes = JsonConvert.DeserializeObject<List<CarryNode>>(response_body.Message);
-                    KukaParm.StartNode = nodes[0];
-                    KukaParm.GoalNode = nodes[1];
-                    KukaApiController.SendCarryTask();
-                    break;
-                case "info":
-                    //MsgBox.Show("e.Message","Server");
-                    Console.WriteLine(response_body.Message);
-                    KukaParm_AreaStatusChanged(sender, null);
-                    break;
+                switch (response_body.Type)
+                {
+                    case "carry":
+                        MsgBox.Show("接收到搬運任務", "Sever");
+                        List<CarryNode> nodes = JsonConvert.DeserializeObject<List<CarryNode>>(response_body.Message);
+                        KukaParm.StartNode = nodes[0];
+                        KukaParm.GoalNode = nodes[1];
+                        KukaApiController.SendCarryTask();
+                        break;
+                    case "info":
+                        MsgBox.Show("e.Message", "Server");
+                        Console.WriteLine(response_body.Message);
+                        KukaParm_AreaStatusChanged(sender, null);
+                        break;
 
-                case "area":
-                    // 若字串為區域類別，解析資料訊息後，將比較後差異處，更新為接收資料
-                    areas = JsonConvert.DeserializeObject<List<KukaAreaModel>>(response_body.Message);
-                    try
-                    {
-                        foreach (KukaAreaModel source_area in areas)
+                    case "area":
+                        // 若字串為區域類別，解析資料訊息後，將比較後差異處，更新為接收資料
+                        areas = JsonConvert.DeserializeObject<List<KukaAreaModel>>(response_body.Message);
+                        try
                         {
-                            var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaCode == source_area.AreaCode);
-                            base_model.CompareAndUpdate(source_area);
+                            foreach (KukaAreaModel source_area in areas)
+                            {
+                                var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaCode == source_area.AreaCode);
+                                base_model.CompareAndUpdate(source_area);
+                            }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.ToString());
-                    }
-                    break;
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.ToString());
+                        }
+                        break;
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            
         }
 
         /// <summary>
@@ -197,6 +223,10 @@ namespace Chump_kuka.Controller
             {
                 switch (response_body.Type)
                 {
+                    case "finish":
+                        HttpListenerDispatcher.HeardEventArgs _e = new HttpListenerDispatcher.HeardEventArgs(response_body.Message, 0);
+                        StepChanged.Invoke(null, _e);
+                        break;
                     case "heard":
                         HttpListenerDispatcher.HeardEventArgs data = JsonConvert.DeserializeObject<HttpListenerDispatcher.HeardEventArgs>(response_body.Message);
                         if (data.AreaCode == KukaParm.BindAreaModel.AreaCode)
@@ -257,14 +287,41 @@ namespace Chump_kuka.Controller
 
         public static void Send(string msg)
         {
-            if (_is_server)
+            try
             {
-                _udp_listener?.SendToGroup(msg);
+                if (_is_server)
+                {
+                    _udp_listener?.SendToGroup(msg);
+                }
+                else
+                {
+                    _udp_listener?.SendToServer(msg);
+                }
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            
+        }
+
+        /// <summary>
+        /// 當完成搬運任務時，通知目標區域更新狀態
+        /// </summary>
+        /// <param name="area_code"></param>
+        public static void SendCarryFinish(string area_code)
+        {
+            // 如果目標是當前模組，直接觸發步驟 0
+            if (area_code == KukaParm.BindAreaModel.AreaCode)
+            {
+                HttpListenerDispatcher.HeardEventArgs _e = new HttpListenerDispatcher.HeardEventArgs(area_code, 0);
+                StepChanged.Invoke(null, _e);
             }
             else
             {
-                _udp_listener?.SendToServer(msg);
+                Send("finish", area_code);
             }
+            
         }
 
         public static void Send(string type, string msg)
