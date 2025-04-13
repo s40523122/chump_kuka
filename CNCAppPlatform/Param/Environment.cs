@@ -73,6 +73,19 @@ namespace Chump_kuka
             }
         }
 
+        public static string LocalIp
+        {
+            get
+            {
+                string text = INiReader.ReadINIFile(layout_path, "Control", "local_ip");
+                return string.IsNullOrEmpty(text) ? null : text;
+            }
+            set
+            {
+                INiReader.WriteINIFile(layout_path, "Control", "local_ip", value);
+            }
+        }
+
         public static string IcapsServerUdpIp
         {
             get

@@ -11,8 +11,10 @@ namespace Chump_kuka.Services.Managers
     internal class UdpManager
     {
         private UdpClient _udp_client;
-        private static UdpClient _static_client = new UdpClient();      // 靜態發布使用的客戶端，透過靜態發布即便不監聽也可以發布
-        private static int _listen_port;
+        //private static UdpClient _static_client = new UdpClient();      // 靜態發布使用的客戶端，透過靜態發布即便不監聽也可以發布
+        private int _listen_port;
+
+        public bool Enable {  get; set; } = false;
 
         public event EventHandler<MessageIPEventArgs> MessageReceived;     // 接收客戶端訊息時觸發的事件
 
@@ -25,6 +27,13 @@ namespace Chump_kuka.Services.Managers
         {
             _listen_port = port;
             this._udp_client = new UdpClient(port);
+
+            IPAddress localAddress = IPAddress.Parse(Env.LocalIp);
+            _udp_client.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastInterface, localAddress.GetAddressBytes());
+            _udp_client.Ttl = 255; // 或更大值
+
+
+            Enable = true;
         }
 
         /// <summary>
@@ -45,6 +54,7 @@ namespace Chump_kuka.Services.Managers
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex);
+                        Enable = false;
                     }
                     
                 }
@@ -57,10 +67,11 @@ namespace Chump_kuka.Services.Managers
         /// <param name="ip">目標 IP</param>
         /// <param name="port">目標 Port</param>
         /// <param name="message">要發送的訊息</param>
-        public static void SendUnicast(string ip, int port, string message)
+        public void SendUnicast(string ip, int port, string message)
         {
             byte[] data = Encoding.UTF8.GetBytes(message);
-            _static_client.Send(data, data.Length, new IPEndPoint(IPAddress.Parse(ip), port));
+            // _static_client.Send(data, data.Length, new IPEndPoint(IPAddress.Parse(ip), port));
+            _udp_client.Send(data, data.Length, new IPEndPoint(IPAddress.Parse(ip), port));
         }
 
         /// <summary>
@@ -68,13 +79,18 @@ namespace Chump_kuka.Services.Managers
         /// </summary>
         /// <param name="port">目標 Port</param>
         /// <param name="message">要發送的訊息</param>
-        public static void SendBroadcast(int port, string message)
+        public void SendBroadcast(int port, string message)
         {
 
-            _static_client.EnableBroadcast = true; // 開啟廣播
+            //_static_client.EnableBroadcast = true; // 開啟廣播
+            //byte[] data = Encoding.UTF8.GetBytes(message);
+            //_static_client.Send(data, data.Length, new IPEndPoint(IPAddress.Broadcast, port));
+            //_static_client.EnableBroadcast = false;
+
+            _udp_client.EnableBroadcast = true; // 開啟廣播
             byte[] data = Encoding.UTF8.GetBytes(message);
-            _static_client.Send(data, data.Length, new IPEndPoint(IPAddress.Broadcast, port));
-            _static_client.EnableBroadcast = false;
+            _udp_client.Send(data, data.Length, new IPEndPoint(IPAddress.Broadcast, port));
+            _udp_client.EnableBroadcast = false;
 
         }
 
@@ -84,7 +100,7 @@ namespace Chump_kuka.Services.Managers
         /// <param name="multicastIp">組播 IP（範圍 224.0.0.0 ~ 239.255.255.255）</param>
         /// <param name="port">目標 Port</param>
         /// <param name="message">要發送的訊息</param>
-        public static void SendMulticast(string multicastIp, int port, string message)
+        public void SendMulticast(string multicastIp, int port, string message)
         {
             try
             {
@@ -92,14 +108,18 @@ namespace Chump_kuka.Services.Managers
                 IPEndPoint remoteEP = new IPEndPoint(multicastAddress, port);
 
                 byte[] data = Encoding.UTF8.GetBytes(message);
-                IPAddress localAddress = IPAddress.Parse("192.168.68.64");
-                _static_client.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastInterface, localAddress.GetAddressBytes());
-                _static_client.Ttl = 255; // 或更大值
-                _static_client.Send(data, data.Length, remoteEP);
+                // IPAddress localAddress = IPAddress.Parse("192.168.68.64");
+
+                //_static_client.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastInterface, localAddress.GetAddressBytes());
+                //_static_client.Ttl = 255; // 或更大值
+                //_static_client.Send(data, data.Length, remoteEP);
+
+                _udp_client.Send(data, data.Length, remoteEP);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                Enable = false;
             }
 
         }
@@ -110,7 +130,7 @@ namespace Chump_kuka.Services.Managers
         /// <param name="multicastIp">組播 IP</param>
         public void JoinMulticast(string multicastIp)
         {
-            IPAddress localInterface = IPAddress.Parse("192.168.68.66"); // 你有線網卡的 IP
+            IPAddress localInterface = IPAddress.Parse(Env.LocalIp); // 你有線網卡的 IP
             IPAddress multicastAddress = IPAddress.Parse(multicastIp);
             _udp_client.JoinMulticastGroup(multicastAddress, localInterface);
         }

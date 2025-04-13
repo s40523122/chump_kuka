@@ -48,6 +48,7 @@ namespace Chump_kuka.Forms
 
         private void Setting_Load(object sender, EventArgs e)
         {
+            local_ip_combo.Text = Env.LocalIp ?? "";
             switch_client.Checked = !Env.ICapsServer;
             udp_server_ip.Text = Env.IcapsServerUdpIp ?? "";
             upd_server_port.Text = Env.IcapsServerUdpPort ?? "5700";
@@ -59,8 +60,6 @@ namespace Chump_kuka.Forms
 
             bind_comboBox.Text = Env.BindAreaName ?? "";
             target_comboBox.Text = Env.TargetAreaName ?? "";
-
-            LoadNetworkInterfaces();
         }
 
         private async Task RunTask(int start_val, int end_val, string running_msg, Task task)
@@ -165,6 +164,7 @@ namespace Chump_kuka.Forms
 
         private async void scaleButton1_Click(object sender, EventArgs e)
         {
+            Env.LocalIp = local_ip_combo.Text;
             kuka_api_check.Visible = kuka_response_check.Visible = record_log_check.Visible = sensor_check.Visible = server_check.Visible = false;
             // 依序執行連線任務
             await RunTask(15, 20, "等待 iCAPS 伺服器開啟...", ServerTask());
@@ -204,7 +204,7 @@ namespace Chump_kuka.Forms
 
         private void LoadNetworkInterfaces()
         {
-            comboBox1.Items.Clear();
+            local_ip_combo.Items.Clear();
 
             var interfaces = NetworkInterface.GetAllNetworkInterfaces()
                 .Where(ni =>
@@ -217,14 +217,24 @@ namespace Chump_kuka.Forms
 
             if (interfaces.Count == 0)
             {
-                comboBox1.Items.Add("沒有可用的 IPv4 網卡");
-                comboBox1.Enabled = false;
+                local_ip_combo.Items.Add("沒有可用的 IPv4 網卡");
+                local_ip_combo.Enabled = false;
             }
             else
             {
-                comboBox1.Items.AddRange(interfaces.ToArray());
-                comboBox1.SelectedIndex = 0;
+                local_ip_combo.Items.AddRange(interfaces.ToArray());
+                local_ip_combo.SelectedIndex = 0;
             }
+        }
+
+        private void comboBox1_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            //LoadNetworkInterfaces();
+        }
+
+        private void comboBox1_DropDown(object sender, EventArgs e)
+        {
+            LoadNetworkInterfaces();
         }
     }
 }

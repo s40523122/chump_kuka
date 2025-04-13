@@ -24,7 +24,17 @@ namespace Chump_kuka
         public Image ContainerImage
         {
             get { return doubleImg1.Image; }
-            set { doubleImg1.Image = value; }
+            set
+            {
+                try
+                {
+                    doubleImg1.Image = value; 
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
         }
 
         [Description("表示元件是否為已核取狀態。"), Category("自訂值")]

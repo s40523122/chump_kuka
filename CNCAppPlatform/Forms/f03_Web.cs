@@ -24,7 +24,7 @@ namespace Chump_kuka.Forms
 
         private void F03_Web_Load(object sender, EventArgs e)
         {
-            WebView webView = new WebView("http://192.168.68.64:5000/#/monitor/monitor");
+            WebView webView = new WebView("http://192.168.68.53:5000/#/monitor/monitor");
             webView.Embed(myPanel1);
         }
     }

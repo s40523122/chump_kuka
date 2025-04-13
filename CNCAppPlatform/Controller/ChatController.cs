@@ -173,14 +173,16 @@ namespace Chump_kuka.Controller
                 switch (response_body.Type)
                 {
                     case "carry":
-                        MsgBox.Show("接收到搬運任務", "Sever");
+                        //MsgBox.Show("接收到搬運任務", "Sever");
+                        Log.Append("接收到搬運任務", "info", "ChatController");
                         List<CarryNode> nodes = JsonConvert.DeserializeObject<List<CarryNode>>(response_body.Message);
                         KukaParm.StartNode = nodes[0];
                         KukaParm.GoalNode = nodes[1];
                         KukaApiController.SendCarryTask();
                         break;
                     case "info":
-                        MsgBox.Show("e.Message", "Server");
+                        //MsgBox.Show("e.Message", "Server");
+                        Log.Append("接收call", "info", "ChatController");
                         Console.WriteLine(response_body.Message);
                         KukaParm_AreaStatusChanged(sender, null);
                         break;
@@ -235,7 +237,8 @@ namespace Chump_kuka.Controller
                         }
                         break;
                     case "info":
-                        MessageBox.Show(e.Message);
+                        // MessageBox.Show(e.Message);
+                        Log.Append("接收call", "info", "ChatController");
                         break;
 
                     case "robot":
