@@ -21,7 +21,21 @@ namespace Chump_kuka.Controller
         private static List<int> _record_node_status = null;      // 紀錄的區域狀態
         private static DateTime? full_time = null;
 
-        public static event EventHandler<HttpListenerDispatcher.HeardEventArgs> StepChanged;
+        // 定義貨架前後狀態轉換對應的動作：0=無動作, 1=入貨, 2=異常
+        private static readonly Dictionary<(int, int), int> _carry_rules = new Dictionary<(int, int), int>
+            {
+                { (0, 0), 0 },      // 無變化
+                { (0, 1), 2 },      // 錯誤 (空貨架進站)
+                { (0, 2), 0 },      // 貨架進站
+                { (1, 0), 2 },      // 錯誤 (空貨架出站)
+                { (1, 1), 0 },      // 無變化
+                { (1, 2), 1 },      // 入貨
+                { (2, 0), 0 },      // 貨架出站
+                { (2, 1), 0 },      // 取貨
+                { (2, 2), 0 }       // 無變化
+            };
+
+        public static event EventHandler<HttpListenerDispatcher.HeardEventArgs> StepChanged;        // 流程變更事件
         public static event EventHandler<ButtonPushEventArgs> ButtonPush;
 
         static LocalAreaController()
@@ -29,8 +43,6 @@ namespace Chump_kuka.Controller
             _sensor_dispatcher = new ModbusTCPDispatcher();
 
             ChatController.StepChanged += (s, e) => StepChanged?.Invoke(s, e);
-
-
         }
 
         public async static Task<bool> BuildBindArea(IPEndPoint modbus_tco_ip)
@@ -71,13 +83,21 @@ namespace Chump_kuka.Controller
 
             // sensor_dispatcher.Enable = true;
             bool isconn = await _sensor_dispatcher.Start(modbus_tco_ip);
-            if (isconn)
+
+            return isconn;
+        }
+
+        /// <summary>
+        /// 重設區域IO數量，更新綁定區域時需要執行一次
+        /// </summary>
+        public static void ResetIOCount()
+        {
+            if(KukaParm.BindAreaModel != null)
             {
+                _sensor_dispatcher.SensorRead -= ModbusTCPDispatcher_SensorRead;
                 _sensor_dispatcher.RegisterCount = KukaParm.BindAreaModel.NodeList.Count * 2 + 1;      // 每個工作站 2 個 sensor + 按鈕 1 個
                 _sensor_dispatcher.SensorRead += ModbusTCPDispatcher_SensorRead;
             }
-
-            return isconn;
         }
 
         /// <summary>
@@ -169,67 +189,68 @@ namespace Chump_kuka.Controller
             KukaParm.BindAreaModel.UserControls.Add(bind_control);
         }
 
-        public static bool GetTaskNode()
+        public static bool TryCreateCarryTask()
         {
-            List<int> current_status = KukaParm.BindAreaModel.NodeStatus;
+            // 透過與歷史狀態的比對，判定當前區域的動作狀態
+            // 若動作狀態為可出貨，執行以下
+            // * 返回當前是否可派發任務
+            // * 自動設定搬運任務的起點與終點
 
+            List<int> current_status = KukaParm.BindAreaModel?.NodeStatus;       // 當前區域狀態
+
+            // 第一次執行，初始化歷史狀態
             if (_record_node_status == null)
             {
                 _record_node_status = current_status;
                 return false;
             }
 
+            // 若狀態無改變，無需處理
             if (_record_node_status.SequenceEqual(current_status))
             {
-                MsgBox.Show("沒有變化", "區域貨架異常");
+                MsgBox.ShowFlash("沒有變化", "區域貨架異常", 1000);
                 return false;
             }
 
-            // 分析貨架前後變化，判定目前工作狀態
-            var rules = new Dictionary<(int, int), int>
-            {
-                { (0, 0), 0 },      // 無變化
-                { (0, 1), 2 },      // 錯誤
-                { (0, 2), 0 },      // 貨架進站
-                { (1, 0), 2 },      // 錯誤
-                { (1, 1), 0 },      // 無變化
-                { (1, 2), 1 },      // 入貨
-                { (2, 0), 0 },      // 貨架出站
-                { (2, 1), 0 },      // 取貨
-                { (2, 2), 0 }       // 無變化
-            };
+            List<int> node_action = new List<int>();        // 區域動作狀態判定
 
-            List<int> result = new List<int>();
-
+            // 比對每一格的前後狀態，轉換為動作
             for (int i = 0; i < current_status.Count; i++)
             {
-                if (rules.TryGetValue((_record_node_status[i], current_status[i]), out int value))
-                    result.Add(value);
-                else
-                    result.Add(0);
+                var key = (_record_node_status[i], current_status[i]);
+                node_action.Add(_carry_rules.TryGetValue(key, out var action) ? action : 0);
             }
 
-            _record_node_status = current_status;
-
-            if (result.Contains(2) || result.Count(n => n == 1) >= 2)
+            // 處理異常狀況
+            if (node_action.Contains(2))
             {
                 MsgBox.Show("資料異常", "區域貨架異常");
+                return false;
             }
-            else if (result.Contains(1))
+            else if (node_action.Count(n => n == 1) >= 2)
             {
-                // return _bind_area.NodeList[result.IndexOf(1)];
-                string carry_node = KukaParm.BindAreaModel.NodeList[result.IndexOf(1)];
-                // TODO: 怎麼判定目前區域
-                // 1. 獲取當前節點 OK
-                // 2. 獲取目標區域
-                // 3. 透過 laser 判定目標區域是否滿載 
+                MsgBox.Show("可派發任務 > 1 筆", "區域貨架異常");
+                return false;
+            }
+            else if (node_action.Contains(1))
+            {
+                // 目標區域不可進貨（滿載）
+                if (KukaParm.TargetAreaModel.NodeStatus.Count>0 && !KukaParm.TargetAreaModel.NodeStatus.Contains(0))
+                {
+                    MsgBox.Show("目標區域滿載", "搬運任務異常");
+                    return false;
+                }
 
+                string carry_node = KukaParm.BindAreaModel.NodeList[node_action.IndexOf(1)];        // 找到第一個需要入貨的節點
+
+                // 設定搬運起點與終點
                 KukaParm.StartNode = new CarryNode()
                 {
                     Code = carry_node,
                     Name = carry_node,
                     Type = "NODE_POINT"
                 };
+
                 KukaParm.GoalNode = new CarryNode()
                 {
                     Code = KukaParm.TargetAreaModel.AreaCode,       // "A000000002",
@@ -237,9 +258,12 @@ namespace Chump_kuka.Controller
                     Type = "NODE_AREA"
                 };
 
+                _record_node_status = current_status;        // 更新歷史狀態
+
                 return true;
             }
-
+            _record_node_status = current_status;        // 更新歷史狀態
+            // 沒有可派任務
             return false;
         }
 
@@ -256,7 +280,7 @@ namespace Chump_kuka.Controller
         public static int GetStationNo()
         {
             int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaName == KukaParm.BindAreaModel.AreaName);
-            return index == -1 ? 0 : index;
+            return index == -1 ? 0 : index + 1;
 
             switch (KukaParm.BindAreaModel.AreaName)
             {
@@ -268,25 +292,34 @@ namespace Chump_kuka.Controller
                     return 0;
             }
         }
-        public static void PubRobotIn()
+
+        public static void PubReady()
         {
             int _bind_station_no = GetStationNo();
             if (_bind_station_no != 0)
-                SocketDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_star");
+                FeedbackDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_ready");
+        }
+
+        public static void PubRobotFunc()
+        {
+            int _bind_station_no = GetStationNo();
+            if (_bind_station_no != 0)
+                FeedbackDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_star");
         }
 
         public static void PubRobotOut()
         {
             int _bind_station_no = GetStationNo();
             if (_bind_station_no != 0)
-                SocketDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_begin");
+                FeedbackDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_begin");
         }
 
         public static void PubCarryOver()
         {
-            int _bind_station_no = GetStationNo();
+            // 頭尾未形成迴圈
+            int _bind_station_no = GetStationNo() + 1;
             if (_bind_station_no != 0)
-                SocketDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_end");
+                FeedbackDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_end");
         }
     }
 

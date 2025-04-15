@@ -126,7 +126,7 @@ namespace Chump_kuka.Forms
                 return;
             
             // SocketDispatcher _icaps_socket = new SocketDispatcher();
-            bool isconn = await SocketDispatcher.StartRecordListener(int.Parse(tcp_record_port.Text));
+            bool isconn = await FeedbackDispatcher.StartRecordListener(int.Parse(tcp_record_port.Text));
             if (isconn)
             {
                 Env.RecordLogTcpPort = tcp_record_port.Text;
@@ -144,7 +144,11 @@ namespace Chump_kuka.Forms
 
             sensor_check.Change = isconn;
             sensor_check.Visible = true;
-            if (isconn) Env.SensorModbusTcp = ip;
+            if (isconn)
+            {
+                Env.SensorModbusTcp = ip;
+                LocalAreaController.ResetIOCount();
+            }
         }
 
         private async Task KukaResponseTask()
@@ -179,6 +183,7 @@ namespace Chump_kuka.Forms
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             KukaParm.BindAreaModel = KukaAreaModel.Find(bind_comboBox.Text, KukaParm.KukaAreaModels);
+            LocalAreaController.ResetIOCount();
         }
         private void target_comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -188,7 +193,7 @@ namespace Chump_kuka.Forms
         private void switch_client_CheckedChanged(object sender, EventArgs e)
         {
             Env.ICapsServer = switch_sever.Checked;
-            kuka_request_url.Enabled = tcp_record_ip.Enabled = kuka_response_url.Enabled = Env.ICapsServer;
+            kuka_request_url.Enabled = tcp_record_port.Enabled = kuka_response_url.Enabled = Env.ICapsServer;
         }
 
         private void station_setting_Click(object sender, EventArgs e)
@@ -227,14 +232,10 @@ namespace Chump_kuka.Forms
             }
         }
 
-        private void comboBox1_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            //LoadNetworkInterfaces();
-        }
-
         private void comboBox1_DropDown(object sender, EventArgs e)
         {
             LoadNetworkInterfaces();
         }
+
     }
 }

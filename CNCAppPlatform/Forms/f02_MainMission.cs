@@ -24,28 +24,57 @@ namespace Chump_kuka.Forms
         {
             InitializeComponent();
 
-
             Controls.Add(sidePanel);
 
-
-            
             //VisibleChanged += F02_MainMission_VisibleChanged;
-            
-            // 當綁定區域更新時，同步更新控制項 UI
-            KukaParm.BindChanged += 
-                (s, e) => LocalAreaController.UpdateControl(bind_area_control);    
 
-            SetupDataGridView();
+            
+                
+                    
+
             dataGridView1.Resize += DataGridView1_Resize;
 
-            KukaApiController.CarryTaskPub += KukaApiController_CarryTaskPub;
+            //KukaApiController.CarryTaskPub += KukaApiController_CarryTaskPub;
+            ChatController.CarryTaskUpdated += ChatController_CarryTaskUpdated;
             LocalAreaController.StepChanged += LocalAreaController_StepChanged;
-            LocalAreaController.ButtonPush += (s, e) => scaleButton1_Click(s, e);
 
             // 訂閱 ModbusTCP 以更新貨架狀態圖片
             //KukaParm.AreaStatusChanged += (_sender, _e) => bind_area_control.UpdateContainerImage(BindAreaController.BindArea.NodeStatus.ToArray());
 
             Load += F02_MainMission_Load;
+        }
+
+        private void F02_MainMission_Load(object sender, EventArgs e)
+        {
+            // SetupDataGridView();
+            // BindAreaController.BindArea?.UserControls.Add(bind_area_control);
+            // BindAreaController.UpdateControl(bind_area_control);
+
+            // SetupDataGridView();
+
+            // 當綁定區域更新時，同步更新控制項 UI
+            KukaParm.BindChanged += KukaParm_BindChanged;
+            LocalAreaController.UpdateControl(bind_area_control);
+            LocalAreaController.ButtonPush += (_s, _e) => scaleButton1_Click(_s, _e);
+
+
+            InitIdleTimer();
+        }
+
+        private void KukaParm_BindChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.Invoke(new Action(() =>
+            {
+                LocalAreaController.UpdateControl(bind_area_control);
+            }));
+        }
+
+        private void ChatController_CarryTaskUpdated(object sender, SimpleCarryTask[] e)
+        {
+            dataGridView1.Invoke(new Action(() => {
+                dataGridView1.DataSource = e;
+                InitDataGridView();
+            }));
         }
 
         private void InitIdleTimer()
@@ -62,35 +91,40 @@ namespace Chump_kuka.Forms
 
         private void LocalAreaController_StepChanged(object sender, Dispatchers.HttpListenerDispatcher.HeardEventArgs e)
         {
-            try
+            this.Invoke(new Action(()=>
             {
-                switch (e.Step)
+                try
                 {
-                    case 0:
-                        LocalAreaController.GetTaskNode();      // 更新區域狀態
-                        break;
-                    case 1:
-                        Light(2);
-                        break;
-                    case 2:
-                        Light(3);
-                        break;
-                    case 4:
-                        Light(4);
-                        break;
-                    case 5:
-                        Light(5);
-                        _idle_timer.Enabled = true;
-                        break;
-                    case 7:
-                        Light(0);
-                        break;
+                    switch (e.Step)
+                    {
+                        case 0:
+                            LocalAreaController.TryCreateCarryTask();      // 更新區域狀態
+                            break;
+                        case 1:
+                            Light(2);
+                            break;
+                        case 2:
+                            LocalAreaController.PubReady();     // 回報搬運車進站
+                            Light(3);
+                            break;
+                        case 4:
+                            Light(4);
+                            break;
+                        case 5:
+                            Light(5);
+                            CarryTaskController.FeedbackFinish();
+                            _idle_timer.Enabled = true;
+                            break;
+                        case 7:
+                            Light(0);
+                            break;
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }));
         }
 
         private void F02_MainMission_VisibleChanged(object sender, EventArgs e)
@@ -119,15 +153,37 @@ namespace Chump_kuka.Forms
             };
             dataGridView1.RowTemplate.Height = rowHeight;
         }
+        
 
-        private void F02_MainMission_Load(object sender, EventArgs e)
+        private void InitDataGridView()
         {
-            // SetupDataGridView();
-            // BindAreaController.BindArea?.UserControls.Add(bind_area_control);
-            // BindAreaController.UpdateControl(bind_area_control);
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-            InitIdleTimer();
+            dataGridView1.Columns["Called"].FillWeight = 14;
+            dataGridView1.Columns["Called"].HeaderText = "已呼叫";
+            dataGridView1.Columns["ID"].FillWeight = 6;
+            dataGridView1.Columns["ID"].HeaderText = "ID";
+            dataGridView1.Columns["StartNode"].FillWeight = 15;
+            dataGridView1.Columns["StartNode"].HeaderText = "起點";
+            dataGridView1.Columns["GoalNode"].FillWeight = 15;
+            dataGridView1.Columns["GoalNode"].HeaderText = "終點";
+            dataGridView1.Columns["CreateTime"].FillWeight = 25;
+            dataGridView1.Columns["CreateTime"].HeaderText = "建立時間";
+            dataGridView1.Columns["FinishTime"].FillWeight = 25;
+            dataGridView1.Columns["FinishTime"].HeaderText = "完成時間";
+            
 
+            // 設定是否允許編輯
+            dataGridView1.ReadOnly = true;
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToDeleteRows = false;
+            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView1.RowHeadersVisible = false;
+
+            dataGridView1.AllowUserToResizeColumns = false;
+            dataGridView1.AllowUserToResizeRows = false;
+
+            dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
         }
 
         private void SetupDataGridView()
@@ -162,7 +218,6 @@ namespace Chump_kuka.Forms
 
             dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
 
-
             //for (int i = 0;  i < 30; i++)
             //{
             //    dataGridView1.Rows.Add(i, $"25", $"加工區", DateTime.Now.AddHours(i*0.6).ToString(@"yyyy/MM/dd HH:mm"), "");
@@ -176,22 +231,27 @@ namespace Chump_kuka.Forms
 
         private async void scaleButton1_Click(object sender, EventArgs e)
         {
-            await MsgBox.ShowFlash("準備按鈕已按下", "", 1000);
-
-            // 取得可搬運貨架位置
-            bool can_carry = LocalAreaController.GetTaskNode();
-
-            if (!can_carry) return;     // 不可搬運狀態，跳過
-
-            DialogResult dialogResult = MessageBox.Show($"{KukaParm.StartNode?.Name} => {KukaParm.GoalNode?.Name}", "搬運任務", MessageBoxButtons.YesNo);
-            if (dialogResult == DialogResult.Yes)
+            if (Visible == true)        // 防止設定綁定區域時，不斷跳出錯誤訊息
             {
+                await MsgBox.ShowFlash("準備按鈕已按下", "", 1000);
+
+                // 取得可搬運貨架位置
+                bool can_carry = LocalAreaController.TryCreateCarryTask();
+
+                if (!can_carry) return;     // 不可搬運狀態，跳過
+
+                // 透過點擊區域控制項，切換手動/自動模式
+                if (bind_area_control.Checked == false)
+                {
+                    // 手動模式，詢問是否派發任務
+                    DialogResult dialogResult = MessageBox.Show($"{KukaParm.StartNode?.Name} => {KukaParm.GoalNode?.Name}", "搬運任務", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.No)
+                        return;
+                }
+
                 Light(1);       // 表示物料已進站
-                KukaApiController.SendCarryTask();
-            }
-            else if (dialogResult == DialogResult.No)
-            {
-                //do something else
+                ChatController.AppendCarryTask();
+                // KukaApiController.SendCarryTask();
             }
         }
 
@@ -218,11 +278,13 @@ namespace Chump_kuka.Forms
 
         private void led_bot_in_Click(object sender, EventArgs e)
         {
-            LocalAreaController.PubRobotIn();
+            LocalAreaController.PubReady();
         }
 
-        private void led_bot_out_Click(object sender, EventArgs e)
+        private async void led_bot_out_Click(object sender, EventArgs e)
         {
+            LocalAreaController.PubRobotFunc();
+            await Task.Delay(1000);
             LocalAreaController.PubRobotOut();
         }
 

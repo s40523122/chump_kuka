@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Setting));
             this.scalePadding1 = new iCAPS.ScalePadding();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.scaleLabel14 = new iCAPS.ScaleLabel();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.progress_msg = new iCAPS.ScaleLabel();
             this.scaleLabel5 = new iCAPS.ScaleLabel();
@@ -59,8 +60,6 @@
             this.sensor_check = new iCAPS.DoubleImg();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel11 = new iCAPS.ScaleLabel();
-            this.scaleLabel12 = new iCAPS.ScaleLabel();
-            this.tcp_record_ip = new System.Windows.Forms.TextBox();
             this.tcp_record_port = new System.Windows.Forms.TextBox();
             this.scaleButton1 = new iCAPS.ScaleButton();
             this.kuka_response_url = new System.Windows.Forms.TextBox();
@@ -71,7 +70,6 @@
             this.bind_comboBox = new System.Windows.Forms.ComboBox();
             this.station_setting = new iCAPS.ScaleButton();
             this.local_ip_combo = new System.Windows.Forms.ComboBox();
-            this.scaleLabel14 = new iCAPS.ScaleLabel();
             this.scalePadding1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.server_check)).BeginInit();
@@ -97,6 +95,12 @@
             this.scalePadding1.Location = new System.Drawing.Point(0, 0);
             this.scalePadding1.Name = "scalePadding1";
             this.scalePadding1.RowCount = 3;
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
@@ -237,6 +241,18 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 2F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(882, 545);
             this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // scaleLabel14
+            // 
+            this.scaleLabel14.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scaleLabel14.Factor = 0.25F;
+            this.scaleLabel14.Font = new System.Drawing.Font("微軟正黑體", 9.5F, System.Drawing.FontStyle.Bold);
+            this.scaleLabel14.Location = new System.Drawing.Point(3, 0);
+            this.scaleLabel14.Name = "scaleLabel14";
+            this.scaleLabel14.Size = new System.Drawing.Size(258, 38);
+            this.scaleLabel14.TabIndex = 14;
+            this.scaleLabel14.Text = "本地 ipv4";
+            this.scaleLabel14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // progressBar1
             // 
@@ -591,21 +607,18 @@
             // 
             // tableLayoutPanel4
             // 
-            this.tableLayoutPanel4.ColumnCount = 4;
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.63636F));
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45.45454F));
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.63636F));
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.27273F));
-            this.tableLayoutPanel4.Controls.Add(this.scaleLabel11, 2, 0);
-            this.tableLayoutPanel4.Controls.Add(this.scaleLabel12, 0, 0);
-            this.tableLayoutPanel4.Controls.Add(this.tcp_record_ip, 1, 0);
-            this.tableLayoutPanel4.Controls.Add(this.tcp_record_port, 3, 0);
+            this.tableLayoutPanel4.ColumnCount = 2;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.63686F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 86.36314F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel4.Controls.Add(this.scaleLabel11, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.tcp_record_port, 1, 0);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(267, 193);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 1;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tableLayoutPanel4.Size = new System.Drawing.Size(435, 32);
             this.tableLayoutPanel4.TabIndex = 12;
             // 
@@ -615,42 +628,20 @@
             this.scaleLabel11.Dock = System.Windows.Forms.DockStyle.Fill;
             this.scaleLabel11.Factor = 0.25F;
             this.scaleLabel11.Font = new System.Drawing.Font("微軟正黑體", 8F);
-            this.scaleLabel11.Location = new System.Drawing.Point(259, 0);
+            this.scaleLabel11.Location = new System.Drawing.Point(3, 0);
             this.scaleLabel11.Name = "scaleLabel11";
             this.scaleLabel11.Size = new System.Drawing.Size(53, 32);
             this.scaleLabel11.TabIndex = 11;
             this.scaleLabel11.Text = "Port";
             this.scaleLabel11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // scaleLabel12
-            // 
-            this.scaleLabel12.AutoSize = true;
-            this.scaleLabel12.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scaleLabel12.Factor = 0.25F;
-            this.scaleLabel12.Font = new System.Drawing.Font("微軟正黑體", 8F);
-            this.scaleLabel12.Location = new System.Drawing.Point(3, 0);
-            this.scaleLabel12.Name = "scaleLabel12";
-            this.scaleLabel12.Size = new System.Drawing.Size(53, 32);
-            this.scaleLabel12.TabIndex = 10;
-            this.scaleLabel12.Text = "IP";
-            this.scaleLabel12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // tcp_record_ip
-            // 
-            this.tcp_record_ip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tcp_record_ip.Location = new System.Drawing.Point(62, 5);
-            this.tcp_record_ip.Name = "tcp_record_ip";
-            this.tcp_record_ip.Size = new System.Drawing.Size(191, 22);
-            this.tcp_record_ip.TabIndex = 9;
-            this.tcp_record_ip.Text = "192.168.68.22";
-            // 
             // tcp_record_port
             // 
             this.tcp_record_port.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tcp_record_port.Enabled = false;
-            this.tcp_record_port.Location = new System.Drawing.Point(318, 5);
+            this.tcp_record_port.Location = new System.Drawing.Point(62, 5);
             this.tcp_record_port.Name = "tcp_record_port";
-            this.tcp_record_port.Size = new System.Drawing.Size(114, 22);
+            this.tcp_record_port.Size = new System.Drawing.Size(370, 22);
             this.tcp_record_port.TabIndex = 9;
             this.tcp_record_port.Text = "6400";
             // 
@@ -773,18 +764,6 @@
             this.local_ip_combo.TabIndex = 6;
             this.local_ip_combo.DropDown += new System.EventHandler(this.comboBox1_DropDown);
             // 
-            // scaleLabel14
-            // 
-            this.scaleLabel14.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scaleLabel14.Factor = 0.25F;
-            this.scaleLabel14.Font = new System.Drawing.Font("微軟正黑體", 9.5F, System.Drawing.FontStyle.Bold);
-            this.scaleLabel14.Location = new System.Drawing.Point(3, 0);
-            this.scaleLabel14.Name = "scaleLabel14";
-            this.scaleLabel14.Size = new System.Drawing.Size(258, 38);
-            this.scaleLabel14.TabIndex = 14;
-            this.scaleLabel14.Text = "本地 ipv4";
-            this.scaleLabel14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // Setting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -847,8 +826,6 @@
         private System.Windows.Forms.TextBox upd_server_port;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private iCAPS.ScaleLabel scaleLabel11;
-        private iCAPS.ScaleLabel scaleLabel12;
-        private System.Windows.Forms.TextBox tcp_record_ip;
         private System.Windows.Forms.TextBox tcp_record_port;
         private System.Windows.Forms.TextBox kuka_response_url;
         private iCAPS.DoubleImg record_log_check;

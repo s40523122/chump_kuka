@@ -19,7 +19,7 @@ namespace Chump_kuka
         private static bool _conn = false;
         private static KukaApiDispatcher _api_task;
 
-        public static event PropertyChangedEventHandler CarryTaskPub;
+        // 移動至CarryTask public static event PropertyChangedEventHandler CarryTaskPub;
 
         public static async Task<bool> StartListen(string url)
         {
@@ -57,19 +57,11 @@ namespace Chump_kuka
         /// <summary>
         /// 將派車任務請求加入 API 等待列表
         /// </summary>
-        public static void SendCarryTask()
+        public static void PubCarryTask()
         {
-            if (_conn)
-            {
-                _api_task.AppendCarryTask();
-            }
-            else
-            {
-                // 傳送節點資訊，讓伺服器處理
-                ChatController.SendCarryTask();
-            }
+            _api_task.AppendCarryTask();        // 建立搬運任務
 
-            CarryTaskPub?.Invoke(null, null);
+            // CarryTaskPub?.Invoke(null, null);       // 已建立任務，更新 UI
         }
     }
 }

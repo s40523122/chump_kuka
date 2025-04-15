@@ -68,7 +68,11 @@ namespace Chump_kuka.Controls
 
         private void KukaParm_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            InfoUPdate();
+            this.Invoke(new Action(() =>
+            {
+                InfoUPdate();
+            }));
+            
         }
 
         /// <summary>

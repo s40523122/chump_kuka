@@ -1,4 +1,5 @@
 ﻿using CefSharp.DevTools.Profiler;
+using Chump_kuka.Controller;
 using iCAPS;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,13 @@ using WebSocketSharp.Server;
 
 namespace Chump_kuka
 {
-    internal class SocketDispatcher
+    internal class FeedbackDispatcher
     {
         //private const int PORT = 6500;      // 設定連線 port
         //private static WebSocketManager.Server _server = new WebSocketManager.Server(PORT);     // 創建伺服器實例，監聽區域網路的所有IP
         private static TcpListenerManager order_record_listener;
+
+        public static event EventHandler<TextEventArgs> Called;
 
         public static async Task<bool> StartRecordListener(int listen_port)
         {
@@ -53,12 +56,14 @@ namespace Chump_kuka
                     break;
                 case "station1_call":
                     // 發送 station1_agv_ready
-                    await listener.SendMessageAsync("station1_agv_ready");
+                    // await listener.SendMessageAsync("station1_agv_ready");
+                    Called?.Invoke(sender, new TextEventArgs(KukaParm.KukaAreaModels[0].AreaCode));     // 傳遞第一區域發車命令
 
                     break;
                 case "station2_call":
                     // 發送 station1_agv_ready
-                    await listener.SendMessageAsync("station2_agv_ready");
+                    // await listener.SendMessageAsync("station2_agv_ready");
+                    Called?.Invoke(sender, new TextEventArgs(KukaParm.KukaAreaModels[1].AreaCode));     // 傳遞第二區域發車命令
                     break;
                 default:
                     // 回傳確認訊息

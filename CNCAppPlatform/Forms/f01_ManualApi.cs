@@ -23,10 +23,17 @@ namespace Chump_kuka.Forms
         {
             InitializeComponent();
 
-            //Load += F01_ManualApi_Load;
-            VisibleChanged += F01_ManualApi_VisibleChanged; ;
+            Load += F01_ManualApi_Load;
+            VisibleChanged += F01_ManualApi_VisibleChanged;
+        }
+
+        private void F01_ManualApi_Load(object sender, EventArgs e)
+        {
+
             KukaParm.AreaChanged += KukaParm_AreaChanged;
+            KukaParm_AreaChanged(null, null);
             KukaParm.CarryChanged += KukaParm_CarryChanged;
+            KukaParm_CarryChanged(null, null);
         }
 
         private void F01_ManualApi_VisibleChanged(object sender, EventArgs e)
@@ -37,47 +44,44 @@ namespace Chump_kuka.Forms
 
         private void KukaParm_CarryChanged(object sender, PropertyChangedEventArgs e)
         {
-            selected_1.Text = KukaParm.StartNode?.Name ?? "null";
-            selected_2.Text = KukaParm.GoalNode?.Name ?? "null";
+            this.Invoke(new Action(() =>
+            {
+                selected_1.Text = KukaParm.StartNode?.Name ?? "null";
+                selected_2.Text = KukaParm.GoalNode?.Name ?? "null";
+            }));
         }
 
         private void KukaParm_AreaChanged(object sender, PropertyChangedEventArgs e)
         {
-            tableLayoutPanel2.Controls.Clear();
-
-            KukaParm.StartNode = KukaParm.GoalNode = null;
-
-            /* 加入區域 Control */
-            // 目前只支援到 4 組，超過可能會有 UI 顯示問題
-            foreach (KukaAreaModel area in KukaParm.KukaAreaModels)
+            this.Invoke(new Action(() =>
             {
-                KukaAreaControl kuka_area = new KukaAreaControl
+                tableLayoutPanel2.Controls.Clear();
+
+                KukaParm.StartNode = KukaParm.GoalNode = null;
+
+                /* 加入區域 Control */
+                // 目前只支援到 4 組，超過可能會有 UI 顯示問題
+                foreach (KukaAreaModel area in KukaParm.KukaAreaModels)
                 {
-                    AreaName = area.AreaName,
-                    Dock = DockStyle.Fill,
-                    Margin = new Padding(10),
-                    AreaCode = area.AreaCode,
-                    AreaNode = area.NodeList.ToArray()
-                };
+                    KukaAreaControl kuka_area = new KukaAreaControl
+                    {
+                        AreaName = area.AreaName,
+                        Dock = DockStyle.Fill,
+                        Margin = new Padding(10),
+                        AreaCode = area.AreaCode,
+                        AreaNode = area.NodeList.ToArray()
+                    };
 
-                kuka_area.ContainerClick += Kuka_area1_ContainerClick;
-                kuka_area.AreaClick += Area_AreaClick;
+                    kuka_area.ContainerClick += Kuka_area1_ContainerClick;
+                    kuka_area.AreaClick += Area_AreaClick;
 
-                kuka_area.UpdateContainerImage(area.NodeStatus.ToArray());        // 初次建立，更新圖片
-                area.UserControls.Add(kuka_area);       // 將建立的使用者控制項與模型綁定
+                    kuka_area.UpdateContainerImage(area.NodeStatus.ToArray());        // 初次建立，更新圖片
+                    area.UserControls.Add(kuka_area);       // 將建立的使用者控制項與模型綁定
 
-                // KukaParm.AreaControls.Add(kuka_area);
-                tableLayoutPanel2.Controls.Add(kuka_area);
-            }
-        }
-
-        private void F01_ManualApi_Load(object sender, EventArgs e)
-        {
-            //foreach (KukaAreaControl area in KukaParm.AreaControls)
-            //{
-            //    area.ContainerClick += Kuka_area1_ContainerClick;
-            //    area.AreaClick += Area_AreaClick;
-            //}
+                    // KukaParm.AreaControls.Add(kuka_area);
+                    tableLayoutPanel2.Controls.Add(kuka_area);
+                }
+            }));
         }
 
         private void Area_AreaClick(object sender, ControlClickEventArgs e)
@@ -241,7 +245,7 @@ namespace Chump_kuka.Forms
             DialogResult dialogResult = MessageBox.Show($"是否執行派車任務?\n{KukaParm.StartNode.Name} -> {KukaParm.GoalNode.Name}", "info", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
             {
-                KukaApiController.SendCarryTask();
+                KukaApiController.PubCarryTask();
                 MsgBox.ShowFlash("已加入等候任務", "手動派車", 1000);
             }
 

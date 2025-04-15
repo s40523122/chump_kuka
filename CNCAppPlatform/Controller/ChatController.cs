@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -18,9 +19,10 @@ namespace Chump_kuka.Controller
     internal class ChatController
     {
         private static UdpDispatcher _udp_listener;
-        private static bool _is_server = false;
+        private static bool _is_master = false;
 
         public static event EventHandler<HttpListenerDispatcher.HeardEventArgs> StepChanged;
+        public static event CarryTasksEventHandler CarryTaskUpdated;
 
         static ChatController()
         {
@@ -55,7 +57,7 @@ namespace Chump_kuka.Controller
                 case 1:     // 
                     break;
                 case 2:     // 機器人進站
-                    LocalAreaController.PubRobotIn();       // station_agv_star
+                    LocalAreaController.PubRobotFunc();       // station_agv_star
                     break;
                 case 4:     // 機器人出站
                     LocalAreaController.PubRobotOut();      // station_agv_begin
@@ -73,7 +75,7 @@ namespace Chump_kuka.Controller
 
         public static void Init(bool  is_server, IPEndPoint listen_info)
         {
-            _is_server = is_server;
+            _is_master = is_server;
 
             // 初始化，移除所有綁定事件
             KukaParm.RobotStatusChanged -= KukaParm_RobotStatusChanged;
@@ -114,7 +116,7 @@ namespace Chump_kuka.Controller
 
                 string jsonOutput = JsonConvert.SerializeObject(comm_model, Formatting.Indented);
 
-                Send(jsonOutput);
+                SyncSend(jsonOutput);
             }
             catch (Exception ex)
             {
@@ -135,7 +137,7 @@ namespace Chump_kuka.Controller
 
                 string jsonOutput = JsonConvert.SerializeObject(comm_model, Formatting.Indented);
 
-                Send(jsonOutput);
+                SyncSend(jsonOutput);
             }
             catch (Exception ex)
             {
@@ -152,7 +154,7 @@ namespace Chump_kuka.Controller
             };
             string jsonOutput = JsonConvert.SerializeObject(comm_model, Formatting.Indented);
 
-            Send(jsonOutput);
+            SyncSend(jsonOutput);
         }
 
         /// <summary>
@@ -175,10 +177,9 @@ namespace Chump_kuka.Controller
                     case "carry":
                         //MsgBox.Show("接收到搬運任務", "Sever");
                         Log.Append("接收到搬運任務", "info", "ChatController");
-                        List<CarryNode> nodes = JsonConvert.DeserializeObject<List<CarryNode>>(response_body.Message);
-                        KukaParm.StartNode = nodes[0];
-                        KukaParm.GoalNode = nodes[1];
-                        KukaApiController.SendCarryTask();
+                        ParseAndUpdateCarryNode(response_body.Message);
+                        // KukaApiController.PubCarryTask();
+                        AppendCarryTask();
                         break;
                     case "info":
                         //MsgBox.Show("e.Message", "Server");
@@ -221,10 +222,23 @@ namespace Chump_kuka.Controller
         {
             // 解析回應字串
             MyCommModel response_body = JsonConvert.DeserializeObject<MyCommModel>(e.Message);
+
+            //Log.Append("Heard" + response_body.Type, "INFO", "Recrive UDP");
+            Console.WriteLine("Heard " + response_body.Type);
+
+
             try
             {
                 switch (response_body.Type)
                 {
+                    case "task_list":
+                        SimpleCarryTask[] tasks = JsonConvert.DeserializeObject<List<SimpleCarryTask>>(response_body.Message).ToArray();
+                        CarryTaskUpdated?.Invoke(null, tasks);
+                        break;
+
+                    case "carry":
+                        ParseAndUpdateCarryNode(response_body.Message);
+                        break;
                     case "finish":
                         HttpListenerDispatcher.HeardEventArgs _e = new HttpListenerDispatcher.HeardEventArgs(response_body.Message, 0);
                         StepChanged.Invoke(null, _e);
@@ -271,7 +285,10 @@ namespace Chump_kuka.Controller
             }
         }
 
-        public static void SendCarryTask()
+        /// <summary>
+        /// 所有主/從站同步搬運節點
+        /// </summary>
+        public static void SyncCarryNode()
         {
             CarryNode[] nodes = new CarryNode[2]
             {
@@ -285,14 +302,32 @@ namespace Chump_kuka.Controller
                 Message = JsonConvert.SerializeObject(nodes, Formatting.Indented)
             };
 
-            Send(JsonConvert.SerializeObject(model, Formatting.Indented));
+            SyncSend(JsonConvert.SerializeObject(model, Formatting.Indented));
         }
 
-        public static void Send(string msg)
+        /// <summary>
+        /// 所有主/從站同步搬運任務
+        /// </summary>
+        public static void SyncCarryTask(SimpleCarryTask[] tasks)
+        {
+            CarryTaskUpdated?.Invoke(null, tasks);
+
+            MyCommModel model = new MyCommModel()
+            {
+                Type = "task_list",
+                Message = JsonConvert.SerializeObject(tasks, Formatting.Indented)
+            };
+
+            SyncSend(JsonConvert.SerializeObject(model, Formatting.Indented));
+
+            
+        }
+
+        public static void SyncSend(string msg)
         {
             try
             {
-                if (_is_server)
+                if (_is_master)
                 {
                     _udp_listener?.SendToGroup(msg);
                 }
@@ -338,7 +373,29 @@ namespace Chump_kuka.Controller
 
             string jsonOutput = JsonConvert.SerializeObject(comm_model, Formatting.Indented);
 
-            Send(jsonOutput);
+            SyncSend(jsonOutput);
+        }
+
+        public static void AppendCarryTask()
+        {
+            if (_is_master)        
+            {
+                // 若為 master 端，將任務加入等候區
+                CarryTaskController.AddToQueue();
+
+            }
+            else
+            {
+                // 若為 slave 端，傳送節點資訊，讓伺服器處理
+                SyncCarryNode();
+            }
+        }
+
+        private static void ParseAndUpdateCarryNode(string carry_node_msg)
+        {
+            List<CarryNode> nodes = JsonConvert.DeserializeObject<List<CarryNode>>(carry_node_msg);
+            KukaParm.StartNode = nodes[0];
+            KukaParm.GoalNode = nodes[1];
         }
 
         private class MyCommModel

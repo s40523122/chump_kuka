@@ -131,29 +131,4 @@ namespace Chump_kuka
             Console.WriteLine("Sent to Node.js: " + message);
         }
     }
-
-    public class TcpMessageEventArgs : EventArgs
-    {
-        public NetworkStream Stream { get; }
-        public string Message { get; }
-
-        public TcpMessageEventArgs(NetworkStream stream, string message)
-        {
-            Stream = stream;
-            Message = message;
-        }
-    }
-
-    public class TcpConnectionEventArgs : EventArgs
-    {
-        public TcpClient Client { get; }
-        public IPEndPoint RemoteEndPoint { get; }
-
-        public TcpConnectionEventArgs(TcpClient client, IPEndPoint remoteEndPoint = null)
-        {
-            Client = client;
-            RemoteEndPoint = remoteEndPoint;
-        }
-    }
-
 }
