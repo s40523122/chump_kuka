@@ -64,6 +64,12 @@ namespace Chump_kuka
             // 找到符合開始區域且尚未執行的第一筆資料
             _current_task = _carry_queue.FirstOrDefault(m => m.AreaCode == start_area_code && m.Called == false);
 
+            bool success = PubCarryTask();
+            return success;
+        }
+
+        private static bool PubCarryTask()
+        {
             if (_current_task != null)
             {
                 // Console.WriteLine($"找到的資料: Start = {foundModel.StartNode}, Goal = {foundModel.GoalNode}");
@@ -92,6 +98,11 @@ namespace Chump_kuka
             _current_task = null;
 
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
+
+            // 第2區域的任務優先執行
+            _current_task = _carry_queue.FirstOrDefault(m => m.AreaCode == KukaParm.KukaAreaModels[2].AreaCode && m.Called == false);
+
+            PubCarryTask();
         }
     }
 
