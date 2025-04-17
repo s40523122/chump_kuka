@@ -45,7 +45,7 @@ namespace Chump_kuka
             _task_id++;
             _carry_queue.Add(task);
 
-            ChatController.SyncCarryTask(GetQueueArray());
+            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
 
         private static SimpleCarryTask[] GetQueueArray()
@@ -71,6 +71,8 @@ namespace Chump_kuka
                 KukaParm.StartNode = _current_task.StartNode;
                 KukaParm.GoalNode = _current_task.GoalNode;
                 _current_task.Called = true;       // 已呼叫
+
+                ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
                 return true;
             }
             else
@@ -88,6 +90,8 @@ namespace Chump_kuka
             if (_current_task != null) 
                 _current_task.FinishTime = DateTime.Now;
             _current_task = null;
+
+            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
     }
 

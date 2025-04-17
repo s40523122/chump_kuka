@@ -297,21 +297,21 @@ namespace Chump_kuka.Controller
         {
             int _bind_station_no = GetStationNo();
             if (_bind_station_no != 0)
-                FeedbackDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_ready");
+                ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_ready"); 
         }
 
         public static void PubRobotFunc()
         {
             int _bind_station_no = GetStationNo();
             if (_bind_station_no != 0)
-                FeedbackDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_star");
+                ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_star");
         }
 
         public static void PubRobotOut()
         {
             int _bind_station_no = GetStationNo();
             if (_bind_station_no != 0)
-                FeedbackDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_begin");
+                ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_begin");
         }
 
         public static void PubCarryOver()
@@ -319,7 +319,7 @@ namespace Chump_kuka.Controller
             // 頭尾未形成迴圈
             int _bind_station_no = GetStationNo() + 1;
             if (_bind_station_no != 0)
-                FeedbackDispatcher.SendToRecordSystem($"station{_bind_station_no}_agv_end");
+                ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_end");
         }
     }
 

@@ -174,6 +174,10 @@ namespace Chump_kuka.Controller
             {
                 switch (response_body.Type)
                 {
+                    case "feedback":
+                        Log.Append("接收到報工任務", "info", "ChatController");
+                        SendFeedbackInfo(response_body.Message);
+                        break;
                     case "carry":
                         //MsgBox.Show("接收到搬運任務", "Sever");
                         Log.Append("接收到搬運任務", "info", "ChatController");
@@ -362,7 +366,19 @@ namespace Chump_kuka.Controller
             
         }
 
-        public static void Send(string type, string msg)
+        public static void SendFeedbackInfo(string feedback_msg)
+        {
+            if (_is_master)
+            {
+                FeedbackDispatcher.SendToRecordSystem(feedback_msg);
+            }
+            else
+            {
+                Send("feedback", feedback_msg);
+            }
+        }
+
+        private static void Send(string type, string msg)
         {
             // 將訊息封裝成 MyCommModel 後，透過 UDP 傳送
             MyCommModel comm_model = new MyCommModel()
