@@ -205,6 +205,12 @@
   <ItemGroup>
     <Compile Include="Controller\ChatController.cs" />
     <Compile Include="Controller\LocalAreaController.cs" />
+    <Compile Include="Controls\AreaBindingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\AreaBindingForm.Designer.cs">
+      <DependentUpon>AreaBindingForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Container.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -339,6 +345,9 @@
     <Compile Include="Services\TcpTest.cs" />
     <Compile Include="Services\Managers\WebSocketIOManager.cs" />
     <Compile Include="Services\Managers\WebSocketManager.cs" />
+    <EmbeddedResource Include="Controls\AreaBindingForm.resx">
+      <DependentUpon>AreaBindingForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\Container.resx">
       <DependentUpon>Container.cs</DependentUpon>
     </EmbeddedResource>
