@@ -28,10 +28,6 @@ namespace Chump_kuka.Forms
 
             //VisibleChanged += F02_MainMission_VisibleChanged;
 
-            
-                
-                    
-
             dataGridView1.Resize += DataGridView1_Resize;
 
             //KukaApiController.CarryTaskPub += KukaApiController_CarryTaskPub;

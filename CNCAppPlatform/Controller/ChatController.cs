@@ -1,5 +1,6 @@
 ﻿using CefSharp.DevTools.CSS;
 using Chump_kuka.Dispatchers;
+using Chump_kuka.Services.Managers;
 using iCAPS;
 using LiveCharts.Definitions.Series;
 using Newtonsoft.Json;
@@ -21,8 +22,11 @@ namespace Chump_kuka.Controller
         private static UdpDispatcher _udp_listener;
         private static bool _is_master = false;
 
+        public static string HostIP = "127.0.0.1";
+
         public static event EventHandler<HttpListenerDispatcher.HeardEventArgs> StepChanged;
         public static event CarryTasksEventHandler CarryTaskUpdated;
+        public static event EventHandler<MessageIPEventArgs> MessageReceived;     // 接收客戶端訊息時觸發的事件
 
         static ChatController()
         {
@@ -36,7 +40,7 @@ namespace Chump_kuka.Controller
         /// <param name="e"></param>
         private static void HttpListenerDispatcher_Heard(object sender, HttpListenerDispatcher.HeardEventArgs e)
         {
-            // 若監聽
+            // 若監聽目標為綁定區域
             if (e.AreaCode == KukaParm.BindAreaModel.AreaCode)
             {
                 PubToLocalController(sender, e);     // 傳送至下一階段
@@ -75,6 +79,7 @@ namespace Chump_kuka.Controller
 
         public static void Init(bool  is_server, IPEndPoint listen_info)
         {
+            HostIP = Env.LocalIp;
             _is_master = is_server;
 
             // 初始化，移除所有綁定事件
@@ -83,7 +88,9 @@ namespace Chump_kuka.Controller
 
             // 重新建立新的 UDP 伺服器實例
             _udp_listener?.Close();
-            _udp_listener = new UdpDispatcher(listen_info);
+            _udp_listener = new UdpDispatcher(HostIP, listen_info);
+
+            _udp_listener.MessageReceived += (s, e) => MessageReceived?.Invoke(s, e);
 
             // 若模組被規劃為伺服器時，加入更新事件
             // 反之，加入 UDP 群組，等待訊息
@@ -230,7 +237,6 @@ namespace Chump_kuka.Controller
             //Log.Append("Heard" + response_body.Type, "INFO", "Recrive UDP");
             Console.WriteLine("Heard " + response_body.Type);
 
-
             try
             {
                 switch (response_body.Type)
@@ -324,7 +330,6 @@ namespace Chump_kuka.Controller
 
             SyncSend(JsonConvert.SerializeObject(model, Formatting.Indented));
 
-            
         }
 
         public static void SyncSend(string msg)
@@ -412,6 +417,7 @@ namespace Chump_kuka.Controller
             List<CarryNode> nodes = JsonConvert.DeserializeObject<List<CarryNode>>(carry_node_msg);
             KukaParm.StartNode = nodes[0];
             KukaParm.GoalNode = nodes[1];
+
         }
 
         private class MyCommModel

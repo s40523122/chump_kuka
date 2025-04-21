@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Windows.Forms;
 using iCAPS;
@@ -15,6 +17,7 @@ namespace Chump_kuka
         private static IPEndPoint _sensor_modbus_tcp;
         private static string _area_name = "";
         private static string _target_name = "";
+        private static WebInfo[] _favorite_web;
 
         public static event PropertyChangedEventHandler EnvChanged;
 
@@ -179,6 +182,45 @@ namespace Chump_kuka
                     _target_name = value;
 
                 INiReader.WriteINIFile(layout_path, "Control", "target_area_name", value);
+            }
+        }
+
+        public static WebInfo[] FavoriteWebs
+        {
+            get
+            {
+                // 首次訪問才需要讀取文件，降低文件讀寫頻率
+                if (_favorite_web == null)
+                {
+                    string json_txt = INiReader.ReadINIFile(layout_path, "Control", "favorite_web");
+                    _favorite_web = Newtonsoft.Json.JsonConvert.DeserializeObject<WebInfo[]>(json_txt);
+                } 
+
+                return _favorite_web;
+            }
+            set
+            {
+                // 如果更新資料同原始，不做任動作
+                if (_favorite_web != value)
+                {
+                    _favorite_web = value;
+
+                    string list_txt = Newtonsoft.Json.JsonConvert.SerializeObject(value);
+
+                    INiReader.WriteINIFile(layout_path, "Control", "favorite_web", list_txt);
+                }  
+            }
+        }
+
+        public class WebInfo
+        {
+            public string WebName {  get; set; }
+            public string Url { get; set; }
+
+            public WebInfo(string webName, string url)
+            {
+                WebName = webName;
+                Url = url;
             }
         }
     }

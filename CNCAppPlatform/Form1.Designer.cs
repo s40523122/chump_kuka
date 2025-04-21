@@ -1,4 +1,4 @@
-namespace Chump_kuka
+﻿namespace Chump_kuka
 {
     partial class Form1
     {
@@ -39,6 +39,7 @@ namespace Chump_kuka
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.button2 = new System.Windows.Forms.Button();
             this.open_log_button = new System.Windows.Forms.CheckBox();
+            this.btnUdpLog = new System.Windows.Forms.Button();
             this.logWindow1 = new Chump_kuka.Controls.LogWindow();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -168,6 +169,16 @@ namespace Chump_kuka
             this.open_log_button.UseVisualStyleBackColor = true;
             this.open_log_button.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // btnUdpLog
+            // 
+            this.btnUdpLog.Location = new System.Drawing.Point(827, 68);
+            this.btnUdpLog.Name = "btnUdpLog";
+            this.btnUdpLog.Size = new System.Drawing.Size(94, 39);
+            this.btnUdpLog.TabIndex = 47;
+            this.btnUdpLog.Text = "UDP Log";
+            this.btnUdpLog.UseVisualStyleBackColor = true;
+            this.btnUdpLog.Click += new System.EventHandler(this.btnUdpLog_Click);
+            // 
             // logWindow1
             // 
             this.logWindow1.BackColor = System.Drawing.Color.Gainsboro;
@@ -181,12 +192,14 @@ namespace Chump_kuka
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1231, 820);
+            this.Controls.Add(this.btnUdpLog);
             this.Controls.Add(this.open_log_button);
             this.Controls.Add(this.enable_api_btn);
             this.Name = "Form1";
             this.Controls.SetChildIndex(this.panel1, 0);
             this.Controls.SetChildIndex(this.enable_api_btn, 0);
             this.Controls.SetChildIndex(this.open_log_button, 0);
+            this.Controls.SetChildIndex(this.btnUdpLog, 0);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -211,6 +224,7 @@ namespace Chump_kuka
         private System.Windows.Forms.Button button2;
         private Controls.LogWindow logWindow1;
         private System.Windows.Forms.CheckBox open_log_button;
+        private System.Windows.Forms.Button btnUdpLog;
     }
 }
 

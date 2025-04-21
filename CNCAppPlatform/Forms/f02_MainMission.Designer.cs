@@ -48,11 +48,11 @@
             this.led_task_over = new iCAPS.DoubleImg();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel8 = new iCAPS.ScaleLabel();
+            this.bind_area_control = new Chump_kuka.Controls.KukaAreaControl();
             this.scaleButton1 = new iCAPS.ScaleButton();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel9 = new iCAPS.ScaleLabel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.bind_area_control = new Chump_kuka.Controls.KukaAreaControl();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.myPanel1.SuspendLayout();
@@ -201,7 +201,7 @@
             this.scaleLabel3.Name = "scaleLabel3";
             this.scaleLabel3.Size = new System.Drawing.Size(173, 50);
             this.scaleLabel3.TabIndex = 0;
-            this.scaleLabel3.Text = "等待運輸";
+            this.scaleLabel3.Text = "已叫車";
             this.scaleLabel3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // scaleLabel4
@@ -214,7 +214,7 @@
             this.scaleLabel4.Name = "scaleLabel4";
             this.scaleLabel4.Size = new System.Drawing.Size(173, 50);
             this.scaleLabel4.TabIndex = 0;
-            this.scaleLabel4.Text = "機器人進站";
+            this.scaleLabel4.Text = "搬運車進站";
             this.scaleLabel4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // scaleLabel5
@@ -227,7 +227,7 @@
             this.scaleLabel5.Name = "scaleLabel5";
             this.scaleLabel5.Size = new System.Drawing.Size(173, 50);
             this.scaleLabel5.TabIndex = 0;
-            this.scaleLabel5.Text = "物料出站";
+            this.scaleLabel5.Text = "搬運車出站";
             this.scaleLabel5.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // scaleLabel6
@@ -240,7 +240,7 @@
             this.scaleLabel6.Name = "scaleLabel6";
             this.scaleLabel6.Size = new System.Drawing.Size(175, 50);
             this.scaleLabel6.TabIndex = 0;
-            this.scaleLabel6.Text = "物料送達";
+            this.scaleLabel6.Text = "搬運車送達";
             this.scaleLabel6.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // led_idle
@@ -375,6 +375,25 @@
             this.scaleLabel8.Text = "區域狀態";
             this.scaleLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // bind_area_control
+            // 
+            this.bind_area_control.AreaName = "No Area Bind";
+            this.bind_area_control.AreaNode = new string[] {
+        "1",
+        "2",
+        "3"};
+            this.bind_area_control.Checked = false;
+            this.bind_area_control.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bind_area_control.Location = new System.Drawing.Point(0, 54);
+            this.bind_area_control.Margin = new System.Windows.Forms.Padding(0);
+            this.bind_area_control.Name = "bind_area_control";
+            this.bind_area_control.NodeStatus = new int[] {
+        0,
+        0,
+        0};
+            this.bind_area_control.Size = new System.Drawing.Size(503, 327);
+            this.bind_area_control.TabIndex = 0;
+            // 
             // scaleButton1
             // 
             this.scaleButton1.BackColor = System.Drawing.SystemColors.Control;
@@ -427,25 +446,6 @@
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.Size = new System.Drawing.Size(567, 376);
             this.dataGridView1.TabIndex = 1;
-            // 
-            // bind_area_control
-            // 
-            this.bind_area_control.AreaName = "No Area Bind";
-            this.bind_area_control.AreaNode = new string[] {
-        "1",
-        "2",
-        "3"};
-            this.bind_area_control.Checked = false;
-            this.bind_area_control.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bind_area_control.Location = new System.Drawing.Point(0, 54);
-            this.bind_area_control.Margin = new System.Windows.Forms.Padding(0);
-            this.bind_area_control.Name = "bind_area_control";
-            this.bind_area_control.NodeStatus = new int[] {
-        0,
-        0,
-        0};
-            this.bind_area_control.Size = new System.Drawing.Size(503, 327);
-            this.bind_area_control.TabIndex = 0;
             // 
             // f02_MainMission
             // 

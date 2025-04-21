@@ -11,6 +11,7 @@ namespace Chump_kuka.Dispatchers
 {
     internal class UdpDispatcher
     {
+        private string _host_ip;
         private UdpManager _udp_manager;
         private IPEndPoint _server_ipep;
 
@@ -21,11 +22,12 @@ namespace Chump_kuka.Dispatchers
 
         public event EventHandler<MessageIPEventArgs> MessageReceived;     // 接收客戶端訊息時觸發的事件
 
-        public UdpDispatcher(IPEndPoint server_ipep)
+        public UdpDispatcher(string host_ip, IPEndPoint server_ipep)
         {
+            this._host_ip = host_ip;
             this._server_ipep = server_ipep;
 
-            _udp_manager = new UdpManager(server_ipep.Port);
+            _udp_manager = new UdpManager(host_ip, server_ipep.Port);
 
             
             _udp_manager.StartListening();
@@ -37,7 +39,7 @@ namespace Chump_kuka.Dispatchers
         {
             try
             {
-                _udp_manager.JoinMulticast("239.0.0.1"); // 加入組播群組
+                _udp_manager.JoinMulticast(_host_ip, "239.0.0.1"); // 加入組播群組
             }
             catch (Exception e)
             {

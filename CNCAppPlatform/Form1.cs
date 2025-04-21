@@ -11,6 +11,7 @@ using System.Windows.Documents;
 using System.Net.Sockets;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
+using Chump_kuka.Controls;
 
 namespace Chump_kuka
 {
@@ -149,6 +150,12 @@ namespace Chump_kuka
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             logWindow1.Visible = open_log_button.Checked;
+        }
+
+        private UdpChatRoom _udp_chat_room = new UdpChatRoom();
+        private void btnUdpLog_Click(object sender, EventArgs e)
+        {
+            _udp_chat_room.Show();
         }
     }
 }

@@ -23,12 +23,12 @@ namespace Chump_kuka.Services.Managers
         /// 建立 UDP 監聽器
         /// </summary>
         /// <param name="port">監聽的 Port</param>
-        public UdpManager(int port)
+        public UdpManager(string host_ip, int port)
         {
             _listen_port = port;
             this._udp_client = new UdpClient(port);
 
-            IPAddress localAddress = IPAddress.Parse(Env.LocalIp);
+            IPAddress localAddress = IPAddress.Parse(host_ip);
             _udp_client.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastInterface, localAddress.GetAddressBytes());
             _udp_client.Ttl = 255; // 或更大值
 
@@ -128,9 +128,9 @@ namespace Chump_kuka.Services.Managers
         /// 加入 UDP 組播監聽
         /// </summary>
         /// <param name="multicastIp">組播 IP</param>
-        public void JoinMulticast(string multicastIp)
+        public void JoinMulticast(string host_ip, string multicastIp)
         {
-            IPAddress localInterface = IPAddress.Parse(Env.LocalIp); // 你有線網卡的 IP
+            IPAddress localInterface = IPAddress.Parse(host_ip); // 你有線網卡的 IP
             IPAddress multicastAddress = IPAddress.Parse(multicastIp);
             _udp_client.JoinMulticastGroup(multicastAddress, localInterface);
         }

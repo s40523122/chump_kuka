@@ -168,6 +168,10 @@ namespace Chump_kuka.Dispatchers
                 Heard.Invoke(sender, new HeardEventArgs(area_code, _area_step));
             }
         }
+        public static void ManualHeardEvent(string area_code,int step)
+        {
+            Heard.Invoke(null, new HeardEventArgs(area_code, step));
+        }
 
         private static void _kuka_listener_MessageReceived1(object sender, HttpMessageEventArgs e)
         {

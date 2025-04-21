@@ -22,8 +22,14 @@ namespace Chump_kuka
 
         private static void FeedbackDispatcher_Called(object sender, TextEventArgs e)
         {
+            // TODO 等待上一筆任務結束
+
+
             // 接收到叫車命令，尋找可派發任務
             string start_area_code = e.Message;
+
+            HttpListenerDispatcher.ManualHeardEvent(start_area_code, 1);        // 觸發接收報工系統 call 事件
+
             bool can_carry = GetCallTask(start_area_code);
             if (can_carry)
             {
@@ -31,7 +37,7 @@ namespace Chump_kuka
             }
             else
             {
-                Log.Append("無可執行搬運任務", "WARRNING", "CarryTaskController");
+                Log.Append($"無可執行搬運任務。(起始節點: {start_area_code})", "WARRNING", "CarryTaskController");
             }
         }
 
