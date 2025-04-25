@@ -267,7 +267,7 @@ namespace Chump_kuka.Dispatchers
                 var matchingNode = nodeData.FirstOrDefault(x => x.areaCode == area.AreaCode);
                 if (matchingNode != null)
                 {
-                    area.NodeList = matchingNode.nodeList.ToObject<List<string>>();
+                    area.NodeList = matchingNode.nodeList.ToObject<string[]>();
                 }
             }
             // KukaParm.KukaAreaModels = _kuka_areas;

@@ -41,26 +41,26 @@
             this.chatroom = new System.Windows.Forms.FlowLayoutPanel();
             this.myPanel2 = new iCAPS.myPanel();
             this.label7 = new System.Windows.Forms.Label();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.remoteIpDemo = new System.Windows.Forms.Label();
-            this.myPanel1 = new iCAPS.myPanel();
-            this.label5 = new System.Windows.Forms.Label();
-            this.remoteTimeDemo = new System.Windows.Forms.Label();
             this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
             this.localIpDemo = new System.Windows.Forms.Label();
             this.myPanel6 = new iCAPS.myPanel();
             this.label18 = new System.Windows.Forms.Label();
             this.localTimeDemo = new System.Windows.Forms.Label();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.remoteIpDemo = new System.Windows.Forms.Label();
+            this.myPanel1 = new iCAPS.myPanel();
+            this.label5 = new System.Windows.Forms.Label();
+            this.remoteTimeDemo = new System.Windows.Forms.Label();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.replyTitleDemo = new System.Windows.Forms.Label();
             this.replyCountDemo = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.chatroom.SuspendLayout();
             this.myPanel2.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
-            this.myPanel1.SuspendLayout();
             this.flowLayoutPanel7.SuspendLayout();
             this.myPanel6.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
+            this.myPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -207,68 +207,6 @@
             this.label7.Text = "加入聊天室";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel1.Controls.Add(this.remoteIpDemo);
-            this.flowLayoutPanel1.Controls.Add(this.myPanel1);
-            this.flowLayoutPanel1.Controls.Add(this.remoteTimeDemo);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 82);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(105, 52);
-            this.flowLayoutPanel1.TabIndex = 11;
-            this.flowLayoutPanel1.Visible = false;
-            // 
-            // remoteIpDemo
-            // 
-            this.remoteIpDemo.AutoSize = true;
-            this.remoteIpDemo.Font = new System.Drawing.Font("新細明體", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.remoteIpDemo.Location = new System.Drawing.Point(3, 0);
-            this.remoteIpDemo.Name = "remoteIpDemo";
-            this.remoteIpDemo.Size = new System.Drawing.Size(59, 12);
-            this.remoteIpDemo.TabIndex = 9;
-            this.remoteIpDemo.Text = "127.0.0.1";
-            // 
-            // myPanel1
-            // 
-            this.myPanel1.AutoSize = true;
-            this.myPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.myPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.myPanel1.Controls.Add(this.label5);
-            this.myPanel1.Location = new System.Drawing.Point(15, 12);
-            this.myPanel1.Margin = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.myPanel1.Name = "myPanel1";
-            this.myPanel1.Radius = 5;
-            this.myPanel1.Size = new System.Drawing.Size(90, 28);
-            this.myPanel1.TabIndex = 8;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label5.Location = new System.Drawing.Point(0, 0);
-            this.label5.Margin = new System.Windows.Forms.Padding(0);
-            this.label5.MaximumSize = new System.Drawing.Size(110, 0);
-            this.label5.Name = "label5";
-            this.label5.Padding = new System.Windows.Forms.Padding(8);
-            this.label5.Size = new System.Drawing.Size(90, 28);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "I\'m fine thanks";
-            // 
-            // remoteTimeDemo
-            // 
-            this.remoteTimeDemo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.remoteTimeDemo.AutoSize = true;
-            this.remoteTimeDemo.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            this.remoteTimeDemo.Location = new System.Drawing.Point(40, 40);
-            this.remoteTimeDemo.Name = "remoteTimeDemo";
-            this.remoteTimeDemo.Size = new System.Drawing.Size(62, 12);
-            this.remoteTimeDemo.TabIndex = 9;
-            this.remoteTimeDemo.Text = "04/21 14:53";
-            this.remoteTimeDemo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // flowLayoutPanel7
             // 
             this.flowLayoutPanel7.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -335,6 +273,68 @@
             this.localTimeDemo.Text = "04/21 14:53";
             this.localTimeDemo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel1.Controls.Add(this.remoteIpDemo);
+            this.flowLayoutPanel1.Controls.Add(this.myPanel1);
+            this.flowLayoutPanel1.Controls.Add(this.remoteTimeDemo);
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 82);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(105, 52);
+            this.flowLayoutPanel1.TabIndex = 11;
+            this.flowLayoutPanel1.Visible = false;
+            // 
+            // remoteIpDemo
+            // 
+            this.remoteIpDemo.AutoSize = true;
+            this.remoteIpDemo.Font = new System.Drawing.Font("新細明體", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.remoteIpDemo.Location = new System.Drawing.Point(3, 0);
+            this.remoteIpDemo.Name = "remoteIpDemo";
+            this.remoteIpDemo.Size = new System.Drawing.Size(59, 12);
+            this.remoteIpDemo.TabIndex = 9;
+            this.remoteIpDemo.Text = "127.0.0.1";
+            // 
+            // myPanel1
+            // 
+            this.myPanel1.AutoSize = true;
+            this.myPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.myPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.myPanel1.Controls.Add(this.label5);
+            this.myPanel1.Location = new System.Drawing.Point(15, 12);
+            this.myPanel1.Margin = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.myPanel1.Name = "myPanel1";
+            this.myPanel1.Radius = 5;
+            this.myPanel1.Size = new System.Drawing.Size(90, 28);
+            this.myPanel1.TabIndex = 8;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label5.Location = new System.Drawing.Point(0, 0);
+            this.label5.Margin = new System.Windows.Forms.Padding(0);
+            this.label5.MaximumSize = new System.Drawing.Size(110, 0);
+            this.label5.Name = "label5";
+            this.label5.Padding = new System.Windows.Forms.Padding(8);
+            this.label5.Size = new System.Drawing.Size(90, 28);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "I\'m fine thanks";
+            // 
+            // remoteTimeDemo
+            // 
+            this.remoteTimeDemo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.remoteTimeDemo.AutoSize = true;
+            this.remoteTimeDemo.ForeColor = System.Drawing.SystemColors.ButtonShadow;
+            this.remoteTimeDemo.Location = new System.Drawing.Point(40, 40);
+            this.remoteTimeDemo.Name = "remoteTimeDemo";
+            this.remoteTimeDemo.Size = new System.Drawing.Size(62, 12);
+            this.remoteTimeDemo.TabIndex = 9;
+            this.remoteTimeDemo.Text = "04/21 14:53";
+            this.remoteTimeDemo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // flowLayoutPanel2
             // 
             this.flowLayoutPanel2.Controls.Add(this.panel1);
@@ -342,6 +342,19 @@
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(473, 38);
             this.flowLayoutPanel2.TabIndex = 9;
+            // 
+            // panel1
+            // 
+            this.panel1.AutoSize = true;
+            this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.Controls.Add(this.replyTitleDemo);
+            this.panel1.Controls.Add(this.replyCountDemo);
+            this.panel1.Location = new System.Drawing.Point(3, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(139, 30);
+            this.panel1.TabIndex = 1;
+            this.panel1.Visible = false;
             // 
             // replyTitleDemo
             // 
@@ -368,19 +381,6 @@
             this.replyCountDemo.TabIndex = 0;
             this.replyCountDemo.Text = "1";
             // 
-            // panel1
-            // 
-            this.panel1.AutoSize = true;
-            this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel1.Controls.Add(this.replyTitleDemo);
-            this.panel1.Controls.Add(this.replyCountDemo);
-            this.panel1.Location = new System.Drawing.Point(3, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(139, 30);
-            this.panel1.TabIndex = 1;
-            this.panel1.Visible = false;
-            // 
             // UdpChatRoom
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -402,14 +402,14 @@
             this.chatroom.ResumeLayout(false);
             this.chatroom.PerformLayout();
             this.myPanel2.ResumeLayout(false);
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
-            this.myPanel1.ResumeLayout(false);
-            this.myPanel1.PerformLayout();
             this.flowLayoutPanel7.ResumeLayout(false);
             this.flowLayoutPanel7.PerformLayout();
             this.myPanel6.ResumeLayout(false);
             this.myPanel6.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
+            this.myPanel1.ResumeLayout(false);
+            this.myPanel1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
             this.panel1.ResumeLayout(false);

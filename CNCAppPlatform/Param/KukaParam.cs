@@ -45,7 +45,7 @@ public static class KukaParm
 
     public static event PropertyChangedEventHandler RobotStatusChanged;
     public static event PropertyChangedEventHandler AreaChanged;
-    public static event PropertyChangedEventHandler AreaStatusChanged;
+    //public static event PropertyChangedEventHandler AreaStatusChanged;
     public static event PropertyChangedEventHandler CarryChanged;
     public static event PropertyChangedEventHandler BindChanged;        // 當綁定區域改變後
 
@@ -106,34 +106,72 @@ public static class KukaParm
         get => _kuka_area_models;
         set
         {
-            if (KukaAreaModel.CompareData(_kuka_area_models, value)) return;
-            
-            _kuka_area_models = value;
-            //if (_kuka_area_models[0].NodeList.Count != 0)
-            //    AreaChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(KukaAreaModels)));
-            
+            bool change = false;
+
+            // 遍歷現有列表資料，將不存在於輸入列表的物件移除，並更新存在物件
+            // 當物件存在且修改後，從輸入列表中移除
             foreach (KukaAreaModel model in _kuka_area_models)
             {
-                model.ModelChanged += (sender, e) =>
+                // 判段原始區域列表是否需要增減
+                KukaAreaModel find_in_value = value.FirstOrDefault(m => m.AreaCode == model.AreaCode);
+                if ( find_in_value == null)
                 {
-                    AreaChanged?.Invoke(sender, e);  // sender 直接就是 Model
-                };
+                    _kuka_area_models.Remove(model);
+                    change = true;      // 紀錄需更新
+                    continue;
+                }
 
-                // 訂閱模型的 PropertyChanged 事件，並轉發給 ModelManager 的事件
-                model.NodeStatusChanged += (sender, e) =>
+                if ( find_in_value.NodeList != null)
                 {
-                    AreaStatusChanged?.Invoke(sender, e);  // sender 直接就是 Model
-                };
+                    change |= model.CheckAndUpdate(find_in_value);      // 判定資料內容是否變更
+                }
 
+                value.Remove(find_in_value);        // 從輸入列表中移除
             }
-            try
+            if (value.Count > 0)
             {
-                AreaChanged?.Invoke(null, null);
+                foreach (KukaAreaModel model in value)
+                {
+                    // 新資料，尚未處理控制項
+                    _kuka_area_models.Add(model);
+                }
+                change = true;
             }
-            catch (Exception ex)
+
+            if (change) 
             {
-                Console.WriteLine(ex.ToString());
+                AreaChanged?.Invoke(_kuka_area_models, new PropertyChangedEventArgs(nameof(KukaAreaModels)));
             }
+
+            // origin
+            //if (KukaAreaModel.CompareData(_kuka_area_models, value)) return;
+            
+            //_kuka_area_models = value;
+            ////if (_kuka_area_models[0].NodeList.Count != 0)
+            ////    AreaChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(KukaAreaModels)));
+            
+            //foreach (KukaAreaModel model in _kuka_area_models)
+            //{
+            //    model.ModelChanged += (sender, e) =>
+            //    {
+            //        AreaChanged?.Invoke(sender, e);  // sender 直接就是 Model
+            //    };
+
+            //    // 訂閱模型的 PropertyChanged 事件，並轉發給 ModelManager 的事件
+            //    model.NodeStatusChanged += (sender, e) =>
+            //    {
+            //        AreaStatusChanged?.Invoke(sender, e);  // sender 直接就是 Model
+            //    };
+
+            //}
+            //try
+            //{
+            //    AreaChanged?.Invoke(null, null);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex.ToString());
+            //}
         }
     }
 
@@ -178,11 +216,11 @@ public static class KukaParm
 
 public class KukaAreaModel
 {
-    public event PropertyChangedEventHandler NodeStatusChanged;
-    public event PropertyChangedEventHandler ModelChanged;
+    //public event PropertyChangedEventHandler NodeStatusChanged;
+    //public event PropertyChangedEventHandler ModelChanged;
 
-    private List<int> _node_status = new List<int>();
-    private List<string> _node_list = new List<string>();
+    private int[] _node_status;
+    private string[] _node_list;
 
     /// <summary>
     /// 區域編碼 ex: area001
@@ -200,20 +238,22 @@ public class KukaAreaModel
     public int AreaType { get; set; }
 
     [JsonIgnore]        // 避免序列化循環引用
-    public List<KukaAreaControl> UserControls { get; set; } = new List<KukaAreaControl>();
+    public KukaAreaControl ControlUI { get; set; }
 
     /// <summary>
     /// 點位集合
     /// </summary>
-    public List<string> NodeList
+    public string[] NodeList
     {
         get => _node_list;
         set
         {
-            if (!_node_list.SequenceEqual(value))
+            if (_node_list == null || !_node_list.SequenceEqual(value))
             {
                 _node_list = value;
-                ModelChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeList)));
+                //ModelChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeList)));
+
+                _node_status = new int[_node_list.Length % 2];
             }
         }
     }
@@ -221,21 +261,19 @@ public class KukaAreaModel
     /// <summary>
     /// 貨架狀態 {0: 無貨架, 1: 空貨架, 2: 滿貨架}
     /// </summary>
-    public List<int> NodeStatus 
+    public int[] NodeStatus 
     { 
         get => _node_status;
         set
         {
-            if (!_node_status.SequenceEqual(value))
+            if (_node_status == null || !_node_status.SequenceEqual(value))
             {
                 _node_status = value;
                 // NodeStatusChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeStatus)));
 
-                foreach (KukaAreaControl area in UserControls)
-                {
-                    area.UpdateContainerImage(value.ToArray());     // 更新圖片
-                }
-                NodeStatusChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeStatus)));
+                ControlUI?.UpdateContainerImage(value);     // 更新圖片
+
+                //NodeStatusChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeStatus)));
             }
         }
     }
@@ -245,7 +283,29 @@ public class KukaAreaModel
                 
         AreaCode = json_object["areaCode"].ToString();
         AreaName = json_object["areaName"].ToString();
-        NodeList = json_object["nodeList"].ToObject<List<string>>();      // 集合查詢到的區域代碼為列表
+        NodeList = json_object["nodeList"].ToObject<string[]>();      // 集合查詢到的區域代碼為陣列
+    }
+
+    public bool CheckAndUpdate(KukaAreaModel param)
+    {
+        bool change = false;
+        if (AreaName != param.AreaName)
+        {
+            AreaName = param.AreaName;
+            change = true;
+        }
+        if (AreaType != param.AreaType)
+        {
+            AreaType = param.AreaType;
+            change = true;
+        }
+        if (!Enumerable.SequenceEqual(NodeList, param.NodeList))
+        {
+            NodeList = param.NodeList;
+            change = true;
+        }
+        
+        return change;
     }
 
     public void CompareAndUpdate(KukaAreaModel source_model)
@@ -254,7 +314,6 @@ public class KukaAreaModel
         this.AreaType = source_model.AreaType;
         this.NodeList = source_model.NodeList;
         this.NodeStatus = source_model.NodeStatus;
-        
     }
 
     /// <summary>
@@ -263,7 +322,7 @@ public class KukaAreaModel
     /// <param name="target_area"></param>
     /// <param name="areas"></param>
     /// <returns></returns>
-    public static KukaAreaModel Find(string target_area, List<KukaAreaModel> areas) => areas.FirstOrDefault(area => area.AreaName == target_area);
+    public static KukaAreaModel Find(string target_area_name, List<KukaAreaModel> areas) => areas.FirstOrDefault(area => area.AreaName == target_area_name);
 
     public static bool CompareData(List<KukaAreaModel> sourceData, List<KukaAreaModel> targetData) => sourceData.Select(m => m.AreaName).SequenceEqual(targetData.Select(m => m.AreaName));
 

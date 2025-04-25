@@ -182,7 +182,7 @@ namespace Chump_kuka.Forms
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            KukaParm.BindAreaModel = KukaAreaModel.Find(bind_comboBox.Text, KukaParm.KukaAreaModels);
+            KukaParm.BindAreaModel = KukaAreaModel.Find(bind_comboBox.Text, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
             LocalAreaController.ResetIOCount();
         }
         private void target_comboBox_SelectedIndexChanged(object sender, EventArgs e)

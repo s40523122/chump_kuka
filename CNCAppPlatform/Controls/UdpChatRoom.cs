@@ -34,27 +34,33 @@ namespace Chump_kuka.Controls
 
 
             FormClosing += Form1_FormClosing;
+            
             ChatController.MessageReceived += ChatController_MessageReceived;
         }
 
         private void ChatController_MessageReceived(object sender, Services.Managers.MessageIPEventArgs e)
-        {
-            string client_ip = e.Client.Address.ToString();
-            string client_msg = e.Message;
-
-            ListViewItem item = new ListViewItem("訪客");
-            item.SubItems.Add(client_ip);
-            onlineUsers.Items.Add(item);
-
-            // 解析回應字串
-            if (client_msg.StartsWith("{\"robot\"}"))
+        {            
+            this.Invoke(new Action(() =>
             {
-                RepeatCount("robot_status");
-            }
-            else
-            {
-                RemoteMessage(new UdpLog(client_ip, client_msg));
-            }
+                string client_ip = e.Client.Address.ToString();
+                string client_msg = e.Message;
+
+                //ListViewItem item = new ListViewItem("訪客");
+                //item.SubItems.Add(client_ip);
+                //onlineUsers.Items.Add(item);
+
+                // 解析回應字串
+                if (client_msg.StartsWith("{\r\n  \"Type\": \"robot\""))
+                {
+                    RepeatCount("robot_status");
+                }
+                else
+                {
+                    // TODO 待解決重複訪客問題
+                    // RemoteMessage(new UdpLog(client_ip, client_msg));
+                }
+            }));
+            
         }
 
         public void newUser()
@@ -112,6 +118,7 @@ namespace Chump_kuka.Controls
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 Margin = new Padding(0, 0, 15, 0),
                 Anchor = AnchorStyles.Right,
+                MaximumSize = new Size(200, 0)
             };
             Label msg = new Label()
             {
@@ -159,6 +166,7 @@ namespace Chump_kuka.Controls
                 AutoSizeMode=AutoSizeMode.GrowAndShrink,
                 Margin = new Padding(15, 0, 0, 0),
                 Anchor = AnchorStyles.Left,
+                MaximumSize = new Size(200, 0)
             };
             Label msg = new Label()
             {

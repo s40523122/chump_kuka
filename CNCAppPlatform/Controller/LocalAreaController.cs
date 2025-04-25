@@ -18,7 +18,7 @@ namespace Chump_kuka.Controller
     internal class LocalAreaController
     {
         private static ModbusTCPDispatcher _sensor_dispatcher = null;
-        private static List<int> _record_node_status = null;      // 紀錄的區域狀態
+        private static int[] _record_node_status;      // 紀錄的區域狀態
         private static DateTime? full_time = null;
 
         // 定義貨架前後狀態轉換對應的動作：0=無動作, 1=入貨, 2=異常
@@ -34,6 +34,9 @@ namespace Chump_kuka.Controller
                 { (2, 1), 0 },      // 取貨
                 { (2, 2), 0 }       // 無變化
             };
+
+
+        public static KukaAreaControl BindControl { get; set; }
 
         public static event EventHandler<HttpListenerDispatcher.HeardEventArgs> StepChanged;        // 流程變更事件
         public static event EventHandler<ButtonPushEventArgs> ButtonPush;
@@ -95,7 +98,7 @@ namespace Chump_kuka.Controller
             if(KukaParm.BindAreaModel != null)
             {
                 _sensor_dispatcher.SensorRead -= ModbusTCPDispatcher_SensorRead;
-                _sensor_dispatcher.RegisterCount = KukaParm.BindAreaModel.NodeList.Count * 2 + 1;      // 每個工作站 2 個 sensor + 按鈕 1 個
+                _sensor_dispatcher.RegisterCount = KukaParm.BindAreaModel.NodeList.Length * 2 + 1;      // 每個工作站 2 個 sensor + 按鈕 1 個
                 _sensor_dispatcher.SensorRead += ModbusTCPDispatcher_SensorRead;
             }
         }
@@ -107,8 +110,16 @@ namespace Chump_kuka.Controller
         /// <param name="e"></param>
         private static void ModbusTCPDispatcher_SensorRead(object sender, SensorDataEventArgs e)
         {
-            KukaParm.BindAreaModel.NodeStatus = ToNodeStatus(e.Data);
-            int data_length = e.Data.Length-1;
+            int[] current_node_status = ToNodeStatus(e.Data).ToArray();    // 當前節點狀態
+            
+            // 如果節點狀態有變更才執行
+            if (!current_node_status.SequenceEqual(KukaParm.BindAreaModel.NodeStatus))
+            {
+                KukaParm.BindAreaModel.NodeStatus = current_node_status;
+                BindControl?.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus.ToArray());        // 更新圖片
+
+                ChatController.SyncNodeStatus();
+            }
 
             // 若區域滿載達指定時數後，觸發亮燈
             bool[] result = e.Data.Take(e.Data.Length - 1).ToArray();
@@ -123,6 +134,7 @@ namespace Chump_kuka.Controller
             }
 
             // 若按鈕狀態為 true ，觸發訊息
+            int data_length = e.Data.Length - 1;
             bool button_state = e.Data[data_length];
             if (button_state)
             {
@@ -171,22 +183,20 @@ namespace Chump_kuka.Controller
             return status;
         }
 
-        public static void UpdateControl(KukaAreaControl bind_control)
+        public static void UpdateControl()
         {
             // 判定綁定區域是否存在/更新
-            if (KukaParm.BindAreaModel == null) return;
-            
-            // 如果控制項已綁定，不做後續動作
-            if (KukaParm.BindAreaModel.UserControls.Contains(bind_control)) return;
+            if (KukaParm.BindAreaModel == null || BindControl == null) return;
+
 
             // 更新控制項為綁定區域資訊
-            bind_control.Dock = DockStyle.Fill;
-            bind_control.Margin = new Padding(10);
-            bind_control.AreaName = KukaParm.BindAreaModel.AreaName;
-            bind_control.AreaCode = KukaParm.BindAreaModel.AreaCode;
-            bind_control.AreaNode = KukaParm.BindAreaModel.NodeList.ToArray();
-            bind_control.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus.ToArray());        // 初次建立，更新圖片
-            KukaParm.BindAreaModel.UserControls.Add(bind_control);
+            //bind_control.Dock = DockStyle.Fill;
+            //bind_control.Margin = new Padding(10);
+            BindControl.AreaName = KukaParm.BindAreaModel.AreaName;
+            BindControl.AreaCode = KukaParm.BindAreaModel.AreaCode;
+            BindControl.AreaNode = KukaParm.BindAreaModel.NodeList.ToArray();
+            BindControl.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus.ToArray());        // 初次建立，更新圖片
+            // KukaParm.BindAreaModel.ControlUI = bind_control;
         }
 
         public static bool TryCreateCarryTask()
@@ -196,7 +206,7 @@ namespace Chump_kuka.Controller
             // * 返回當前是否可派發任務
             // * 自動設定搬運任務的起點與終點
 
-            List<int> current_status = KukaParm.BindAreaModel?.NodeStatus;       // 當前區域狀態
+            int[] current_status = KukaParm.BindAreaModel?.NodeStatus;       // 當前區域狀態
 
             // 第一次執行，初始化歷史狀態
             if (_record_node_status == null)
@@ -215,7 +225,7 @@ namespace Chump_kuka.Controller
             List<int> node_action = new List<int>();        // 區域動作狀態判定
 
             // 比對每一格的前後狀態，轉換為動作
-            for (int i = 0; i < current_status.Count; i++)
+            for (int i = 0; i < current_status.Length; i++)
             {
                 var key = (_record_node_status[i], current_status[i]);
                 node_action.Add(_carry_rules.TryGetValue(key, out var action) ? action : 0);
@@ -235,7 +245,7 @@ namespace Chump_kuka.Controller
             else if (node_action.Contains(1))
             {
                 // 目標區域不可進貨（滿載）
-                if (KukaParm.TargetAreaModel.NodeStatus.Count>0 && !KukaParm.TargetAreaModel.NodeStatus.Contains(0))
+                if (KukaParm.TargetAreaModel.NodeStatus.Length>0 && !KukaParm.TargetAreaModel.NodeStatus.Contains(0))
                 {
                     MsgBox.Show("目標區域滿載", "搬運任務異常");
                     return false;

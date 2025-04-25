@@ -1,4 +1,5 @@
 ﻿using CefSharp.DevTools.CSS;
+using Chump_kuka.Controller;
 using Chump_kuka.Controls;
 using iCAPS;
 using Newtonsoft.Json.Linq;
@@ -76,7 +77,7 @@ namespace Chump_kuka.Forms
                     kuka_area.AreaClick += Area_AreaClick;
 
                     kuka_area.UpdateContainerImage(area.NodeStatus.ToArray());        // 初次建立，更新圖片
-                    area.UserControls.Add(kuka_area);       // 將建立的使用者控制項與模型綁定
+                    area.ControlUI = kuka_area;       // 將建立的使用者控制項與模型綁定
 
                     // KukaParm.AreaControls.Add(kuka_area);
                     tableLayoutPanel2.Controls.Add(kuka_area);
@@ -245,7 +246,8 @@ namespace Chump_kuka.Forms
             DialogResult dialogResult = MessageBox.Show($"是否執行派車任務?\n{KukaParm.StartNode.Name} -> {KukaParm.GoalNode.Name}", "info", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
             {
-                KukaApiController.PubCarryTask();
+                // KukaApiController.PubCarryTask();
+                ChatController.AppendCarryTask(false);
                 MsgBox.ShowFlash("已加入等候任務", "手動派車", 1000);
             }
 

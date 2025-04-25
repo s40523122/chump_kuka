@@ -11,9 +11,12 @@ using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 namespace Chump_kuka.Controller
 {
@@ -84,7 +87,7 @@ namespace Chump_kuka.Controller
 
             // 初始化，移除所有綁定事件
             KukaParm.RobotStatusChanged -= KukaParm_RobotStatusChanged;
-            KukaParm.AreaStatusChanged -= KukaParm_AreaStatusChanged;
+            // KukaParm.AreaStatusChanged -= KukaParm_AreaStatusChanged;
 
             // 重新建立新的 UDP 伺服器實例
             _udp_listener?.Close();
@@ -107,7 +110,7 @@ namespace Chump_kuka.Controller
                 _udp_listener.MessageReceived += when_server_MessageReceived;
             }
 
-            KukaParm.AreaStatusChanged += KukaParm_AreaStatusChanged;       // 當貨架狀態更新時，同步所有模組
+            // KukaParm.AreaStatusChanged += KukaParm_AreaStatusChanged;       // 當貨架狀態更新時，同步所有模組
         }
 
         private static void KukaParm_RobotStatusChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -181,16 +184,28 @@ namespace Chump_kuka.Controller
             {
                 switch (response_body.Type)
                 {
+                    case "node_status":
+                        KukaAreaModel receive_area = JsonConvert.DeserializeObject<KukaAreaModel>(response_body.Message);
+                        KukaAreaModel find_area = KukaAreaModel.Find(receive_area.AreaName, KukaParm.KukaAreaModels);
+                        find_area.NodeStatus = receive_area.NodeStatus;
+                        break;
                     case "feedback":
                         Log.Append("接收到報工任務", "info", "ChatController");
                         SendFeedbackInfo(response_body.Message);
                         break;
                     case "carry":
                         //MsgBox.Show("接收到搬運任務", "Sever");
-                        Log.Append("接收到搬運任務", "info", "ChatController");
-                        ParseAndUpdateCarryNode(response_body.Message);
-                        // KukaApiController.PubCarryTask();
-                        AppendCarryTask();
+                        try
+                        {
+                            Log.Append("接收到搬運任務", "info", "ChatController");
+                            ParseAndUpdateCarryNode(response_body.Message);
+                            // KukaApiController.PubCarryTask();
+                            AppendCarryTask();
+                        }
+                        catch (Exception _e)
+                        {
+                            Console.WriteLine(_e.ToString());
+                        }
                         break;
                     case "info":
                         //MsgBox.Show("e.Message", "Server");
@@ -241,6 +256,11 @@ namespace Chump_kuka.Controller
             {
                 switch (response_body.Type)
                 {
+                    case "node_status":
+                        KukaAreaModel receive_area = JsonConvert.DeserializeObject<KukaAreaModel>(response_body.Message);
+                        KukaAreaModel find_area = KukaAreaModel.Find(receive_area.AreaName, KukaParm.KukaAreaModels);
+                        find_area.NodeStatus = receive_area.NodeStatus;
+                        break;
                     case "task_list":
                         SimpleCarryTask[] tasks = JsonConvert.DeserializeObject<List<SimpleCarryTask>>(response_body.Message).ToArray();
                         CarryTaskUpdated?.Invoke(null, tasks);
@@ -332,6 +352,19 @@ namespace Chump_kuka.Controller
 
         }
 
+        /// <summary>
+        /// 所有主/從站同步所有節點狀態
+        /// </summary>
+        public static void SyncNodeStatus()
+        {
+            MyCommModel model = new MyCommModel()
+            {
+                Type = "node_status",
+                Message = JsonConvert.SerializeObject(KukaParm.BindAreaModel, Formatting.Indented)
+            };
+            SyncSend(JsonConvert.SerializeObject(model, Formatting.Indented));
+        }
+
         public static void SyncSend(string msg)
         {
             try
@@ -397,12 +430,12 @@ namespace Chump_kuka.Controller
             SyncSend(jsonOutput);
         }
 
-        public static void AppendCarryTask()
+        public static void AppendCarryTask(bool wait=true)
         {
             if (_is_master)        
             {
                 // 若為 master 端，將任務加入等候區
-                CarryTaskController.AddToQueue();
+                CarryTaskController.AddToQueue(wait);
 
             }
             else

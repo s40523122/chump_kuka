@@ -68,7 +68,7 @@ namespace Chump_kuka
             try 
             {
                 bool[] status = modbusService.ReadDI(RegisterCount);
-                SensorRead.Invoke(sender, new SensorDataEventArgs(status, ""));
+                SensorRead.Invoke(KukaParm.BindAreaModel, new SensorDataEventArgs(status));
             }
             catch (Exception ex) 
             {
@@ -82,12 +82,11 @@ namespace Chump_kuka
     public class SensorDataEventArgs : EventArgs
     {
         public bool[] Data { get; }
-        public string Message { get; }
+        
 
-        public SensorDataEventArgs(bool[] data, string message)
+        public SensorDataEventArgs(bool[] data)
         {
             Data = data;
-            Message = message;
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Chump_kuka
 {
     public partial class Form1 : iCAPS.Form1
     {
+        private UdpChatRoom _udp_chat_room = new UdpChatRoom();
         public Form1()
         {
             InitializeComponent();
@@ -24,6 +25,8 @@ namespace Chump_kuka
             // Debug模式下，手動開啟 api 連線
             if (!Debugger.IsAttached) { enable_api_btn.Visible = false; }
 
+            _udp_chat_room.Show();
+            _udp_chat_room.Hide();
 
             modbusService = new ModbusTCPMasterManager();
             Load += Form1_Load;
@@ -152,7 +155,7 @@ namespace Chump_kuka
             logWindow1.Visible = open_log_button.Checked;
         }
 
-        private UdpChatRoom _udp_chat_room = new UdpChatRoom();
+        
         private void btnUdpLog_Click(object sender, EventArgs e)
         {
             _udp_chat_room.Show();

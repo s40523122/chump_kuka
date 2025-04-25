@@ -41,7 +41,11 @@ namespace Chump_kuka
             }
         }
 
-        public static void AddToQueue()
+        /// <summary>
+        /// 將搬運任務加入等待列表
+        /// </summary>
+        /// <param name="wait">若為 true，需等待報工系統通知；反之，直接派發任務。</param>
+        public static void AddToQueue(bool wait=true)
         {
             // 取得起始區域代號
             string start_code = KukaParm.KukaAreaModels.FirstOrDefault(m => m.NodeList.Contains(KukaParm.StartNode.Code)).AreaCode;
@@ -52,6 +56,12 @@ namespace Chump_kuka
             _carry_queue.Add(task);
 
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
+
+            // 非等待或第2區域的任務優先執行
+            if (!wait || start_code == KukaParm.KukaAreaModels[2].AreaCode)
+            {
+                KukaApiController.PubCarryTask();
+            }
         }
 
         private static SimpleCarryTask[] GetQueueArray()
@@ -105,10 +115,7 @@ namespace Chump_kuka
 
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
 
-            // 第2區域的任務優先執行
-            _current_task = _carry_queue.FirstOrDefault(m => m.AreaCode == KukaParm.KukaAreaModels[2].AreaCode && m.Called == false);
-
-            PubCarryTask();
+            
         }
     }
 

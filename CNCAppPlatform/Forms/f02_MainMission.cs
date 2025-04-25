@@ -50,7 +50,8 @@ namespace Chump_kuka.Forms
 
             // 當綁定區域更新時，同步更新控制項 UI
             KukaParm.BindChanged += KukaParm_BindChanged;
-            LocalAreaController.UpdateControl(bind_area_control);
+            LocalAreaController.BindControl = bind_area_control;
+            LocalAreaController.UpdateControl();
             LocalAreaController.ButtonPush += (_s, _e) => scaleButton1_Click(_s, _e);
 
 
@@ -61,7 +62,7 @@ namespace Chump_kuka.Forms
         {
             this.Invoke(new Action(() =>
             {
-                LocalAreaController.UpdateControl(bind_area_control);
+                LocalAreaController.UpdateControl();
             }));
         }
 
@@ -126,7 +127,7 @@ namespace Chump_kuka.Forms
         private void F02_MainMission_VisibleChanged(object sender, EventArgs e)
         {
             // 切換視窗時，更新區域控制項內容
-            LocalAreaController.UpdateControl(bind_area_control);
+            LocalAreaController.UpdateControl();
         }
 
         private void DataGridView1_Resize(object sender, EventArgs e)
