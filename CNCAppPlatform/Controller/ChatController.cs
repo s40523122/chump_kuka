@@ -197,10 +197,24 @@ namespace Chump_kuka.Controller
                         //MsgBox.Show("接收到搬運任務", "Sever");
                         try
                         {
-                            Log.Append("接收到搬運任務", "info", "ChatController");
+                            Log.Append("接收排程搬運任務", "info", "ChatController");
                             ParseAndUpdateCarryNode(response_body.Message);
                             // KukaApiController.PubCarryTask();
-                            AppendCarryTask();
+                            AppendCarryTask(true);
+                        }
+                        catch (Exception _e)
+                        {
+                            Console.WriteLine(_e.ToString());
+                        }
+                        break;
+                    case "carry_auto":
+                        //MsgBox.Show("接收到搬運任務", "Sever");
+                        try
+                        {
+                            Log.Append("接收基本搬運任務", "info", "ChatController");
+                            ParseAndUpdateCarryNode(response_body.Message);
+                            // KukaApiController.PubCarryTask();
+                            AppendCarryTask(false);
                         }
                         catch (Exception _e)
                         {
@@ -266,9 +280,6 @@ namespace Chump_kuka.Controller
                         CarryTaskUpdated?.Invoke(null, tasks);
                         break;
 
-                    case "carry":
-                        ParseAndUpdateCarryNode(response_body.Message);
-                        break;
                     case "finish":
                         HttpListenerDispatcher.HeardEventArgs _e = new HttpListenerDispatcher.HeardEventArgs(response_body.Message, 0);
                         StepChanged.Invoke(null, _e);
@@ -316,10 +327,13 @@ namespace Chump_kuka.Controller
         }
 
         /// <summary>
-        /// 所有主/從站同步搬運節點
+        /// 所有主/從站同步搬運任務
         /// </summary>
-        public static void SyncCarryNode()
+        public static void SyncCarryTask(bool wait)
         {
+            // 若 wait = true，透過 "carry" 主題傳遞資料，代表需要等待叫車訊號。
+            string topic_name = wait ? "carry" : "carry_auto";
+
             CarryNode[] nodes = new CarryNode[2]
             {
                 KukaParm.StartNode,
@@ -328,7 +342,7 @@ namespace Chump_kuka.Controller
 
             MyCommModel model = new MyCommModel()
             {
-                Type = "carry",
+                Type = topic_name,
                 Message = JsonConvert.SerializeObject(nodes, Formatting.Indented)
             };
 
@@ -441,7 +455,7 @@ namespace Chump_kuka.Controller
             else
             {
                 // 若為 slave 端，傳送節點資訊，讓伺服器處理
-                SyncCarryNode();
+                SyncCarryTask(wait);
             }
         }
 

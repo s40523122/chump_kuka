@@ -26,16 +26,7 @@ namespace Chump_kuka.Forms
 
             Controls.Add(sidePanel);
 
-            //VisibleChanged += F02_MainMission_VisibleChanged;
-
             dataGridView1.Resize += DataGridView1_Resize;
-
-            //KukaApiController.CarryTaskPub += KukaApiController_CarryTaskPub;
-            ChatController.CarryTaskUpdated += ChatController_CarryTaskUpdated;
-            LocalAreaController.StepChanged += LocalAreaController_StepChanged;
-
-            // 訂閱 ModbusTCP 以更新貨架狀態圖片
-            //KukaParm.AreaStatusChanged += (_sender, _e) => bind_area_control.UpdateContainerImage(BindAreaController.BindArea.NodeStatus.ToArray());
 
             Load += F02_MainMission_Load;
         }
@@ -47,6 +38,9 @@ namespace Chump_kuka.Forms
             // BindAreaController.UpdateControl(bind_area_control);
 
             // SetupDataGridView();
+
+            ChatController.CarryTaskUpdated += ChatController_CarryTaskUpdated;
+            LocalAreaController.StepChanged += LocalAreaController_StepChanged;
 
             // 當綁定區域更新時，同步更新控制項 UI
             KukaParm.BindChanged += KukaParm_BindChanged;
@@ -247,7 +241,7 @@ namespace Chump_kuka.Forms
                 }
 
                 Light(1);       // 表示物料已進站
-                ChatController.AppendCarryTask();
+                ChatController.AppendCarryTask(true);
                 // KukaApiController.SendCarryTask();
             }
         }
