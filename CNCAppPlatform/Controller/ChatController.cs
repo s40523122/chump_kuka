@@ -71,13 +71,13 @@ namespace Chump_kuka.Controller
                     break;
                 case 5:     // 搬運任務完成
                     LocalAreaController.PubCarryOver();
-                    SendCarryFinish(KukaParm.TargetAreaModel.AreaCode);
+                    SendCarryFinish(KukaParm.TargetAreaModel.AreaCode);         // 通知目標區域更新
                     break;
                 case 7:
                     break;
             }
 
-            StepChanged?.Invoke(sender, e);     // 傳送至下一階段
+            StepChanged?.Invoke(sender, e);     // 通知任務步驟事件更新
         }
 
         public static void Init(bool  is_server, IPEndPoint listen_info)
@@ -115,6 +115,8 @@ namespace Chump_kuka.Controller
 
         private static void KukaParm_RobotStatusChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            if (!_is_master)
+                return;
             try
             {
                 // 將訊息封裝成 MyCommModel 後，透過 UDP 傳送
@@ -136,6 +138,8 @@ namespace Chump_kuka.Controller
 
         private static void KukaParm_AreaStatusChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            if (!_is_master)
+                return;
             try
             {
                 // 將訊息封裝成 MyCommModel 後，透過 UDP 傳送
@@ -197,10 +201,24 @@ namespace Chump_kuka.Controller
                         //MsgBox.Show("接收到搬運任務", "Sever");
                         try
                         {
-                            Log.Append("接收到搬運任務", "info", "ChatController");
+                            Log.Append("接收排程搬運任務", "info", "ChatController");
                             ParseAndUpdateCarryNode(response_body.Message);
                             // KukaApiController.PubCarryTask();
-                            AppendCarryTask();
+                            AppendCarryTask(true);
+                        }
+                        catch (Exception _e)
+                        {
+                            Console.WriteLine(_e.ToString());
+                        }
+                        break;
+                    case "carry_auto":
+                        //MsgBox.Show("接收到搬運任務", "Sever");
+                        try
+                        {
+                            Log.Append("接收基本搬運任務", "info", "ChatController");
+                            ParseAndUpdateCarryNode(response_body.Message);
+                            // KukaApiController.PubCarryTask();
+                            AppendCarryTask(false);
                         }
                         catch (Exception _e)
                         {
@@ -266,12 +284,10 @@ namespace Chump_kuka.Controller
                         CarryTaskUpdated?.Invoke(null, tasks);
                         break;
 
-                    case "carry":
-                        ParseAndUpdateCarryNode(response_body.Message);
-                        break;
                     case "finish":
-                        HttpListenerDispatcher.HeardEventArgs _e = new HttpListenerDispatcher.HeardEventArgs(response_body.Message, 0);
-                        StepChanged.Invoke(null, _e);
+                        // 處理搬運任務完成通知
+                        // 若完成目標為當前設備，更新工作站狀態
+                        SendCarryFinish(response_body.Message);
                         break;
                     case "heard":
                         HttpListenerDispatcher.HeardEventArgs data = JsonConvert.DeserializeObject<HttpListenerDispatcher.HeardEventArgs>(response_body.Message);
@@ -316,10 +332,13 @@ namespace Chump_kuka.Controller
         }
 
         /// <summary>
-        /// 所有主/從站同步搬運節點
+        /// 所有主/從站同步搬運任務
         /// </summary>
-        public static void SyncCarryNode()
+        public static void SyncCarryTask(bool wait)
         {
+            // 若 wait = true，透過 "carry" 主題傳遞資料，代表需要等待叫車訊號。
+            string topic_name = wait ? "carry" : "carry_auto";
+
             CarryNode[] nodes = new CarryNode[2]
             {
                 KukaParm.StartNode,
@@ -328,7 +347,7 @@ namespace Chump_kuka.Controller
 
             MyCommModel model = new MyCommModel()
             {
-                Type = "carry",
+                Type = topic_name,
                 Message = JsonConvert.SerializeObject(nodes, Formatting.Indented)
             };
 
@@ -399,7 +418,9 @@ namespace Chump_kuka.Controller
             }
             else
             {
-                Send("finish", area_code);
+                // 防止無限通訊
+                if(_is_master)
+                    Send("finish", area_code);
             }
             
         }
@@ -441,7 +462,7 @@ namespace Chump_kuka.Controller
             else
             {
                 // 若為 slave 端，傳送節點資訊，讓伺服器處理
-                SyncCarryNode();
+                SyncCarryTask(wait);
             }
         }
 
