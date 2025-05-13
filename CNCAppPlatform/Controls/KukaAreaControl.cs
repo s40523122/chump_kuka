@@ -31,6 +31,9 @@ namespace Chump_kuka.Controls
             set { label1.Text = value; }
         }
 
+        [Description("區域中的節點是否可點擊。"), Category("自訂值")]
+        public bool AllowContainerClick{ get; set; } = true;
+
         [Description("區域中的節點。"), Category("自訂值")]
         public string[] AreaNode
         {
@@ -44,7 +47,12 @@ namespace Chump_kuka.Controls
                 _nodes = value; 
                 for (int i = 0; i < _nodes.Length; i++)
                 {
-                    Container container = new Container() { ContainerName = _nodes[i], Size = container1.Size };
+                    Container container = new Container() 
+                    { 
+                        ContainerName = _nodes[i], 
+                        Size = container1.Size ,
+                        Enabled = AllowContainerClick,
+                    };
                     container.ContainerClick += Container_ContainerClick;
                     containerPanel.Controls.Add(container);
                 }

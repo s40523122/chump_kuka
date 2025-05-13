@@ -387,6 +387,7 @@
             this.bind_area_control.Location = new System.Drawing.Point(0, 54);
             this.bind_area_control.Margin = new System.Windows.Forms.Padding(0);
             this.bind_area_control.Name = "bind_area_control";
+            this.bind_area_control.AllowContainerClick = false;
             this.bind_area_control.NodeStatus = new int[] {
         0,
         0,

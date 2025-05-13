@@ -37,6 +37,13 @@ namespace Chump_kuka
             }
         }
 
+        [Description("容器狀態文字。"), Category("自訂值")]
+        public override String Text
+        {
+            get => label2.Text; 
+            set => label2.Text = value;
+        }
+
         [Description("表示元件是否為已核取狀態。"), Category("自訂值")]
         public bool Checked
         {
@@ -49,12 +56,12 @@ namespace Chump_kuka
                     case true:
                         doubleImg1.BackColor = Color.MediumSpringGreen;
                         panel2.BackColor = Color.OrangeRed;
-                        label2.Text = "已選定";
+                        Text = "已選定";
                         break;
                     case false:
                         doubleImg1.BackColor = Color.CadetBlue;
                         panel2.BackColor = Color.DarkOrange;
-                        label2.Text = "";
+                        Text = "";
                         break;
                 }
             }
