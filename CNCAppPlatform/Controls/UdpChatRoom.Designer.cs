@@ -283,7 +283,7 @@
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 82);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(105, 52);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(205, 76);
             this.flowLayoutPanel1.TabIndex = 11;
             this.flowLayoutPanel1.Visible = false;
             // 
@@ -307,7 +307,7 @@
             this.myPanel1.Margin = new System.Windows.Forms.Padding(15, 0, 0, 0);
             this.myPanel1.Name = "myPanel1";
             this.myPanel1.Radius = 5;
-            this.myPanel1.Size = new System.Drawing.Size(90, 28);
+            this.myPanel1.Size = new System.Drawing.Size(190, 52);
             this.myPanel1.TabIndex = 8;
             // 
             // label5
@@ -316,19 +316,19 @@
             this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label5.Location = new System.Drawing.Point(0, 0);
             this.label5.Margin = new System.Windows.Forms.Padding(0);
-            this.label5.MaximumSize = new System.Drawing.Size(110, 0);
+            this.label5.MaximumSize = new System.Drawing.Size(200, 0);
             this.label5.Name = "label5";
             this.label5.Padding = new System.Windows.Forms.Padding(8);
-            this.label5.Size = new System.Drawing.Size(90, 28);
+            this.label5.Size = new System.Drawing.Size(190, 52);
             this.label5.TabIndex = 0;
-            this.label5.Text = "I\'m fine thanks";
+            this.label5.Text = "I\'m fine thanks\r\nand you hahaha todoay is a nice day\r\nDid not it?";
             // 
             // remoteTimeDemo
             // 
             this.remoteTimeDemo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.remoteTimeDemo.AutoSize = true;
             this.remoteTimeDemo.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            this.remoteTimeDemo.Location = new System.Drawing.Point(40, 40);
+            this.remoteTimeDemo.Location = new System.Drawing.Point(140, 64);
             this.remoteTimeDemo.Name = "remoteTimeDemo";
             this.remoteTimeDemo.Size = new System.Drawing.Size(62, 12);
             this.remoteTimeDemo.TabIndex = 9;

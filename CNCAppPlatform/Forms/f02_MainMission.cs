@@ -102,8 +102,7 @@ namespace Chump_kuka.Forms
                             Light(4);
                             break;
                         case 5:
-                            Light(5);
-                            CarryTaskController.FeedbackFinish();
+                            Light(5);                            
                             _idle_timer.Enabled = true;
                             break;
                         case 7:
@@ -231,17 +230,12 @@ namespace Chump_kuka.Forms
 
                 if (!can_carry) return;     // 不可搬運狀態，跳過
 
-                // 透過點擊區域控制項，切換手動/自動模式
-                if (bind_area_control.Checked == false)
-                {
-                    // 手動模式，詢問是否派發任務
-                    DialogResult dialogResult = MessageBox.Show($"{KukaParm.StartNode?.Name} => {KukaParm.GoalNode?.Name}", "搬運任務", MessageBoxButtons.YesNo);
-                    if (dialogResult == DialogResult.No)
-                        return;
-                }
+                // 透過點擊區域控制項，確認是否等待呼叫任務
+                // 未點擊則等待呼叫
+                bool wait_call = !bind_area_control.Checked;
 
                 Light(1);       // 表示物料已進站
-                ChatController.AppendCarryTask(true);
+                ChatController.AppendCarryTask(wait_call);
                 // KukaApiController.SendCarryTask();
             }
         }

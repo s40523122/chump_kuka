@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Chump_kuka.Controls.UdpChatRoom;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Chump_kuka.Controls
@@ -54,10 +55,14 @@ namespace Chump_kuka.Controls
                 {
                     RepeatCount("robot_status");
                 }
+                else if (client_msg.StartsWith("{\r\n  \"Type\": \"node_status\""))
+                {
+                    RepeatCount("node_status");
+                }
                 else
                 {
                     // TODO 待解決重複訪客問題
-                    // RemoteMessage(new UdpLog(client_ip, client_msg));
+                    RemoteMessage(new UdpLog(client_ip, client_msg));
                 }
             }));
             
@@ -117,15 +122,15 @@ namespace Chump_kuka.Controls
                 AutoSize = true,
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 Margin = new Padding(0, 0, 15, 0),
-                Anchor = AnchorStyles.Right,
-                MaximumSize = new Size(200, 0)
+                Anchor = AnchorStyles.Right
             };
             Label msg = new Label()
             {
                 Text = udp_log.Message,
                 AutoSize = true,
                 Dock = DockStyle.Fill,
-                Padding = new Padding(8)
+                Padding = new Padding(8),
+                MaximumSize = new Size(400, 0)
             };
             Label time_txt = new Label()
             {
@@ -165,15 +170,15 @@ namespace Chump_kuka.Controls
                 AutoSize = true,
                 AutoSizeMode=AutoSizeMode.GrowAndShrink,
                 Margin = new Padding(15, 0, 0, 0),
-                Anchor = AnchorStyles.Left,
-                MaximumSize = new Size(200, 0)
+                Anchor = AnchorStyles.Left
             };
             Label msg = new Label()
             {
                 Text = udp_log.Message,
                 AutoSize = true,
                 Dock = DockStyle.Fill,
-                Padding = new Padding(8)
+                Padding = new Padding(8),
+                MaximumSize = new Size(400, 0)
             };
             Label time_txt = new Label()
             {

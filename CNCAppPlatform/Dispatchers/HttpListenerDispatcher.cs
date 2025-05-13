@@ -230,8 +230,8 @@ namespace Chump_kuka.Dispatchers
 
         public class HeardEventArgs : EventArgs
         {
-            public string AreaCode { get; }
-            public int Step { get; }
+            public string AreaCode { get; set; }
+            public int Step { get; set; }
 
             public HeardEventArgs(string area_code, int step)
             {

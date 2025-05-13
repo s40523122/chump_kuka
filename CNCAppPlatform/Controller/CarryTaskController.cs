@@ -60,8 +60,12 @@ namespace Chump_kuka
             // 非等待或第2區域的任務優先執行
             if (!wait || start_code == KukaParm.KukaAreaModels[2].AreaCode)
             {
+                _current_task = task;
                 KukaApiController.PubCarryTask();
             }
+            // 先全部開放
+            //_current_task = task;
+            //KukaApiController.PubCarryTask();
         }
 
         private static SimpleCarryTask[] GetQueueArray()
@@ -114,8 +118,6 @@ namespace Chump_kuka
             _current_task = null;
 
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
-
-            
         }
     }
 
@@ -136,8 +138,8 @@ namespace Chump_kuka
             ID = task.ID;
             StartNode = task.StartNode.Name;
             GoalNode = task.GoalNode.Name;
-            CreateTime = task.CreateTime.ToString(@"g");
-            FinishTime = task.FinishTime?.ToString(@"g");
+            CreateTime = task.CreateTime.ToString(@"MM/dd tt hh:mm");
+            FinishTime = task.FinishTime?.ToString(@"MM/dd tt hh:mm");
             Called = task.Called;
         }
     }

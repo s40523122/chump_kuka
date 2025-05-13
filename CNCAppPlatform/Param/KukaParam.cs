@@ -93,7 +93,7 @@ public static class KukaParm
         get => _robot_status_infos;
         set
         {
-            if (!_robot_status_infos.SequenceEqual(value)) 
+            if (!JToken.DeepEquals(_robot_status_infos, value)) 
             {
                 _robot_status_infos = value;
                 OnRobotChanged(nameof(RobotStatusInfos));

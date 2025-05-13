@@ -47,6 +47,10 @@ namespace Chump_kuka.Controller
             if (e.AreaCode == KukaParm.BindAreaModel.AreaCode)
             {
                 PubToLocalController(sender, e);     // 傳送至下一階段
+                if (e.Step == 5)
+                {
+                    CarryTaskController.FeedbackFinish();
+                }
             }
             else
             {
@@ -115,8 +119,6 @@ namespace Chump_kuka.Controller
 
         private static void KukaParm_RobotStatusChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (!_is_master)
-                return;
             try
             {
                 // 將訊息封裝成 MyCommModel 後，透過 UDP 傳送
@@ -192,6 +194,7 @@ namespace Chump_kuka.Controller
                         KukaAreaModel receive_area = JsonConvert.DeserializeObject<KukaAreaModel>(response_body.Message);
                         KukaAreaModel find_area = KukaAreaModel.Find(receive_area.AreaName, KukaParm.KukaAreaModels);
                         find_area.NodeStatus = receive_area.NodeStatus;
+                        SyncNodeStatus(receive_area);
                         break;
                     case "feedback":
                         Log.Append("接收到報工任務", "info", "ChatController");
@@ -230,23 +233,6 @@ namespace Chump_kuka.Controller
                         Log.Append("接收call", "info", "ChatController");
                         Console.WriteLine(response_body.Message);
                         KukaParm_AreaStatusChanged(sender, null);
-                        break;
-
-                    case "area":
-                        // 若字串為區域類別，解析資料訊息後，將比較後差異處，更新為接收資料
-                        areas = JsonConvert.DeserializeObject<List<KukaAreaModel>>(response_body.Message);
-                        try
-                        {
-                            foreach (KukaAreaModel source_area in areas)
-                            {
-                                var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaCode == source_area.AreaCode);
-                                base_model.CompareAndUpdate(source_area);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.ToString());
-                        }
                         break;
                 }
             }
@@ -334,7 +320,7 @@ namespace Chump_kuka.Controller
         /// <summary>
         /// 所有主/從站同步搬運任務
         /// </summary>
-        public static void SyncCarryTask(bool wait)
+        public static void SyncCarryNode(bool wait)
         {
             // 若 wait = true，透過 "carry" 主題傳遞資料，代表需要等待叫車訊號。
             string topic_name = wait ? "carry" : "carry_auto";
@@ -374,12 +360,12 @@ namespace Chump_kuka.Controller
         /// <summary>
         /// 所有主/從站同步所有節點狀態
         /// </summary>
-        public static void SyncNodeStatus()
+        public static void SyncNodeStatus(KukaAreaModel update_model)
         {
             MyCommModel model = new MyCommModel()
             {
                 Type = "node_status",
-                Message = JsonConvert.SerializeObject(KukaParm.BindAreaModel, Formatting.Indented)
+                Message = JsonConvert.SerializeObject(update_model, Formatting.Indented)
             };
             SyncSend(JsonConvert.SerializeObject(model, Formatting.Indented));
         }
@@ -462,7 +448,7 @@ namespace Chump_kuka.Controller
             else
             {
                 // 若為 slave 端，傳送節點資訊，讓伺服器處理
-                SyncCarryTask(wait);
+                SyncCarryNode(wait);
             }
         }
 

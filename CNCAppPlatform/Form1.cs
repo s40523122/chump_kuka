@@ -12,6 +12,8 @@ using System.Net.Sockets;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using Chump_kuka.Controls;
+using Chump_kuka.Dispatchers;
+using Newtonsoft.Json;
 
 namespace Chump_kuka
 {
@@ -158,7 +160,13 @@ namespace Chump_kuka
         
         private void btnUdpLog_Click(object sender, EventArgs e)
         {
+            if (_udp_chat_room.Visible)
+            {
+                _udp_chat_room.Hide();
+            }
             _udp_chat_room.Show();
         }
+
+        
     }
 }

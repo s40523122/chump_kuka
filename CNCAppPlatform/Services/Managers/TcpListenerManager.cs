@@ -127,8 +127,11 @@ namespace Chump_kuka
         public async Task SendMessageAsync(string message)
         {
             byte[] response = Encoding.UTF8.GetBytes(message);
-            await stream.WriteAsync(response, 0, response.Length);
-            Console.WriteLine("Sent to Node.js: " + message);
+            if (stream != null)
+            {
+                await stream.WriteAsync(response, 0, response.Length);
+                Console.WriteLine("Sent to Node.js: " + message);
+            }
         }
     }
 }

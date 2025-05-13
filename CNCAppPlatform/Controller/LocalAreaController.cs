@@ -118,7 +118,7 @@ namespace Chump_kuka.Controller
                 KukaParm.BindAreaModel.NodeStatus = current_node_status;
                 BindControl?.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus.ToArray());        // 更新圖片
 
-                ChatController.SyncNodeStatus();
+                ChatController.SyncNodeStatus(KukaParm.BindAreaModel);
             }
 
             // 若區域滿載達指定時數後，觸發亮燈
