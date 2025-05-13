@@ -25,20 +25,29 @@ namespace Chump_kuka.Forms
             InitializeComponent();
 
             Load += F01_ManualApi_Load;
+
             VisibleChanged += F01_ManualApi_VisibleChanged;
         }
 
         private void F01_ManualApi_Load(object sender, EventArgs e)
         {
-
+            // 避免重複呼叫導致過度綁定
+            KukaParm.AreaChanged -= KukaParm_AreaChanged;
             KukaParm.AreaChanged += KukaParm_AreaChanged;
             KukaParm_AreaChanged(null, null);
+            KukaParm.CarryChanged -= KukaParm_CarryChanged;
             KukaParm.CarryChanged += KukaParm_CarryChanged;
             KukaParm_CarryChanged(null, null);
         }
 
         private void F01_ManualApi_VisibleChanged(object sender, EventArgs e)
         {
+            // 防止表單因為提早開啟導致顯示錯誤
+            if(tableLayoutPanel2.Controls.Count == 0 && Visible)
+            {
+                F01_ManualApi_Load(null, null);
+            }
+            
             KukaParm.StartNode = null;
             KukaParm.GoalNode = null;
         }
@@ -56,6 +65,7 @@ namespace Chump_kuka.Forms
         {
             this.Invoke(new Action(() =>
             {
+
                 tableLayoutPanel2.Controls.Clear();
 
                 KukaParm.StartNode = KukaParm.GoalNode = null;
