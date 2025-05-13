@@ -136,6 +136,20 @@ namespace Chump_kuka.Controls
                 }
             }
         }
+
+        /// <summary>
+        /// 更新容器圖片
+        /// </summary>
+        /// <param name="container_texts"></param>
+        public void UpdateContainerText(string[] container_texts)
+        {
+            int i = 0;
+            foreach (Container _container in containerPanel.Controls)
+            {
+                _container.Text = container_texts[i++];
+            }
+        }
+
         private void Container_ContainerClick(object sender, ControlClickEventArgs e)
         {
             ContainerClick?.Invoke(this, e);

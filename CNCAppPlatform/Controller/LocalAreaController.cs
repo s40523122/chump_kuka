@@ -18,7 +18,28 @@ namespace Chump_kuka.Controller
     internal class LocalAreaController
     {
         private static ModbusTCPDispatcher _sensor_dispatcher = null;
-        private static int[] _record_node_status;      // 紀錄的區域狀態
+        private static int[] _record_node_status;
+        private static int[] _RecordNodeStatus        // 紀錄的區域狀態
+        {
+            get => _record_node_status;
+            set
+            {
+                _record_node_status = value;
+                // 建立對照表
+                var map = new Dictionary<int, string>
+                {
+                    { 0, "無貨架" },
+                    { 1, "空載" },
+                    { 2, "滿載" }
+                };
+
+                // 使用 LINQ 將 int[] 轉換為 string[]
+                string[] result = value.Select(n => map.ContainsKey(n) ? map[n] : "unknown").ToArray();
+
+                BindControl.UpdateContainerText(result);
+            }
+        }      
+
         private static DateTime? full_time = null;
 
         // 定義貨架前後狀態轉換對應的動作：0=無動作, 1=入貨, 2=異常
@@ -211,7 +232,7 @@ namespace Chump_kuka.Controller
             // 第一次執行，初始化歷史狀態
             if (_record_node_status == null)
             {
-                _record_node_status = current_status;
+                _RecordNodeStatus = current_status;
                 return false;
             }
 
@@ -268,11 +289,12 @@ namespace Chump_kuka.Controller
                     Type = "NODE_AREA"
                 };
 
-                _record_node_status = current_status;        // 更新歷史狀態
+                _RecordNodeStatus = current_status;        // 更新歷史狀態
+
 
                 return true;
             }
-            _record_node_status = current_status;        // 更新歷史狀態
+            _RecordNodeStatus = current_status;        // 更新歷史狀態
             // 沒有可派任務
             return false;
         }
