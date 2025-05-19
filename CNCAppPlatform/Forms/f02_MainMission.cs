@@ -235,6 +235,8 @@ namespace Chump_kuka.Forms
                 bool wait_call = !bind_area_control.Checked;
 
                 Light(1);       // 表示物料已進站
+                LocalAreaController.AreaReadyFunc();
+
                 ChatController.AppendCarryTask(wait_call);
                 // KukaApiController.SendCarryTask();
             }

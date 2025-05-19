@@ -649,7 +649,7 @@
             this.tcp_record_port.Name = "tcp_record_port";
             this.tcp_record_port.Size = new System.Drawing.Size(370, 22);
             this.tcp_record_port.TabIndex = 9;
-            this.tcp_record_port.Text = "6400";
+            this.tcp_record_port.Text = "6600";
             // 
             // scaleButton1
             // 

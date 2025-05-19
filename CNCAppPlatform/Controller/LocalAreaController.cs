@@ -328,30 +328,74 @@ namespace Chump_kuka.Controller
         public static void PubReady()
         {
             int _bind_station_no = GetStationNo();
+
+            string feedback_string = INiReader.ReadINIFile(Env.LayoutPath, "Control", $"station{_bind_station_no}");
+            string[] feedback_msgs = feedback_string.Split(';');
+
             if (_bind_station_no != 0)
-                ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_ready"); 
+            {
+                //ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_ready");
+                ChatController.SendFeedbackInfo(feedback_msgs[1]);
+            }
+        }
+
+        public static void AreaReadyFunc()
+        {
+            int _bind_station_no = GetStationNo();
+
+            string feedback_string = INiReader.ReadINIFile(Env.LayoutPath, "Control", $"station{_bind_station_no}");
+            string[] feedback_msgs = feedback_string.Split(';');
+
+            if (_bind_station_no != 0)
+            {
+                ChatController.SendFeedbackInfo(feedback_msgs[0]);
+            }
+
         }
 
         public static void PubRobotFunc()
         {
             int _bind_station_no = GetStationNo();
+
+            string feedback_string = INiReader.ReadINIFile(Env.LayoutPath, "Control", $"station{_bind_station_no}");
+            string[] feedback_msgs = feedback_string.Split(';');
+
             if (_bind_station_no != 0)
-                ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_star");
+            {
+                //ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_star");
+                ChatController.SendFeedbackInfo(feedback_msgs[2]);
+            }
+
         }
 
         public static void PubRobotOut()
         {
             int _bind_station_no = GetStationNo();
+
+            string feedback_string = INiReader.ReadINIFile(Env.LayoutPath, "Control", $"station{_bind_station_no}");
+            string[] feedback_msgs = feedback_string.Split(';');
+
             if (_bind_station_no != 0)
-                ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_begin");
+            {
+                //ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_begin");
+                ChatController.SendFeedbackInfo(feedback_msgs[3]);
+            }
+                
         }
 
         public static void PubCarryOver()
         {
             // 頭尾未形成迴圈
             int _bind_station_no = GetStationNo() + 1;
+            string feedback_string = INiReader.ReadINIFile(Env.LayoutPath, "Control", $"station{_bind_station_no}");
+            string[] feedback_msgs = feedback_string.Split(';');
+
             if (_bind_station_no != 0)
-                ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_end");
+            {
+                //ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_end");
+                ChatController.SendFeedbackInfo(feedback_msgs[4]);
+            }
+                
         }
     }
 

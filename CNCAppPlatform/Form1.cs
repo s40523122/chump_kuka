@@ -32,6 +32,9 @@ namespace Chump_kuka
 
             modbusService = new ModbusTCPMasterManager();
             Load += Form1_Load;
+
+            string binPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            MessageBox.Show("Bin 資料夾路徑：" + binPath);
         }
 
         private void button1_Click(object sender, EventArgs e)

@@ -10,14 +10,14 @@ namespace Chump_kuka
 {
     public class Env : iCAPS.Env
     {
-        private static readonly string layout_path = Path.Combine(Application.StartupPath, "config/layout.ini");        // UI設定檔位址
-        
         private static bool? _icaps_server;
         private static string _kuka_api_url;
         private static IPEndPoint _sensor_modbus_tcp;
         private static string _area_name = "";
         private static string _target_name = "";
         private static WebInfo[] _favorite_web;
+
+        public static readonly string LayoutPath = Path.Combine(Application.StartupPath, "config/layout.ini");        // UI設定檔位址
 
         public static event PropertyChangedEventHandler EnvChanged;
 
@@ -27,14 +27,14 @@ namespace Chump_kuka
             {
                 if (_icaps_server != null)
                     return _icaps_server.Value;
-                string text = INiReader.ReadINIFile(layout_path, "Control", "icaps_server");
+                string text = INiReader.ReadINIFile(LayoutPath, "Control", "icaps_server");
                 if (text == "") text = "true";
                 return bool.Parse(text);
             }
             set
             {
                 _icaps_server = value;
-                INiReader.WriteINIFile(layout_path, "Control", "icaps_server", value.ToString());
+                INiReader.WriteINIFile(LayoutPath, "Control", "icaps_server", value.ToString());
             }
         }
 
@@ -42,7 +42,7 @@ namespace Chump_kuka
         {
             get
             {
-                string url_txt = INiReader.ReadINIFile(layout_path, "Control", "kuka_api_url");
+                string url_txt = INiReader.ReadINIFile(LayoutPath, "Control", "kuka_api_url");
                 // KukaApiController.kuka_api_server = new HttpRequest(url_txt);
                 return url_txt;
             }
@@ -50,7 +50,7 @@ namespace Chump_kuka
             {
                 _kuka_api_url = value;
                 // KukaApiController.kuka_api_server = new HttpRequest(value);
-                INiReader.WriteINIFile(layout_path, "Control", "kuka_api_url", value);
+                INiReader.WriteINIFile(LayoutPath, "Control", "kuka_api_url", value);
             }
         }
 
@@ -60,8 +60,8 @@ namespace Chump_kuka
             {
                 if (_sensor_modbus_tcp == null)
                 {
-                    string address = INiReader.ReadINIFile(layout_path, "Control", "sensor_modbus_ip");
-                    string port = INiReader.ReadINIFile(layout_path, "Control", "sensor_modbus_port");
+                    string address = INiReader.ReadINIFile(LayoutPath, "Control", "sensor_modbus_ip");
+                    string port = INiReader.ReadINIFile(LayoutPath, "Control", "sensor_modbus_port");
                     if (address != "" && port != "") _sensor_modbus_tcp = new IPEndPoint(IPAddress.Parse(address), int.Parse(port));
                 }
 
@@ -71,8 +71,8 @@ namespace Chump_kuka
             {
                 _sensor_modbus_tcp = value;
 
-                INiReader.WriteINIFile(layout_path, "Control", "sensor_modbus_ip", _sensor_modbus_tcp?.Address.ToString());
-                INiReader.WriteINIFile(layout_path, "Control", "sensor_modbus_port", _sensor_modbus_tcp?.Port.ToString());
+                INiReader.WriteINIFile(LayoutPath, "Control", "sensor_modbus_ip", _sensor_modbus_tcp?.Address.ToString());
+                INiReader.WriteINIFile(LayoutPath, "Control", "sensor_modbus_port", _sensor_modbus_tcp?.Port.ToString());
             }
         }
 
@@ -80,12 +80,12 @@ namespace Chump_kuka
         {
             get
             {
-                string text = INiReader.ReadINIFile(layout_path, "Control", "local_ip");
+                string text = INiReader.ReadINIFile(LayoutPath, "Control", "local_ip");
                 return string.IsNullOrEmpty(text) ? null : text;
             }
             set
             {
-                INiReader.WriteINIFile(layout_path, "Control", "local_ip", value);
+                INiReader.WriteINIFile(LayoutPath, "Control", "local_ip", value);
             }
         }
 
@@ -93,12 +93,12 @@ namespace Chump_kuka
         {
             get
             {
-                string text = INiReader.ReadINIFile(layout_path, "Control", "icaps_server_udp_ip");
+                string text = INiReader.ReadINIFile(LayoutPath, "Control", "icaps_server_udp_ip");
                 return string.IsNullOrEmpty(text) ? null : text;
             }
             set
             {
-                INiReader.WriteINIFile(layout_path, "Control", "icaps_server_udp_ip", value);
+                INiReader.WriteINIFile(LayoutPath, "Control", "icaps_server_udp_ip", value);
             }
         }
 
@@ -106,12 +106,12 @@ namespace Chump_kuka
         {
             get
             {
-                string text = INiReader.ReadINIFile(layout_path, "Control", "icaps_server_udp_port");
+                string text = INiReader.ReadINIFile(LayoutPath, "Control", "icaps_server_udp_port");
                 return string.IsNullOrEmpty(text) ? null : text;
             }
             set
             {
-                INiReader.WriteINIFile(layout_path, "Control", "icaps_server_udp_port", value);
+                INiReader.WriteINIFile(LayoutPath, "Control", "icaps_server_udp_port", value);
             }
         }
 
@@ -119,12 +119,12 @@ namespace Chump_kuka
         {
             get
             {
-                string text = INiReader.ReadINIFile(layout_path, "Control", "record_log_tcp_port");
+                string text = INiReader.ReadINIFile(LayoutPath, "Control", "record_log_tcp_port");
                 return string.IsNullOrEmpty(text) ? null : text;
             }
             set
             {
-                INiReader.WriteINIFile(layout_path, "Control", "record_log_tcp_port", value);
+                INiReader.WriteINIFile(LayoutPath, "Control", "record_log_tcp_port", value);
             }
         }
 
@@ -132,12 +132,12 @@ namespace Chump_kuka
         {
             get
             {
-                string text = INiReader.ReadINIFile(layout_path, "Control", "kuka_response_url");
+                string text = INiReader.ReadINIFile(LayoutPath, "Control", "kuka_response_url");
                 return text;
             }
             set
             {
-                INiReader.WriteINIFile(layout_path, "Control", "kuka_response_url", value);
+                INiReader.WriteINIFile(LayoutPath, "Control", "kuka_response_url", value);
             }
         }
 
@@ -150,7 +150,7 @@ namespace Chump_kuka
             {
                 // 首次訪問才需要讀取文件，降低文件讀寫頻率
                 if (string.IsNullOrEmpty(_area_name))
-                    _area_name = INiReader.ReadINIFile(layout_path, "Control", "bind_area_name");
+                    _area_name = INiReader.ReadINIFile(LayoutPath, "Control", "bind_area_name");
 
                 return _area_name;
             }
@@ -161,7 +161,7 @@ namespace Chump_kuka
                     _area_name = value;
 
                 EnvChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(BindAreaName)));
-                INiReader.WriteINIFile(layout_path, "Control", "bind_area_name", value);
+                INiReader.WriteINIFile(LayoutPath, "Control", "bind_area_name", value);
             }
         }
         
@@ -171,7 +171,7 @@ namespace Chump_kuka
             {
                 // 首次訪問才需要讀取文件，降低文件讀寫頻率
                 if (string.IsNullOrEmpty(_target_name))
-                    _target_name = INiReader.ReadINIFile(layout_path, "Control", "target_area_name");
+                    _target_name = INiReader.ReadINIFile(LayoutPath, "Control", "target_area_name");
 
                 return _target_name;
             }
@@ -181,7 +181,7 @@ namespace Chump_kuka
                 if (_target_name != value)
                     _target_name = value;
 
-                INiReader.WriteINIFile(layout_path, "Control", "target_area_name", value);
+                INiReader.WriteINIFile(LayoutPath, "Control", "target_area_name", value);
             }
         }
 
@@ -192,7 +192,7 @@ namespace Chump_kuka
                 // 首次訪問才需要讀取文件，降低文件讀寫頻率
                 if (_favorite_web == null)
                 {
-                    string json_txt = INiReader.ReadINIFile(layout_path, "Control", "favorite_web");
+                    string json_txt = INiReader.ReadINIFile(LayoutPath, "Control", "favorite_web");
                     _favorite_web = Newtonsoft.Json.JsonConvert.DeserializeObject<WebInfo[]>(json_txt);
                 } 
 
@@ -207,7 +207,7 @@ namespace Chump_kuka
 
                     string list_txt = Newtonsoft.Json.JsonConvert.SerializeObject(value);
 
-                    INiReader.WriteINIFile(layout_path, "Control", "favorite_web", list_txt);
+                    INiReader.WriteINIFile(LayoutPath, "Control", "favorite_web", list_txt);
                 }  
             }
         }
