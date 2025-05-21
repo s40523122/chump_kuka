@@ -44,7 +44,7 @@ namespace Chump_kuka.Dispatchers
                         Log.Append("MOVE_BEGIN", "INFO", "HttpListenerDispatcher");
                     }
                     else
-                        MessageBox.Show("Start -> " + task_status);
+                        Log.Append("Start -> " + task_status, "ERROR", "HttpListenerDispatcher");
                     break;
                 case 1:
                     if (task_status == "ARRIVE")
@@ -53,7 +53,7 @@ namespace Chump_kuka.Dispatchers
                         Log.Append("ARRIVED", "INFO", "HttpListenerDispatcher");
                     }
                     else
-                        MessageBox.Show("MOVE_BEGIN1 -> " + task_status);
+                        Log.Append("MOVE_BEGIN1 -> " + task_status, "ERROR", "HttpListenerDispatcher");
                     break;
                 case 2:
                     if (task_status == "UP_CONTAINER")
@@ -62,7 +62,7 @@ namespace Chump_kuka.Dispatchers
                         Log.Append("UP_CONTAINER", "INFO", "HttpListenerDispatcher");
                     }
                     else
-                        MessageBox.Show("ARRIVE1 -> " + task_status);
+                        Log.Append("ARRIVE1 -> " + task_status, "ERROR", "HttpListenerDispatcher");
                     break;
                 case 3:
                     if (task_status == "MOVE_BEGIN")
@@ -71,7 +71,7 @@ namespace Chump_kuka.Dispatchers
                         Log.Append("MOVE_BEGIN", "INFO", "HttpListenerDispatcher");
                     }
                     else
-                        MessageBox.Show("UP_CONTAINER -> " + task_status);
+                        Log.Append("UP_CONTAINER -> " + task_status, "ERROR", "HttpListenerDispatcher");
                     break;
                 case 4:
                     if (task_status == "ARRIVE")
@@ -80,7 +80,7 @@ namespace Chump_kuka.Dispatchers
                         Log.Append("ARRIVE", "INFO", "HttpListenerDispatcher");
                     }
                     else
-                        MessageBox.Show("MOVE_BEGIN2 -> " + task_status);
+                        Log.Append("MOVE_BEGIN2 -> " + task_status, "ERROR", "HttpListenerDispatcher");
                     break;
                 case 5:
                     if (task_status == "DOWN_CONTAINER")
@@ -89,7 +89,7 @@ namespace Chump_kuka.Dispatchers
                         Log.Append("DOWN_CONTAINER", "INFO", "HttpListenerDispatcher");
                     }
                     else
-                        MessageBox.Show("ARRIVE2 -> " + task_status);
+                        Log.Append("ARRIVE2 -> " + task_status, "ERROR", "HttpListenerDispatcher");
                     break;
                 case 6:
                     if (task_status == "COMPLETED")
@@ -98,7 +98,7 @@ namespace Chump_kuka.Dispatchers
                         Log.Append("COMPLETED", "INFO", "HttpListenerDispatcher");
                     }
                     else
-                        MessageBox.Show("DOWN_CONTAINER -> " + task_status);
+                        Log.Append("DOWN_CONTAINER -> " + task_status, "ERROR", "HttpListenerDispatcher");
                     break;
                 case 7:
                     // 等同於 case 0
@@ -109,7 +109,7 @@ namespace Chump_kuka.Dispatchers
                         Log.Append("MOVE_BEGIN", "INFO", "HttpListenerDispatcher");
                     }
                     else
-                        MessageBox.Show("Start -> " + task_status);
+                        Log.Append("Start -> " + task_status, "ERROR", "HttpListenerDispatcher");
                     break;
             }
         }

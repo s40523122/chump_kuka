@@ -50,8 +50,8 @@ namespace Chump_kuka.Forms
         {
             local_ip_combo.Text = Env.LocalIp ?? "";
             switch_client.Checked = !Env.ICapsServer;
-            udp_server_ip.Text = Env.IcapsServerUdpIp ?? "";
-            upd_server_port.Text = Env.IcapsServerUdpPort ?? "5700";
+            linker_server_ip.Text = Env.IcapsLinkerServerIp ?? "";
+            linker_server_port.Text = Env.IcapsLinkerServerPort ?? "5700";
             kuka_request_url.Text = Env.KukaApiUrl;
             modbus_ip.Text = Env.SensorModbusTcp?.Address.ToString();
             modbus_port.Text = Env.SensorModbusTcp?.Port.ToString() ?? "502";
@@ -105,14 +105,14 @@ namespace Chump_kuka.Forms
             //isconn = await SocketDispatcher.StartRecordListener(int.Parse(tcp_server_port.Text));
 
 
-            IPEndPoint listen_ipep = new IPEndPoint(IPAddress.Parse(udp_server_ip.Text), int.Parse(upd_server_port.Text));       // 開啟 UDP 監聽
+            IPEndPoint listen_server_ipep = new IPEndPoint(IPAddress.Parse(linker_server_ip.Text), int.Parse(linker_server_port.Text));       // 開啟 Linker 通訊
 
-            ChatController.Init(Env.ICapsServer, listen_ipep);
+            bool isconn = await ChatController.Init(Env.ICapsServer, listen_server_ipep);
 
-            Env.IcapsServerUdpIp = udp_server_ip.Text;
-            Env.IcapsServerUdpPort = upd_server_port.Text;
+            Env.IcapsLinkerServerIp = linker_server_ip.Text;
+            Env.IcapsLinkerServerPort = linker_server_port.Text;
             
-            server_check.Change = true;
+            server_check.Change = isconn;
             server_check.Visible = true;
             
             // TODO

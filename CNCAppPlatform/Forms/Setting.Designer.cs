@@ -45,8 +45,8 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel8 = new iCAPS.ScaleLabel();
             this.scaleLabel7 = new iCAPS.ScaleLabel();
-            this.udp_server_ip = new System.Windows.Forms.TextBox();
-            this.upd_server_port = new System.Windows.Forms.TextBox();
+            this.linker_server_ip = new System.Windows.Forms.TextBox();
+            this.linker_server_port = new System.Windows.Forms.TextBox();
             this.lable1 = new iCAPS.ScaleLabel();
             this.kuka_request_url = new System.Windows.Forms.TextBox();
             this.scaleLabel4 = new iCAPS.ScaleLabel();
@@ -95,6 +95,12 @@
             this.scalePadding1.Location = new System.Drawing.Point(0, 0);
             this.scalePadding1.Name = "scalePadding1";
             this.scalePadding1.RowCount = 3;
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
@@ -393,7 +399,7 @@
             this.scaleLabel1.Name = "scaleLabel1";
             this.scaleLabel1.Size = new System.Drawing.Size(258, 38);
             this.scaleLabel1.TabIndex = 8;
-            this.scaleLabel1.Text = "iCAPS 伺服器 UDP";
+            this.scaleLabel1.Text = "iCAPS Linker 伺服器";
             this.scaleLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tableLayoutPanel2
@@ -405,8 +411,8 @@
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.27273F));
             this.tableLayoutPanel2.Controls.Add(this.scaleLabel8, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.scaleLabel7, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.udp_server_ip, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.upd_server_port, 3, 0);
+            this.tableLayoutPanel2.Controls.Add(this.linker_server_ip, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.linker_server_port, 3, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(267, 79);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -442,24 +448,24 @@
             this.scaleLabel7.Text = "IP";
             this.scaleLabel7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // udp_server_ip
+            // linker_server_ip
             // 
-            this.udp_server_ip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.udp_server_ip.Location = new System.Drawing.Point(62, 5);
-            this.udp_server_ip.Name = "udp_server_ip";
-            this.udp_server_ip.Size = new System.Drawing.Size(191, 22);
-            this.udp_server_ip.TabIndex = 9;
-            this.udp_server_ip.Text = "192.168.68.22";
+            this.linker_server_ip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.linker_server_ip.Location = new System.Drawing.Point(62, 5);
+            this.linker_server_ip.Name = "linker_server_ip";
+            this.linker_server_ip.Size = new System.Drawing.Size(191, 22);
+            this.linker_server_ip.TabIndex = 9;
+            this.linker_server_ip.Text = "192.168.68.22";
             // 
-            // upd_server_port
+            // linker_server_port
             // 
-            this.upd_server_port.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.upd_server_port.Enabled = false;
-            this.upd_server_port.Location = new System.Drawing.Point(318, 5);
-            this.upd_server_port.Name = "upd_server_port";
-            this.upd_server_port.Size = new System.Drawing.Size(114, 22);
-            this.upd_server_port.TabIndex = 9;
-            this.upd_server_port.Text = "5700";
+            this.linker_server_port.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.linker_server_port.Enabled = false;
+            this.linker_server_port.Location = new System.Drawing.Point(318, 5);
+            this.linker_server_port.Name = "linker_server_port";
+            this.linker_server_port.Size = new System.Drawing.Size(114, 22);
+            this.linker_server_port.TabIndex = 9;
+            this.linker_server_port.Text = "1883";
             // 
             // lable1
             // 
@@ -828,8 +834,8 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private iCAPS.ScaleLabel scaleLabel8;
         private iCAPS.ScaleLabel scaleLabel7;
-        private System.Windows.Forms.TextBox udp_server_ip;
-        private System.Windows.Forms.TextBox upd_server_port;
+        private System.Windows.Forms.TextBox linker_server_ip;
+        private System.Windows.Forms.TextBox linker_server_port;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private iCAPS.ScaleLabel scaleLabel11;
         private System.Windows.Forms.TextBox tcp_record_port;

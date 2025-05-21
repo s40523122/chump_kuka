@@ -29,14 +29,14 @@ namespace Chump_kuka.Controls
             //receiveGridView.Refresh();
 
             ListViewItem item = new ListViewItem("Host");
-            item.SubItems.Add(ChatController.HostIP);
+            //item.SubItems.Add(ChatController.HostIP);
             onlineUsers.Items.Add(item);
             //newUser();
 
 
             FormClosing += Form1_FormClosing;
             
-            ChatController.MessageReceived += ChatController_MessageReceived;
+            //ChatController.MessageReceived += ChatController_MessageReceived;
         }
 
         private void ChatController_MessageReceived(object sender, Services.Managers.MessageIPEventArgs e)

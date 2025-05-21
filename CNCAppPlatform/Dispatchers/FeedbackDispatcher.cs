@@ -49,6 +49,8 @@ namespace Chump_kuka
             string message = e.Message.Trim().ToLower();
             TcpListenerManager listener = sender as TcpListenerManager;
 
+            Log.Append($"收到報工通知{message}", "INFO", "FeedBackDispatcher");
+
             switch (message)
             {
                 case "exit":

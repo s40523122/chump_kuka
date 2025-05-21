@@ -89,29 +89,29 @@ namespace Chump_kuka
             }
         }
 
-        public static string IcapsServerUdpIp
+        public static string IcapsLinkerServerIp
         {
             get
             {
-                string text = INiReader.ReadINIFile(LayoutPath, "Control", "icaps_server_udp_ip");
+                string text = INiReader.ReadINIFile(LayoutPath, "Control", "icaps_linker_server_ip");
                 return string.IsNullOrEmpty(text) ? null : text;
             }
             set
             {
-                INiReader.WriteINIFile(LayoutPath, "Control", "icaps_server_udp_ip", value);
+                INiReader.WriteINIFile(LayoutPath, "Control", "icaps_linker_server_ip", value);
             }
         }
 
-        public static string IcapsServerUdpPort
+        public static string IcapsLinkerServerPort
         {
             get
             {
-                string text = INiReader.ReadINIFile(LayoutPath, "Control", "icaps_server_udp_port");
+                string text = INiReader.ReadINIFile(LayoutPath, "Control", "icaps_linker_server_port");
                 return string.IsNullOrEmpty(text) ? null : text;
             }
             set
             {
-                INiReader.WriteINIFile(LayoutPath, "Control", "icaps_server_udp_port", value);
+                INiReader.WriteINIFile(LayoutPath, "Control", "icaps_linker_server_port", value);
             }
         }
 

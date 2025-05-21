@@ -14,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using Chump_kuka.Controls;
 using Chump_kuka.Dispatchers;
 using Newtonsoft.Json;
+using Chump_kuka.Services;
 
 namespace Chump_kuka
 {
@@ -33,16 +34,14 @@ namespace Chump_kuka
             modbusService = new ModbusTCPMasterManager();
             Load += Form1_Load;
 
-            string binPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            MessageBox.Show("Bin 資料夾路徑：" + binPath);
+            //string binPath = Path.Combine(Application.StartupPath, "config\\layout.ini");
+            //MessageBox.Show("Bin 資料夾路徑：" + binPath);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             //Env.enble_kuka_api = true;
             //KukaApiController.Enable = true;
-
-            //IOHandle.Enable = true;
         }
 
 
@@ -51,10 +50,15 @@ namespace Chump_kuka
         private List<PictureBox> listDI;
         private List<PictureBox> listDO;
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
             listDI = new List<PictureBox> { pictureBox1, pictureBox2, pictureBox3, pictureBox4 };
             //listDO = new List<PictureBox> { DO0, DO1, DO2, DO3 };
+        }
+
+        private void callback(string msg)
+        {
+            MessageBox.Show(msg);
         }
 
         private async void btStart_Click(object sender, EventArgs e)
@@ -169,7 +173,5 @@ namespace Chump_kuka
             }
             _udp_chat_room.Show();
         }
-
-        
     }
 }
