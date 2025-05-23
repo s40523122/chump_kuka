@@ -82,7 +82,7 @@ namespace Chump_kuka
         public static bool GetCallTask(string start_area_code)
         {
             // 找到符合開始區域且尚未執行的第一筆資料
-            _current_task = _carry_queue.FirstOrDefault(m => m.AreaCode == start_area_code && m.Called == false);
+            _current_task = _carry_queue.FirstOrDefault(m => m.AreaCode == start_area_code && m.Called == false && m.FinishTime == null);
 
             bool success = PubCarryTask();
             return success;

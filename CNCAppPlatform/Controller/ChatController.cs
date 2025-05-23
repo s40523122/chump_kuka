@@ -191,7 +191,8 @@ namespace Chump_kuka.Controller
             if (e.Step == 5)
             {
                 CarryTaskController.FeedbackFinish();
-                SendCarryFinish(KukaParm.TargetAreaModel.AreaCode);         // 通知目標區域更新
+                int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaCode == e.AreaCode);       // 找到起點區域的 index
+                SendCarryFinish(KukaParm.KukaAreaModels[index+1].AreaCode);         // 通知目標區域更新(起點區域index+1)
             }
 
             // 若監聽目標為綁定區域
@@ -283,6 +284,7 @@ namespace Chump_kuka.Controller
                 HttpListenerDispatcher.HeardEventArgs _e = new HttpListenerDispatcher.HeardEventArgs(area_code, 0);
 
                 StepChanged.Invoke(null, _e);
+                Log.Append("Get finish", "INFO", "ChatController");
             }
             else
             {

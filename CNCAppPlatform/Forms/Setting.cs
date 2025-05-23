@@ -116,9 +116,8 @@ namespace Chump_kuka.Forms
             server_check.Visible = true;
             
             // TODO
-            // 等待訊息回應，目前透過等待 1 秒完成此效果
-            //await Task.Delay(1000);
-            Console.WriteLine("hi");
+            // 等待訊息回應，目前透過等待 1.5 秒完成此效果
+            await Task.Delay(1500);
         }
 
         private async Task RecordLogTask()
