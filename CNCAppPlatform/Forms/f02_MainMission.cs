@@ -99,7 +99,8 @@ namespace Chump_kuka.Forms
                             Light(3);
                             break;
                         case 4:
-                            Light(4);
+                            Light(4);       // 搬運車出站
+                            LocalAreaController.TryCreateCarryTask();      // 更新區域狀態
                             break;
                         case 5:
                             Light(5);                            

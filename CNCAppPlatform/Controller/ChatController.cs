@@ -43,7 +43,7 @@ namespace Chump_kuka.Controller
             _mqtt = new MqttDispatcher();
 
             if (_is_master)
-                await _mqtt.StartBroker();
+                await _mqtt.StartBroker(listen_server_info.Port);
 
             bool success = await _mqtt.InitClient(listen_server_info.Address.ToString(), listen_server_info.Port);
             if (!success) 
@@ -54,7 +54,6 @@ namespace Chump_kuka.Controller
                 _mqtt.Subscriber("carry", CarryCb);
                 _mqtt.Subscriber("carry/auto", CarryAutoCb);
                 _mqtt.Subscriber("feedback", FeedCb);
-                _mqtt.Subscriber("heard", HeardCb);
 
                 KukaParm.RobotStatusChanged += KukaParm_RobotStatusChanged;          // 伺服器機器人資訊更新時，發佈到客戶端
                 HttpListenerDispatcher.Heard += HttpListenerDispatcher_Heard;
@@ -66,6 +65,7 @@ namespace Chump_kuka.Controller
             _mqtt.Subscriber("area/nodes", NodesCb);
             _mqtt.Subscriber("carry/finish", CarryFinishCb);
             _mqtt.Subscriber("carry/list", CarryListCb);
+            _mqtt.Subscriber("heard", HeardCb);
 
             SayHi();        // 初次上線，通知取得區域資料
 

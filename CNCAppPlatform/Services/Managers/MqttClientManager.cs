@@ -81,7 +81,7 @@ namespace Chump_kuka.Services
         // 非同步連線
         public async Task ConnectAsync()
         {
-            if (!_client.IsConnected)
+            if (!_client.IsStarted)
             {
                 // await _client.ConnectAsync(_options);
                 await _client.StartAsync(_managed_options);
@@ -91,7 +91,7 @@ namespace Chump_kuka.Services
         // 非同步斷線
         public async Task DisconnectAsync()
         {
-            if (_client.IsConnected)
+            if (_client.IsStarted)
             {
                 // await _client.DisconnectAsync();
                 await _client.StopAsync();
@@ -104,7 +104,7 @@ namespace Chump_kuka.Services
             // 0: 只發布一次（不保證送達）
             // 1: 可能重複發布，但至少會送達一次 (可能重複接收)
             // 2: 可能重複發布，保證只送達一次 (不重複接收)
-            if (!_client.IsConnected)
+            if (!_client.IsStarted)
                 throw new InvalidOperationException("MQTT 尚未連線");
 
             var qos = (MqttQualityOfServiceLevel)qosLevel;
@@ -125,7 +125,7 @@ namespace Chump_kuka.Services
             // 1: 可能重複發布，但至少會送達一次 (可能重複接收)
             // 2: 可能重複發布，保證只送達一次 (不重複接收)
 
-            if (!_client.IsConnected)
+            if (!_client.IsStarted)
                 throw new InvalidOperationException("MQTT 尚未連線");
 
             var qos = (MqttQualityOfServiceLevel)qosLevel;

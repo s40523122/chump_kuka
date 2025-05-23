@@ -22,6 +22,7 @@ namespace Chump_kuka
         {
             broker = new MqttBrokerService();
             bool success = await broker.StartAsync(port);
+            Console.WriteLine("MQTT Broker is open");
             return success;
         }
 

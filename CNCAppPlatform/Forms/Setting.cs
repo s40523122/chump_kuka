@@ -117,7 +117,8 @@ namespace Chump_kuka.Forms
             
             // TODO
             // 等待訊息回應，目前透過等待 1 秒完成此效果
-            await Task.Delay(1000);
+            //await Task.Delay(1000);
+            Console.WriteLine("hi");
         }
 
         private async Task RecordLogTask()
