@@ -70,6 +70,7 @@
             this.bind_comboBox = new System.Windows.Forms.ComboBox();
             this.station_setting = new iCAPS.ScaleButton();
             this.local_ip_combo = new System.Windows.Forms.ComboBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.scalePadding1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.server_check)).BeginInit();
@@ -238,6 +239,7 @@
             this.tableLayoutPanel1.Controls.Add(this.bind_comboBox, 1, 8);
             this.tableLayoutPanel1.Controls.Add(this.station_setting, 1, 10);
             this.tableLayoutPanel1.Controls.Add(this.local_ip_combo, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.button1, 2, 10);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(49, 17);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
@@ -656,7 +658,6 @@
             // tcp_record_port
             // 
             this.tcp_record_port.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tcp_record_port.Enabled = false;
             this.tcp_record_port.Location = new System.Drawing.Point(62, 5);
             this.tcp_record_port.Name = "tcp_record_port";
             this.tcp_record_port.Size = new System.Drawing.Size(370, 22);
@@ -782,6 +783,17 @@
             this.local_ip_combo.TabIndex = 6;
             this.local_ip_combo.DropDown += new System.EventHandler(this.comboBox1_DropDown);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(708, 383);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(100, 32);
+            this.button1.TabIndex = 15;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Setting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -853,5 +865,6 @@
         private iCAPS.ScaleButton station_setting;
         private System.Windows.Forms.ComboBox local_ip_combo;
         private iCAPS.ScaleLabel scaleLabel14;
+        private System.Windows.Forms.Button button1;
     }
 }

@@ -40,7 +40,7 @@ namespace Chump_kuka.Dispatchers
 
             bool conn = _enable = await CheckConnect();
             
-            if (!conn) 
+             if (!conn) 
                 return false;
 
             _api_timer.Start();
@@ -62,15 +62,15 @@ namespace Chump_kuka.Dispatchers
             // 透過向 /areaQuery 請求，判定是否通訊正常
             
             await RequestApiAsync("areaQuery", null, HandleAreaResponse);
-            if(KukaParm.KukaAreaModels.Count == 0) return false;
+            if(KukaParm.KukaOriginAreaModels.Count == 0) return false;
 
             var request_body = new
             {
-                areaCodes = KukaParm.KukaAreaModels.Select(a => a.AreaCode).ToList()
+                areaCodes = KukaParm.KukaOriginAreaModels.Select(a => a.AreaCode).ToList()
             };
             await RequestApiAsync("areaNodesQuery", request_body, HandleNodesResponse);
 
-            return (KukaParm.KukaAreaModels.Count > 0) ? true : false;
+            return (KukaParm.KukaOriginAreaModels.Count > 0) ? true : false;
 
         }
 
@@ -248,7 +248,6 @@ namespace Chump_kuka.Dispatchers
 
         private void HandleAreaResponse(JObject resp_json)
         {
-            KukaParm.KukaAreaModels = resp_json["data"].ToObject<List<KukaAreaModel>>();
             KukaParm.KukaOriginAreaModels = resp_json["data"].ToObject<List<KukaAreaModel>>();
 
             // 加入節點查詢
@@ -262,7 +261,7 @@ namespace Chump_kuka.Dispatchers
             // List<KukaAreaModel> _kuka_areas = KukaParm.KukaAreaModels.Select(area => (KukaAreaModel)area.Clone()).ToList();
 
             // 將第二個 JSON 的 nodeList 合併進 areas
-            foreach (var area in KukaParm.KukaAreaModels)
+            foreach (var area in KukaParm.KukaOriginAreaModels)
             {
                 // 根據 areaCode 尋找匹配的 nodeList
                 var matchingNode = nodeData.FirstOrDefault(x => x.areaCode == area.AreaCode);

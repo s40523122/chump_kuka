@@ -113,6 +113,7 @@ public static class KukaParm
         {
             bool change = false;
 
+            List<KukaAreaModel> rm_temp = new List<KukaAreaModel>();
             // 遍歷現有列表資料，將不存在於輸入列表的物件移除，並更新存在物件
             // 當物件存在且修改後，從輸入列表中移除
             foreach (KukaAreaModel model in _kuka_area_models)
@@ -121,7 +122,7 @@ public static class KukaParm
                 KukaAreaModel find_in_value = value.FirstOrDefault(m => m.AreaCode == model.AreaCode);
                 if ( find_in_value == null)
                 {
-                    _kuka_area_models.Remove(model);
+                    rm_temp.Add(model);
                     change = true;      // 紀錄需更新
                     continue;
                 }
@@ -141,6 +142,10 @@ public static class KukaParm
                     _kuka_area_models.Add(model);
                 }
                 change = true;
+            }
+            foreach(KukaAreaModel model in rm_temp)
+            {
+                _kuka_area_models.Remove(model);
             }
 
             if (change) 

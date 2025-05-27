@@ -82,7 +82,7 @@ namespace Chump_kuka.Forms
 
         private void LocalAreaController_StepChanged(object sender, Dispatchers.HttpListenerDispatcher.HeardEventArgs e)
         {
-            this.Invoke(new Action(()=>
+            this.Invoke(new Action(async ()=>
             {
                 try
                 {
@@ -100,6 +100,7 @@ namespace Chump_kuka.Forms
                             break;
                         case 4:
                             Light(4);       // 搬運車出站
+                            await Task.Delay(3000);
                             LocalAreaController.TryCreateCarryTask();      // 更新區域狀態
                             break;
                         case 5:

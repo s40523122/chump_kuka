@@ -250,6 +250,7 @@ namespace Chump_kuka.Controller
 
         public static void SayHi()
         {
+            Log.Append("已發送招呼", "INFO", "ChatController");
             _mqtt.Publisher("hello", "HI");
         }       
 

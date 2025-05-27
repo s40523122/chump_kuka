@@ -80,13 +80,13 @@ namespace Chump_kuka.Forms
                         Dock = DockStyle.Fill,
                         Margin = new Padding(10),
                         AreaCode = area.AreaCode,
-                        AreaNode = area.NodeList.ToArray()
+                        AreaNode = area.NodeList?.ToArray()
                     };
 
                     kuka_area.ContainerClick += Kuka_area1_ContainerClick;
                     kuka_area.AreaClick += Area_AreaClick;
 
-                    kuka_area.UpdateContainerImage(area.NodeStatus.ToArray());        // 初次建立，更新圖片
+                    kuka_area.UpdateContainerImage(area.NodeStatus?.ToArray());        // 初次建立，更新圖片
                     area.ControlUI = kuka_area;       // 將建立的使用者控制項與模型綁定
 
                     // KukaParm.AreaControls.Add(kuka_area);

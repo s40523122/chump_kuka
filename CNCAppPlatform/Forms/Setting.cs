@@ -2,6 +2,7 @@
 using Chump_kuka.Controls;
 using iCAPS;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -87,7 +88,7 @@ namespace Chump_kuka.Forms
             // 若成功連線則加入區域查詢，作為稍後綁定區域的依據
             if (isconn)
             {
-                KukaApiController.GetAreaInfo();
+                //KukaApiController.GetAreaInfo();
                 Env.KukaApiUrl = kuka_request_url.Text;
             }
 
@@ -173,24 +174,32 @@ namespace Chump_kuka.Forms
             // 依序執行連線任務
             await RunTask(15, 20, "等待 iCAPS 伺服器開啟...", ServerTask());
             await RunTask(35, 40, "等待 KUKA API 連線...", KukaApiTask());
-            await RunTask(55, 60, "等待 Modbus Tcp 連線...", SensorModbusTask());
-            await RunTask(75, 80, "等待 KUKA 回應監聽開啟...", KukaResponseTask());
-            await RunTask(95, 100, "等待工時監測伺服器開啟...", RecordLogTask());
 
             string strategy_string = Env.Strategy;
             if (strategy_string != "")
             {
                 List<string> sortedItems = strategy_string.Split(';').ToList();
-                // 先移除不在 nameOrder 裡的資料
-                List<KukaAreaModel> itemsToRemove = KukaParm.KukaAreaModels.Where(m => !sortedItems.Contains(m.AreaName)).ToList();
-                foreach (var item in itemsToRemove)
+
+                List<KukaAreaModel> temp = new List<KukaAreaModel>();
+                foreach (var name in sortedItems)
                 {
-                    KukaParm.KukaAreaModels.Remove(item);
+                    var matched = KukaParm.KukaOriginAreaModels.FirstOrDefault(p => p.AreaName == name);
+                    if (matched != null)
+                    {
+                        if (matched.NodeList == null)
+                        {
+                            Console.WriteLine("Is NULL");
+                        }
+                        temp.Add(matched);
+                    }
                 }
 
-                // 使用 Sort 來依照 sortedItems 調整順序
-                KukaParm.KukaAreaModels.Sort((a, b) => sortedItems.IndexOf(a.AreaName).CompareTo(sortedItems.IndexOf(b.AreaName)));
+                KukaParm.KukaAreaModels = temp;
             }
+
+            await RunTask(55, 60, "等待 Modbus Tcp 連線...", SensorModbusTask());
+            await RunTask(75, 80, "等待 KUKA 回應監聽開啟...", KukaResponseTask());
+            await RunTask(95, 100, "等待工時監測伺服器開啟...", RecordLogTask());
 
             progress_msg.Text = "已完成";
         }
@@ -208,29 +217,39 @@ namespace Chump_kuka.Forms
         private void switch_client_CheckedChanged(object sender, EventArgs e)
         {
             Env.ICapsServer = switch_sever.Checked;
-            kuka_request_url.Enabled = tcp_record_port.Enabled = kuka_response_url.Enabled = Env.ICapsServer;
+            kuka_request_url.Enabled = tcp_record_port.Enabled = kuka_response_url.Enabled = station_setting.Enabled = Env.ICapsServer;
+            
         }
 
         private void station_setting_Click(object sender, EventArgs e)
         {
             // List<string> items = new List<string> { "項目1", "項目2", "項目3", "項目4" };
-            List<string> list = KukaParm.KukaAreaModels.Select(m => m.AreaName).ToList();
+            List<string> list = KukaParm.KukaOriginAreaModels.Select(m => m.AreaName).ToList();
             List<string> sortedItems = SortableListForm.ShowDialogAndSort(list);
 
-
-            // 先移除不在 nameOrder 裡的資料
-            List<KukaAreaModel> itemsToRemove = KukaParm.KukaAreaModels.Where(m => !sortedItems.Contains(m.AreaName)).ToList();
-            foreach (var item in itemsToRemove)
+            KukaParm.KukaAreaModels = new List<KukaAreaModel>();
+            List <KukaAreaModel> temp = new List<KukaAreaModel>();
+            foreach (var name in sortedItems)
             {
-                KukaParm.KukaAreaModels.Remove(item);
+                var matched = KukaParm.KukaOriginAreaModels.FirstOrDefault(p => p.AreaName == name);
+                if (matched != null)
+                {
+                    temp.Add(matched);
+                }
             }
 
-
-            // 使用 Sort 來依照 sortedItems 調整順序
-            KukaParm.KukaAreaModels.Sort((a, b) => sortedItems.IndexOf(a.AreaName).CompareTo(sortedItems.IndexOf(b.AreaName)));
+            KukaParm.KukaAreaModels = temp;
 
             Env.Strategy = string.Join(";", sortedItems);
             // MessageBox.Show(KukaParm.KukaAreaModels[0].AreaName);
+
+            KukaParm.BindAreaModel = KukaAreaModel.Find(Env.BindAreaName, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
+            KukaParm.TargetAreaModel = KukaAreaModel.Find(Env.TargetAreaName, KukaParm.KukaAreaModels);
+
+            if (KukaParm.BindAreaModel == null)
+            {
+                Log.Append($"綁定區域({Env.BindAreaName})不存在", "Error", "LocalAreaController.cs");
+            }
         }
 
         private void LoadNetworkInterfaces()
@@ -263,5 +282,9 @@ namespace Chump_kuka.Forms
             LoadNetworkInterfaces();
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine(KukaParm.KukaAreaModels);
+        }
     }
 }
