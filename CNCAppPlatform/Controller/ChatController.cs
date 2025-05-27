@@ -192,7 +192,8 @@ namespace Chump_kuka.Controller
             {
                 CarryTaskController.FeedbackFinish();
                 int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaCode == e.AreaCode);       // 找到起點區域的 index
-                SendCarryFinish(KukaParm.KukaAreaModels[index+1].AreaCode);         // 通知目標區域更新(起點區域index+1)
+                int next_index = (index+1) % KukaParm.KukaAreaModels.Count;     // 使用「模運算」達到環狀效果
+                SendCarryFinish(KukaParm.KukaAreaModels[next_index].AreaCode);         // 通知目標區域更新(起點區域index+1)
             }
 
             // 若監聽目標為綁定區域

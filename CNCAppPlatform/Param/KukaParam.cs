@@ -101,6 +101,11 @@ public static class KukaParm
         }
     }
 
+    /// <summary>
+    /// 原始資料
+    /// </summary>
+    public static List<KukaAreaModel> KukaOriginAreaModels;
+
     public static List<KukaAreaModel> KukaAreaModels
     {
         get => _kuka_area_models;

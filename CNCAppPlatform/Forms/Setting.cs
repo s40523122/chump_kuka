@@ -177,7 +177,22 @@ namespace Chump_kuka.Forms
             await RunTask(75, 80, "等待 KUKA 回應監聽開啟...", KukaResponseTask());
             await RunTask(95, 100, "等待工時監測伺服器開啟...", RecordLogTask());
 
-            progress_msg.Text = "已完成";            
+            string strategy_string = Env.Strategy;
+            if (strategy_string != "")
+            {
+                List<string> sortedItems = strategy_string.Split(';').ToList();
+                // 先移除不在 nameOrder 裡的資料
+                List<KukaAreaModel> itemsToRemove = KukaParm.KukaAreaModels.Where(m => !sortedItems.Contains(m.AreaName)).ToList();
+                foreach (var item in itemsToRemove)
+                {
+                    KukaParm.KukaAreaModels.Remove(item);
+                }
+
+                // 使用 Sort 來依照 sortedItems 調整順序
+                KukaParm.KukaAreaModels.Sort((a, b) => sortedItems.IndexOf(a.AreaName).CompareTo(sortedItems.IndexOf(b.AreaName)));
+            }
+
+            progress_msg.Text = "已完成";
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -202,8 +217,19 @@ namespace Chump_kuka.Forms
             List<string> list = KukaParm.KukaAreaModels.Select(m => m.AreaName).ToList();
             List<string> sortedItems = SortableListForm.ShowDialogAndSort(list);
 
+
+            // 先移除不在 nameOrder 裡的資料
+            List<KukaAreaModel> itemsToRemove = KukaParm.KukaAreaModels.Where(m => !sortedItems.Contains(m.AreaName)).ToList();
+            foreach (var item in itemsToRemove)
+            {
+                KukaParm.KukaAreaModels.Remove(item);
+            }
+
+
             // 使用 Sort 來依照 sortedItems 調整順序
             KukaParm.KukaAreaModels.Sort((a, b) => sortedItems.IndexOf(a.AreaName).CompareTo(sortedItems.IndexOf(b.AreaName)));
+
+            Env.Strategy = string.Join(";", sortedItems);
             // MessageBox.Show(KukaParm.KukaAreaModels[0].AreaName);
         }
 

@@ -57,8 +57,8 @@ namespace Chump_kuka
 
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
 
-            // 非等待或第2區域的任務優先執行
-            if (!wait || start_code == KukaParm.KukaAreaModels[2].AreaCode)
+            // 非等待或最後一區的任務優先執行
+            if (!wait || start_code == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count-1].AreaCode)
             {
                 _current_task = task;
                 KukaApiController.PubCarryTask();

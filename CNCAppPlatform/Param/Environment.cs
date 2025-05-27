@@ -212,6 +212,18 @@ namespace Chump_kuka
             }
         }
 
+        public static string Strategy
+        {
+            get
+            {
+                return INiReader.ReadINIFile(LayoutPath, "Control", "strategy");
+            }
+            set
+            {
+                INiReader.WriteINIFile(LayoutPath, "Control", "strategy", value);
+            }
+        }
+
         public class WebInfo
         {
             public string WebName {  get; set; }

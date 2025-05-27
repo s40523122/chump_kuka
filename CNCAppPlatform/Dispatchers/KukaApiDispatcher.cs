@@ -249,6 +249,7 @@ namespace Chump_kuka.Dispatchers
         private void HandleAreaResponse(JObject resp_json)
         {
             KukaParm.KukaAreaModels = resp_json["data"].ToObject<List<KukaAreaModel>>();
+            KukaParm.KukaOriginAreaModels = resp_json["data"].ToObject<List<KukaAreaModel>>();
 
             // 加入節點查詢
             //AppendNodesTask();

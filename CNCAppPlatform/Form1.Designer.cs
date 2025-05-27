@@ -177,6 +177,7 @@
             this.btnUdpLog.TabIndex = 47;
             this.btnUdpLog.Text = "UDP Log";
             this.btnUdpLog.UseVisualStyleBackColor = true;
+            this.btnUdpLog.Visible = false;
             this.btnUdpLog.Click += new System.EventHandler(this.btnUdpLog_Click);
             // 
             // logWindow1
