@@ -175,26 +175,33 @@ namespace Chump_kuka.Forms
             await RunTask(15, 20, "等待 iCAPS 伺服器開啟...", ServerTask());
             await RunTask(35, 40, "等待 KUKA API 連線...", KukaApiTask());
 
-            string strategy_string = Env.Strategy;
-            if (strategy_string != "")
+            if (switch_sever.Checked)
             {
-                List<string> sortedItems = strategy_string.Split(';').ToList();
-
-                List<KukaAreaModel> temp = new List<KukaAreaModel>();
-                foreach (var name in sortedItems)
+                string strategy_string = Env.Strategy;
+                if (strategy_string != "")
                 {
-                    var matched = KukaParm.KukaOriginAreaModels.FirstOrDefault(p => p.AreaName == name);
-                    if (matched != null)
-                    {
-                        if (matched.NodeList == null)
-                        {
-                            Console.WriteLine("Is NULL");
-                        }
-                        temp.Add(matched);
-                    }
-                }
+                    List<string> sortedItems = strategy_string.Split(';').ToList();
 
-                KukaParm.KukaAreaModels = temp;
+                    List<KukaAreaModel> temp = new List<KukaAreaModel>();
+                    foreach (var name in sortedItems)
+                    {
+                        var matched = KukaParm.KukaOriginAreaModels.FirstOrDefault(p => p.AreaName == name);
+                        if (matched != null)
+                        {
+                            if (matched.NodeList == null)
+                            {
+                                Console.WriteLine("Is NULL");
+                            }
+                            temp.Add(matched);
+                        }
+                    }
+
+                    KukaParm.KukaAreaModels = temp;
+                }
+            }
+            else
+            {
+                await Task.Delay(2000);
             }
 
             await RunTask(55, 60, "等待 Modbus Tcp 連線...", SensorModbusTask());
