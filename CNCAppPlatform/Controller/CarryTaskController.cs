@@ -53,11 +53,11 @@ namespace Chump_kuka
             if (can_carry)
             {
                 // KukaApiController.PubCarryTask();
-                Log.Append($"接收叫車任務，等待執行。", "INFO", "CarryTaskController");
+                ChatController.PubLog($"接收叫車任務，等待執行。");
             }
             else
             {
-                Log.Append($"無可執行搬運任務。(起始節點: {start_area_code})", "WARRNING", "CarryTaskController");
+                ChatController.PubLog($"接收叫車任務，無可執行搬運任務。(起始節點: {start_area_code})");
             }
         }
 
@@ -113,6 +113,9 @@ namespace Chump_kuka
                     }
                     _current_task = task;
                     KukaApiController.PubCarryTask();
+
+                    ChatController.PubLog($"已派發任務，ID: {_current_task.ID}");
+
                     _task_timer.Stop();
                     break;
                 }

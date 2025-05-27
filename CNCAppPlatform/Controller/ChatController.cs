@@ -59,6 +59,7 @@ namespace Chump_kuka.Controller
                 HttpListenerDispatcher.Heard += HttpListenerDispatcher_Heard;
             }
 
+            _mqtt.Subscriber("log", LogCb);
             _mqtt.Subscriber("hello", HelloCb);
             _mqtt.Subscriber("robot", RobotCb);
             _mqtt.Subscriber("area", AreaCb);
@@ -70,6 +71,17 @@ namespace Chump_kuka.Controller
             SayHi();        // 初次上線，通知取得區域資料
 
             return true;
+        }
+
+        public static void PubLog(string message)
+        {
+            Log.Append(message, "ASYNC", "ChatController");
+            _mqtt.Publisher("log", message);
+        }
+
+        private static void LogCb(string message)
+        {
+            Log.Append(message, "ASYNC", "ChatController");
         }
 
         private static void HelloCb(string message)
