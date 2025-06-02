@@ -14,7 +14,6 @@ namespace Chump_kuka
         private static bool _agv_running = false;
         private static int _task_id = 1;
         private static CarryTask _current_task = null;
-        private static int current_step = 0;
         
         private static List<CarryTask> _task_queue = new List<CarryTask>();      // 搬運任務佇列
 
@@ -26,12 +25,6 @@ namespace Chump_kuka
         static CarryTaskController()
         {
             FeedbackDispatcher.Called += FeedbackDispatcher_Called;
-
-            HttpListenerDispatcher.Heard += HttpListenerDispatcher_Heard;
-        }
-        private static void HttpListenerDispatcher_Heard(object sender, HttpListenerDispatcher.HeardEventArgs e)
-        {
-            current_step = e.Step;
         }
 
             private static void initTimer()
@@ -58,16 +51,13 @@ namespace Chump_kuka
             OnTimerAlive?.Invoke(false);
             // AppendRobotStatusTask();        // 機器人狀態查詢為固定行程
 
-            // 因為 kuka 可能延遲發送訊息，所以要先擋著
-            if (current_step == 7)
+            bool build_task = FindAndAssignTask();
+            // 如果有派發任務，則停止計時器
+            if (!build_task)
             {
-                bool build_task = FindAndAssignTask();
-                // 如果有派發任務，則停止計時器
-                if (!build_task)
-                {
-                    _task_timer.Start();
-                }
+                _task_timer.Start();
             }
+            
         }
 
         private static void FeedbackDispatcher_Called(object sender, TextEventArgs e)
@@ -174,7 +164,7 @@ namespace Chump_kuka
         }
         
         /// <summary>
-        /// 當前區域被呼叫，找到可執行的搬運任務
+        /// 區域被呼叫，找到可執行的搬運任務
         /// </summary>
         /// <param name="start_area_code"></param>
         /// <returns></returns>

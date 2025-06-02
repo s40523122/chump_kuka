@@ -202,8 +202,8 @@ namespace Chump_kuka.Controller
         {
             string target_area_code;
 
-            // 如果 step 為 5 代表搬運任務已完成
-            if (e.Step == 5)
+            // 如果 step 為 7 代表搬運任務已完成
+            if (e.Step == 7)
             {
                 CarryTaskController.FeedbackFinish();
                 int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaCode == e.AreaCode);       // 找到起點區域的 index
