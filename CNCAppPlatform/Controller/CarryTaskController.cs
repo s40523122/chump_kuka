@@ -11,32 +11,63 @@ namespace Chump_kuka
 {
     internal class CarryTaskController
     {
+        private static bool _agv_running = false;
         private static int _task_id = 1;
         private static CarryTask _current_task = null;
+        private static int current_step = 0;
         
         private static List<CarryTask> _task_queue = new List<CarryTask>();      // 搬運任務佇列
 
-        private static System.Windows.Forms.Timer _task_timer;
+        private static System.Timers.Timer _task_timer;
+
+        public static event Action<bool> OnTimerAlive;     // 計時器啟用事件
 
 
         static CarryTaskController()
         {
-            // 設定計時器
-            _task_timer = new System.Windows.Forms.Timer();
-            _task_timer.Interval = 1000; // 每 1 秒請求一次
-            _task_timer.Tick += ProcessNextApiAsync;
             FeedbackDispatcher.Called += FeedbackDispatcher_Called;
-            _task_timer.Start();
+
+            HttpListenerDispatcher.Heard += HttpListenerDispatcher_Heard;
         }
-        private static void ProcessNextApiAsync(object sender, EventArgs e)
+        private static void HttpListenerDispatcher_Heard(object sender, HttpListenerDispatcher.HeardEventArgs e)
+        {
+            current_step = e.Step;
+        }
+
+            private static void initTimer()
+        {
+            Log.Append("計時器初始化", "INFO", nameof(CarryTaskController));
+            // 設定計時器
+            _task_timer = new System.Timers.Timer();
+            _task_timer.Interval = 200; // 每 0.2 秒請求一次
+
+            _task_timer.Elapsed += ProcessNextApiAsync;
+            _task_timer.AutoReset = true; // 是否重複執行（true 表示會一直觸發）
+            _task_timer.Start();
+            //_task_timer.Enabled = true;
+            //_task_timer.Tick += ProcessNextApiAsync;
+        }
+        private static async void ProcessNextApiAsync(object sender, EventArgs e)
         {
             // 停止計時器，確保在請求處理中不會再觸發計時器
             _task_timer.Stop();
 
-            FindAndAssignTask();
+            OnTimerAlive?.Invoke(true);
 
+            await Task.Delay(800);
+            OnTimerAlive?.Invoke(false);
             // AppendRobotStatusTask();        // 機器人狀態查詢為固定行程
-            _task_timer.Start();
+
+            // 因為 kuka 可能延遲發送訊息，所以要先擋著
+            if (current_step == 7)
+            {
+                bool build_task = FindAndAssignTask();
+                // 如果有派發任務，則停止計時器
+                if (!build_task)
+                {
+                    _task_timer.Start();
+                }
+            }
         }
 
         private static void FeedbackDispatcher_Called(object sender, TextEventArgs e)
@@ -67,6 +98,10 @@ namespace Chump_kuka
         /// <param name="wait">若為 true，需等待報工系統通知；反之，直接派發任務。</param>
         public static void AddToQueue(bool wait=true)
         {
+            if (_task_timer == null)
+            {
+                initTimer();
+            }
             // 取得起始區域代號
             string start_code = KukaParm.KukaAreaModels.FirstOrDefault(m => m.NodeList.Contains(KukaParm.StartNode.Code)).AreaCode;
             
@@ -94,7 +129,7 @@ namespace Chump_kuka
             //KukaApiController.PubCarryTask();
         }
 
-        private static void FindAndAssignTask()
+        private static bool FindAndAssignTask()
         {
             foreach (CarryTask task in _task_queue)
             {
@@ -112,14 +147,20 @@ namespace Chump_kuka
                             
                     }
                     _current_task = task;
+
+                    // 修改 start_node goal_node
+                    KukaParm.StartNode = _current_task.StartNode;
+                    KukaParm.GoalNode = _current_task.GoalNode;
                     KukaApiController.PubCarryTask();
 
                     ChatController.PubLog($"已派發任務，ID: {_current_task.ID}");
 
-                    _task_timer.Stop();
-                    break;
+                    return true;
                 }
             }
+
+            return false;
+            // ChatController.PubLog($"無任務派發");
         }
 
         /// <summary>

@@ -164,7 +164,7 @@ namespace Chump_kuka.Controller
             }
             catch (Exception _e)
             {
-                Console.WriteLine(_e.ToString());
+                Log.Append("接收排程搬運任務" + _e.ToString(), "ERROR", "ChatController");
             }
         }
         private static void CarryAutoCb(string message)
@@ -178,7 +178,7 @@ namespace Chump_kuka.Controller
             }
             catch (Exception _e)
             {
-                Console.WriteLine(_e.ToString());
+                Log.Append("接收基本搬運任務" + _e.ToString(), "ERROR", "ChatController");
             }
         }
 
@@ -200,6 +200,9 @@ namespace Chump_kuka.Controller
         /// <param name="e"></param>
         private static void HttpListenerDispatcher_Heard(object sender, HttpListenerDispatcher.HeardEventArgs e)
         {
+            string target_area_code;
+
+            // 如果 step 為 5 代表搬運任務已完成
             if (e.Step == 5)
             {
                 CarryTaskController.FeedbackFinish();
@@ -222,6 +225,8 @@ namespace Chump_kuka.Controller
                 // Send("heard", message);
                 _mqtt.Publisher("heard", message);
             }
+
+            PubLog($"Area_{e.AreaCode}:in step [{e.Step}]");
         }
 
         private static void PubToLocalController(object sender, HttpListenerDispatcher.HeardEventArgs e)

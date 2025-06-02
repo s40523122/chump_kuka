@@ -16,6 +16,7 @@ namespace Chump_kuka.Controls
         private float MaxSidebarWidth = 200; // 側邊欄最大寬度
         private const int AnimationSpeed = 30; // 動畫速度 (越小越快)
         private int ParentWidth = 200;
+
         public bool Start
         {
             set 
@@ -30,7 +31,14 @@ namespace Chump_kuka.Controls
             InitializeComponent();
             Load += SidePanel_Load;
             Resize += SidePanel_Resize;
-            
+        }
+
+        private void CarryTaskController_OnTimerAlive(bool obj)
+        {
+            checkBox1.Invoke(new Action(() =>
+            {
+                checkBox1.Checked = obj;
+            }));
         }
 
         private void SidePanel_Resize(object sender, EventArgs e)
@@ -50,6 +58,8 @@ namespace Chump_kuka.Controls
         {
             InitializeSidebar();
             this.BringToFront(); // 確保在最上層
+
+            Chump_kuka.CarryTaskController.OnTimerAlive += CarryTaskController_OnTimerAlive;
         }
 
         private void InitializeSidebar()
