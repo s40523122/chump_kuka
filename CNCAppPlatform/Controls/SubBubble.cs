@@ -23,20 +23,13 @@ namespace Chump_kuka.Controls
             _main_form = form;
 
             Load += SubBubble_Load;
-            Paint += SubBubble_Paint;
 
             // 設定滑鼠事件以支援拖曳
             myPanel1.Click += Circle_form_Click;
             this.MouseDown += Form_MouseDown;
         }
 
-        private void SubBubble_Paint(object sender, PaintEventArgs e)
-        {
-
-            
-        }
-
-        private void SubBubble_Load(object sender, EventArgs e)
+        private void SubBubble_init()
         {
             this.StartPosition = FormStartPosition.Manual; // 手動設定位置
             this.FormBorderStyle = FormBorderStyle.None; // 去除邊框
@@ -45,7 +38,19 @@ namespace Chump_kuka.Controls
             this.Height = 100;
             this.TopMost = true;     // 置於螢幕最上層
             this.Cursor = Cursors.NoMove2D;
+            
+            // 啟用雙緩衝與透明背景
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint |
+                          ControlStyles.UserPaint |
+                          ControlStyles.OptimizedDoubleBuffer, true);
 
+            this.BackColor = Color.DodgerBlue; // 用來當透明色
+            this.TransparencyKey = Color.DodgerBlue; // 這個顏色會變透明
+        }
+
+        private void SubBubble_Load(object sender, EventArgs e)
+        {
+            SubBubble_init();
 
             // 計算右下角位置
             int x = Screen.PrimaryScreen.WorkingArea.Width - this.Width;
@@ -56,6 +61,25 @@ namespace Chump_kuka.Controls
             GraphicsPath path = new GraphicsPath();
             path.AddEllipse(0, 0, this.Width, this.Height);
             this.Region = new Region(path);
+
+            Console.WriteLine($"{this.Width}, {this.Height}");
+            // 預先產生圓形圖並指定為背景
+            this.BackgroundImage = GenerateCircleBitmap(this.Width, this.Height, Color.DeepSkyBlue);
+            this.BackgroundImageLayout = ImageLayout.None;
+        }
+
+        private Bitmap GenerateCircleBitmap(int width, int height, Color color)
+        {
+            Bitmap bmp = new Bitmap(width, height);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                using (Brush brush = new SolidBrush(color))
+                {
+                    g.FillEllipse(brush, 0, 0, width - 1, height - 1);
+                }
+            }
+            return bmp;
         }
 
         private void Circle_form_Click(object sender, EventArgs e)
