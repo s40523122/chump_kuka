@@ -244,6 +244,12 @@
     <Compile Include="Controls\SortableListForm.Designer.cs">
       <DependentUpon>SortableListForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SubBubble.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\SubBubble.Designer.cs">
+      <DependentUpon>SubBubble.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UdpChatRoom.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -338,6 +344,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SidePanel.resx">
       <DependentUpon>SidePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SubBubble.resx">
+      <DependentUpon>SubBubble.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UdpChatRoom.resx">
       <DependentUpon>UdpChatRoom.cs</DependentUpon>
