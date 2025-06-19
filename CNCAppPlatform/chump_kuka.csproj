@@ -250,6 +250,18 @@
     <Compile Include="Controls\SubBubble.Designer.cs">
       <DependentUpon>SubBubble.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TreeGridItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TreeGridItem.Designer.cs">
+      <DependentUpon>TreeGridItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TreeGridView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TreeGridView.Designer.cs">
+      <DependentUpon>TreeGridView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UdpChatRoom.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -347,6 +359,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SubBubble.resx">
       <DependentUpon>SubBubble.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TreeGridItem.resx">
+      <DependentUpon>TreeGridItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TreeGridView.resx">
+      <DependentUpon>TreeGridView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UdpChatRoom.resx">
       <DependentUpon>UdpChatRoom.cs</DependentUpon>
