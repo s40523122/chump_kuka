@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Xml.Linq;
 
 namespace Chump_kuka
@@ -94,6 +95,14 @@ namespace Chump_kuka
             }
             // 取得起始區域代號
             string start_code = KukaParm.KukaAreaModels.FirstOrDefault(m => m.NodeList.Contains(KukaParm.StartNode.Code)).AreaCode;
+
+            // 判定是否重複起始點(起始點已在任務列表中，且該任務尚未完成)
+            bool exists_task = _task_queue.Any(m => m.StartNode == KukaParm.StartNode && m.FinishTime == null);
+            if (exists_task)
+            {
+                ChatController.PubLog("派發重複任務");
+                return;
+            }
             
             // 建立搬運任務資訊
             CarryTask task = new CarryTask(_task_id, !wait, KukaParm.StartNode, KukaParm.GoalNode, start_code);
