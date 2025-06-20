@@ -11,13 +11,14 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace Chump_kuka.Controls
 {
     public partial class TreeGridView : UserControl
     {
 
-        private string[] _columns = new string[0];
+        private TreeColumn[] _columns = new TreeColumn[0];
         private float[] _column_ratios = new float[0];
 
         [Description("加入資料。"), Category("自訂值")]
@@ -28,6 +29,7 @@ namespace Chump_kuka.Controls
             {
                 if (value == null) return;
 
+                flowLayoutPanel1.Controls.Clear();
                 int mission_index = 1;      // 任務編號
                 foreach (object obj in value)
                 {
@@ -36,40 +38,57 @@ namespace Chump_kuka.Controls
                     Type type = obj.GetType();
                     var properties = type.GetProperties();
 
-                    List<string> prop_values = new List<string>();
+                    string[] prop_values = new string[Columns.Length];
 
-                    foreach (var prop in properties)
-                    {
-                        //string name = prop.Name;
-                        object prop_value = prop.GetValue(obj);
-                        //Console.WriteLine($"{name} = {prop_value}");
-
-                        prop_values.Add(prop_value.ToString() );
-                    };
-                    TreeGridItem item = new TreeGridItem()
+                    TreeGridRow row = new TreeGridRow()
                     {
                         ID = mission_index++,
-                        Columns = prop_values.ToArray(),
                         ColumnRatios = _column_ratios,
                         Width = flowLayoutPanel1.Width - 6,
                         Height = panel1.Height,
                         BackColor = Color.FromArgb(224, 224, 224),
                         Margin = new Padding(0, 3, 6, 3)
                     };
-                    flowLayoutPanel1.Controls.Add(item);
 
-                    item.RemoveItem += Item_RemoveItem;
+                    foreach (var prop in properties)
+                    {
+                        string name = prop.Name;
+                        object prop_value = prop.GetValue(obj);
+                        //Console.WriteLine($"{name} = {prop_value}");
+
+                        // 找到對應的欄位名稱並分配資料
+                        int index = _columns
+                            .Select((model, i) => new { model, i })
+                            .FirstOrDefault(m => m.model.Name == name)?.i ?? -1;
+
+                        if (index != -1)        // -1 代表找不到
+                        {
+                            prop_values[index] = prop_value.ToString();
+                        }
+
+                        // 若有指定 LogColName，將 Log 資訊傳入 Row
+                        if (name == LogColName)
+                        {
+                            row.LogMsg = prop_value.ToString();
+                        }
+                    };
+
+                    row.Items = prop_values.ToArray();     // 將資料傳入 Row
+
+                    flowLayoutPanel1.Controls.Add(row);
+
+                    row.RemoveItem += Item_RemoveItem;
                 }
             }
         }
 
         [Description("加入資料欄。"), Category("自訂值")]
-        public string[] Columns
+        public TreeColumn[] Columns
         {
             get => _columns;
             set
             {
-                _columns = (string[])value.Clone();
+                _columns = (TreeColumn[])value.Clone();
                 if (value.Length == 0) return;
                 Array.Reverse(value);
                 Array.Reverse(_column_ratios);
@@ -80,9 +99,9 @@ namespace Chump_kuka.Controls
                 scaleLabel1.Width = (int)(title_length * 0.08);
 
                 int index = 0;
-                foreach (string col in value)
+                foreach (TreeColumn col in value)
                 {
-                    string content = col;
+                    string content = col.Text;
                     float ratio = 1.0f / value.Length;
                     if (_column_ratios.Length > index)
                     {
@@ -113,9 +132,14 @@ namespace Chump_kuka.Controls
             set
             {
                 _column_ratios = value;
+
                 Columns = _columns;     // 更新欄位顯示
+
             }
         }
+
+        [Description("Log 欄位名稱。"), Category("自訂值")]
+        public string LogColName { get; set; }
 
         public TreeGridView()
         {
@@ -131,11 +155,15 @@ namespace Chump_kuka.Controls
         private void TreeGridItem_Resize(object sender, EventArgs e)
         {
             Columns = _columns;
+            foreach(TreeGridRow rows in flowLayoutPanel1.Controls)
+            {
+                rows.Width = flowLayoutPanel1.Width - 6;
+            }
         }
         private void Item_RemoveItem(object sender, EventArgs e)
         {
-            TreeGridItem item = sender as TreeGridItem;
-            DialogResult check = MessageBox.Show($"確認移除任務[{item.ID}] =>\n 從 [{item.Columns[0]}] 到 [{item.Columns[1]}]", "移除任務確認", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            TreeGridRow item = sender as TreeGridRow;
+            DialogResult check = MessageBox.Show($"確認移除任務[{item.ID}] =>\n 從 [{item.Items[0]}] 到 [{item.Items[1]}]", "移除任務確認", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (check == DialogResult.Yes)
             {
                 item.Dispose();
@@ -143,7 +171,7 @@ namespace Chump_kuka.Controls
         }
     }
 
-    public struct TreeColumn
+    public class TreeColumn
     {
         public string Name {  get; set; }
         public string Text { get; set; }

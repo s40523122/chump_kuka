@@ -11,10 +11,10 @@ using System.Windows.Forms;
 
 namespace Chump_kuka.Controls
 {
-    public partial class TreeGridItem : UserControl
+    public partial class TreeGridRow : UserControl
     {
         bool _isExpanded = false;
-        private string[] _columns = new string[0];
+        private string[] _items = new string[0];
         private float[] _col_ratios = new float[0];
         private string _log_msg = string.Empty;
         private Panel _panel;       // 展開空間，當展開時，建立新 Panel，若折疊時銷毀，減低系統負擔
@@ -32,13 +32,13 @@ namespace Chump_kuka.Controls
             }
         }
 
-        [Description("加入資料欄。"), Category("自訂值")]
-        public string[] Columns 
+        [Description("加入資料項目。"), Category("自訂值")]
+        public string[] Items 
         { 
-            get => _columns;
+            get => _items;
             set
             {
-                _columns = (string[])value.Clone();
+                _items = (string[])value.Clone();
                 if (value.Length == 0) return;
                 Array.Reverse(value);
 
@@ -81,7 +81,7 @@ namespace Chump_kuka.Controls
             set
             {
                 _col_ratios = value;
-                Columns = _columns;     // 更新欄位顯示
+                Items = _items;     // 更新欄位顯示
             }
         }
 
@@ -95,7 +95,7 @@ namespace Chump_kuka.Controls
             }
         }
 
-        public TreeGridItem()
+        public TreeGridRow()
         {
             InitializeComponent();
 
@@ -175,7 +175,7 @@ namespace Chump_kuka.Controls
         private void TreeGridItem_Resize(object sender, EventArgs e)
         {
             panel1.Height = _isExpanded ? (int)(this.Height/3.5) : this.Height;
-            Columns = _columns;
+            Items = _items;
         }
     }
 }

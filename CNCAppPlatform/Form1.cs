@@ -58,11 +58,7 @@ namespace Chump_kuka
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            treeGridView1.ColumnRatios = new float[5] { 0.2f, 0.2f, 0.24f, 0.24f, 0.12f };
-
-            treeGridView1.DataSource = new object[2] {
-                new {A="37", B="組裝區", C=DateTime.Now.ToString(@"MM/dd HH:mm"), D = "06/19 17:50", E = "N" },
-                new {A="48", B="成品區", C=DateTime.Now.ToString(@"MM/dd HH:mm"), D = "06/19 17:52", E = "N" } };
+            
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)

@@ -31,24 +31,16 @@
             this.enable_api_btn = new System.Windows.Forms.Button();
             this.open_log_button = new System.Windows.Forms.CheckBox();
             this.btnUdpLog = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.myPanel1 = new iCAPS.myPanel();
-            this.treeGridView1 = new Chump_kuka.Controls.TreeGridView();
             this.logWindow1 = new Chump_kuka.Controls.LogWindow();
             this.panel1.SuspendLayout();
-            this.myPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.myPanel1);
-            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.logWindow1);
             this.panel1.Size = new System.Drawing.Size(959, 689);
             this.panel1.Controls.SetChildIndex(this.logWindow1, 0);
-            this.panel1.Controls.SetChildIndex(this.button1, 0);
             this.panel1.Controls.SetChildIndex(this.enable_side, 0);
-            this.panel1.Controls.SetChildIndex(this.myPanel1, 0);
             // 
             // enable_api_btn
             // 
@@ -84,39 +76,6 @@
             this.btnUdpLog.Visible = false;
             this.btnUdpLog.Click += new System.EventHandler(this.btnUdpLog_Click);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(157, 255);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(157, 70);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "刪除任務";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // myPanel1
-            // 
-            this.myPanel1.Controls.Add(this.treeGridView1);
-            this.myPanel1.Location = new System.Drawing.Point(84, 231);
-            this.myPanel1.Name = "myPanel1";
-            this.myPanel1.Radius = 10;
-            this.myPanel1.Size = new System.Drawing.Size(458, 331);
-            this.myPanel1.TabIndex = 11;
-            // 
-            // treeGridView1
-            // 
-            this.treeGridView1.Columns = new string[] {
-        "起點",
-        "終點",
-        "建立日期",
-        "完成日期",
-        "🔔"};
-            this.treeGridView1.DataSource = null;
-            this.treeGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeGridView1.Location = new System.Drawing.Point(0, 0);
-            this.treeGridView1.Name = "treeGridView1";
-            this.treeGridView1.Size = new System.Drawing.Size(458, 331);
-            this.treeGridView1.TabIndex = 10;
-            // 
             // logWindow1
             // 
             this.logWindow1.BackColor = System.Drawing.Color.Gainsboro;
@@ -140,7 +99,6 @@
             this.Controls.SetChildIndex(this.btnUdpLog, 0);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.myPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -152,9 +110,6 @@
         private Controls.LogWindow logWindow1;
         private System.Windows.Forms.CheckBox open_log_button;
         private System.Windows.Forms.Button btnUdpLog;
-        private System.Windows.Forms.Button button1;
-        private Controls.TreeGridView treeGridView1;
-        private iCAPS.myPanel myPanel1;
     }
 }
 

@@ -1,6 +1,6 @@
 ﻿namespace Chump_kuka.Controls
 {
-    partial class TreeGridItem
+    partial class TreeGridRow
     {
         /// <summary> 
         /// 設計工具所需的變數。

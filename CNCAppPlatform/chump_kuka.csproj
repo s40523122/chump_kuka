@@ -250,11 +250,11 @@
     <Compile Include="Controls\SubBubble.Designer.cs">
       <DependentUpon>SubBubble.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\TreeGridItem.cs">
+    <Compile Include="Controls\TreeGridRow.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\TreeGridItem.Designer.cs">
-      <DependentUpon>TreeGridItem.cs</DependentUpon>
+    <Compile Include="Controls\TreeGridRow.Designer.cs">
+      <DependentUpon>TreeGridRow.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\TreeGridView.cs">
       <SubType>UserControl</SubType>
@@ -360,8 +360,8 @@
     <EmbeddedResource Include="Controls\SubBubble.resx">
       <DependentUpon>SubBubble.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\TreeGridItem.resx">
-      <DependentUpon>TreeGridItem.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\TreeGridRow.resx">
+      <DependentUpon>TreeGridRow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\TreeGridView.resx">
       <DependentUpon>TreeGridView.cs</DependentUpon>
