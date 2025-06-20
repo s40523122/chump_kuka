@@ -26,8 +26,6 @@ namespace Chump_kuka.Forms
 
             Controls.Add(sidePanel);
 
-            dataGridView1.Resize += DataGridView1_Resize;
-
             Load += F02_MainMission_Load;
         }
 
@@ -62,9 +60,14 @@ namespace Chump_kuka.Forms
 
         private void ChatController_CarryTaskUpdated(object sender, SimpleCarryTask[] e)
         {
-            dataGridView1.Invoke(new Action(() => {
-                dataGridView1.DataSource = e;
-                InitDataGridView();
+            //dataGridView1.Invoke(new Action(() => {
+            //    dataGridView1.DataSource = e;
+            //    InitDataGridView();
+            //}));
+
+            treeGridView1.Invoke(new Action(() =>
+            {
+                treeGridView1.DataSource = e;
             }));
         }
 
@@ -124,101 +127,10 @@ namespace Chump_kuka.Forms
             // 切換視窗時，更新區域控制項內容
             LocalAreaController.UpdateControl();
         }
-
-        private void DataGridView1_Resize(object sender, EventArgs e)
-        {
-            if (ParentForm.WindowState == FormWindowState.Minimized) return;
-            int totalHeight = dataGridView1.ClientSize.Height; // 可用高度
-            int rowCount = dataGridView1.RowCount;
-            int rowHeight = totalHeight / 10; // 等比例分配
-
-            //dataGridView1.EnableHeadersVisualStyles = false;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridView1.ColumnHeadersHeight = rowHeight;
-            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("微軟正黑體", rowHeight/3, FontStyle.Bold);
-            dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
-            dataGridView1.DefaultCellStyle = new DataGridViewCellStyle()
-            {
-                Font = new Font("微軟正黑體", rowHeight / 3, FontStyle.Regular),
-                Alignment = DataGridViewContentAlignment.MiddleCenter,
-            };
-            dataGridView1.RowTemplate.Height = rowHeight;
-        }
         
-
-        private void InitDataGridView()
-        {
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-            dataGridView1.Columns["Called"].FillWeight = 14;
-            dataGridView1.Columns["Called"].HeaderText = "已呼叫";
-            dataGridView1.Columns["ID"].FillWeight = 6;
-            dataGridView1.Columns["ID"].HeaderText = "ID";
-            dataGridView1.Columns["StartNode"].FillWeight = 15;
-            dataGridView1.Columns["StartNode"].HeaderText = "起點";
-            dataGridView1.Columns["GoalNode"].FillWeight = 15;
-            dataGridView1.Columns["GoalNode"].HeaderText = "終點";
-            dataGridView1.Columns["CreateTime"].FillWeight = 25;
-            dataGridView1.Columns["CreateTime"].HeaderText = "建立時間";
-            dataGridView1.Columns["FinishTime"].FillWeight = 25;
-            dataGridView1.Columns["FinishTime"].HeaderText = "完成時間";
-            
-
-            // 設定是否允許編輯
-            dataGridView1.ReadOnly = true;
-            dataGridView1.AllowUserToAddRows = false;
-            dataGridView1.AllowUserToDeleteRows = false;
-            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.RowHeadersVisible = false;
-
-            dataGridView1.AllowUserToResizeColumns = false;
-            dataGridView1.AllowUserToResizeRows = false;
-
-            dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
-        }
-
-        private void SetupDataGridView()
-        {
-            dataGridView1.ColumnCount = 5; // 設定 3 欄
-            dataGridView1.Columns[0].Name = "ID";
-            dataGridView1.Columns[1].Name = "起點";
-            dataGridView1.Columns[2].Name = "終點";
-            dataGridView1.Columns[3].Name = "建立時間";
-            dataGridView1.Columns[4].Name = "完成時間";
-
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-            // 假設有三個欄位，分別設定 FillWeight
-            dataGridView1.Columns[0].FillWeight = 10; // 30% 
-            dataGridView1.Columns[1].FillWeight = 15; // 50%
-            dataGridView1.Columns[2].FillWeight = 15; // 20%
-            dataGridView1.Columns[3].FillWeight = 30; // 50%
-            dataGridView1.Columns[4].FillWeight = 30; // 20%
-
-            //dataGridView1.RowTemplate.Height = 30;
-
-            // 設定是否允許編輯
-            dataGridView1.ReadOnly = true;
-            dataGridView1.AllowUserToAddRows = false;
-            dataGridView1.AllowUserToDeleteRows = false;
-            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.RowHeadersVisible = false;
-
-            dataGridView1.AllowUserToResizeColumns = false;
-            dataGridView1.AllowUserToResizeRows = false;
-
-            dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
-
-            //for (int i = 0;  i < 30; i++)
-            //{
-            //    dataGridView1.Rows.Add(i, $"25", $"加工區", DateTime.Now.AddHours(i*0.6).ToString(@"yyyy/MM/dd HH:mm"), "");
-            //}
-
-        }
         private void KukaApiController_CarryTaskPub(object sender, PropertyChangedEventArgs e)
         {
-            dataGridView1.Rows.Insert(0, new object[] { dataGridView1.Rows.Count, KukaParm.StartNode.Name, KukaParm.GoalNode.Name, DateTime.Now.ToString(@"yyyy/MM/dd HH:mm") });
+            // dataGridView1.Rows.Insert(0, new object[] { dataGridView1.Rows.Count, KukaParm.StartNode.Name, KukaParm.GoalNode.Name, DateTime.Now.ToString(@"yyyy/MM/dd HH:mm") });
         }
 
         private async void scaleButton1_Click(object sender, EventArgs e)

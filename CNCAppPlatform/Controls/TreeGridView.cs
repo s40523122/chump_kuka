@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -119,6 +120,11 @@ namespace Chump_kuka.Controls
         public TreeGridView()
         {
             InitializeComponent();
+
+            // 隱藏下方卷軸
+            flowLayoutPanel1.AutoScroll = false;
+            flowLayoutPanel1.HorizontalScroll.Maximum = 0;
+            flowLayoutPanel1.AutoScroll = true;
             Resize += TreeGridItem_Resize;
         }
 
@@ -135,5 +141,11 @@ namespace Chump_kuka.Controls
                 item.Dispose();
             }
         }
+    }
+
+    public struct TreeColumn
+    {
+        public string Name {  get; set; }
+        public string Text { get; set; }
     }
 }

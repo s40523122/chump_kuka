@@ -52,7 +52,8 @@
             this.scaleButton1 = new iCAPS.ScaleButton();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.scaleLabel9 = new iCAPS.ScaleLabel();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.myPanel2 = new iCAPS.myPanel();
+            this.treeGridView1 = new Chump_kuka.Controls.TreeGridView();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.myPanel1.SuspendLayout();
@@ -65,7 +66,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.led_task_over)).BeginInit();
             this.tableLayoutPanel5.SuspendLayout();
             this.tableLayoutPanel6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.myPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -377,6 +378,7 @@
             // 
             // bind_area_control
             // 
+            this.bind_area_control.AllowContainerClick = false;
             this.bind_area_control.AreaName = "No Area Bind";
             this.bind_area_control.AreaNode = new string[] {
         "1",
@@ -387,7 +389,6 @@
             this.bind_area_control.Location = new System.Drawing.Point(0, 54);
             this.bind_area_control.Margin = new System.Windows.Forms.Padding(0);
             this.bind_area_control.Name = "bind_area_control";
-            this.bind_area_control.AllowContainerClick = false;
             this.bind_area_control.NodeStatus = new int[] {
         0,
         0,
@@ -414,7 +415,7 @@
             this.tableLayoutPanel6.ColumnCount = 1;
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel6.Controls.Add(this.scaleLabel9, 0, 0);
-            this.tableLayoutPanel6.Controls.Add(this.dataGridView1, 0, 1);
+            this.tableLayoutPanel6.Controls.Add(this.myPanel2, 0, 1);
             this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel6.Location = new System.Drawing.Point(546, 216);
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
@@ -438,15 +439,27 @@
             this.scaleLabel9.Text = "任務清單";
             this.scaleLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // dataGridView1
+            // myPanel2
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 57);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.Size = new System.Drawing.Size(567, 376);
-            this.dataGridView1.TabIndex = 1;
+            this.myPanel2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.myPanel2.Controls.Add(this.treeGridView1);
+            this.myPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.myPanel2.Location = new System.Drawing.Point(3, 57);
+            this.myPanel2.Name = "myPanel2";
+            this.myPanel2.Radius = 10;
+            this.myPanel2.Size = new System.Drawing.Size(567, 376);
+            this.myPanel2.TabIndex = 1;
+            // 
+            // treeGridView1
+            // 
+            this.treeGridView1.ColumnRatios = new float[0];
+            this.treeGridView1.Columns = new string[0];
+            this.treeGridView1.DataSource = null;
+            this.treeGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeGridView1.Location = new System.Drawing.Point(0, 0);
+            this.treeGridView1.Name = "treeGridView1";
+            this.treeGridView1.Size = new System.Drawing.Size(567, 376);
+            this.treeGridView1.TabIndex = 0;
             // 
             // f02_MainMission
             // 
@@ -472,7 +485,7 @@
             this.tableLayoutPanel5.PerformLayout();
             this.tableLayoutPanel6.ResumeLayout(false);
             this.tableLayoutPanel6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.myPanel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -502,7 +515,8 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private iCAPS.ScaleLabel scaleLabel9;
         private iCAPS.myPanel myPanel1;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private iCAPS.ScaleButton scaleButton1;
+        private iCAPS.myPanel myPanel2;
+        private Controls.TreeGridView treeGridView1;
     }
 }
