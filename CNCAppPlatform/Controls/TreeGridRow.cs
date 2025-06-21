@@ -21,6 +21,15 @@ namespace Chump_kuka.Controls
 
         public event EventHandler RemoveItem;       // 移除事件
 
+        [Description("是否顯示自動ID。"), Category("自訂值")]
+        public bool AutoIDVisible
+        {
+            get => scaleLabel1.Visible;
+            set
+            {
+                scaleLabel1.Visible = value;
+            }
+        }
 
         [Description("項目編號。"), Category("自訂值")]
         public int ID
@@ -41,10 +50,12 @@ namespace Chump_kuka.Controls
                 _items = (string[])value.Clone();
                 if (value.Length == 0) return;
                 Array.Reverse(value);
+                Array.Reverse(_col_ratios);
 
                 panel1.Controls.Clear();
 
-                scaleLabel1.Width = (int)(panel1.Width * 0.08);
+                // 設定首行自動 ID 寬度
+                int auto_id_width = scaleLabel1.Width = scaleLabel1.Visible ? (int)(panel1.Width * 0.08) : 0;
 
                 int index = 0;
                 foreach (string col in value)
@@ -63,13 +74,15 @@ namespace Chump_kuka.Controls
                         TextAlign = scaleLabel1.TextAlign, 
                         Factor = scaleLabel1.Factor, 
                         Dock = DockStyle.Left,
-                        Width = (int)((panel1.Width- scaleLabel1.Width) * ratio),
+                        Width = (int)((panel1.Width- auto_id_width) * ratio),
                         Cursor = Cursors.Hand
                     };
                     sLabel.Click += (s, e) => TreeGridItem_Click(s, e);
                     panel1.Controls.Add(sLabel);
                 }
-                
+
+                Array.Reverse(_col_ratios);      // 反轉回來，避免資料錯誤
+
                 panel1.Controls.Add(scaleLabel1);
             } 
         }

@@ -454,6 +454,7 @@ namespace Chump_kuka.Forms
             // 
             // treeGridView1
             // 
+            this.treeGridView1.AutoIDVisible = false;
             this.treeGridView1.ColumnRatios = new float[0];
             this.treeGridView1.Columns = new Chump_kuka.Controls.TreeColumn[0];
             this.treeGridView1.DataSource = null;

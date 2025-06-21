@@ -55,15 +55,16 @@ namespace Chump_kuka.Forms
         private void InitTreeGridView()
         {
             // 設定 TreeGridView 資料欄
-            treeGridView1.Columns = new TreeColumn[5]
+            treeGridView1.Columns = new TreeColumn[6]
             {
+                new TreeColumn() { Name = "ID", Text = "ID" },
                 new TreeColumn() { Name = "Start", Text = "起點" },
                 new TreeColumn() { Name = "Goal", Text = "終點" },
                 new TreeColumn() { Name = "CreateDate", Text = "建立日期" },
                 new TreeColumn() { Name = "FinishDate", Text = "完成日期" },
                 new TreeColumn() { Name = "Called", Text = "🔔" },
             };
-            treeGridView1.ColumnRatios = new float[5] { 0.2f, 0.2f, 0.24f, 0.24f, 0.12f };      // 設定 TreeGridView 資料欄寬度係數
+            treeGridView1.ColumnRatios = new float[6] {0.1f, 0.15f, 0.15f, 0.24f, 0.24f, 0.12f };      // 設定 TreeGridView 資料欄寬度係數
             treeGridView1.LogColName = "Log";      // 設定 TreeGridView Log 資料欄位名稱
 
             // 加入 DataSource

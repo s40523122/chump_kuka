@@ -21,6 +21,16 @@ namespace Chump_kuka.Controls
         private TreeColumn[] _columns = new TreeColumn[0];
         private float[] _column_ratios = new float[0];
 
+        [Description("是否顯示自動ID。"), Category("自訂值")]
+        public bool AutoIDVisible
+        {
+            get => scaleLabel1.Visible;
+            set
+            {
+                scaleLabel1.Visible = value;
+            }
+        }
+
         [Description("加入資料。"), Category("自訂值")]
         public object[] DataSource 
         { 
@@ -43,6 +53,7 @@ namespace Chump_kuka.Controls
                     TreeGridRow row = new TreeGridRow()
                     {
                         ID = mission_index++,
+                        AutoIDVisible = this.AutoIDVisible,
                         ColumnRatios = _column_ratios,
                         Width = flowLayoutPanel1.Width - 6,
                         Height = panel1.Height,
@@ -95,8 +106,9 @@ namespace Chump_kuka.Controls
 
                 panel1.Controls.Clear();
 
-                int title_length = panel1.Width - 6;
-                scaleLabel1.Width = (int)(title_length * 0.08);
+                int title_length = panel1.Width - 6;        // 欄位寬度
+                // 設定首行自動 ID 寬度
+                int auto_id_width = scaleLabel1.Width = scaleLabel1.Visible ? (int)(title_length * 0.08) : 0;
 
                 int index = 0;
                 foreach (TreeColumn col in value)
@@ -116,10 +128,12 @@ namespace Chump_kuka.Controls
                         TextAlign = scaleLabel1.TextAlign,
                         Factor = scaleLabel1.Factor,
                         Dock = DockStyle.Left,
-                        Width = (int)((title_length - scaleLabel1.Width) * ratio),
+                        Width = (int)((title_length - auto_id_width) * ratio),
                     };
                     panel1.Controls.Add(sLabel);
                 }
+
+                Array.Reverse(_column_ratios);      // 反轉回來，避免資料錯誤
 
                 panel1.Controls.Add(scaleLabel1);
             }
