@@ -37,14 +37,22 @@ namespace Chump_kuka.Controls
             {
                 _log_labels.Add(log_label);
 
-                flowLayoutPanel1.Controls.Add(new CheckBox()
+                RadioButton new_label = new RadioButton()
                 {
                     Appearance = Appearance.Button,
                     Size = checkBox1.Size,
-                    Text = log_label,
-                });
+                    Text = log_label
+                };
+                new_label.Click += checkBox_Click;
+                flowLayoutPanel1.Controls.Add(new_label);
             }
         }
 
+        private void checkBox_Click(object sender, EventArgs e)
+        {
+            // MessageBox.Show((sender as RadioButton).Text);
+
+
+        }
     }
 }
