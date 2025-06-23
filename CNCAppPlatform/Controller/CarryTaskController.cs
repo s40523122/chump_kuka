@@ -222,18 +222,42 @@ namespace Chump_kuka
 
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
+
+        /// <summary>
+        /// 回報任務失敗，並重置 _current_task
+        /// </summary>
+        public static void FeedbackFail()
+        {
+            if (_current_task != null)
+                _current_task.FinishTime = DateTime.MinValue;
+            // _current_task = null;
+
+            _task_timer.Start();
+
+            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
+        }
+
+        /// <summary>
+        /// 增加任務狀態紀錄
+        /// </summary>
+        /// <param name="log_message"></param>
+        public static void AppendTaskLog(string log_message)
+        {
+            if (_current_task != null)
+                _current_task.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm")}] {log_message}\n";
+        }
     }
 
 
     public class SimpleCarryTask
     {
-        public bool Called { get; set; } = false;
+        public string Called { get; set; }
         public int ID { get; set; }
         public string StartNode { get; set; }
         public string GoalNode { get; set; }
         public string CreateTime { get; set; }
-
         public string FinishTime { get; set; }
+        public string LogMsg { get; set; }
 
         public SimpleCarryTask() { }
         public SimpleCarryTask(CarryTask task)
@@ -243,7 +267,8 @@ namespace Chump_kuka
             GoalNode = task.GoalNode.Name;
             CreateTime = task.CreateTime.ToString(@"MM/dd tt hh:mm");
             FinishTime = task.FinishTime?.ToString(@"MM/dd tt hh:mm");
-            Called = task.Called;
+            Called = task.Called ? "🔔" : "🔕";
+            LogMsg = task.LogMsg;
         }
     }
 
@@ -255,8 +280,8 @@ namespace Chump_kuka
         public CarryNode StartNode { get; set; }
         public CarryNode GoalNode { get; set; }
         public DateTime CreateTime { get; set; }
-
         public DateTime? FinishTime { get; set; }
+        public string LogMsg { get; set; }
 
         public CarryTask(int task_id, bool called, CarryNode start_node, CarryNode goal_node, string areaCode)
         {

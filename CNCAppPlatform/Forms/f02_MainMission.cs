@@ -58,19 +58,19 @@ namespace Chump_kuka.Forms
             treeGridView1.Columns = new TreeColumn[6]
             {
                 new TreeColumn() { Name = "ID", Text = "ID" },
-                new TreeColumn() { Name = "Start", Text = "起點" },
-                new TreeColumn() { Name = "Goal", Text = "終點" },
-                new TreeColumn() { Name = "CreateDate", Text = "建立日期" },
-                new TreeColumn() { Name = "FinishDate", Text = "完成日期" },
+                new TreeColumn() { Name = "StartNode", Text = "起點" },
+                new TreeColumn() { Name = "GoalNode", Text = "終點" },
+                new TreeColumn() { Name = "CreateTime", Text = "建立日期" },
+                new TreeColumn() { Name = "FinishTime", Text = "完成日期" },
                 new TreeColumn() { Name = "Called", Text = "🔔" },
             };
             treeGridView1.ColumnRatios = new float[6] {0.1f, 0.15f, 0.15f, 0.24f, 0.24f, 0.12f };      // 設定 TreeGridView 資料欄寬度係數
             treeGridView1.LogColName = "Log";      // 設定 TreeGridView Log 資料欄位名稱
 
             // 加入 DataSource
-            treeGridView1.DataSource = new object[2] {
-                new {Start="37", Goal="組裝區", CreateDate=DateTime.Now.ToString(@"MM/dd HH:mm"), FinishDate = "06/19 17:50", Called = "N", Log = "這是一筆測試資料\n這是第二行" },
-                new {Start="48", Goal="成品區", CreateDate=DateTime.Now.ToString(@"MM/dd HH:mm"), FinishDate = "06/19 17:52", Called = "N" } };
+            /*treeGridView1.DataSource = new object[2] {
+                new {ID="20", Start="37", Goal="組裝區", CreateDate=DateTime.Now.ToString(@"MM/dd HH:mm"), FinishDate = "06/19 17:50", Called = "N", Log = "這是一筆測試資料\n這是第二行" },
+                new {ID="22", Start="48", Goal="成品區", CreateDate=DateTime.Now.ToString(@"MM/dd HH:mm"), FinishDate = "06/19 17:52", Called = "N" } };*/
         }
 
         private void KukaParm_BindChanged(object sender, PropertyChangedEventArgs e)

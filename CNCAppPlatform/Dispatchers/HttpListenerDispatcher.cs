@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.ComponentModel;
 using Chump_kuka.Services.Managers;
+using Chump_kuka.Controller;
 
 namespace Chump_kuka.Dispatchers
 {
@@ -34,6 +35,8 @@ namespace Chump_kuka.Dispatchers
 
         private static void CalcAreaStep(string task_status)
         {
+            string status = "INFO";
+            string message = "";
             switch (_area_step)
             {
                 case 0:
@@ -41,64 +44,83 @@ namespace Chump_kuka.Dispatchers
                     {
                         area_code = "";
                         _area_step += 1;
-                        Log.Append("MOVE_BEGIN", "INFO", "HttpListenerDispatcher");
+                        message = "接收任務";
                     }
                     else
-                        Log.Append("Start -> " + task_status, "ERROR", "HttpListenerDispatcher");
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[MOVE_BEGIN]，實際狀態[{task_status}]。";
+                    }
                     break;
                 case 1:
                     if (task_status == "ARRIVE")
                     {
                         _area_step += 1;
-                        Log.Append("ARRIVED", "INFO", "HttpListenerDispatcher");
+                        message = "到達起點";
                     }
                     else
-                        Log.Append("MOVE_BEGIN1 -> " + task_status, "ERROR", "HttpListenerDispatcher");
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[ARRIVE]，實際狀態[{task_status}]。";
+                    }
                     break;
                 case 2:
                     if (task_status == "UP_CONTAINER")
                     {
                         _area_step += 1;
-                        Log.Append("UP_CONTAINER", "INFO", "HttpListenerDispatcher");
+                        message = "頂升貨架";
                     }
                     else
-                        Log.Append("ARRIVE1 -> " + task_status, "ERROR", "HttpListenerDispatcher");
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[UP_CONTAINER]，實際狀態[{task_status}]。";
+                    }
                     break;
                 case 3:
                     if (task_status == "MOVE_BEGIN")
                     {
                         _area_step += 1;
-                        Log.Append("MOVE_BEGIN", "INFO", "HttpListenerDispatcher");
+                        message = "離開起點";
                     }
                     else
-                        Log.Append("UP_CONTAINER -> " + task_status, "ERROR", "HttpListenerDispatcher");
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[MOVE_BEGIN]，實際狀態[{task_status}]。";
+                    }
                     break;
                 case 4:
                     if (task_status == "ARRIVE")
                     {
                         _area_step += 1;
-                        Log.Append("ARRIVE", "INFO", "HttpListenerDispatcher");
+                        message = "到達終點";
                     }
                     else
-                        Log.Append("MOVE_BEGIN2 -> " + task_status, "ERROR", "HttpListenerDispatcher");
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[ARRIVE]，實際狀態[{task_status}]。";
+                    }
                     break;
                 case 5:
                     if (task_status == "DOWN_CONTAINER")
                     {
                         _area_step += 1;
-                        Log.Append("DOWN_CONTAINER", "INFO", "HttpListenerDispatcher");
+                        message = "放下貨架";
                     }
-                    else
-                        Log.Append("ARRIVE2 -> " + task_status, "ERROR", "HttpListenerDispatcher");
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[DOWN_CONTAINER]，實際狀態[{task_status}]。";
+                    }
                     break;
                 case 6:
                     if (task_status == "COMPLETED")
                     {
                         _area_step += 1;
-                        Log.Append("COMPLETED", "INFO", "HttpListenerDispatcher");
+                        message = "完成任務";
                     }
-                    else
-                        Log.Append("DOWN_CONTAINER -> " + task_status, "ERROR", "HttpListenerDispatcher");
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[COMPLETED]，實際狀態[{task_status}]。";
+                    }
                     break;
                 case 7:
                     // 等同於 case 0
@@ -106,12 +128,18 @@ namespace Chump_kuka.Dispatchers
                     if (task_status == "MOVE_BEGIN")
                     {
                         _area_step = 1;
-                        Log.Append("MOVE_BEGIN", "INFO", "HttpListenerDispatcher");
+                        message = "接收任務";
                     }
                     else
-                        Log.Append("Start -> " + task_status, "ERROR", "HttpListenerDispatcher");
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[MOVE_BEGIN]，實際狀態[{task_status}]。";
+                    }
                     break;
             }
+
+            Log.Append(message, status, "HttpListenerDispatcher");
+            CarryTaskController.AppendTaskLog(message);
         }
 
         static string area_code = "";      // 任務起始區域編碼
@@ -150,9 +178,15 @@ namespace Chump_kuka.Dispatchers
                 };
 
             string task_status = jsonObj["missionStatus"].ToString();
-            CalcAreaStep(task_status);      // 計算當前步數
 
+            CalcAreaStep(task_status);      // 計算當前步數
             
+            // 若出現錯誤
+            if (task_status == "ERROR")
+            {
+                CarryTaskController.FeedbackFail();     // 回報任務失敗
+                return;
+            }
             
             // 從第2步(到達區域)判斷目前區域編碼
             if (_area_step == 2)
