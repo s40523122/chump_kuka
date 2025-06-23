@@ -239,7 +239,8 @@ namespace Chump_kuka.Controller
             // 若狀態無改變，無需處理
             if (_record_node_status.SequenceEqual(current_status))
             {
-                MsgBox.ShowFlash("沒有變化", "區域貨架異常", 1000);
+                MsgBox.ShowFlash("貨架狀態沒有變化", "區域貨架異常", 1000);
+                Log.Append("貨架狀態沒有變化", "WARN", "LocalAreaController");
                 return false;
             }
 
@@ -256,11 +257,13 @@ namespace Chump_kuka.Controller
             if (node_action.Contains(2))
             {
                 MsgBox.Show("資料異常", "區域貨架異常");
+                Log.Append($"資料異常 [{string.Join(",", _record_node_status)}] => [{string.Join(",", current_status)}]", "ERROR", "LocalAreaController");
                 return false;
             }
             else if (node_action.Count(n => n == 1) >= 2)
             {
                 MsgBox.Show("可派發任務 > 1 筆", "區域貨架異常");
+                Log.Append("可派發任務 > 1 筆", "WARN", "LocalAreaController");
                 return false;
             }
             else if (node_action.Contains(1))
@@ -269,6 +272,7 @@ namespace Chump_kuka.Controller
                 if (KukaParm.TargetAreaModel.NodeStatus.Length>0 && !KukaParm.TargetAreaModel.NodeStatus.Contains(0))
                 {
                     MsgBox.Show("目標區域滿載", "搬運任務異常");
+                    Log.Append("目標區域滿載", "WARN", "LocalAreaController");
                     return false;
                 }
 

@@ -161,11 +161,16 @@ namespace Chump_kuka.Forms
             if (Visible == true)        // 防止設定綁定區域時，不斷跳出錯誤訊息
             {
                 await MsgBox.ShowFlash("準備按鈕已按下", "", 1000);
+                Log.Append("按下綠色按鈕", "INFO", "f02");
 
                 // 取得可搬運貨架位置
                 bool can_carry = LocalAreaController.TryCreateCarryTask();
 
-                if (!can_carry) return;     // 不可搬運狀態，跳過
+                if (!can_carry)
+                {
+                    Log.Append("當前狀態不可搬運", "WARN", "f02");
+                    return;     // 不可搬運狀態，跳過
+                }
 
                 // 透過點擊區域控制項，確認是否等待呼叫任務
                 // 未點擊則等待呼叫
