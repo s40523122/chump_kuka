@@ -181,8 +181,8 @@ namespace Chump_kuka.Dispatchers
 
             CalcAreaStep(task_status);      // 計算當前步數
             
-            // 若出現錯誤
-            if (task_status == "ERROR")
+            // 若任務取消
+            if (task_status == "CANCELED")
             {
                 CarryTaskController.FeedbackFail();     // 回報任務失敗
                 return;
