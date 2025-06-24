@@ -106,6 +106,7 @@ namespace Chump_kuka.Dispatchers
                         _area_step += 1;
                         message = "放下貨架";
                     }
+                    else 
                     {
                         status = "ERROR";
                         message = $"欲接收狀態[DOWN_CONTAINER]，實際狀態[{task_status}]。";
@@ -117,6 +118,7 @@ namespace Chump_kuka.Dispatchers
                         _area_step += 1;
                         message = "完成任務";
                     }
+                    else 
                     {
                         status = "ERROR";
                         message = $"欲接收狀態[COMPLETED]，實際狀態[{task_status}]。";
