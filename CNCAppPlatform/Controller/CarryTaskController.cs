@@ -151,7 +151,7 @@ namespace Chump_kuka
                     // 修改 start_node goal_node
                     KukaParm.StartNode = _current_task.StartNode;
                     KukaParm.GoalNode = _current_task.GoalNode;
-                    // KukaApiController.PubCarryTask();
+                    KukaApiController.PubCarryTask();
 
                     ChatController.PubLog($"已派發任務，ID: {_current_task.ID}");
 
@@ -246,6 +246,34 @@ namespace Chump_kuka
         {
             if (_current_task != null)
                 _current_task.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm")}] {log_message}\n";
+            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
+        }
+
+        /// <summary>
+        /// 刪除指定任務
+        /// </summary>
+        /// <param name="log_message"></param>
+        public static void RemoveTask(string task_id)
+        {
+            int _task_id = int.Parse(task_id);
+            if (_current_task != null)
+            {
+                if (_current_task.ID == _task_id)
+                {
+                    ChatController.PubLog($"搬運任務[{_task_id}]運行中，無法移除");
+                    return;
+                }
+                else
+                {
+                    CarryTask target = _task_queue.FirstOrDefault(m => m.ID == _task_id);       // 找到 ID 對應任務
+                    if (target != null)
+                    {
+                        _task_queue.Remove(target);
+                        ChatController.PubLog($"已從任務列表中移除搬運任務[{_task_id}]");
+                    }
+                }
+            }
+            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
     }
 

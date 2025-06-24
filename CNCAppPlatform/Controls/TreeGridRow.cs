@@ -20,6 +20,7 @@ namespace Chump_kuka.Controls
         private Panel _panel;       // 展開空間，當展開時，建立新 Panel，若折疊時銷毀，減低系統負擔
 
         public event EventHandler RemoveItem;       // 移除事件
+        public event EventHandler ReSend;       // 重送事件
 
         [Description("是否顯示自動ID。"), Category("自訂值")]
         public bool AutoIDVisible
@@ -164,6 +165,7 @@ namespace Chump_kuka.Controls
                 btn_resend.FlatAppearance.BorderSize = 0;
                 btn_resend.Left = btn_rm.Left - btn_resend.Width - 5;
                 btn_resend.Top = btn_rm.Top;
+                btn_resend.Click += (_s, _e) => ReSend?.Invoke(this, _e);       // 觸發重送事件
                 _panel.Controls.Add(btn_resend);
 
                 RichTextBox log_msg_box = new RichTextBox()

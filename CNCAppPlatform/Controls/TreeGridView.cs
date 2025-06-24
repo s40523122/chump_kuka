@@ -1,4 +1,5 @@
-﻿using iCAPS;
+﻿using Chump_kuka.Controller;
+using iCAPS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -90,6 +91,7 @@ namespace Chump_kuka.Controls
                     flowLayoutPanel1.Controls.Add(data_row);
 
                     data_row.RemoveItem += Item_RemoveItem;
+                    data_row.ReSend += Data_row_ReSend;
                 }
                 
             }
@@ -183,6 +185,20 @@ namespace Chump_kuka.Controls
             if (check == DialogResult.Yes)
             {
                 item.Dispose();
+
+                ChatController.DelTask(item.ID.ToString());
+            }
+        }
+
+        private void Data_row_ReSend(object sender, EventArgs e)
+        {
+            TreeGridRow item = sender as TreeGridRow;
+            DialogResult check = MessageBox.Show($"確認重送任務[{item.ID}] =>\n 從 [{item.Items[0]}] 到 [{item.Items[1]}]", "移除任務確認", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (check == DialogResult.Yes)
+            {
+                item.Dispose();
+
+                ChatController.ReSendTask(item.ID.ToString());
             }
         }
     }

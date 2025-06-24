@@ -54,6 +54,7 @@ namespace Chump_kuka.Controller
                 _mqtt.Subscriber("carry", CarryCb);
                 _mqtt.Subscriber("carry/auto", CarryAutoCb);
                 _mqtt.Subscriber("feedback", FeedCb);
+                _mqtt.Subscriber("del_task", DelTaskCb);
 
                 KukaParm.RobotStatusChanged += KukaParm_RobotStatusChanged;          // 伺服器機器人資訊更新時，發佈到客戶端
                 HttpListenerDispatcher.Heard += HttpListenerDispatcher_Heard;
@@ -191,6 +192,11 @@ namespace Chump_kuka.Controller
         {
             SimpleCarryTask[] tasks = JsonConvert.DeserializeObject<List<SimpleCarryTask>>(message).ToArray();
             CarryTaskUpdated?.Invoke(null, tasks);
+        }
+
+        private static void DelTaskCb(string message)
+        {
+            CarryTaskController.RemoveTask(message);
         }
 
         /// <summary>
@@ -349,6 +355,18 @@ namespace Chump_kuka.Controller
 
                 _mqtt.Publisher(topic_name, task_node_string);
             }
+        }
+
+        public static void DelTask(string task_id)
+        {
+            
+            _mqtt.Publisher("del_task", task_id);
+        }
+
+        public static void ReSendTask(string task_id)
+        {
+
+            _mqtt.Publisher("resend_task", task_id);
         }
 
         private static void ParseAndUpdateCarryNode(string carry_node_msg)

@@ -54,6 +54,7 @@ namespace Chump_kuka
         {
             //Env.enble_kuka_api = true;
             //KukaApiController.Enable = true;
+            Log.Append("Test", "INFO", "Form1");
         }
 
         private void Form1_Load(object sender, EventArgs e)
