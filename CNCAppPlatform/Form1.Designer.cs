@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.enable_api_btn = new System.Windows.Forms.Button();
             this.open_log_button = new System.Windows.Forms.CheckBox();
             this.btnUdpLog = new System.Windows.Forms.Button();
@@ -54,13 +55,15 @@
             // 
             // open_log_button
             // 
+            this.open_log_button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.open_log_button.Appearance = System.Windows.Forms.Appearance.Button;
+            this.open_log_button.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("open_log_button.BackgroundImage")));
+            this.open_log_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.open_log_button.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.open_log_button.Location = new System.Drawing.Point(717, 65);
+            this.open_log_button.Location = new System.Drawing.Point(1169, 66);
             this.open_log_button.Name = "open_log_button";
-            this.open_log_button.Size = new System.Drawing.Size(91, 43);
+            this.open_log_button.Size = new System.Drawing.Size(50, 50);
             this.open_log_button.TabIndex = 46;
-            this.open_log_button.Text = "log";
             this.open_log_button.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.open_log_button.UseVisualStyleBackColor = true;
             this.open_log_button.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
@@ -78,8 +81,9 @@
             // 
             // logWindow1
             // 
+            this.logWindow1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.logWindow1.BackColor = System.Drawing.Color.Gainsboro;
-            this.logWindow1.Location = new System.Drawing.Point(407, 33);
+            this.logWindow1.Location = new System.Drawing.Point(257, 22);
             this.logWindow1.Name = "logWindow1";
             this.logWindow1.Size = new System.Drawing.Size(681, 359);
             this.logWindow1.TabIndex = 7;

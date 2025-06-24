@@ -73,6 +73,12 @@ public class CustomDataGridView : DataGridView
         AllowUserToAddRows = false;
         //InitializeColumns(columns);
         Resize += CustomDataGridView_Resize;
+
+        //DataSource = new List<string[]>()
+        //{
+        //    new string[] {"Test1", "INFO", "Source" },
+        //    new string[] {"Test2", "NOTICE", "Source2" }
+        //};
     }
 
     private void CustomDataGridView_Resize(object sender, EventArgs e)
