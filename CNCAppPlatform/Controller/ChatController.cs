@@ -157,28 +157,28 @@ namespace Chump_kuka.Controller
         {
             try
             {
-                Log.Append("接收排程搬運任務", "info", "ChatController");
+                PubLog("接收排程搬運任務");
                 ParseAndUpdateCarryNode(message);
                 // KukaApiController.PubCarryTask();
                 AppendCarryTask(true);
             }
             catch (Exception _e)
             {
-                Log.Append("接收排程搬運任務" + _e.ToString(), "ERROR", "ChatController");
+                PubLog("錯誤: 接收排程搬運任務" + _e.ToString());
             }
         }
         private static void CarryAutoCb(string message)
         {
             try
             {
-                Log.Append("接收基本搬運任務", "info", "ChatController");
+                PubLog("接收基本搬運任務");
                 ParseAndUpdateCarryNode(message);
                 // KukaApiController.PubCarryTask();
                 AppendCarryTask(false);
             }
             catch (Exception _e)
             {
-                Log.Append("接收基本搬運任務" + _e.ToString(), "ERROR", "ChatController");
+                PubLog("錯誤: 接收基本搬運任務" + _e.ToString());
             }
         }
 

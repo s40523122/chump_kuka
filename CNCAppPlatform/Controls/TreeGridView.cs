@@ -32,7 +32,7 @@ namespace Chump_kuka.Controls
         }
 
         [Description("加入資料。"), Category("自訂值")]
-        public object[] DataSource 
+        public dynamic[] DataSource 
         { 
             get => null;
             set
@@ -41,7 +41,8 @@ namespace Chump_kuka.Controls
 
                 flowLayoutPanel1.Controls.Clear();
                 int mission_index = 1;      // 任務編號
-                foreach (object obj in value)
+
+                foreach (dynamic obj in value)
                 {
                     if (obj == null) return;
 
@@ -50,7 +51,7 @@ namespace Chump_kuka.Controls
 
                     string[] prop_values = new string[Columns.Length];
 
-                    TreeGridRow row = new TreeGridRow()
+                    TreeGridRow data_row = new TreeGridRow()
                     {
                         ID = mission_index++,
                         AutoIDVisible = this.AutoIDVisible,
@@ -80,16 +81,17 @@ namespace Chump_kuka.Controls
                         // 若有指定 LogColName，將 Log 資訊傳入 Row
                         if (name == LogColName)
                         {
-                            row.LogMsg = prop_value.ToString();
+                            data_row.LogMsg = prop_value.ToString();
                         }
                     };
 
-                    row.Items = prop_values.ToArray();     // 將資料傳入 Row
+                    data_row.Items = prop_values.ToArray();     // 將資料傳入 Row
 
-                    flowLayoutPanel1.Controls.Add(row);
+                    flowLayoutPanel1.Controls.Add(data_row);
 
-                    row.RemoveItem += Item_RemoveItem;
+                    data_row.RemoveItem += Item_RemoveItem;
                 }
+                
             }
         }
 

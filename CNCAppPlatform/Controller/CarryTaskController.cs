@@ -30,7 +30,7 @@ namespace Chump_kuka
 
             private static void initTimer()
         {
-            Log.Append("計時器初始化", "INFO", nameof(CarryTaskController));
+            Log.Append("候車計時器初始化", "INFO", nameof(CarryTaskController));
             // 設定計時器
             _task_timer = new System.Timers.Timer();
             _task_timer.Interval = 200; // 每 0.2 秒請求一次
@@ -94,6 +94,7 @@ namespace Chump_kuka
                 initTimer();
             }
             // 取得起始區域代號
+            
             string start_code = KukaParm.KukaAreaModels.FirstOrDefault(m => m.NodeList.Contains(KukaParm.StartNode.Code)).AreaCode;
 
             // 判定是否重複起始點(起始點已在任務列表中，且該任務尚未完成)
@@ -150,7 +151,7 @@ namespace Chump_kuka
                     // 修改 start_node goal_node
                     KukaParm.StartNode = _current_task.StartNode;
                     KukaParm.GoalNode = _current_task.GoalNode;
-                    KukaApiController.PubCarryTask();
+                    // KukaApiController.PubCarryTask();
 
                     ChatController.PubLog($"已派發任務，ID: {_current_task.ID}");
 
@@ -269,6 +270,11 @@ namespace Chump_kuka
             FinishTime = task.FinishTime?.ToString(@"MM/dd tt hh:mm");
             Called = task.Called ? "🔔" : "🔕";
             LogMsg = task.LogMsg;
+
+            if(FinishTime == null)
+            {
+                FinishTime = "";
+            }
         }
     }
 
@@ -281,7 +287,7 @@ namespace Chump_kuka
         public CarryNode GoalNode { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime? FinishTime { get; set; }
-        public string LogMsg { get; set; }
+        public string LogMsg { get; set; } = "";
 
         public CarryTask(int task_id, bool called, CarryNode start_node, CarryNode goal_node, string areaCode)
         {
