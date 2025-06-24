@@ -184,9 +184,8 @@ namespace Chump_kuka.Controls
             DialogResult check = MessageBox.Show($"確認移除任務[{item.ID}] =>\n 從 [{item.Items[0]}] 到 [{item.Items[1]}]", "移除任務確認", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (check == DialogResult.Yes)
             {
-                item.Dispose();
-
                 ChatController.DelTask(item.ID.ToString());
+                item.Dispose();
             }
         }
 

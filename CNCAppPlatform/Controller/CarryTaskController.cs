@@ -256,6 +256,7 @@ namespace Chump_kuka
         public static void RemoveTask(string task_id)
         {
             int _task_id = int.Parse(task_id);
+            ChatController.PubLog($"接收刪除任務[{_task_id}]");
             if (_current_task != null)
             {
                 if (_current_task.ID == _task_id)
