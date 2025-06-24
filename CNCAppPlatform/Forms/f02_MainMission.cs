@@ -65,7 +65,7 @@ namespace Chump_kuka.Forms
                 new TreeColumn() { Name = "Called", Text = "🔔" },
             };
             treeGridView1.ColumnRatios = new float[6] {0.1f, 0.15f, 0.15f, 0.24f, 0.24f, 0.12f };      // 設定 TreeGridView 資料欄寬度係數
-            treeGridView1.LogColName = "Log";      // 設定 TreeGridView Log 資料欄位名稱
+            treeGridView1.LogColName = "LogMsg";      // 設定 TreeGridView Log 資料欄位名稱
 
             // 加入 DataSource
             /*treeGridView1.DataSource = new object[2] {
