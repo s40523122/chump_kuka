@@ -2,6 +2,7 @@
 using Chump_kuka.Dispatchers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -151,7 +152,7 @@ namespace Chump_kuka
                     // 修改 start_node goal_node
                     KukaParm.StartNode = _current_task.StartNode;
                     KukaParm.GoalNode = _current_task.GoalNode;
-                    KukaApiController.PubCarryTask();
+                    if(!Debugger.IsAttached) KukaApiController.PubCarryTask();
 
                     ChatController.PubLog($"已派發任務，ID: {_current_task.ID}");
 
@@ -255,8 +256,13 @@ namespace Chump_kuka
         /// <param name="log_message"></param>
         public static void RemoveTask(string task_id)
         {
-            int _task_id = int.Parse(task_id);
-            ChatController.PubLog($"接收刪除任務[{_task_id}]");
+            int.TryParse(task_id, out int _task_id);
+            if (_task_id == 0)
+            {
+                ChatController.PubLog($"錯誤: 請確認搬運任務編號正確[{_task_id}]");
+                return;
+            }
+
             if (_current_task != null)
             {
                 if (_current_task.ID == _task_id)
@@ -271,6 +277,10 @@ namespace Chump_kuka
                     {
                         _task_queue.Remove(target);
                         ChatController.PubLog($"已從任務列表中移除搬運任務[{_task_id}]");
+                    }
+                    else
+                    {
+                        ChatController.PubLog($"找不到指定任務[{_task_id}]");
                     }
                 }
             }

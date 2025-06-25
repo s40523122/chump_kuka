@@ -54,6 +54,7 @@ namespace Chump_kuka.Forms
 
         private void InitTreeGridView()
         {
+            treeGridView1.AutoIDVisible = false;
             // 設定 TreeGridView 資料欄
             treeGridView1.Columns = new TreeColumn[6]
             {
@@ -235,7 +236,7 @@ namespace Chump_kuka.Forms
 
         private void led_turtle_in_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("確定發送 UDP?");
+            // MessageBox.Show("確定發送 UDP?");
             ChatController.SayHi();
         }
     }

@@ -181,11 +181,13 @@ namespace Chump_kuka.Controls
         private void Item_RemoveItem(object sender, EventArgs e)
         {
             TreeGridRow item = sender as TreeGridRow;
-            DialogResult check = MessageBox.Show($"確認移除任務[{item.ID}] =>\n 從 [{item.Items[0]}] 到 [{item.Items[1]}]", "移除任務確認", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            DialogResult check = MessageBox.Show($"確認移除任務[{item.Items[0]}] =>\n 從 [{item.Items[1]}] 到 [{item.Items[2]}]", "移除任務確認", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (check == DialogResult.Yes)
             {
-                ChatController.DelTask(item.ID.ToString());
-                item.Dispose();
+                Log.Append($"已申請刪除搬運任務[{item.Items[0].ToString()}]", "NOTICE", "TreeView");
+                ChatController.DelTask(item.Items[0].ToString());
+                
+                //item.Dispose();
             }
         }
 
