@@ -220,6 +220,13 @@ namespace Chump_kuka.Controller
             // KukaParm.BindAreaModel.ControlUI = bind_control;
         }
 
+        public static void InitAreaStatus()
+        {
+            int[] current_status = KukaParm.BindAreaModel?.NodeStatus;       // 當前區域狀態
+
+            _RecordNodeStatus = current_status;
+        }
+
         public static bool TryCreateCarryTask()
         {
             // 透過與歷史狀態的比對，判定當前區域的動作狀態
