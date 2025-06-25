@@ -9,19 +9,27 @@
  * 5. 透過 AutoSave 屬性決定是否自動儲存變更。
  */
 
+using CefSharp.DevTools.CSS;
+using Chump_kuka;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Windows.Documents;
 using System.Windows.Forms;
 
 public class CustomDataGridView : DataGridView
 {
     private bool autoSave = false; // 是否自動儲存 CSV
     private string csvFilePath = "data.csv"; // 預設 CSV 檔案名稱
-    private string[] columns = new string[] {};
-    private float[] columnWidthRatios = new float[] {}; // 欄位寬度比例
+    // private string[] columns = new string[] {};
+    private float[] columnWidthRatios = new float[] { }; // 欄位寬度比例
+    private dynamic _col_type;      // 定義資料類型
+    private dynamic _rowData;       // 存放列資料 BindingList<資料類型>
+    private BindingSource bs = new BindingSource();
 
     [Description("資料存放 CSV 位置"), Category("自訂值")]
     public string CsvFilePath
@@ -37,14 +45,31 @@ public class CustomDataGridView : DataGridView
         set => autoSave = value;
     }
 
+    //[Description("自定義欄位列表"), Category("自訂值")]
+    //public string[] UserColumns
+    //{
+    //    get => columns;
+    //    set
+    //    {
+    //        columns = value;
+    //        InitializeColumns(columns);
+    //    }
+    //}
     [Description("自定義欄位列表"), Category("自訂值")]
-    public string[] UserColumns
+    public dynamic UserColumns
     {
-        get => columns;
+        get => _col_type;
         set
         {
-            columns = value;
-            InitializeColumns(columns);
+            if (value == null) return;
+
+            _col_type = value;
+            var listType = typeof(BindingList<>).MakeGenericType(_col_type);
+            _rowData = Activator.CreateInstance(listType);
+           
+            bs.DataSource = _rowData; // 可以是 List<T> 或 BindingList<T>
+
+            InitializeColumns(_col_type);
         }
     }
 
@@ -71,8 +96,10 @@ public class CustomDataGridView : DataGridView
     public CustomDataGridView()
     {
         AllowUserToAddRows = false;
-        //InitializeColumns(columns);
+        // InitializeColumns(columns);
         Resize += CustomDataGridView_Resize;
+
+        AutoGenerateColumns = false;
 
         //DataSource = new List<string[]>()
         //{
@@ -90,13 +117,28 @@ public class CustomDataGridView : DataGridView
     /// 初始化欄位。
     /// </summary>
     /// <param name="columns">欄位名稱列表</param>
-    private void InitializeColumns(string[] columns)
+    private void InitializeColumns(dynamic columns)
     {
         Columns.Clear();
-        foreach (var col in columns)
+
+
+        if (columns == null) return;
+
+        //Type type = columns.GetType();
+        var properties = columns.GetProperties();
+        
+
+        foreach (var col in properties)
         {
-            Columns.Add(col, col);
+            //Columns.Add(col, col);
+            Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = col.Name,
+                DataPropertyName = col.Name // 對應 string[1]
+            });
+            
         }
+        DataSource = bs;
     }
 
     /// <summary>
@@ -117,10 +159,16 @@ public class CustomDataGridView : DataGridView
     /// 新增一行資料。
     /// </summary>
     /// <param name="rowData">該行的資料內容</param>
-    public void AddRow(List<string> rowData)
+    public void AddRow(dynamic rowData)
     {
-        if (rowData.Count != ColumnCount) return; // 確保欄位數量相符
-        Rows.Add(rowData.ToArray());
+        // if (rowData.Length != ColumnCount) return; // 確保欄位數量相符
+        
+        if (rowData.GetType() == _col_type)
+        {
+            _rowData.Add(rowData);
+        }
+        // Rows.Add(rowData.ToArray());
+        
         if (AutoSave) SaveToCsv();
     }
 
@@ -165,20 +213,20 @@ public class CustomDataGridView : DataGridView
     /// </summary>
     public void LoadFromCsv()
     {
-        if (!File.Exists(csvFilePath)) return;
+        //if (!File.Exists(csvFilePath)) return;
 
-        using (StreamReader reader = new StreamReader(csvFilePath))
-        {
-            var headers = reader.ReadLine()?.Split(',');
-            if (headers == null) return;
+        //using (StreamReader reader = new StreamReader(csvFilePath))
+        //{
+        //    var headers = reader.ReadLine()?.Split(',');
+        //    if (headers == null) return;
 
-            InitializeColumns(headers.ToArray()); // 初始化欄位
+        //    //InitializeColumns(headers.ToArray()); // 初始化欄位
 
-            while (!reader.EndOfStream)
-            {
-                var rowData = reader.ReadLine()?.Split(',').ToList();
-                if (rowData != null) AddRow(rowData);
-            }
-        }
+        //    while (!reader.EndOfStream)
+        //    {
+        //        var rowData = reader.ReadLine()?.Split(',').ToArray();
+        //        if (rowData != null) AddRow(rowData);
+        //    }
+        //}
     }
 }

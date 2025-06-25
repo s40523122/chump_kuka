@@ -31,9 +31,9 @@ namespace Chump_kuka
     {
         public static event PropertyChangedEventHandler LogChanged;
 
-        private static List<string> _log_info;
+        private static LogMsg _log_info;
 
-        public static List<string> LogInfo
+        public static LogMsg LogInfo
         {
             get => _log_info;
             set
@@ -45,12 +45,29 @@ namespace Chump_kuka
 
         public static void Append(string message, string status, string section)
         {
-            LogInfo = new List<string>() { message, status, section, DateTime.Now.ToString(@"g") };
+            LogInfo = new LogMsg(message, status, section, DateTime.Now);
         }
 
         private static void OnLogChanged(string propertyName)
         {
             LogChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public class LogMsg
+        {
+            public int ID { get; set; } = 0;
+            public string Message { get; set; }
+            public string Status { get; set; }
+            public string Section { get; set; }
+            public DateTime CreateDate { get; set; }
+
+            public LogMsg(string message, string status, string section, DateTime createDate)
+            {
+                Message = message;
+                Status = status;
+                Section = section;
+                CreateDate = createDate;
+            }
         }
     }
 }
