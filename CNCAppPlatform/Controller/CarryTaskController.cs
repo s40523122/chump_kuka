@@ -31,7 +31,7 @@ namespace Chump_kuka
 
             private static void initTimer()
         {
-            Log.Append("候車計時器初始化", "INFO", nameof(CarryTaskController));
+            Log.Append("候車計時器初始化", "SYSTEM", nameof(CarryTaskController));
             // 設定計時器
             _task_timer = new System.Timers.Timer();
             _task_timer.Interval = 200; // 每 0.2 秒請求一次
@@ -195,6 +195,7 @@ namespace Chump_kuka
             if (call_task != null)
             {
                 call_task.Called = true;
+                ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
                 return true;
             }
             return false;
