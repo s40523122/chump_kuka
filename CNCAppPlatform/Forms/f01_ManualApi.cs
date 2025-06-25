@@ -50,6 +50,12 @@ namespace Chump_kuka.Forms
             
             KukaParm.StartNode = null;
             KukaParm.GoalNode = null;
+
+            foreach(KukaAreaControl area_ctrl in tableLayoutPanel2.Controls)
+            {
+                area_ctrl.Checked = false;
+                area_ctrl.ResetContainer();
+            }
         }
 
         private void KukaParm_CarryChanged(object sender, PropertyChangedEventArgs e)

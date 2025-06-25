@@ -155,6 +155,14 @@ namespace Chump_kuka.Controls
             ContainerClick?.Invoke(this, e);
         }
 
+        public void ResetContainer()
+        {
+            foreach(Container rack in containerPanel.Controls)
+            {
+                rack.Checked = false;
+            }
+        }
+
         private void Kuka_area_SizeChanged(object sender, EventArgs e)
         {
             container1.Height = (int)(containerPanel.Height * 0.47);
