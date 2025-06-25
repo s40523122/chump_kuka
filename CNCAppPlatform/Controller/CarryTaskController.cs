@@ -95,8 +95,17 @@ namespace Chump_kuka
                 initTimer();
             }
             // 取得起始區域代號
-            
-            string start_code = KukaParm.KukaAreaModels.FirstOrDefault(m => m.NodeList.Contains(KukaParm.StartNode.Code)).AreaCode;
+
+            string start_area_code; 
+            KukaAreaModel try_find = KukaParm.KukaAreaModels.FirstOrDefault(m => m.NodeList.Contains(KukaParm.StartNode.Code));
+            if(try_find == null)
+            {
+                start_area_code = KukaParm.StartNode.Code;
+            }
+            else
+            {
+                start_area_code = try_find.AreaCode;
+            }
 
             // 判定是否重複起始點(起始點已在任務列表中，且該任務尚未完成)
             bool exists_task = _task_queue.Any(m => m.StartNode == KukaParm.StartNode && m.FinishTime == null);
@@ -107,10 +116,10 @@ namespace Chump_kuka
             }
             
             // 建立搬運任務資訊
-            CarryTask task = new CarryTask(_task_id, !wait, KukaParm.StartNode, KukaParm.GoalNode, start_code);
+            CarryTask task = new CarryTask(_task_id, !wait, KukaParm.StartNode, KukaParm.GoalNode, start_area_code);
 
             // 最後一區的任務優先執行
-            if (start_code == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count - 1].AreaCode)
+            if (start_area_code == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count - 1].AreaCode)
             {
                 task.Called = true;
             }

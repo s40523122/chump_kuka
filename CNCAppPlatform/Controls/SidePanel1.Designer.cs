@@ -58,9 +58,12 @@
             this.scalePadding1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.scalePadding1.Init = true;
             this.scalePadding1.Location = new System.Drawing.Point(0, 0);
-            this.scalePadding1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.scalePadding1.Margin = new System.Windows.Forms.Padding(2);
             this.scalePadding1.Name = "scalePadding1";
             this.scalePadding1.RowCount = 3;
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 2F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 96F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 2F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 2F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 96F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 2F));
@@ -108,7 +111,7 @@
             // 
             this.kukaRobotStatus1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.kukaRobotStatus1.Location = new System.Drawing.Point(4, 36);
-            this.kukaRobotStatus1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.kukaRobotStatus1.Margin = new System.Windows.Forms.Padding(4);
             this.kukaRobotStatus1.Name = "kukaRobotStatus1";
             this.kukaRobotStatus1.Size = new System.Drawing.Size(202, 227);
             this.kukaRobotStatus1.TabIndex = 4;
@@ -141,9 +144,9 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Location = new System.Drawing.Point(7, 13);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(120, 16);
+            this.checkBox1.Size = new System.Drawing.Size(236, 16);
             this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "搬運任務派發狀態";
+            this.checkBox1.Text = "搬運任務派發狀態(閃爍表示等待新任務)";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // SidePanel1
