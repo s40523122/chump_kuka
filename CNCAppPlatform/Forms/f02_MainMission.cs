@@ -208,19 +208,19 @@ namespace Chump_kuka.Forms
 
         private void led_bot_in_Click(object sender, EventArgs e)
         {
-            LocalAreaController.PubReady();
+            //LocalAreaController.PubReady();
         }
 
         private async void led_bot_out_Click(object sender, EventArgs e)
         {
-            LocalAreaController.PubRobotFunc();
-            await Task.Delay(1000);
-            LocalAreaController.PubRobotOut();
+            //LocalAreaController.PubRobotFunc();
+            //await Task.Delay(1000);
+            //LocalAreaController.PubRobotOut();
         }
 
         private void led_task_over_Click(object sender, EventArgs e)
         {
-            LocalAreaController.PubCarryOver();
+            // LocalAreaController.PubCarryOver();
         }
 
         private void scaleLabel7_Click(object sender, EventArgs e)
@@ -231,13 +231,18 @@ namespace Chump_kuka.Forms
         private void led_idle_Click(object sender, EventArgs e)
         {
             // ChatController.Send("Hi");
-            LocalAreaController.TurnOffLight();
+            //LocalAreaController.TurnOffLight();
         }
 
         private void led_turtle_in_Click(object sender, EventArgs e)
         {
             // MessageBox.Show("確定發送 UDP?");
-            ChatController.SayHi();
+            //ChatController.SayHi();
+        }
+
+        private void led_bot_move_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

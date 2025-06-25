@@ -250,7 +250,7 @@ namespace Chump_kuka.Forms
             // 
             this.led_idle.Change = false;
             this.led_idle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.led_idle.EnableCilck = true;
+            this.led_idle.EnableCilck = false;
             this.led_idle.Image = ((System.Drawing.Image)(resources.GetObject("led_idle.Image")));
             this.led_idle.Location = new System.Drawing.Point(3, 25);
             this.led_idle.Name = "led_idle";
@@ -267,7 +267,7 @@ namespace Chump_kuka.Forms
             // 
             this.led_turtle_in.Change = false;
             this.led_turtle_in.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.led_turtle_in.EnableCilck = true;
+            this.led_turtle_in.EnableCilck = false;
             this.led_turtle_in.Image = ((System.Drawing.Image)(resources.GetObject("led_turtle_in.Image")));
             this.led_turtle_in.Location = new System.Drawing.Point(182, 25);
             this.led_turtle_in.Name = "led_turtle_in";
@@ -284,7 +284,7 @@ namespace Chump_kuka.Forms
             // 
             this.led_bot_move.Change = false;
             this.led_bot_move.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.led_bot_move.EnableCilck = true;
+            this.led_bot_move.EnableCilck = false;
             this.led_bot_move.Image = ((System.Drawing.Image)(resources.GetObject("led_bot_move.Image")));
             this.led_bot_move.Location = new System.Drawing.Point(361, 25);
             this.led_bot_move.Name = "led_bot_move";
@@ -295,12 +295,13 @@ namespace Chump_kuka.Forms
             this.led_bot_move.TabIndex = 1;
             this.led_bot_move.TabStop = false;
             this.led_bot_move.Tag = ((object)(resources.GetObject("led_bot_move.Tag")));
+            this.led_bot_move.Click += new System.EventHandler(this.led_bot_move_Click);
             // 
             // led_bot_in
             // 
             this.led_bot_in.Change = false;
             this.led_bot_in.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.led_bot_in.EnableCilck = true;
+            this.led_bot_in.EnableCilck = false;
             this.led_bot_in.Image = ((System.Drawing.Image)(resources.GetObject("led_bot_in.Image")));
             this.led_bot_in.Location = new System.Drawing.Point(540, 25);
             this.led_bot_in.Name = "led_bot_in";
@@ -317,7 +318,7 @@ namespace Chump_kuka.Forms
             // 
             this.led_bot_out.Change = false;
             this.led_bot_out.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.led_bot_out.EnableCilck = true;
+            this.led_bot_out.EnableCilck = false;
             this.led_bot_out.Image = ((System.Drawing.Image)(resources.GetObject("led_bot_out.Image")));
             this.led_bot_out.Location = new System.Drawing.Point(719, 25);
             this.led_bot_out.Name = "led_bot_out";
@@ -334,7 +335,7 @@ namespace Chump_kuka.Forms
             // 
             this.led_task_over.Change = false;
             this.led_task_over.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.led_task_over.EnableCilck = true;
+            this.led_task_over.EnableCilck = false;
             this.led_task_over.Image = ((System.Drawing.Image)(resources.GetObject("led_task_over.Image")));
             this.led_task_over.Location = new System.Drawing.Point(898, 25);
             this.led_task_over.Name = "led_task_over";
