@@ -269,12 +269,13 @@ namespace Chump_kuka.Controller
             else if (node_action.Contains(1))
             {
                 // 目標區域不可進貨（滿載）
-                if (KukaParm.TargetAreaModel.NodeStatus.Length>0 && !KukaParm.TargetAreaModel.NodeStatus.Contains(0))
-                {
-                    MsgBox.Show("目標區域滿載", "搬運任務異常");
-                    Log.Append("目標區域滿載", "WARN", "LocalAreaController");
-                    return false;
-                }
+                //if (KukaParm.TargetAreaModel.NodeStatus.Length>0 && !KukaParm.TargetAreaModel.NodeStatus.Contains(0))
+                //{
+                //    MsgBox.Show("目標區域滿載", "搬運任務異常");
+                //    Log.Append("目標區域滿載", "WARN", "LocalAreaController");
+                //    return false;
+                //}
+                // 目標是否滿仔應該在搬運前判定，而不是建立時判定
 
                 string carry_node = KukaParm.BindAreaModel.NodeList[node_action.IndexOf(1)];        // 找到第一個需要入貨的節點
 

@@ -152,6 +152,7 @@ namespace Chump_kuka
                         if (!target_area.NodeStatus.Contains(0))
                         {
                             // 目標區域滿載，跳過這一筆
+                            ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標區域滿載，優先執行下一筆任務");
                             continue;
                         }
                             
