@@ -24,16 +24,19 @@ namespace Chump_kuka.Controls
         public LogWindow()
         {
             InitializeComponent();
-            Log.LogChanged += LogChanged;
+
+            logView.UserColumns = typeof(Log.LogMsg);
+
+            Log.LogChanged += LogChanged;       // Log 新增事件
         }
 
         private void LogChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            List<string> log_info = Log.LogInfo;
-            log_info.Insert(0, (logView.RowCount+1).ToString());
+            Log.LogMsg log_info = Log.LogInfo;
+            log_info.ID = logView.RowCount + 1;
             logView.AddRow(log_info);
 
-            CreateLabel(log_info[2]);
+            //CreateLabel(log_info[2]);
         }
 
         private void CreateLabel(string log_label)
