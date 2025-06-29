@@ -2,6 +2,7 @@
 using Chump_kuka.Dispatchers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ namespace Chump_kuka
 
             private static void initTimer()
         {
-            Log.Append("候車計時器初始化", "INFO", nameof(CarryTaskController));
+            Log.Append("候車計時器初始化", "SYSTEM", nameof(CarryTaskController));
             // 設定計時器
             _task_timer = new System.Timers.Timer();
             _task_timer.Interval = 200; // 每 0.2 秒請求一次
@@ -94,8 +95,17 @@ namespace Chump_kuka
                 initTimer();
             }
             // 取得起始區域代號
-            
-            string start_code = KukaParm.KukaAreaModels.FirstOrDefault(m => m.NodeList.Contains(KukaParm.StartNode.Code)).AreaCode;
+
+            string start_area_code; 
+            KukaAreaModel try_find = KukaParm.KukaAreaModels.FirstOrDefault(m => m.NodeList.Contains(KukaParm.StartNode.Code));
+            if(try_find == null)
+            {
+                start_area_code = KukaParm.StartNode.Code;
+            }
+            else
+            {
+                start_area_code = try_find.AreaCode;
+            }
 
             // 判定是否重複起始點(起始點已在任務列表中，且該任務尚未完成)
             bool exists_task = _task_queue.Any(m => m.StartNode == KukaParm.StartNode && m.FinishTime == null);
@@ -106,10 +116,10 @@ namespace Chump_kuka
             }
             
             // 建立搬運任務資訊
-            CarryTask task = new CarryTask(_task_id, !wait, KukaParm.StartNode, KukaParm.GoalNode, start_code);
+            CarryTask task = new CarryTask(_task_id, !wait, KukaParm.StartNode, KukaParm.GoalNode, start_area_code);
 
             // 最後一區的任務優先執行
-            if (start_code == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count - 1].AreaCode)
+            if (start_area_code == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count - 1].AreaCode)
             {
                 task.Called = true;
             }
@@ -142,6 +152,7 @@ namespace Chump_kuka
                         if (!target_area.NodeStatus.Contains(0))
                         {
                             // 目標區域滿載，跳過這一筆
+                            ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標區域滿載，優先執行下一筆任務");
                             continue;
                         }
                             
@@ -151,7 +162,7 @@ namespace Chump_kuka
                     // 修改 start_node goal_node
                     KukaParm.StartNode = _current_task.StartNode;
                     KukaParm.GoalNode = _current_task.GoalNode;
-                    KukaApiController.PubCarryTask();
+                    if(!Debugger.IsAttached) KukaApiController.PubCarryTask();
 
                     ChatController.PubLog($"已派發任務，ID: {_current_task.ID}");
 
@@ -185,6 +196,7 @@ namespace Chump_kuka
             if (call_task != null)
             {
                 call_task.Called = true;
+                ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
                 return true;
             }
             return false;
@@ -255,8 +267,13 @@ namespace Chump_kuka
         /// <param name="log_message"></param>
         public static void RemoveTask(string task_id)
         {
-            int _task_id = int.Parse(task_id);
-            ChatController.PubLog($"接收刪除任務[{_task_id}]");
+            int.TryParse(task_id, out int _task_id);
+            if (_task_id == 0)
+            {
+                ChatController.PubLog($"錯誤: 請確認搬運任務編號正確[{_task_id}]");
+                return;
+            }
+
             if (_current_task != null)
             {
                 if (_current_task.ID == _task_id)
@@ -271,6 +288,10 @@ namespace Chump_kuka
                     {
                         _task_queue.Remove(target);
                         ChatController.PubLog($"已從任務列表中移除搬運任務[{_task_id}]");
+                    }
+                    else
+                    {
+                        ChatController.PubLog($"找不到指定任務[{_task_id}]");
                     }
                 }
             }

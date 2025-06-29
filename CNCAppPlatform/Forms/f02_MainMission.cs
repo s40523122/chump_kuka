@@ -9,7 +9,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using System.Windows.Forms;
 
 namespace Chump_kuka.Forms
@@ -19,6 +18,7 @@ namespace Chump_kuka.Forms
         SidePanel1 sidePanel = new SidePanel1();
         private string _bind_area = "";
         private Timer _idle_timer;
+        private bool enable_area_reset = false;     // 若為 true，允許區域狀態重設為當前 
 
         public f02_MainMission()
         {
@@ -54,6 +54,7 @@ namespace Chump_kuka.Forms
 
         private void InitTreeGridView()
         {
+            treeGridView1.AutoIDVisible = false;
             // 設定 TreeGridView 資料欄
             treeGridView1.Columns = new TreeColumn[6]
             {
@@ -158,6 +159,12 @@ namespace Chump_kuka.Forms
 
         private async void scaleButton1_Click(object sender, EventArgs e)
         {
+            // 若 enable_area_reset 為 true，重設區域狀態
+            if (enable_area_reset)
+            {
+                LocalAreaController.InitAreaStatus();
+                return;
+            }
             if (Visible == true)        // 防止設定綁定區域時，不斷跳出錯誤訊息
             {
                 await MsgBox.ShowFlash("準備按鈕已按下", "", 1000);
@@ -207,19 +214,19 @@ namespace Chump_kuka.Forms
 
         private void led_bot_in_Click(object sender, EventArgs e)
         {
-            LocalAreaController.PubReady();
+            //LocalAreaController.PubReady();
         }
 
         private async void led_bot_out_Click(object sender, EventArgs e)
         {
-            LocalAreaController.PubRobotFunc();
-            await Task.Delay(1000);
-            LocalAreaController.PubRobotOut();
+            //LocalAreaController.PubRobotFunc();
+            //await Task.Delay(1000);
+            //LocalAreaController.PubRobotOut();
         }
 
         private void led_task_over_Click(object sender, EventArgs e)
         {
-            LocalAreaController.PubCarryOver();
+            // LocalAreaController.PubCarryOver();
         }
 
         private void scaleLabel7_Click(object sender, EventArgs e)
@@ -230,13 +237,35 @@ namespace Chump_kuka.Forms
         private void led_idle_Click(object sender, EventArgs e)
         {
             // ChatController.Send("Hi");
-            LocalAreaController.TurnOffLight();
+            //LocalAreaController.TurnOffLight();
         }
 
         private void led_turtle_in_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("確定發送 UDP?");
-            ChatController.SayHi();
+            // MessageBox.Show("確定發送 UDP?");
+            //ChatController.SayHi();
+        }
+
+        private void led_bot_move_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void doubleImg1_Click(object sender, EventArgs e)
+        {
+            Timer reset_timer = new Timer();
+            reset_timer.Interval = 3000;
+            reset_timer.Tick += (_s, _e) =>
+            {
+                //MsgBox.Show("Click");
+                doubleImg1.Change = true;
+                enable_area_reset = false;
+                reset_timer.Stop();
+                reset_timer.Dispose();
+            };
+            reset_timer.Start();
+            enable_area_reset = true;
+
         }
     }
 }

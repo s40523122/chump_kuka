@@ -74,7 +74,7 @@ namespace Chump_kuka.Controller
             return true;
         }
 
-        public static void PubLog(string message)
+        public static async void PubLog(string message)
         {
             Log.Append(message, "ASYNC", "ChatController");
             _mqtt.Publisher("log", message);
@@ -359,8 +359,14 @@ namespace Chump_kuka.Controller
 
         public static void DelTask(string task_id)
         {
-            
-            _mqtt.Publisher("del_task", task_id);
+            if (_is_master)
+            {
+                DelTaskCb(task_id);
+            }
+            else
+            {
+                _mqtt.Publisher("del_task", task_id);
+            }
         }
 
         public static void ReSendTask(string task_id)

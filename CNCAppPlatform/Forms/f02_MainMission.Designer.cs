@@ -49,13 +49,16 @@ namespace Chump_kuka.Forms
             this.led_bot_out = new iCAPS.DoubleImg();
             this.led_task_over = new iCAPS.DoubleImg();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.scaleLabel8 = new iCAPS.ScaleLabel();
-            this.scaleButton1 = new iCAPS.ScaleButton();
-            this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
-            this.scaleLabel9 = new iCAPS.ScaleLabel();
-            this.myPanel2 = new iCAPS.myPanel();
             this.bind_area_control = new Chump_kuka.Controls.KukaAreaControl();
+            this.scaleButton1 = new iCAPS.ScaleButton();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.doubleImg1 = new iCAPS.DoubleImg();
+            this.scaleLabel8 = new iCAPS.ScaleLabel();
+            this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+            this.myPanel2 = new iCAPS.myPanel();
             this.treeGridView1 = new Chump_kuka.Controls.TreeGridView();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.scaleLabel9 = new iCAPS.ScaleLabel();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.myPanel1.SuspendLayout();
@@ -67,8 +70,11 @@ namespace Chump_kuka.Forms
             ((System.ComponentModel.ISupportInitialize)(this.led_bot_out)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.led_task_over)).BeginInit();
             this.tableLayoutPanel5.SuspendLayout();
+            this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).BeginInit();
             this.tableLayoutPanel6.SuspendLayout();
             this.myPanel2.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -250,7 +256,7 @@ namespace Chump_kuka.Forms
             // 
             this.led_idle.Change = false;
             this.led_idle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.led_idle.EnableCilck = true;
+            this.led_idle.EnableCilck = false;
             this.led_idle.Image = ((System.Drawing.Image)(resources.GetObject("led_idle.Image")));
             this.led_idle.Location = new System.Drawing.Point(3, 25);
             this.led_idle.Name = "led_idle";
@@ -267,7 +273,7 @@ namespace Chump_kuka.Forms
             // 
             this.led_turtle_in.Change = false;
             this.led_turtle_in.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.led_turtle_in.EnableCilck = true;
+            this.led_turtle_in.EnableCilck = false;
             this.led_turtle_in.Image = ((System.Drawing.Image)(resources.GetObject("led_turtle_in.Image")));
             this.led_turtle_in.Location = new System.Drawing.Point(182, 25);
             this.led_turtle_in.Name = "led_turtle_in";
@@ -284,7 +290,7 @@ namespace Chump_kuka.Forms
             // 
             this.led_bot_move.Change = false;
             this.led_bot_move.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.led_bot_move.EnableCilck = true;
+            this.led_bot_move.EnableCilck = false;
             this.led_bot_move.Image = ((System.Drawing.Image)(resources.GetObject("led_bot_move.Image")));
             this.led_bot_move.Location = new System.Drawing.Point(361, 25);
             this.led_bot_move.Name = "led_bot_move";
@@ -295,12 +301,13 @@ namespace Chump_kuka.Forms
             this.led_bot_move.TabIndex = 1;
             this.led_bot_move.TabStop = false;
             this.led_bot_move.Tag = ((object)(resources.GetObject("led_bot_move.Tag")));
+            this.led_bot_move.Click += new System.EventHandler(this.led_bot_move_Click);
             // 
             // led_bot_in
             // 
             this.led_bot_in.Change = false;
             this.led_bot_in.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.led_bot_in.EnableCilck = true;
+            this.led_bot_in.EnableCilck = false;
             this.led_bot_in.Image = ((System.Drawing.Image)(resources.GetObject("led_bot_in.Image")));
             this.led_bot_in.Location = new System.Drawing.Point(540, 25);
             this.led_bot_in.Name = "led_bot_in";
@@ -317,7 +324,7 @@ namespace Chump_kuka.Forms
             // 
             this.led_bot_out.Change = false;
             this.led_bot_out.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.led_bot_out.EnableCilck = true;
+            this.led_bot_out.EnableCilck = false;
             this.led_bot_out.Image = ((System.Drawing.Image)(resources.GetObject("led_bot_out.Image")));
             this.led_bot_out.Location = new System.Drawing.Point(719, 25);
             this.led_bot_out.Name = "led_bot_out";
@@ -334,7 +341,7 @@ namespace Chump_kuka.Forms
             // 
             this.led_task_over.Change = false;
             this.led_task_over.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.led_task_over.EnableCilck = true;
+            this.led_task_over.EnableCilck = false;
             this.led_task_over.Image = ((System.Drawing.Image)(resources.GetObject("led_task_over.Image")));
             this.led_task_over.Location = new System.Drawing.Point(898, 25);
             this.led_task_over.Name = "led_task_over";
@@ -351,9 +358,9 @@ namespace Chump_kuka.Forms
             // 
             this.tableLayoutPanel5.ColumnCount = 1;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel5.Controls.Add(this.scaleLabel8, 0, 0);
             this.tableLayoutPanel5.Controls.Add(this.bind_area_control, 0, 1);
             this.tableLayoutPanel5.Controls.Add(this.scaleButton1, 0, 2);
+            this.tableLayoutPanel5.Controls.Add(this.panel2, 0, 0);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(37, 216);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
@@ -363,74 +370,6 @@ namespace Chump_kuka.Forms
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
             this.tableLayoutPanel5.Size = new System.Drawing.Size(503, 436);
             this.tableLayoutPanel5.TabIndex = 0;
-            // 
-            // scaleLabel8
-            // 
-            this.scaleLabel8.AutoSize = true;
-            this.scaleLabel8.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scaleLabel8.Factor = 0.4F;
-            this.scaleLabel8.Font = new System.Drawing.Font("微軟正黑體", 21.6F, System.Drawing.FontStyle.Bold);
-            this.scaleLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.scaleLabel8.Location = new System.Drawing.Point(3, 0);
-            this.scaleLabel8.Name = "scaleLabel8";
-            this.scaleLabel8.Size = new System.Drawing.Size(497, 54);
-            this.scaleLabel8.TabIndex = 0;
-            this.scaleLabel8.Text = "區域狀態";
-            this.scaleLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // scaleButton1
-            // 
-            this.scaleButton1.BackColor = System.Drawing.SystemColors.Control;
-            this.scaleButton1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scaleButton1.Factor = 0.35F;
-            this.scaleButton1.Font = new System.Drawing.Font("微軟正黑體", 17.15F);
-            this.scaleButton1.Location = new System.Drawing.Point(3, 384);
-            this.scaleButton1.Name = "scaleButton1";
-            this.scaleButton1.Size = new System.Drawing.Size(497, 49);
-            this.scaleButton1.TabIndex = 1;
-            this.scaleButton1.Text = "Ready";
-            this.scaleButton1.UseVisualStyleBackColor = false;
-            this.scaleButton1.Click += new System.EventHandler(this.scaleButton1_Click);
-            // 
-            // tableLayoutPanel6
-            // 
-            this.tableLayoutPanel6.ColumnCount = 1;
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel6.Controls.Add(this.scaleLabel9, 0, 0);
-            this.tableLayoutPanel6.Controls.Add(this.myPanel2, 0, 1);
-            this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel6.Location = new System.Drawing.Point(546, 216);
-            this.tableLayoutPanel6.Name = "tableLayoutPanel6";
-            this.tableLayoutPanel6.RowCount = 2;
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 87.5F));
-            this.tableLayoutPanel6.Size = new System.Drawing.Size(573, 436);
-            this.tableLayoutPanel6.TabIndex = 0;
-            // 
-            // scaleLabel9
-            // 
-            this.scaleLabel9.AutoSize = true;
-            this.scaleLabel9.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scaleLabel9.Factor = 0.4F;
-            this.scaleLabel9.Font = new System.Drawing.Font("微軟正黑體", 21.6F, System.Drawing.FontStyle.Bold);
-            this.scaleLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.scaleLabel9.Location = new System.Drawing.Point(3, 0);
-            this.scaleLabel9.Name = "scaleLabel9";
-            this.scaleLabel9.Size = new System.Drawing.Size(567, 54);
-            this.scaleLabel9.TabIndex = 0;
-            this.scaleLabel9.Text = "任務清單";
-            this.scaleLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // myPanel2
-            // 
-            this.myPanel2.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.myPanel2.Controls.Add(this.treeGridView1);
-            this.myPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.myPanel2.Location = new System.Drawing.Point(3, 57);
-            this.myPanel2.Name = "myPanel2";
-            this.myPanel2.Radius = 10;
-            this.myPanel2.Size = new System.Drawing.Size(567, 376);
-            this.myPanel2.TabIndex = 1;
             // 
             // bind_area_control
             // 
@@ -452,6 +391,88 @@ namespace Chump_kuka.Forms
             this.bind_area_control.Size = new System.Drawing.Size(503, 327);
             this.bind_area_control.TabIndex = 0;
             // 
+            // scaleButton1
+            // 
+            this.scaleButton1.BackColor = System.Drawing.SystemColors.Control;
+            this.scaleButton1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scaleButton1.Factor = 0.35F;
+            this.scaleButton1.Font = new System.Drawing.Font("微軟正黑體", 17.15F);
+            this.scaleButton1.Location = new System.Drawing.Point(3, 384);
+            this.scaleButton1.Name = "scaleButton1";
+            this.scaleButton1.Size = new System.Drawing.Size(497, 49);
+            this.scaleButton1.TabIndex = 1;
+            this.scaleButton1.Text = "Ready";
+            this.scaleButton1.UseVisualStyleBackColor = false;
+            this.scaleButton1.Click += new System.EventHandler(this.scaleButton1_Click);
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.doubleImg1);
+            this.panel2.Controls.Add(this.scaleLabel8);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Margin = new System.Windows.Forms.Padding(0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(503, 54);
+            this.panel2.TabIndex = 2;
+            // 
+            // doubleImg1
+            // 
+            this.doubleImg1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.doubleImg1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.doubleImg1.Change = true;
+            this.doubleImg1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.doubleImg1.EnableCilck = true;
+            this.doubleImg1.Image = ((System.Drawing.Image)(resources.GetObject("doubleImg1.Image")));
+            this.doubleImg1.Location = new System.Drawing.Point(460, 14);
+            this.doubleImg1.Name = "doubleImg1";
+            this.doubleImg1.SetSquare = true;
+            this.doubleImg1.Size = new System.Drawing.Size(37, 37);
+            this.doubleImg1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.doubleImg1.SubImg = null;
+            this.doubleImg1.TabIndex = 0;
+            this.doubleImg1.TabStop = false;
+            this.doubleImg1.Click += new System.EventHandler(this.doubleImg1_Click);
+            // 
+            // scaleLabel8
+            // 
+            this.scaleLabel8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scaleLabel8.Factor = 0.4F;
+            this.scaleLabel8.Font = new System.Drawing.Font("微軟正黑體", 21.6F, System.Drawing.FontStyle.Bold);
+            this.scaleLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.scaleLabel8.Location = new System.Drawing.Point(0, 0);
+            this.scaleLabel8.Name = "scaleLabel8";
+            this.scaleLabel8.Size = new System.Drawing.Size(503, 54);
+            this.scaleLabel8.TabIndex = 0;
+            this.scaleLabel8.Text = "區域狀態";
+            this.scaleLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tableLayoutPanel6
+            // 
+            this.tableLayoutPanel6.ColumnCount = 1;
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel6.Controls.Add(this.myPanel2, 0, 1);
+            this.tableLayoutPanel6.Controls.Add(this.panel1, 0, 0);
+            this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel6.Location = new System.Drawing.Point(546, 216);
+            this.tableLayoutPanel6.Name = "tableLayoutPanel6";
+            this.tableLayoutPanel6.RowCount = 2;
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 87.5F));
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(573, 436);
+            this.tableLayoutPanel6.TabIndex = 0;
+            // 
+            // myPanel2
+            // 
+            this.myPanel2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.myPanel2.Controls.Add(this.treeGridView1);
+            this.myPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.myPanel2.Location = new System.Drawing.Point(3, 57);
+            this.myPanel2.Name = "myPanel2";
+            this.myPanel2.Radius = 10;
+            this.myPanel2.Size = new System.Drawing.Size(567, 376);
+            this.myPanel2.TabIndex = 1;
+            // 
             // treeGridView1
             // 
             this.treeGridView1.AutoIDVisible = false;
@@ -464,6 +485,29 @@ namespace Chump_kuka.Forms
             this.treeGridView1.Name = "treeGridView1";
             this.treeGridView1.Size = new System.Drawing.Size(567, 376);
             this.treeGridView1.TabIndex = 0;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.scaleLabel9);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Margin = new System.Windows.Forms.Padding(0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(573, 54);
+            this.panel1.TabIndex = 2;
+            // 
+            // scaleLabel9
+            // 
+            this.scaleLabel9.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scaleLabel9.Factor = 0.4F;
+            this.scaleLabel9.Font = new System.Drawing.Font("微軟正黑體", 21.6F, System.Drawing.FontStyle.Bold);
+            this.scaleLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.scaleLabel9.Location = new System.Drawing.Point(0, 0);
+            this.scaleLabel9.Name = "scaleLabel9";
+            this.scaleLabel9.Size = new System.Drawing.Size(573, 54);
+            this.scaleLabel9.TabIndex = 0;
+            this.scaleLabel9.Text = "任務清單";
+            this.scaleLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // f02_MainMission
             // 
@@ -486,10 +530,11 @@ namespace Chump_kuka.Forms
             ((System.ComponentModel.ISupportInitialize)(this.led_bot_out)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.led_task_over)).EndInit();
             this.tableLayoutPanel5.ResumeLayout(false);
-            this.tableLayoutPanel5.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).EndInit();
             this.tableLayoutPanel6.ResumeLayout(false);
-            this.tableLayoutPanel6.PerformLayout();
             this.myPanel2.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -522,5 +567,8 @@ namespace Chump_kuka.Forms
         private iCAPS.ScaleButton scaleButton1;
         private iCAPS.myPanel myPanel2;
         private Controls.TreeGridView treeGridView1;
+        private System.Windows.Forms.Panel panel1;
+        private iCAPS.DoubleImg doubleImg1;
+        private System.Windows.Forms.Panel panel2;
     }
 }
