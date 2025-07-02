@@ -22,10 +22,10 @@ namespace Chump_kuka
     public partial class Form1 : iCAPS.Form1
     {
         private UdpChatRoom _udp_chat_room = new UdpChatRoom();
-        private SubBubble _sub_bubble;
         public Form1()
         {
             InitializeComponent();
+            Env.EnableBubble = true;
             
             // Debug模式下，手動開啟 api 連線
             if (!Debugger.IsAttached) { enable_api_btn.Visible = false; }
@@ -34,20 +34,9 @@ namespace Chump_kuka
             _udp_chat_room.Hide();
 
             Load += Form1_Load;
-            SizeChanged += Form1_SizeChanged;
 
             //string binPath = Path.Combine(Application.StartupPath, "config\\layout.ini");
             //MessageBox.Show("Bin 資料夾路徑：" + binPath);
-            _sub_bubble = new SubBubble(this);
-        }
-
-        private void Form1_SizeChanged(object sender, EventArgs e)
-        {
-            if(this.WindowState == FormWindowState.Minimized)
-            {
-                _sub_bubble.Show();
-                this.Hide();
-            }
         }
 
         private async void button1_Click(object sender, EventArgs e)

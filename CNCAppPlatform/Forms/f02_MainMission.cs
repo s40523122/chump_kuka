@@ -165,7 +165,7 @@ namespace Chump_kuka.Forms
                 LocalAreaController.InitAreaStatus();
                 return;
             }
-            if (Visible == true)        // 防止設定綁定區域時，不斷跳出錯誤訊息
+            if (Visible == true || Env.IsBubble)        // 防止設定綁定區域時，不斷跳出錯誤訊息
             {
                 await MsgBox.ShowFlash("準備按鈕已按下", "", 1000);
                 Log.Append("按下綠色按鈕", "INFO", "f02");
