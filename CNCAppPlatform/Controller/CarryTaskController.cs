@@ -108,7 +108,10 @@ namespace Chump_kuka
             }
 
             // 判定是否重複起始點(起始點已在任務列表中，且該任務尚未完成)
-            bool exists_task = _task_queue.Any(m => m.StartNode == KukaParm.StartNode && m.FinishTime == null);
+            bool exists_task = _task_queue.Any(m => 
+                                        m.StartNode.Code == KukaParm.StartNode.Code && 
+                                        m.StartNode.Type == KukaParm.StartNode.Type  && 
+                                        m.FinishTime == null);
             if (exists_task)
             {
                 ChatController.PubLog("派發重複任務");
