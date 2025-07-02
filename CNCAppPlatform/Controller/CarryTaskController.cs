@@ -319,8 +319,8 @@ namespace Chump_kuka
             ID = task.ID;
             StartNode = task.StartNode.Name;
             GoalNode = task.GoalNode.Name;
-            CreateTime = task.CreateTime.ToString(@"MM/dd tt hh:mm");
-            FinishTime = task.FinishTime?.ToString(@"MM/dd tt hh:mm");
+            CreateTime = task.CreateTime.ToString(@"MM/dd tt hh:mm:ss");
+            FinishTime = task.FinishTime?.ToString(@"MM/dd tt hh:mm:ss");
             Called = task.Called ? "🔔" : "🔕";
             LogMsg = task.LogMsg;
 
