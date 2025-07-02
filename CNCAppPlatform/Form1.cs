@@ -49,6 +49,7 @@ namespace Chump_kuka
                 _log_window = new LogWindow();
                 panel1.Controls.Add(_log_window);
                 _log_window.Location = new Point(panel1.Width - _log_window.Width - 20, 20);
+                _log_window.BringToFront();     // 將視窗至於最上層
                 _log_window.Show();
             }
             _log_window.Visible = open_log_button.Checked;
