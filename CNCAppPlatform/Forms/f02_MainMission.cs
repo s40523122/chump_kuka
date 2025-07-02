@@ -19,6 +19,7 @@ namespace Chump_kuka.Forms
         private string _bind_area = "";
         private Timer _idle_timer;
         private bool enable_area_reset = false;     // 若為 true，允許區域狀態重設為當前 
+        private bool _stay = false;     // 判斷是否停留在此頁
 
         public f02_MainMission()
         {
@@ -27,6 +28,7 @@ namespace Chump_kuka.Forms
             Controls.Add(sidePanel);
 
             Load += F02_MainMission_Load;
+            VisibleChanged += F02_MainMission_VisibleChanged;
         }
 
         private void F02_MainMission_Load(object sender, EventArgs e)
@@ -149,7 +151,11 @@ namespace Chump_kuka.Forms
         private void F02_MainMission_VisibleChanged(object sender, EventArgs e)
         {
             // 切換視窗時，更新區域控制項內容
-            LocalAreaController.UpdateControl();
+            // LocalAreaController.UpdateControl();
+
+            _stay = !Env.IsBubble && Visible;       // 若不為泡泡模式且 Visible=true 判定為停留此頁
+
+
         }
         
         private void KukaApiController_CarryTaskPub(object sender, PropertyChangedEventArgs e)
@@ -165,7 +171,8 @@ namespace Chump_kuka.Forms
                 LocalAreaController.InitAreaStatus();
                 return;
             }
-            if (Visible == true || Env.IsBubble)        // 防止設定綁定區域時，不斷跳出錯誤訊息
+
+            if (_stay)        // 防止設定綁定區域時，不斷跳出錯誤訊息
             {
                 await MsgBox.ShowFlash("準備按鈕已按下", "", 1000);
                 Log.Append("按下綠色按鈕", "INFO", "f02");
