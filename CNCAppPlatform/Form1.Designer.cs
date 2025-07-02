@@ -83,9 +83,9 @@
             // 
             this.logWindow1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.logWindow1.BackColor = System.Drawing.Color.Gainsboro;
-            this.logWindow1.Location = new System.Drawing.Point(257, 22);
+            this.logWindow1.Location = new System.Drawing.Point(275, 22);
             this.logWindow1.Name = "logWindow1";
-            this.logWindow1.Size = new System.Drawing.Size(681, 359);
+            this.logWindow1.Size = new System.Drawing.Size(661, 270);
             this.logWindow1.TabIndex = 7;
             this.logWindow1.Visible = false;
             // 

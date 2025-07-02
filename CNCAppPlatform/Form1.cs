@@ -43,7 +43,8 @@ namespace Chump_kuka
         {
             //Env.enble_kuka_api = true;
             //KukaApiController.Enable = true;
-            //Log.Append("Test", "INFO", "Form1");
+            Log.Append("Info", "INFO", "Form1");
+            Log.Append("Test", "TEST", "Form1");
             //MsgBox.Show("Test");
         }
 

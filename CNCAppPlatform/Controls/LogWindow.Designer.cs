@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -43,7 +42,6 @@
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.logView = new CustomDataGridView();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.checkBox1 = new System.Windows.Forms.RadioButton();
             this.checkBox2 = new System.Windows.Forms.RadioButton();
@@ -197,9 +195,10 @@
             this.isReadOnlyDataGridViewCheckBoxColumn9 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.isFixedSizeDataGridViewCheckBoxColumn9 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.isSynchronizedDataGridViewCheckBoxColumn9 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.logView = new CustomDataGridView();
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.logView)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.logView)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGridViewTextBoxColumn6
@@ -279,58 +278,10 @@
             this.tableLayoutPanel1.RowCount = 4;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 13F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(763, 365);
             this.tableLayoutPanel1.TabIndex = 2;
-            // 
-            // logView
-            // 
-            this.logView.AllowUserToAddRows = false;
-            this.logView.AllowUserToDeleteRows = false;
-            this.logView.AllowUserToResizeColumns = false;
-            this.logView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.LightGray;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.LightGray;
-            this.logView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.logView.AutoGenerateColumns = false;
-            this.logView.AutoSave = false;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("微軟正黑體", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.logView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            this.logView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.logView.CsvFilePath = "data.csv";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Silver;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Silver;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.logView.DefaultCellStyle = dataGridViewCellStyle3;
-            this.logView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logView.EnableHeadersVisualStyles = false;
-            this.logView.Location = new System.Drawing.Point(15, 86);
-            this.logView.Margin = new System.Windows.Forms.Padding(0);
-            this.logView.Name = "logView";
-            this.logView.RowHeadersVisible = false;
-            this.logView.RowTemplate.Height = 24;
-            this.logView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logView.Size = new System.Drawing.Size(732, 262);
-            this.logView.TabIndex = 0;
-            this.logView.UserColumns = null;
-            this.logView.UserColumnWidthRatios = new float[] {
-        0.08F,
-        0.36F,
-        0.13F,
-        0.13F,
-        0.3F};
             // 
             // flowLayoutPanel1
             // 
@@ -352,8 +303,8 @@
             this.checkBox1.FlatAppearance.BorderSize = 0;
             this.checkBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox1.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.checkBox1.Location = new System.Drawing.Point(3, 15);
-            this.checkBox1.Margin = new System.Windows.Forms.Padding(3, 15, 5, 3);
+            this.checkBox1.Location = new System.Drawing.Point(3, 7);
+            this.checkBox1.Margin = new System.Windows.Forms.Padding(3, 7, 5, 3);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(65, 30);
             this.checkBox1.TabIndex = 0;
@@ -369,8 +320,8 @@
             this.checkBox2.FlatAppearance.BorderSize = 0;
             this.checkBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox2.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.checkBox2.Location = new System.Drawing.Point(76, 15);
-            this.checkBox2.Margin = new System.Windows.Forms.Padding(3, 15, 5, 3);
+            this.checkBox2.Location = new System.Drawing.Point(76, 7);
+            this.checkBox2.Margin = new System.Windows.Forms.Padding(3, 7, 5, 3);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(65, 30);
             this.checkBox2.TabIndex = 0;
@@ -386,8 +337,8 @@
             this.checkBox3.FlatAppearance.BorderSize = 0;
             this.checkBox3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox3.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.checkBox3.Location = new System.Drawing.Point(149, 15);
-            this.checkBox3.Margin = new System.Windows.Forms.Padding(3, 15, 5, 3);
+            this.checkBox3.Location = new System.Drawing.Point(149, 7);
+            this.checkBox3.Margin = new System.Windows.Forms.Padding(3, 7, 5, 3);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(65, 30);
             this.checkBox3.TabIndex = 0;
@@ -403,8 +354,8 @@
             this.checkBox4.FlatAppearance.BorderSize = 0;
             this.checkBox4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox4.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.checkBox4.Location = new System.Drawing.Point(222, 15);
-            this.checkBox4.Margin = new System.Windows.Forms.Padding(3, 15, 5, 3);
+            this.checkBox4.Location = new System.Drawing.Point(222, 7);
+            this.checkBox4.Margin = new System.Windows.Forms.Padding(3, 7, 5, 3);
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(65, 30);
             this.checkBox4.TabIndex = 0;
@@ -420,8 +371,8 @@
             this.checkBox5.FlatAppearance.BorderSize = 0;
             this.checkBox5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox5.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.checkBox5.Location = new System.Drawing.Point(295, 15);
-            this.checkBox5.Margin = new System.Windows.Forms.Padding(3, 15, 5, 3);
+            this.checkBox5.Location = new System.Drawing.Point(295, 7);
+            this.checkBox5.Margin = new System.Windows.Forms.Padding(3, 7, 5, 3);
             this.checkBox5.Name = "checkBox5";
             this.checkBox5.Size = new System.Drawing.Size(65, 30);
             this.checkBox5.TabIndex = 0;
@@ -447,10 +398,10 @@
             // 
             this.panel1.Cursor = System.Windows.Forms.Cursors.NoMoveVert;
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(15, 348);
+            this.panel1.Location = new System.Drawing.Point(15, 352);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(732, 17);
+            this.panel1.Size = new System.Drawing.Size(732, 13);
             this.panel1.TabIndex = 3;
             this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseDown);
             this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseMove);
@@ -1396,6 +1347,52 @@
             this.isSynchronizedDataGridViewCheckBoxColumn9.Name = "isSynchronizedDataGridViewCheckBoxColumn9";
             this.isSynchronizedDataGridViewCheckBoxColumn9.ReadOnly = true;
             // 
+            // logView
+            // 
+            this.logView.AllowUserToAddRows = false;
+            this.logView.AllowUserToDeleteRows = false;
+            this.logView.AllowUserToResizeColumns = false;
+            this.logView.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.LightGray;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.LightGray;
+            this.logView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.logView.AutoSave = false;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("微軟正黑體", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.logView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            this.logView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.logView.CsvFilePath = "data.csv";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Silver;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Silver;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.logView.DefaultCellStyle = dataGridViewCellStyle3;
+            this.logView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logView.EnableHeadersVisualStyles = false;
+            this.logView.Location = new System.Drawing.Point(15, 86);
+            this.logView.Margin = new System.Windows.Forms.Padding(0);
+            this.logView.Name = "logView";
+            this.logView.RowHeadersVisible = false;
+            this.logView.RowTemplate.Height = 24;
+            this.logView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.logView.Size = new System.Drawing.Size(732, 266);
+            this.logView.TabIndex = 0;
+            this.logView.UserColumnWidthRatios = new float[] {
+        0.08F,
+        0.36F,
+        0.13F,
+        0.13F,
+        0.3F};
+            // 
             // LogWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1406,8 +1403,8 @@
             this.Size = new System.Drawing.Size(763, 365);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.logView)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.logView)).EndInit();
             this.ResumeLayout(false);
 
         }

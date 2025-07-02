@@ -21,36 +21,45 @@
        }
  */
 
+using CefSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Windows.Forms;
+using WebSocketSharp;
 
 namespace Chump_kuka
 {
     public static class Log 
     {
-        public static event PropertyChangedEventHandler LogChanged;
+        private static int _add_index = 1;      // 已記錄的 Log 數量
+        private static string _filter_status = "";      // 紀錄當前篩選標籤名稱
 
-        private static LogMsg _log_info;
-
-        public static LogMsg LogInfo
-        {
-            get => _log_info;
-            set
-            {
-                _log_info = value;
-                OnLogChanged(nameof(LogInfo));
-            }
-        }
+        public static BindingList<LogMsg> LogData = new BindingList<LogMsg>();      // Log 列表
+        public static BindingList<LogMsg> FilterData = new BindingList<LogMsg>();      // Log 列表
 
         public static void Append(string message, string status, string section)
         {
-            LogInfo = new LogMsg(message, status, section, DateTime.Now);
+            LogMsg new_msg = new LogMsg(_add_index++, message, status, section);
+            LogData.Add(new_msg);
+
+            // 更新篩選資料
+            if (status == _filter_status)
+            {
+                FilterData.Add(new_msg);
+            }
         }
 
-        private static void OnLogChanged(string propertyName)
+        /// <summary>
+        /// 利用 Status 篩選資料，並記錄於 FilterData
+        /// </summary>
+        /// <param name="filter_status"></param>
+        public static void FilterStatus(string filter_status)
         {
-            LogChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
+            _filter_status = filter_status;
+            var aa = LogData.Where(c => c.Status == filter_status).ToList();
+            FilterData = new BindingList<LogMsg>(aa);
         }
 
         public class LogMsg
@@ -59,14 +68,15 @@ namespace Chump_kuka
             public string Message { get; set; }
             public string Status { get; set; }
             public string Section { get; set; }
-            public DateTime CreateDate { get; set; }
+            public string CreateDate { get; set; }
 
-            public LogMsg(string message, string status, string section, DateTime createDate)
+            public LogMsg(int id, string message, string status, string section)
             {
+                ID = id;
                 Message = message;
                 Status = status;
                 Section = section;
-                CreateDate = createDate;
+                CreateDate = DateTime.Now.ToString(@"MM/dd HH:mm:ss");
             }
         }
     }

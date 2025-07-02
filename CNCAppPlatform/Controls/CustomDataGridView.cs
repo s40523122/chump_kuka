@@ -29,7 +29,7 @@ public class CustomDataGridView : DataGridView
     private float[] columnWidthRatios = new float[] { }; // 欄位寬度比例
     private dynamic _col_type;      // 定義資料類型
     private dynamic _rowData;       // 存放列資料 BindingList<資料類型>
-    private BindingSource bs = new BindingSource();
+    //private BindingSource bs = new BindingSource();
 
     [Description("資料存放 CSV 位置"), Category("自訂值")]
     public string CsvFilePath
@@ -55,23 +55,23 @@ public class CustomDataGridView : DataGridView
     //        InitializeColumns(columns);
     //    }
     //}
-    [Description("自定義欄位列表"), Category("自訂值")]
-    public dynamic UserColumns
-    {
-        get => _col_type;
-        set
-        {
-            if (value == null) return;
+    //[Description("自定義欄位列表"), Category("自訂值")]
+    //public dynamic UserColumns
+    //{
+    //    get => _col_type;
+    //    set
+    //    {
+    //        if (value == null) return;
 
-            _col_type = value;
-            var listType = typeof(BindingList<>).MakeGenericType(_col_type);
-            _rowData = Activator.CreateInstance(listType);
+    //        _col_type = value;
+    //        var listType = typeof(BindingList<>).MakeGenericType(_col_type);
+    //        _rowData = Activator.CreateInstance(listType);
            
-            bs.DataSource = _rowData; // 可以是 List<T> 或 BindingList<T>
+    //        bs.DataSource = _rowData; // 可以是 List<T> 或 BindingList<T>
 
-            InitializeColumns(_col_type);
-        }
-    }
+    //        InitializeColumns(_col_type);
+    //    }
+    //}
 
     [Description("設定或取得欄位寬度比例。\n每個數值代表對應欄位所佔的相對寬度。"), Category("自訂值")]
     public float[] UserColumnWidthRatios
@@ -100,18 +100,38 @@ public class CustomDataGridView : DataGridView
         Resize += CustomDataGridView_Resize;
 
         AutoGenerateColumns = false;
-
-        //DataSource = new List<string[]>()
-        //{
-        //    new string[] {"Test1", "INFO", "Source" },
-        //    new string[] {"Test2", "NOTICE", "Source2" }
-        //};
     }
 
     private void CustomDataGridView_Resize(object sender, EventArgs e)
     {
         AdjustColumnWidths();
     }
+
+    public void SetDataSource<T>(BindingList<T> data_source)
+    {
+        Columns.Clear();
+
+
+        if (data_source == null) return;
+
+        //Type type = data_source.GetType();
+        var properties = typeof(T).GetProperties();
+
+        foreach (var col in properties)
+        {
+            //Columns.Add(col, col);
+            Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = col.Name,
+                DataPropertyName = col.Name
+            });
+
+        }
+        DataSource = data_source;
+
+        AdjustColumnWidths();
+    }
+ 
 
     /// <summary>
     /// 初始化欄位。
@@ -138,7 +158,7 @@ public class CustomDataGridView : DataGridView
             });
             
         }
-        DataSource = bs;
+        //DataSource = bs;
     }
 
     /// <summary>

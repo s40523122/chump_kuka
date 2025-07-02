@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CefSharp;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,11 +12,10 @@ using System.Windows.Media;
 
 namespace Chump_kuka.Controls
 {
-    
-
     public partial class LogWindow : UserControl
     {
         private List<string> _log_labels = new List<string>() {"INFO", "WARN", "ERROR", "NOTICE", "ALERT" };
+        private string _select_label = "";
 
         // 拖曳用
         bool dragging = false;
@@ -25,18 +25,21 @@ namespace Chump_kuka.Controls
         {
             InitializeComponent();
 
-            logView.UserColumns = typeof(Log.LogMsg);
+            logView.SetDataSource(Log.LogData);
 
-            Log.LogChanged += LogChanged;       // Log 新增事件
+            Log.LogData.ListChanged += LogData_ListChanged;     // Log 資料變更事件
         }
 
-        private void LogChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void LogData_ListChanged(object sender, ListChangedEventArgs e)
         {
-            Log.LogMsg log_info = Log.LogInfo;
-            log_info.ID = logView.RowCount + 1;
-            logView.AddRow(log_info);
-
-            //CreateLabel(log_info[2]);
+            // 若有新增資料，判定是否為新的狀態標籤
+            // 若發現新狀態標籤，新增篩選按鈕
+            if (e.ListChangedType == ListChangedType.ItemAdded)
+            {
+                // 用 Index 取出新增的物件
+                var newItem = Log.LogData[e.NewIndex].Status;
+                CreateLabel(Log.LogData[e.NewIndex].Status);        // 判定&建立篩選按鈕
+            }
         }
 
         private void CreateLabel(string log_label)
@@ -54,7 +57,7 @@ namespace Chump_kuka.Controls
                     Font = checkBox1.Font,
                     TextAlign = checkBox1.TextAlign,
                     FlatStyle = FlatStyle.Flat,
-                    Margin = new Padding(3, 15, 5, 3)
+                    Margin = checkBox1.Margin,
                 };
                 new_label.Click += checkBox_Click;
                 flowLayoutPanel1.Controls.Add(new_label);
@@ -63,11 +66,25 @@ namespace Chump_kuka.Controls
 
         private void checkBox_Click(object sender, EventArgs e)
         {
-            // MessageBox.Show((sender as RadioButton).Text);
-
-
+            // 透過點擊標籤篩選對應資料
+            RadioButton select_label = (sender as RadioButton);
+            
+            // 如果重複點擊，清除選擇，恢復所有資料
+            if (select_label.Text == _select_label)
+            {
+                _select_label = "";
+                select_label.Checked = false;
+                logView.SetDataSource(Log.LogData);
+            }
+            else
+            {
+                _select_label = select_label.Text;
+                Log.FilterStatus(_select_label);
+                logView.SetDataSource(Log.FilterData);
+            }
         }
 
+        #region 拖曳伸長功能
         private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
             dragging = true;
@@ -89,5 +106,6 @@ namespace Chump_kuka.Controls
         {
             dragging = false;
         }
+        #endregion
     }
 }
