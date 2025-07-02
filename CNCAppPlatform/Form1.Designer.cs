@@ -32,16 +32,12 @@
             this.enable_api_btn = new System.Windows.Forms.Button();
             this.open_log_button = new System.Windows.Forms.CheckBox();
             this.btnUdpLog = new System.Windows.Forms.Button();
-            this.logWindow1 = new Chump_kuka.Controls.LogWindow();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.logWindow1);
             this.panel1.Size = new System.Drawing.Size(959, 689);
-            this.panel1.Controls.SetChildIndex(this.logWindow1, 0);
-            this.panel1.Controls.SetChildIndex(this.enable_side, 0);
             // 
             // enable_api_btn
             // 
@@ -79,16 +75,6 @@
             this.btnUdpLog.Visible = false;
             this.btnUdpLog.Click += new System.EventHandler(this.btnUdpLog_Click);
             // 
-            // logWindow1
-            // 
-            this.logWindow1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.logWindow1.BackColor = System.Drawing.Color.Gainsboro;
-            this.logWindow1.Location = new System.Drawing.Point(275, 22);
-            this.logWindow1.Name = "logWindow1";
-            this.logWindow1.Size = new System.Drawing.Size(661, 270);
-            this.logWindow1.TabIndex = 7;
-            this.logWindow1.Visible = false;
-            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -111,7 +97,6 @@
         #endregion
 
         private System.Windows.Forms.Button enable_api_btn;
-        private Controls.LogWindow logWindow1;
         private System.Windows.Forms.CheckBox open_log_button;
         private System.Windows.Forms.Button btnUdpLog;
     }
