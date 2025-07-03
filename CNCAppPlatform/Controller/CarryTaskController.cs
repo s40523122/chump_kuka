@@ -2,6 +2,7 @@
 using Chump_kuka.Dispatchers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Chump_kuka
         private static int _task_id = 1;
         private static CarryTask _current_task = null;
         
-        private static List<CarryTask> _task_queue = new List<CarryTask>();      // 搬運任務佇列
+        private static BindingList<CarryTask> _task_queue = new BindingList<CarryTask>();      // 搬運任務佇列
 
         private static System.Timers.Timer _task_timer;
 
@@ -27,9 +28,16 @@ namespace Chump_kuka
         static CarryTaskController()
         {
             FeedbackDispatcher.Called += FeedbackDispatcher_Called;
+
+            _task_queue.ListChanged += task_queue_ListChanged;
         }
 
-            private static void initTimer()
+        private static void task_queue_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            Newtonsoft.Json.JsonConvert.SerializeObject(_task_queue);
+        }
+
+        private static void initTimer()
         {
             Log.Append("候車計時器初始化", "SYSTEM", nameof(CarryTaskController));
             // 設定計時器
@@ -165,7 +173,8 @@ namespace Chump_kuka
                     // 修改 start_node goal_node
                     KukaParm.StartNode = _current_task.StartNode;
                     KukaParm.GoalNode = _current_task.GoalNode;
-                    if(!Debugger.IsAttached) KukaApiController.PubCarryTask();
+                    //if(!Debugger.IsAttached) KukaApiController.PubCarryTask();
+                    KukaApiController.PubCarryTask();
 
                     ChatController.PubLog($"已派發任務，ID: {_current_task.ID}");
 

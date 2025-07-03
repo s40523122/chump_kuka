@@ -26,6 +26,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Windows.Forms;
 using WebSocketSharp;
 
@@ -38,16 +40,36 @@ namespace Chump_kuka
 
         public static BindingList<LogMsg> LogData = new BindingList<LogMsg>();      // Log 列表
         public static BindingList<LogMsg> FilterData = new BindingList<LogMsg>();      // Log 列表
+        public static SynchronizationContext UiContext { get; set; }        // 加入控制項的 SynchronizationContext.Current，防止跨執行續問題
 
         public static void Append(string message, string status, string section)
         {
             LogMsg new_msg = new LogMsg(_add_index++, message, status, section);
-            LogData.Add(new_msg);
 
-            // 更新篩選資料
-            if (status == _filter_status)
+            // 防止跨執行續問題
+            if (UiContext != null)
             {
-                FilterData.Add(new_msg);
+                UiContext.Post(_ => 
+                {
+                    LogData.Add(new_msg);
+
+                    // 更新篩選資料
+                    if (status == _filter_status)
+                    {
+                        FilterData.Add(new_msg);
+                    }
+                }, null);
+            }
+            else
+            {
+                // 如果 context 沒設，直接加（但會有跨執行緒風險）
+                LogData.Add(new_msg);
+
+                // 更新篩選資料
+                if (status == _filter_status)
+                {
+                    FilterData.Add(new_msg);
+                }
             }
         }
 
