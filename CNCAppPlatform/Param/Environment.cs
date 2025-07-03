@@ -17,7 +17,7 @@ namespace Chump_kuka
         private static string _target_name = "";
         private static WebInfo[] _favorite_web;
 
-        public static readonly string LayoutPath = Path.Combine(Application.StartupPath, "config/layout.ini");        // UI設定檔位址
+        public static readonly string LayoutPath = Path.Combine(Application.StartupPath, "config\\layout.ini");        // UI設定檔位址
 
         public static event PropertyChangedEventHandler EnvChanged;
 

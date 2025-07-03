@@ -10,12 +10,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Navigation;
 
 namespace Chump_kuka.Forms
 {
     public partial class f02_MainMission : Form
     {
-        SidePanel1 sidePanel = new SidePanel1();
+        //SidePanel1 sidePanel = new SidePanel1();
         private string _bind_area = "";
         private Timer _idle_timer;
         private bool enable_area_reset = false;     // 若為 true，允許區域狀態重設為當前 
@@ -25,7 +26,7 @@ namespace Chump_kuka.Forms
         {
             InitializeComponent();
 
-            Controls.Add(sidePanel);
+            //Controls.Add(sidePanel);
 
             Load += F02_MainMission_Load;
             VisibleChanged += F02_MainMission_VisibleChanged;
@@ -48,10 +49,15 @@ namespace Chump_kuka.Forms
             LocalAreaController.UpdateControl();
             LocalAreaController.ButtonPush += (_s, _e) => scaleButton1_Click(_s, _e);
 
+            InitIdleTimer();        // 閒置判斷計時器
+            InitTreeGridView();     // 任務列表初始化
 
-            InitIdleTimer();
+            CarryTaskController.OnTimerAlive -= CarryTaskController_OnTimerAlive;       // 初始化
+        }
 
-            InitTreeGridView();
+        private void CarryTaskController_OnTimerAlive(bool obj)
+        {
+            throw new NotImplementedException();
         }
 
         private void InitTreeGridView()
@@ -238,7 +244,7 @@ namespace Chump_kuka.Forms
 
         private void scaleLabel7_Click(object sender, EventArgs e)
         {
-            sidePanel.Start = true;
+            //sidePanel.Start = true;
         }
 
         private void led_idle_Click(object sender, EventArgs e)

@@ -1,5 +1,6 @@
 ﻿using Chump_kuka.Controller;
 using Chump_kuka.Dispatchers;
+using iCAPS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,12 +30,42 @@ namespace Chump_kuka
         {
             FeedbackDispatcher.Called += FeedbackDispatcher_Called;
 
+            if (!Env.ICapsServer) return;
+            InitRecordTasks();
             _task_queue.ListChanged += task_queue_ListChanged;
+        }
+
+        private static void InitRecordTasks()
+        {
+            // 取得當天 InI 檔案內紀錄的任務，並實例
+            string file_path = KukaParm.GetTodayTaskPath();
+            int.TryParse(INiReader.ReadINIFile(file_path, "tasks", "task_count"), out int record_count);        // 任務數量
+            if (record_count > 0)
+            {
+                for (int index = 0; index < record_count; index++)
+                {
+                    string task = INiReader.ReadINIFile(file_path, "tasks", $"{index + 1}", 65535);
+                    _task_queue.Add(Newtonsoft.Json.JsonConvert.DeserializeObject<CarryTask>(task));
+                }
+
+                _task_id = record_count + 1;
+            }
+
+            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
 
         private static void task_queue_ListChanged(object sender, ListChangedEventArgs e)
         {
-            Newtonsoft.Json.JsonConvert.SerializeObject(_task_queue);
+            // 當任務狀態更改時，自動儲存，防止系統崩潰後，資料消失
+            // 任務清單檔案依日期建立&儲存
+            
+            string file_path = KukaParm.GetTodayTaskPath();
+            INiReader.WriteINIFile(file_path, "tasks", "task_count", _task_queue.Count.ToString());     // 紀錄任務數量
+
+            CarryTask task = _task_queue[e.NewIndex];       // 取得更新項目
+            string task_msg = Newtonsoft.Json.JsonConvert.SerializeObject(task);
+            INiReader.WriteINIFile(file_path, "tasks", task.ID.ToString(), task_msg);       //單筆任務寫入
+            
         }
 
         private static void initTimer()
@@ -173,8 +204,8 @@ namespace Chump_kuka
                     // 修改 start_node goal_node
                     KukaParm.StartNode = _current_task.StartNode;
                     KukaParm.GoalNode = _current_task.GoalNode;
-                    //if(!Debugger.IsAttached) KukaApiController.PubCarryTask();
-                    KukaApiController.PubCarryTask();
+                    if(!Debugger.IsAttached) KukaApiController.PubCarryTask();
+                    // KukaApiController.PubCarryTask();
 
                     ChatController.PubLog($"已派發任務，ID: {_current_task.ID}");
 
@@ -201,7 +232,7 @@ namespace Chump_kuka
         /// </summary>
         /// <param name="start_area_code"></param>
         /// <returns></returns>
-        public static bool GetCallTask(string start_area_code)
+        private static bool GetCallTask(string start_area_code)
         {
             // 找到符合開始區域且尚未執行的第一筆資料
             CarryTask call_task = _task_queue.FirstOrDefault(m => m.AreaCode == start_area_code && m.Called == false && m.FinishTime == null);

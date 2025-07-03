@@ -59,6 +59,7 @@ namespace Chump_kuka.Controls
             InitializeSidebar();
             this.BringToFront(); // 確保在最上層
 
+            if (!Env.ICapsServer) return;
             Chump_kuka.CarryTaskController.OnTimerAlive += CarryTaskController_OnTimerAlive;
         }
 

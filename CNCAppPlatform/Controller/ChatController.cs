@@ -286,7 +286,8 @@ namespace Chump_kuka.Controller
             CarryTaskUpdated?.Invoke(null, tasks);
 
             string task_list_json = JsonConvert.SerializeObject(tasks, Formatting.Indented);
-            _mqtt.Publisher("carry/list", task_list_json);
+
+            _mqtt?.Publisher("carry/list", task_list_json);
         }
 
         /// <summary>

@@ -11,10 +11,11 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Xml.Linq;
+using System.IO;
 
 /// <summary>
 /// KukaParm 類別 (全域設定管理)
@@ -42,13 +43,17 @@ public static class KukaParm
 
     // public static List<KukaAreaControl> AreaControls = new List<KukaAreaControl>();     // 已記錄的區域控制項
 
-
     public static event PropertyChangedEventHandler RobotStatusChanged;
     public static event PropertyChangedEventHandler AreaChanged;
     //public static event PropertyChangedEventHandler AreaStatusChanged;
     public static event PropertyChangedEventHandler CarryChanged;
     public static event PropertyChangedEventHandler BindChanged;        // 當綁定區域改變後
 
+    public static string GetTodayTaskPath()
+    {
+        string file_name = "task" + DateTime.Today.ToString(@"yyyyMMdd") + ".ini";
+        return Path.Combine(Application.StartupPath, "tasks\\" + file_name);
+    }
 
     public static CarryNode StartNode       // 手動派車起點
     {
