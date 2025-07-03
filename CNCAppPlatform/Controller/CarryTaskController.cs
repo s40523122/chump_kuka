@@ -260,7 +260,7 @@ namespace Chump_kuka
         public static void AppendTaskLog(string log_message)
         {
             if (_current_task != null)
-                _current_task.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm")}] {log_message}\n";
+                _current_task.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] {log_message}\n";
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
 
@@ -319,8 +319,8 @@ namespace Chump_kuka
             ID = task.ID;
             StartNode = task.StartNode.Name;
             GoalNode = task.GoalNode.Name;
-            CreateTime = task.CreateTime.ToString(@"MM/dd tt hh:mm:ss");
-            FinishTime = task.FinishTime?.ToString(@"MM/dd tt hh:mm:ss");
+            CreateTime = task.CreateTime.ToString(@"MM/dd tt hh:mm");
+            FinishTime = task.FinishTime?.ToString(@"MM/dd tt hh:mm");
             Called = task.Called ? "🔔" : "🔕";
             LogMsg = task.LogMsg;
 
