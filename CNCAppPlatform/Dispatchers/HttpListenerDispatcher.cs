@@ -187,6 +187,7 @@ namespace Chump_kuka.Dispatchers
             if (task_status == "CANCELED")
             {
                 CarryTaskController.FeedbackFail();     // 回報任務失敗
+                _area_step = 0;     // 重置步數
                 return;
             }
             
