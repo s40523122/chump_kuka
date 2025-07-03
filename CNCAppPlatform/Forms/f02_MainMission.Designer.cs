@@ -49,16 +49,17 @@ namespace Chump_kuka.Forms
             this.led_bot_out = new iCAPS.DoubleImg();
             this.led_task_over = new iCAPS.DoubleImg();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.bind_area_control = new Chump_kuka.Controls.KukaAreaControl();
             this.scaleButton1 = new iCAPS.ScaleButton();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.doubleImg1 = new iCAPS.DoubleImg();
+            this.local_reset = new iCAPS.DoubleImg();
             this.scaleLabel8 = new iCAPS.ScaleLabel();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.myPanel2 = new iCAPS.myPanel();
-            this.treeGridView1 = new Chump_kuka.Controls.TreeGridView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.scaleLabel9 = new iCAPS.ScaleLabel();
+            this.task_list_reset = new iCAPS.DoubleImg();
+            this.bind_area_control = new Chump_kuka.Controls.KukaAreaControl();
+            this.treeGridView1 = new Chump_kuka.Controls.TreeGridView();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.myPanel1.SuspendLayout();
@@ -71,10 +72,11 @@ namespace Chump_kuka.Forms
             ((System.ComponentModel.ISupportInitialize)(this.led_task_over)).BeginInit();
             this.tableLayoutPanel5.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.local_reset)).BeginInit();
             this.tableLayoutPanel6.SuspendLayout();
             this.myPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.task_list_reset)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -371,26 +373,6 @@ namespace Chump_kuka.Forms
             this.tableLayoutPanel5.Size = new System.Drawing.Size(503, 436);
             this.tableLayoutPanel5.TabIndex = 0;
             // 
-            // bind_area_control
-            // 
-            this.bind_area_control.AllowContainerClick = false;
-            this.bind_area_control.AreaName = "No Area Bind";
-            this.bind_area_control.AreaNode = new string[] {
-        "1",
-        "2",
-        "3"};
-            this.bind_area_control.Checked = false;
-            this.bind_area_control.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bind_area_control.Location = new System.Drawing.Point(0, 54);
-            this.bind_area_control.Margin = new System.Windows.Forms.Padding(0);
-            this.bind_area_control.Name = "bind_area_control";
-            this.bind_area_control.NodeStatus = new int[] {
-        0,
-        0,
-        0};
-            this.bind_area_control.Size = new System.Drawing.Size(503, 327);
-            this.bind_area_control.TabIndex = 0;
-            // 
             // scaleButton1
             // 
             this.scaleButton1.BackColor = System.Drawing.SystemColors.Control;
@@ -407,7 +389,7 @@ namespace Chump_kuka.Forms
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.doubleImg1);
+            this.panel2.Controls.Add(this.local_reset);
             this.panel2.Controls.Add(this.scaleLabel8);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
@@ -416,23 +398,23 @@ namespace Chump_kuka.Forms
             this.panel2.Size = new System.Drawing.Size(503, 54);
             this.panel2.TabIndex = 2;
             // 
-            // doubleImg1
+            // local_reset
             // 
-            this.doubleImg1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.doubleImg1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.doubleImg1.Change = true;
-            this.doubleImg1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.doubleImg1.EnableCilck = true;
-            this.doubleImg1.Image = ((System.Drawing.Image)(resources.GetObject("doubleImg1.Image")));
-            this.doubleImg1.Location = new System.Drawing.Point(460, 14);
-            this.doubleImg1.Name = "doubleImg1";
-            this.doubleImg1.SetSquare = true;
-            this.doubleImg1.Size = new System.Drawing.Size(37, 37);
-            this.doubleImg1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.doubleImg1.SubImg = null;
-            this.doubleImg1.TabIndex = 0;
-            this.doubleImg1.TabStop = false;
-            this.doubleImg1.Click += new System.EventHandler(this.doubleImg1_Click);
+            this.local_reset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.local_reset.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.local_reset.Change = true;
+            this.local_reset.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.local_reset.EnableCilck = true;
+            this.local_reset.Image = ((System.Drawing.Image)(resources.GetObject("local_reset.Image")));
+            this.local_reset.Location = new System.Drawing.Point(460, 14);
+            this.local_reset.Name = "local_reset";
+            this.local_reset.SetSquare = true;
+            this.local_reset.Size = new System.Drawing.Size(37, 37);
+            this.local_reset.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.local_reset.SubImg = null;
+            this.local_reset.TabIndex = 0;
+            this.local_reset.TabStop = false;
+            this.local_reset.Click += new System.EventHandler(this.doubleImg1_Click);
             // 
             // scaleLabel8
             // 
@@ -473,21 +455,9 @@ namespace Chump_kuka.Forms
             this.myPanel2.Size = new System.Drawing.Size(567, 376);
             this.myPanel2.TabIndex = 1;
             // 
-            // treeGridView1
-            // 
-            this.treeGridView1.AutoIDVisible = false;
-            this.treeGridView1.ColumnRatios = new float[0];
-            this.treeGridView1.Columns = new Chump_kuka.Controls.TreeColumn[0];
-            this.treeGridView1.DataSource = null;
-            this.treeGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeGridView1.Location = new System.Drawing.Point(0, 0);
-            this.treeGridView1.LogColName = null;
-            this.treeGridView1.Name = "treeGridView1";
-            this.treeGridView1.Size = new System.Drawing.Size(567, 376);
-            this.treeGridView1.TabIndex = 0;
-            // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.task_list_reset);
             this.panel1.Controls.Add(this.scaleLabel9);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
@@ -508,6 +478,57 @@ namespace Chump_kuka.Forms
             this.scaleLabel9.TabIndex = 0;
             this.scaleLabel9.Text = "任務清單";
             this.scaleLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // task_list_reset
+            // 
+            this.task_list_reset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.task_list_reset.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.task_list_reset.Change = true;
+            this.task_list_reset.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.task_list_reset.EnableCilck = false;
+            this.task_list_reset.Image = ((System.Drawing.Image)(resources.GetObject("task_list_reset.Image")));
+            this.task_list_reset.Location = new System.Drawing.Point(530, 14);
+            this.task_list_reset.Name = "task_list_reset";
+            this.task_list_reset.SetSquare = true;
+            this.task_list_reset.Size = new System.Drawing.Size(37, 37);
+            this.task_list_reset.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.task_list_reset.SubImg = null;
+            this.task_list_reset.TabIndex = 0;
+            this.task_list_reset.TabStop = false;
+            this.task_list_reset.Click += new System.EventHandler(this.task_list_reset_Click);
+            // 
+            // bind_area_control
+            // 
+            this.bind_area_control.AllowContainerClick = false;
+            this.bind_area_control.AreaName = "No Area Bind";
+            this.bind_area_control.AreaNode = new string[] {
+        "1",
+        "2",
+        "3"};
+            this.bind_area_control.Checked = false;
+            this.bind_area_control.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bind_area_control.Location = new System.Drawing.Point(0, 54);
+            this.bind_area_control.Margin = new System.Windows.Forms.Padding(0);
+            this.bind_area_control.Name = "bind_area_control";
+            this.bind_area_control.NodeStatus = new int[] {
+        0,
+        0,
+        0};
+            this.bind_area_control.Size = new System.Drawing.Size(503, 327);
+            this.bind_area_control.TabIndex = 0;
+            // 
+            // treeGridView1
+            // 
+            this.treeGridView1.AutoIDVisible = false;
+            this.treeGridView1.ColumnRatios = new float[0];
+            this.treeGridView1.Columns = new Chump_kuka.Controls.TreeColumn[0];
+            this.treeGridView1.DataSource = null;
+            this.treeGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeGridView1.Location = new System.Drawing.Point(0, 0);
+            this.treeGridView1.LogColName = null;
+            this.treeGridView1.Name = "treeGridView1";
+            this.treeGridView1.Size = new System.Drawing.Size(567, 376);
+            this.treeGridView1.TabIndex = 0;
             // 
             // f02_MainMission
             // 
@@ -531,10 +552,11 @@ namespace Chump_kuka.Forms
             ((System.ComponentModel.ISupportInitialize)(this.led_task_over)).EndInit();
             this.tableLayoutPanel5.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.local_reset)).EndInit();
             this.tableLayoutPanel6.ResumeLayout(false);
             this.myPanel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.task_list_reset)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -568,7 +590,8 @@ namespace Chump_kuka.Forms
         private iCAPS.myPanel myPanel2;
         private Controls.TreeGridView treeGridView1;
         private System.Windows.Forms.Panel panel1;
-        private iCAPS.DoubleImg doubleImg1;
+        private iCAPS.DoubleImg local_reset;
         private System.Windows.Forms.Panel panel2;
+        private iCAPS.DoubleImg task_list_reset;
     }
 }

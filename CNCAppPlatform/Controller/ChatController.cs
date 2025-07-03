@@ -55,6 +55,7 @@ namespace Chump_kuka.Controller
                 _mqtt.Subscriber("carry/auto", CarryAutoCb);
                 _mqtt.Subscriber("feedback", FeedCb);
                 _mqtt.Subscriber("del_task", DelTaskCb);
+                _mqtt.Subscriber("update_task", UpdateTaskCb);
 
                 KukaParm.RobotStatusChanged += KukaParm_RobotStatusChanged;          // 伺服器機器人資訊更新時，發佈到客戶端
                 HttpListenerDispatcher.Heard += HttpListenerDispatcher_Heard;
@@ -198,6 +199,11 @@ namespace Chump_kuka.Controller
         {
             Log.Append($"已接收刪除任務[{message}]", "CHAT", "ChatController");
             CarryTaskController.RemoveTask(message);
+        }
+
+        private static void UpdateTaskCb(string message)
+        {
+            SyncCarryTask(CarryTaskController.GetQueueArray());
         }
 
         /// <summary>
@@ -368,6 +374,18 @@ namespace Chump_kuka.Controller
             else
             {
                 _mqtt.Publisher("del_task", task_id);
+            }
+        }
+
+        public static void UpdateTaskList()
+        {
+            if (_is_master)
+            {
+                UpdateTaskCb("update_task");
+            }
+            else
+            {
+                _mqtt.Publisher("update_task", "update_task");
             }
         }
 

@@ -271,7 +271,7 @@ namespace Chump_kuka.Forms
             reset_timer.Tick += (_s, _e) =>
             {
                 //MsgBox.Show("Click");
-                doubleImg1.Change = true;
+                local_reset.Change = true;
                 enable_area_reset = false;
                 reset_timer.Stop();
                 reset_timer.Dispose();
@@ -279,6 +279,11 @@ namespace Chump_kuka.Forms
             reset_timer.Start();
             enable_area_reset = true;
 
+        }
+
+        private void task_list_reset_Click(object sender, EventArgs e)
+        {
+            ChatController.UpdateTaskList();
         }
     }
 }
