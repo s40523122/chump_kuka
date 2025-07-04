@@ -23,6 +23,8 @@ namespace Chump_kuka
 
         private static System.Timers.Timer _task_timer;
 
+        private static List<string> _id_table = new List<string>();      // 暫存任務 ID 表，若任務柱列被刪除，可查詢刪除ID
+
         public static event Action<bool> OnTimerAlive;     // 計時器啟用事件
 
 
@@ -39,16 +41,21 @@ namespace Chump_kuka
         {
             // 取得當天 InI 檔案內紀錄的任務，並實例
             string file_path = KukaParm.GetTodayTaskPath();
-            int.TryParse(INiReader.ReadINIFile(file_path, "tasks", "task_count"), out int record_count);        // 任務數量
+            int.TryParse(INiReader.ReadINIFile(file_path, "tasks", "task_last_id"), out int record_count);        // 任務數量
             if (record_count > 0)
             {
                 for (int index = 0; index < record_count; index++)
                 {
                     string task = INiReader.ReadINIFile(file_path, "tasks", $"{index + 1}", 65535);
+                    if(task == "")      // 任務已被刪除
+                    {
+                        continue;
+                    }
                     _task_queue.Add(Newtonsoft.Json.JsonConvert.DeserializeObject<CarryTask>(task));
                 }
 
                 _task_id = record_count + 1;
+                _id_table = _task_queue.Select(t => t.ID.ToString()).ToList();      // 將所有 ID 加進暫存任務 ID 表
             }
 
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
@@ -60,17 +67,27 @@ namespace Chump_kuka
             // 任務清單檔案依日期建立&儲存
             
             string file_path = KukaParm.GetTodayTaskPath();
-            INiReader.WriteINIFile(file_path, "tasks", "task_count", _task_queue.Count.ToString());     // 紀錄任務數量
+            INiReader.WriteINIFile(file_path, "tasks", "task_last_id", _task_queue[_task_queue.Count - 1].ID.ToString());     // 紀錄最後一筆任務id
+            
+            int change_index = e.NewIndex;
 
-            if (e.ListChangedType == ListChangedType.ItemDeleted)
+            if (e.ListChangedType == ListChangedType.ItemDeleted)       // 如果是刪除事件
             {
-                INiReader.WriteINIFile(file_path, "tasks", (e.NewIndex+1).ToString(), null);
+                string rm_id = _id_table[change_index];
+                INiReader.WriteINIFile(file_path, "tasks", rm_id, null);
+                _id_table.Remove(rm_id);
             }
             else
             {
-                CarryTask task = _task_queue[e.NewIndex];       // 取得更新項目
+                CarryTask task = _task_queue[change_index];       // 取得更新項目
                 string task_msg = Newtonsoft.Json.JsonConvert.SerializeObject(task);
                 INiReader.WriteINIFile(file_path, "tasks", task.ID.ToString(), task_msg);       //單筆任務寫入
+
+                // 若新資料，加進暫存任務 ID 表
+                if (e.ListChangedType == ListChangedType.ItemAdded)
+                {
+                    _id_table.Add(task.ID.ToString());
+                }
             }            
         }
 
@@ -316,32 +333,32 @@ namespace Chump_kuka
         /// <param name="log_message"></param>
         public static void RemoveTask(string task_id)
         {
-            int.TryParse(task_id, out int _task_id);
-            if (_task_id == 0)
+            int.TryParse(task_id, out int rm_id);
+            if (rm_id == 0)
             {
-                ChatController.PubLog($"錯誤: 請確認搬運任務編號正確[{_task_id}]");
+                ChatController.PubLog($"錯誤: 請確認搬運任務編號正確[{rm_id}]");
                 return;
             }
 
             if (_current_task != null)
             {
-                if (_current_task.ID == _task_id)
+                if (_current_task.ID == rm_id)
                 {
-                    ChatController.PubLog($"搬運任務[{_task_id}]運行中，無法移除");
+                    ChatController.PubLog($"搬運任務[{rm_id}]運行中，無法移除");
                     return;
                 }
             }
             else
             {
-                CarryTask target = _task_queue.FirstOrDefault(m => m.ID == _task_id);       // 找到 ID 對應任務
+                CarryTask target = _task_queue.FirstOrDefault(m => m.ID == rm_id);       // 找到 ID 對應任務
                 if (target != null)
                 {
                     _task_queue.Remove(target);
-                    ChatController.PubLog($"已從任務列表中移除搬運任務[{_task_id}]");
+                    ChatController.PubLog($"已從任務列表中移除搬運任務[{rm_id}]");
                 }
                 else
                 {
-                    ChatController.PubLog($"找不到指定任務[{_task_id}]");
+                    ChatController.PubLog($"找不到指定任務[{rm_id}]");
                 }
             }
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
