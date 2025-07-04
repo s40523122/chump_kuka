@@ -16,6 +16,7 @@ namespace Chump_kuka.Controls
         private string[] _nodes = new string[] { };
         private bool _checked = false;
         private int[] _node_status = new int[] { };
+        private bool _allow_click = true;
 
         // 定義事件，使用自定義參數
         public event EventHandler<ControlClickEventArgs> ContainerClick;
@@ -31,8 +32,35 @@ namespace Chump_kuka.Controls
             set { label1.Text = value; }
         }
 
+        [Description("區域中是否可點擊。"), Category("自訂值")]
+        public bool AllowClick 
+        { 
+            get => _allow_click;
+            set
+            {
+                _allow_click = value;
+                if (_allow_click)
+                {
+                    tableLayoutPanel1.Cursor = containerPanel.Cursor = label1.Cursor = Cursors.Hand;
+                    tableLayoutPanel1.Click += flowLayoutPanel1_Click;
+                    containerPanel.Click += flowLayoutPanel1_Click;
+                    label1.Click += flowLayoutPanel1_Click;
+                }
+                else
+                {
+                    tableLayoutPanel1.Cursor = containerPanel.Cursor = label1.Cursor = Cursors.Default;
+                    tableLayoutPanel1.Click -= flowLayoutPanel1_Click;
+                    containerPanel.Click -= flowLayoutPanel1_Click;
+                    label1.Click -= flowLayoutPanel1_Click;
+                }
+            } 
+        }
+
         [Description("區域中的節點是否可點擊。"), Category("自訂值")]
         public bool AllowContainerClick{ get; set; } = true;
+
+        [Description("區域中的節點是否顯示鎖圖示。"), Category("自訂值")]
+        public bool AllowContainerLock { get; set; } = false;
 
         [Description("區域中的節點。"), Category("自訂值")]
         public string[] AreaNode
@@ -55,6 +83,11 @@ namespace Chump_kuka.Controls
                     };
                     container.ContainerClick += Container_ContainerClick;
                     containerPanel.Controls.Add(container);
+
+                    if (AllowContainerLock)
+                    {
+                        container.ShowLock = true;
+                    }
                 }
                 _node_status = new int[_nodes.Length];
             }
@@ -176,6 +209,7 @@ namespace Chump_kuka.Controls
 
         private void flowLayoutPanel1_Click(object sender, EventArgs e)
         {
+            if (!AllowClick) return;
             Checked = !Checked;
             // 觸發事件，並傳遞按鈕資訊
             AreaClick?.Invoke(this, new ControlClickEventArgs(Name, this));

@@ -22,6 +22,9 @@ namespace Chump_kuka.Forms
         private bool enable_area_reset = false;     // 若為 true，允許區域狀態重設為當前 
         private bool _stay = false;     // 判斷是否停留在此頁
 
+        private Timer _easter_egg_timer = new Timer() { Interval = 3000 };
+        private string _easter_password = "";
+
         public f02_MainMission()
         {
             InitializeComponent();
@@ -53,6 +56,8 @@ namespace Chump_kuka.Forms
             InitTreeGridView();     // 任務列表初始化
 
             CarryTaskController.OnTimerAlive -= CarryTaskController_OnTimerAlive;       // 初始化
+
+            _easter_egg_timer.Tick += _easter_egg_timer_Tick;
         }
 
         private void CarryTaskController_OnTimerAlive(bool obj)
@@ -224,6 +229,19 @@ namespace Chump_kuka.Forms
                 }
             }));
         }
+        private void scaleLabel7_Click(object sender, EventArgs e)
+        {
+            //sidePanel.Start = true;
+        }
+
+        #region 燈號事件
+        private void led_idle_Click(object sender, EventArgs e)
+        {
+            // ChatController.Send("Hi");
+            //LocalAreaController.TurnOffLight();
+            _easter_password += "1";
+            EasterEgg();
+        }
 
         private void led_bot_in_Click(object sender, EventArgs e)
         {
@@ -242,27 +260,45 @@ namespace Chump_kuka.Forms
             // LocalAreaController.PubCarryOver();
         }
 
-        private void scaleLabel7_Click(object sender, EventArgs e)
-        {
-            //sidePanel.Start = true;
-        }
-
-        private void led_idle_Click(object sender, EventArgs e)
-        {
-            // ChatController.Send("Hi");
-            //LocalAreaController.TurnOffLight();
-        }
-
         private void led_turtle_in_Click(object sender, EventArgs e)
         {
             // MessageBox.Show("確定發送 UDP?");
             //ChatController.SayHi();
+            _easter_password += "2";
+            EasterEgg();
         }
 
         private void led_bot_move_Click(object sender, EventArgs e)
         {
-
+            _easter_password += "3";
+            EasterEgg();
         }
+
+        
+
+        private void EasterEgg()
+        {
+            if (!_easter_egg_timer.Enabled)
+            {
+                _easter_egg_timer.Start();
+            }
+        }
+
+        private void _easter_egg_timer_Tick(object sender, EventArgs e)
+        {
+            if (_easter_password == "2123")
+            {
+                MessageBox.Show("you find the egg !");
+                bind_area_control.AllowClick = !bind_area_control.AllowClick;
+                if (!bind_area_control.AllowClick)
+                {
+                    bind_area_control.Checked = false;
+                }
+            }
+            _easter_password = "";
+            _easter_egg_timer.Stop();       // 只執行一次
+        }
+        #endregion
 
         private void doubleImg1_Click(object sender, EventArgs e)
         {

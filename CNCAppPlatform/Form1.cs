@@ -27,7 +27,6 @@ namespace Chump_kuka
         {
             InitializeComponent();
             Env.EnableBubble = true;
-            
             Load += Form1_Load;
 
             //string binPath = Path.Combine(Application.StartupPath, "config\\layout.ini");

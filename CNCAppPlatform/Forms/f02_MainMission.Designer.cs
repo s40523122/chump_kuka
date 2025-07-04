@@ -56,8 +56,8 @@ namespace Chump_kuka.Forms
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.myPanel2 = new iCAPS.myPanel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.scaleLabel9 = new iCAPS.ScaleLabel();
             this.task_list_reset = new iCAPS.DoubleImg();
+            this.scaleLabel9 = new iCAPS.ScaleLabel();
             this.bind_area_control = new Chump_kuka.Controls.KukaAreaControl();
             this.treeGridView1 = new Chump_kuka.Controls.TreeGridView();
             this.tableLayoutPanel1.SuspendLayout();
@@ -466,19 +466,6 @@ namespace Chump_kuka.Forms
             this.panel1.Size = new System.Drawing.Size(573, 54);
             this.panel1.TabIndex = 2;
             // 
-            // scaleLabel9
-            // 
-            this.scaleLabel9.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scaleLabel9.Factor = 0.4F;
-            this.scaleLabel9.Font = new System.Drawing.Font("微軟正黑體", 21.6F, System.Drawing.FontStyle.Bold);
-            this.scaleLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.scaleLabel9.Location = new System.Drawing.Point(0, 0);
-            this.scaleLabel9.Name = "scaleLabel9";
-            this.scaleLabel9.Size = new System.Drawing.Size(573, 54);
-            this.scaleLabel9.TabIndex = 0;
-            this.scaleLabel9.Text = "任務清單";
-            this.scaleLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // task_list_reset
             // 
             this.task_list_reset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -497,9 +484,24 @@ namespace Chump_kuka.Forms
             this.task_list_reset.TabStop = false;
             this.task_list_reset.Click += new System.EventHandler(this.task_list_reset_Click);
             // 
+            // scaleLabel9
+            // 
+            this.scaleLabel9.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scaleLabel9.Factor = 0.4F;
+            this.scaleLabel9.Font = new System.Drawing.Font("微軟正黑體", 21.6F, System.Drawing.FontStyle.Bold);
+            this.scaleLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.scaleLabel9.Location = new System.Drawing.Point(0, 0);
+            this.scaleLabel9.Name = "scaleLabel9";
+            this.scaleLabel9.Size = new System.Drawing.Size(573, 54);
+            this.scaleLabel9.TabIndex = 0;
+            this.scaleLabel9.Text = "任務清單";
+            this.scaleLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // bind_area_control
             // 
-            this.bind_area_control.AllowContainerClick = false;
+            this.bind_area_control.AllowClick = false;
+            this.bind_area_control.AllowContainerClick = true;
+            this.bind_area_control.AllowContainerLock = true;
             this.bind_area_control.AreaName = "No Area Bind";
             this.bind_area_control.AreaNode = new string[] {
         "1",

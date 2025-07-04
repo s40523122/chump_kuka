@@ -37,6 +37,7 @@
             // 
             // panel1
             // 
+            this.panel1.Location = new System.Drawing.Point(266, 131);
             this.panel1.Size = new System.Drawing.Size(959, 689);
             // 
             // enable_api_btn
@@ -90,7 +91,6 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

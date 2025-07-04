@@ -34,10 +34,10 @@
             this.containerPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new iCAPS.ScaleLabel();
-            this.container1 = new Chump_kuka.Container();
             this.doubleImg1 = new iCAPS.DoubleImg();
             this.custom_border = new iCAPS.myPanel();
             this.samplePanel = new System.Windows.Forms.Panel();
+            this.container1 = new Chump_kuka.Container();
             this.myPanel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).BeginInit();
@@ -65,7 +65,7 @@
             this.tableLayoutPanel1.Controls.Add(this.containerPanel, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
-            this.tableLayoutPanel1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.tableLayoutPanel1.Cursor = System.Windows.Forms.Cursors.Default;
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(15, 15);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
@@ -76,12 +76,11 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 82F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(511, 342);
             this.tableLayoutPanel1.TabIndex = 3;
-            this.tableLayoutPanel1.Click += new System.EventHandler(this.flowLayoutPanel1_Click);
             // 
             // containerPanel
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.containerPanel, 2);
-            this.containerPanel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.containerPanel.Cursor = System.Windows.Forms.Cursors.Default;
             this.containerPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.containerPanel.Location = new System.Drawing.Point(2, 63);
             this.containerPanel.Margin = new System.Windows.Forms.Padding(2);
@@ -89,7 +88,6 @@
             this.containerPanel.Padding = new System.Windows.Forms.Padding(4);
             this.containerPanel.Size = new System.Drawing.Size(507, 277);
             this.containerPanel.TabIndex = 2;
-            this.containerPanel.Click += new System.EventHandler(this.flowLayoutPanel1_Click);
             // 
             // panel1
             // 
@@ -105,7 +103,7 @@
             // 
             this.label1.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.label1, 2);
-            this.label1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label1.Cursor = System.Windows.Forms.Cursors.Default;
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label1.Factor = 0.5F;
             this.label1.Font = new System.Drawing.Font("微軟正黑體", 25.5F, System.Drawing.FontStyle.Bold);
@@ -115,18 +113,6 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "scaleLabel1";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label1.Click += new System.EventHandler(this.flowLayoutPanel1_Click);
-            // 
-            // container1
-            // 
-            this.container1.Checked = false;
-            this.container1.ContainerImage = null;
-            this.container1.ContainerName = "label1";
-            this.container1.Location = new System.Drawing.Point(14, 15);
-            this.container1.Name = "container1";
-            this.container1.Size = new System.Drawing.Size(108, 146);
-            this.container1.TabIndex = 1;
-            this.container1.Visible = false;
             // 
             // doubleImg1
             // 
@@ -164,6 +150,18 @@
             this.samplePanel.Name = "samplePanel";
             this.samplePanel.Size = new System.Drawing.Size(151, 374);
             this.samplePanel.TabIndex = 5;
+            // 
+            // container1
+            // 
+            this.container1.Checked = false;
+            this.container1.ContainerImage = null;
+            this.container1.ContainerName = "label1";
+            this.container1.Location = new System.Drawing.Point(14, 15);
+            this.container1.Name = "container1";
+            this.container1.ShowLock = false;
+            this.container1.Size = new System.Drawing.Size(108, 146);
+            this.container1.TabIndex = 1;
+            this.container1.Visible = false;
             // 
             // KukaAreaControl
             // 

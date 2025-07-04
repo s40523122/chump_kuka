@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,6 +69,9 @@ namespace Chump_kuka
         }
         private bool _checked = false;
 
+        [Description("當元件為已核取狀態時，是否顯示鎖。"), Category("自訂值")]
+        public bool ShowLock{ get; set; } = false;
+
         public string Type { get { return "NODE_POINT"; } }
 
         // 定義事件，使用自定義參數
@@ -92,6 +96,22 @@ namespace Chump_kuka
 
             // 觸發事件，並傳遞按鈕資訊
             ContainerClick?.Invoke(this, new ControlClickEventArgs(Name, this));
+
+            if (ShowLock)
+            {
+                lock_pic.BackColor = doubleImg1.BackColor;
+                lock_pic.BackgroundImage = doubleImg1.Image;
+                lock_pic.BringToFront();
+            }
+        }
+
+        private void lock_pic_Click(object sender, EventArgs e)
+        {
+            Checked = !Checked;
+
+            // 觸發事件，並傳遞按鈕資訊
+            ContainerClick?.Invoke(this, new ControlClickEventArgs(Name, this));
+            doubleImg1.BringToFront();
         }
     }
 }
