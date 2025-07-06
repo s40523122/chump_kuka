@@ -56,6 +56,10 @@
             this.open_log_button.Appearance = System.Windows.Forms.Appearance.Button;
             this.open_log_button.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("open_log_button.BackgroundImage")));
             this.open_log_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.open_log_button.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.open_log_button.FlatAppearance.BorderSize = 0;
+            this.open_log_button.FlatAppearance.CheckedBackColor = System.Drawing.SystemColors.Control;
+            this.open_log_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.open_log_button.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.open_log_button.Location = new System.Drawing.Point(1169, 66);
             this.open_log_button.Name = "open_log_button";

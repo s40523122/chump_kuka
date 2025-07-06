@@ -34,7 +34,7 @@ namespace Chump_kuka.Forms
             // 避免重複呼叫導致過度綁定
             KukaParm.AreaChanged -= KukaParm_AreaChanged;
             KukaParm.AreaChanged += KukaParm_AreaChanged;
-            KukaParm_AreaChanged(null, null);
+            //KukaParm_AreaChanged(null, null);
             KukaParm.CarryChanged -= KukaParm_CarryChanged;
             KukaParm.CarryChanged += KukaParm_CarryChanged;
             KukaParm_CarryChanged(null, null);
@@ -82,6 +82,7 @@ namespace Chump_kuka.Forms
                 {
                     KukaAreaControl kuka_area = new KukaAreaControl
                     {
+                        AllowClick = true,
                         AreaName = area.AreaName,
                         Dock = DockStyle.Fill,
                         Margin = new Padding(10),
