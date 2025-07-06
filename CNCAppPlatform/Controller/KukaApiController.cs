@@ -50,8 +50,8 @@ namespace Chump_kuka
         /// </summary>
         public static void GetAreaInfo()
         {
-            _api_task.AppendAreaTask();
-            _api_task.AppendNodesTask();
+            _api_task?.AppendAreaTask();
+            _api_task?.AppendNodesTask();
         }
 
         /// <summary>

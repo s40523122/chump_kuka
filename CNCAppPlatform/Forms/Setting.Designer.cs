@@ -216,6 +216,9 @@
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.SetColumnRatio = 5F;
             this.scalePadding1.SetRowRatio = 3F;
             this.scalePadding1.Size = new System.Drawing.Size(981, 580);
@@ -342,7 +345,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.server_check.Change = false;
-            this.server_check.EnableCilck = true;
+            this.server_check.EnableCilck = false;
             this.server_check.Image = ((System.Drawing.Image)(resources.GetObject("server_check.Image")));
             this.server_check.Location = new System.Drawing.Point(710, 81);
             this.server_check.Margin = new System.Windows.Forms.Padding(5);
@@ -606,7 +609,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.kuka_api_check.Change = false;
-            this.kuka_api_check.EnableCilck = true;
+            this.kuka_api_check.EnableCilck = false;
             this.kuka_api_check.Image = ((System.Drawing.Image)(resources.GetObject("kuka_api_check.Image")));
             this.kuka_api_check.Location = new System.Drawing.Point(710, 119);
             this.kuka_api_check.Margin = new System.Windows.Forms.Padding(5);
@@ -626,7 +629,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.sensor_check.Change = false;
-            this.sensor_check.EnableCilck = true;
+            this.sensor_check.EnableCilck = false;
             this.sensor_check.Image = ((System.Drawing.Image)(resources.GetObject("sensor_check.Image")));
             this.sensor_check.Location = new System.Drawing.Point(710, 157);
             this.sensor_check.Margin = new System.Windows.Forms.Padding(5);
@@ -708,7 +711,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.record_log_check.Change = false;
-            this.record_log_check.EnableCilck = true;
+            this.record_log_check.EnableCilck = false;
             this.record_log_check.Image = ((System.Drawing.Image)(resources.GetObject("record_log_check.Image")));
             this.record_log_check.Location = new System.Drawing.Point(710, 195);
             this.record_log_check.Margin = new System.Windows.Forms.Padding(5);
@@ -728,7 +731,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.kuka_response_check.Change = false;
-            this.kuka_response_check.EnableCilck = true;
+            this.kuka_response_check.EnableCilck = false;
             this.kuka_response_check.Image = ((System.Drawing.Image)(resources.GetObject("kuka_response_check.Image")));
             this.kuka_response_check.Location = new System.Drawing.Point(710, 233);
             this.kuka_response_check.Margin = new System.Windows.Forms.Padding(5);

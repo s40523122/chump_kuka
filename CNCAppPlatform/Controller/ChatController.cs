@@ -385,7 +385,7 @@ namespace Chump_kuka.Controller
             }
             else
             {
-                _mqtt.Publisher("update_task", "update_task");
+                _mqtt?.Publisher("update_task", "update_task");
             }
         }
 

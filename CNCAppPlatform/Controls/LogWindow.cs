@@ -98,6 +98,8 @@ namespace Chump_kuka.Controls
         {
             dragging = true;
             dragStartY = Cursor.Position.Y;
+
+            MaximumSize = new Size(Width, Parent.Height - 20);
         }
 
         private void panel1_MouseMove(object sender, MouseEventArgs e)
@@ -106,8 +108,8 @@ namespace Chump_kuka.Controls
             {
                 int delta = Cursor.Position.Y - dragStartY;
                 this.Height += delta;
-                logView.Height += delta;
-                dragStartY = Cursor.Position.Y;
+                //logView.Height += delta;
+                dragStartY += delta;
             }
         }
 

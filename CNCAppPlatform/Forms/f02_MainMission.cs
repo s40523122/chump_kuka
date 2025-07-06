@@ -288,7 +288,7 @@ namespace Chump_kuka.Forms
         {
             if (_easter_password == "2123")
             {
-                MessageBox.Show("you find the egg !");
+                MsgBox.ShowFlash("You find the easter egg !", "恭喜", 1500);
                 bind_area_control.AllowClick = !bind_area_control.AllowClick;
                 if (!bind_area_control.AllowClick)
                 {

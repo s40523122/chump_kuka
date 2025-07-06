@@ -30,20 +30,20 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Container));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.label1 = new iCAPS.ScaleLabel();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.doubleImg1 = new iCAPS.DoubleImg();
+            this.lock_pic = new System.Windows.Forms.PictureBox();
+            this.label1 = new iCAPS.ScaleLabel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.label2 = new iCAPS.ScaleLabel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.lock_pic = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1.SuspendLayout();
+            this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lock_pic)).BeginInit();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
-            this.panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lock_pic)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -63,19 +63,15 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(417, 568);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // label1
+            // panel3
             // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Factor = 0.6F;
-            this.label1.Font = new System.Drawing.Font("微軟正黑體", 51F, System.Drawing.FontStyle.Bold);
-            this.label1.Location = new System.Drawing.Point(3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(411, 85);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "label1";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.panel3.Controls.Add(this.doubleImg1);
+            this.panel3.Controls.Add(this.lock_pic);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(3, 88);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(411, 391);
+            this.panel3.TabIndex = 1;
             // 
             // doubleImg1
             // 
@@ -94,6 +90,34 @@
             this.doubleImg1.TabStop = false;
             this.doubleImg1.Tag = ((object)(resources.GetObject("doubleImg1.Tag")));
             this.doubleImg1.Click += new System.EventHandler(this.doubleImg1_Click);
+            // 
+            // lock_pic
+            // 
+            this.lock_pic.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.lock_pic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.lock_pic.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lock_pic.Image = ((System.Drawing.Image)(resources.GetObject("lock_pic.Image")));
+            this.lock_pic.Location = new System.Drawing.Point(0, 0);
+            this.lock_pic.Name = "lock_pic";
+            this.lock_pic.Size = new System.Drawing.Size(411, 391);
+            this.lock_pic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.lock_pic.TabIndex = 3;
+            this.lock_pic.TabStop = false;
+            this.lock_pic.Click += new System.EventHandler(this.lock_pic_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Factor = 0.6F;
+            this.label1.Font = new System.Drawing.Font("微軟正黑體", 51F, System.Drawing.FontStyle.Bold);
+            this.label1.Location = new System.Drawing.Point(3, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(411, 85);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "label1";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // panel1
             // 
@@ -142,30 +166,6 @@
             this.panel2.Size = new System.Drawing.Size(49, 86);
             this.panel2.TabIndex = 0;
             // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.doubleImg1);
-            this.panel3.Controls.Add(this.lock_pic);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(3, 88);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(411, 391);
-            this.panel3.TabIndex = 1;
-            // 
-            // lock_pic
-            // 
-            this.lock_pic.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.lock_pic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.lock_pic.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lock_pic.Image = ((System.Drawing.Image)(resources.GetObject("lock_pic.Image")));
-            this.lock_pic.Location = new System.Drawing.Point(0, 0);
-            this.lock_pic.Name = "lock_pic";
-            this.lock_pic.Size = new System.Drawing.Size(411, 391);
-            this.lock_pic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.lock_pic.TabIndex = 3;
-            this.lock_pic.TabStop = false;
-            this.lock_pic.Click += new System.EventHandler(this.lock_pic_Click);
-            // 
             // Container
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -175,12 +175,12 @@
             this.Size = new System.Drawing.Size(417, 568);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lock_pic)).EndInit();
             this.panel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.lock_pic)).EndInit();
             this.ResumeLayout(false);
 
         }

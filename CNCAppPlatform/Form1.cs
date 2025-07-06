@@ -45,7 +45,7 @@ namespace Chump_kuka
         {
             if(_log_window == null)
             {
-                _log_window = new LogWindow();
+                _log_window = new LogWindow() { Anchor = AnchorStyles.Right | AnchorStyles.Top};
                 panel1.Controls.Add(_log_window);
                 _log_window.Location = new Point(panel1.Width - _log_window.Width - 20, 20);
                 _log_window.BringToFront();     // 將視窗至於最上層
