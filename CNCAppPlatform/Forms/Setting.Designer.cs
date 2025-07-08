@@ -65,8 +65,6 @@
             this.kuka_response_url = new System.Windows.Forms.TextBox();
             this.record_log_check = new iCAPS.DoubleImg();
             this.kuka_response_check = new iCAPS.DoubleImg();
-            this.scaleLabel13 = new iCAPS.ScaleLabel();
-            this.target_comboBox = new System.Windows.Forms.ComboBox();
             this.bind_comboBox = new System.Windows.Forms.ComboBox();
             this.station_setting = new iCAPS.ScaleButton();
             this.local_ip_combo = new System.Windows.Forms.ComboBox();
@@ -96,6 +94,9 @@
             this.scalePadding1.Location = new System.Drawing.Point(0, 0);
             this.scalePadding1.Name = "scalePadding1";
             this.scalePadding1.RowCount = 3;
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
+            this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94F));
             this.scalePadding1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3F));
@@ -255,8 +256,6 @@
             this.tableLayoutPanel1.Controls.Add(this.kuka_response_url, 1, 6);
             this.tableLayoutPanel1.Controls.Add(this.record_log_check, 2, 5);
             this.tableLayoutPanel1.Controls.Add(this.kuka_response_check, 2, 6);
-            this.tableLayoutPanel1.Controls.Add(this.scaleLabel13, 0, 9);
-            this.tableLayoutPanel1.Controls.Add(this.target_comboBox, 1, 9);
             this.tableLayoutPanel1.Controls.Add(this.bind_comboBox, 1, 8);
             this.tableLayoutPanel1.Controls.Add(this.station_setting, 1, 10);
             this.tableLayoutPanel1.Controls.Add(this.local_ip_combo, 1, 0);
@@ -697,7 +696,7 @@
             this.scaleButton1.TabIndex = 7;
             this.scaleButton1.Text = "通訊測試";
             this.scaleButton1.UseVisualStyleBackColor = true;
-            this.scaleButton1.Click += new System.EventHandler(this.scaleButton1_Click);
+            this.scaleButton1.Click += new System.EventHandler(this.connTest_Click);
             // 
             // kuka_response_url
             // 
@@ -748,28 +747,6 @@
             this.kuka_response_check.Tag = ((object)(resources.GetObject("kuka_response_check.Tag")));
             this.kuka_response_check.Visible = false;
             // 
-            // scaleLabel13
-            // 
-            this.scaleLabel13.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scaleLabel13.Factor = 0.25F;
-            this.scaleLabel13.Font = new System.Drawing.Font("微軟正黑體", 9.5F, System.Drawing.FontStyle.Bold);
-            this.scaleLabel13.Location = new System.Drawing.Point(3, 342);
-            this.scaleLabel13.Name = "scaleLabel13";
-            this.scaleLabel13.Size = new System.Drawing.Size(258, 38);
-            this.scaleLabel13.TabIndex = 3;
-            this.scaleLabel13.Text = "搬運目標區域";
-            this.scaleLabel13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // target_comboBox
-            // 
-            this.target_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.target_comboBox.FormattingEnabled = true;
-            this.target_comboBox.Location = new System.Drawing.Point(267, 351);
-            this.target_comboBox.Name = "target_comboBox";
-            this.target_comboBox.Size = new System.Drawing.Size(435, 20);
-            this.target_comboBox.TabIndex = 6;
-            this.target_comboBox.SelectedIndexChanged += new System.EventHandler(this.target_comboBox_SelectedIndexChanged);
-            // 
             // bind_comboBox
             // 
             this.bind_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -778,7 +755,7 @@
             this.bind_comboBox.Name = "bind_comboBox";
             this.bind_comboBox.Size = new System.Drawing.Size(435, 20);
             this.bind_comboBox.TabIndex = 6;
-            this.bind_comboBox.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.bind_comboBox.SelectedIndexChanged += new System.EventHandler(this.bind_SelectedIndexChanged);
             // 
             // station_setting
             // 
@@ -881,8 +858,6 @@
         private System.Windows.Forms.TextBox kuka_response_url;
         private iCAPS.DoubleImg record_log_check;
         private iCAPS.DoubleImg kuka_response_check;
-        private iCAPS.ScaleLabel scaleLabel13;
-        private System.Windows.Forms.ComboBox target_comboBox;
         private iCAPS.ScaleButton station_setting;
         private System.Windows.Forms.ComboBox local_ip_combo;
         private iCAPS.ScaleLabel scaleLabel14;

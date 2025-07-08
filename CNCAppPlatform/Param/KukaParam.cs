@@ -107,10 +107,13 @@ public static class KukaParm
     }
 
     /// <summary>
-    /// 原始資料
+    /// 原始 API 回應區域資料
     /// </summary>
     public static List<KukaAreaModel> KukaOriginAreaModels;
 
+    /// <summary>
+    /// 手動排序後區域資料
+    /// </summary>
     public static List<KukaAreaModel> KukaAreaModels
     {
         get => _kuka_area_models;
@@ -202,19 +205,6 @@ public static class KukaParm
             _bind_area = value;
 
             BindChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(BindAreaModel)));
-        }
-    }
-
-    public static KukaAreaModel TargetAreaModel
-    {
-        get => _target_area;
-        set
-        {
-            if (value == null) return;
-            if (_target_area != null && Chump_kuka.Env.BindAreaName == value.AreaName) return;        // 非首次綁定時，跳過資料相同的處理
-
-            Chump_kuka.Env.TargetAreaName = value.AreaName;
-            _target_area = value;
         }
     }
 
@@ -341,6 +331,23 @@ public class KukaAreaModel
 
     public static bool CompareData(List<KukaAreaModel> sourceData, List<KukaAreaModel> targetData) => sourceData.Select(m => m.AreaName).SequenceEqual(targetData.Select(m => m.AreaName));
 
+    public KukaAreaModel Next()
+    {
+        int index = KukaParm.KukaAreaModels.IndexOf(this);
+        if (index == -1)
+        {
+            return this;
+        }
+        else if (index == KukaParm.KukaAreaModels.Count - 1)
+        {
+            return KukaParm.KukaAreaModels[0];
+        }
+        else
+        {
+            return KukaParm.KukaAreaModels[index+1];
+        }
+    }
+    public override string ToString() => AreaName;
 }
 public class CarryNode
 {

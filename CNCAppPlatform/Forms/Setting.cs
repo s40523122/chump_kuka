@@ -37,11 +37,15 @@ namespace Chump_kuka.Forms
             {
                 // 當區域列表出現變化時，同步更新綁定區域的下拉式選單，以便及時更改綁定區域
                 bind_comboBox.Items.Clear();
-                target_comboBox.Items.Clear();
                 foreach (KukaAreaModel area in KukaParm.KukaAreaModels)
                 {
-                    bind_comboBox.Items.Add(area.AreaName);
-                    target_comboBox.Items.Add(area.AreaName);
+                    bind_comboBox.Items.Add(area);
+                    
+                    // 若當前選單文字符合加入資料，強制觸發選取事件
+                    if (area.AreaName == bind_comboBox.Text)
+                    {
+                        bind_comboBox.SelectedIndex = bind_comboBox.Items.Count - 1;
+                    }
                 }
             }));
             
@@ -60,7 +64,6 @@ namespace Chump_kuka.Forms
             kuka_response_url.Text = Env.KukaResponseUrl ?? "";
 
             bind_comboBox.Text = Env.BindAreaName ?? "";
-            target_comboBox.Text = Env.TargetAreaName ?? "";
         }
 
         private async Task RunTask(int start_val, int end_val, string running_msg, Task task)
@@ -139,7 +142,7 @@ namespace Chump_kuka.Forms
 
         private async Task SensorModbusTask()
         {
-            Console.WriteLine(KukaParm.KukaAreaModels);
+            // Console.WriteLine(KukaParm.KukaAreaModels);
             IPEndPoint ip = new IPEndPoint(IPAddress.Parse(modbus_ip.Text), int.Parse(modbus_port.Text));
             bool isconn = await LocalAreaController.BuildBindArea(ip);
 
@@ -167,7 +170,7 @@ namespace Chump_kuka.Forms
             }
         }
 
-        private async void scaleButton1_Click(object sender, EventArgs e)
+        private async void connTest_Click(object sender, EventArgs e)
         {
             Env.LocalIp = local_ip_combo.Text;
             kuka_api_check.Visible = kuka_response_check.Visible = record_log_check.Visible = sensor_check.Visible = server_check.Visible = false;
@@ -177,7 +180,7 @@ namespace Chump_kuka.Forms
 
             if (switch_sever.Checked)
             {
-                string strategy_string = Env.Strategy;
+                string strategy_string = Env.Strategy;      // 取得策略(搬運區域順序)
                 if (strategy_string != "")
                 {
                     List<string> sortedItems = strategy_string.Split(';').ToList();
@@ -207,18 +210,18 @@ namespace Chump_kuka.Forms
             await RunTask(55, 60, "等待 Modbus Tcp 連線...", SensorModbusTask());
             await RunTask(75, 80, "等待 KUKA 回應監聽開啟...", KukaResponseTask());
             await RunTask(95, 100, "等待工時監測伺服器開啟...", RecordLogTask());
-
+            //bind_comboBox.SelectedIndex = 0;        // 強制套用當前選項
             progress_msg.Text = "已完成";
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void bind_SelectedIndexChanged(object sender, EventArgs e)
         {
-            KukaParm.BindAreaModel = KukaAreaModel.Find(bind_comboBox.Text, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
+            if((sender as ComboBox).SelectedItem is KukaAreaModel select_model)
+            {
+                KukaParm.BindAreaModel = select_model;      // 將指定模型淺複製為 BindAreaModel (數值更改會影響原列表)
+            }
+
             LocalAreaController.ResetIOCount();
-        }
-        private void target_comboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            KukaParm.TargetAreaModel = KukaAreaModel.Find(target_comboBox.Text, KukaParm.KukaAreaModels);
         }
 
         private void switch_client_CheckedChanged(object sender, EventArgs e)
@@ -251,7 +254,7 @@ namespace Chump_kuka.Forms
             // MessageBox.Show(KukaParm.KukaAreaModels[0].AreaName);
 
             KukaParm.BindAreaModel = KukaAreaModel.Find(Env.BindAreaName, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
-            KukaParm.TargetAreaModel = KukaAreaModel.Find(Env.TargetAreaName, KukaParm.KukaAreaModels);
+
 
             if (KukaParm.BindAreaModel == null)
             {

@@ -69,6 +69,11 @@ namespace Chump_kuka.Controller
             ChatController.StepChanged += (s, e) => StepChanged?.Invoke(s, e);
         }
 
+        public static void SetBindArea(string area_code)
+        {
+            KukaParm.BindAreaModel = KukaAreaModel.Find(area_code, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
+        }
+
         public async static Task<bool> BuildBindArea(IPEndPoint modbus_tco_ip)
         {
             // 確認是否已經指定綁定區域名稱
@@ -96,8 +101,8 @@ namespace Chump_kuka.Controller
                 form.ShowDialog();
             }
             
-            KukaParm.BindAreaModel = KukaAreaModel.Find(Env.BindAreaName, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
-            KukaParm.TargetAreaModel = KukaAreaModel.Find(Env.TargetAreaName, KukaParm.KukaAreaModels);
+            //KukaParm.BindAreaModel = KukaAreaModel.Find(Env.BindAreaName, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
+
 
             if (KukaParm.BindAreaModel == null)
             {
@@ -296,8 +301,8 @@ namespace Chump_kuka.Controller
 
                 KukaParm.GoalNode = new CarryNode()
                 {
-                    Code = KukaParm.TargetAreaModel.AreaCode,       // "A000000002",
-                    Name = KukaParm.TargetAreaModel.AreaName,       // "倉庫區",
+                    Code = KukaParm.BindAreaModel.Next().AreaCode,       // "A000000002",
+                    Name = KukaParm.BindAreaModel.Next().AreaName,       // "倉庫區",
                     Type = "NODE_AREA"
                 };
 
