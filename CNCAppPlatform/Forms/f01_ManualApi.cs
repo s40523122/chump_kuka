@@ -31,6 +31,11 @@ namespace Chump_kuka.Forms
 
         private void F01_ManualApi_Load(object sender, EventArgs e)
         {
+            if(KukaParm.KukaAreaModels.Count > 0)
+            {
+                KukaParm_AreaChanged(this, null);
+            }
+            
             // 避免重複呼叫導致過度綁定
             KukaParm.AreaChanged -= KukaParm_AreaChanged;
             KukaParm.AreaChanged += KukaParm_AreaChanged;

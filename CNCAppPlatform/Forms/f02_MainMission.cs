@@ -49,7 +49,7 @@ namespace Chump_kuka.Forms
             // 當綁定區域更新時，同步更新控制項 UI
             KukaParm.BindChanged += KukaParm_BindChanged;
             LocalAreaController.BindControl = bind_area_control;
-            LocalAreaController.UpdateControl();
+            LocalAreaController.UpdateBindControl();
             LocalAreaController.ButtonPush += (_s, _e) => scaleButton1_Click(_s, _e);
 
             InitIdleTimer();        // 閒置判斷計時器
@@ -91,7 +91,7 @@ namespace Chump_kuka.Forms
         {
             this.Invoke(new Action(() =>
             {
-                LocalAreaController.UpdateControl();
+                LocalAreaController.UpdateBindControl();
             }));
         }
 

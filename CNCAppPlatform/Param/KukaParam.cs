@@ -109,7 +109,7 @@ public static class KukaParm
     /// <summary>
     /// 原始 API 回應區域資料
     /// </summary>
-    public static List<KukaAreaModel> KukaOriginAreaModels;
+    public static List<KukaAreaModel> KukaOriginAreaModels { get; set; } = new List<KukaAreaModel>();
 
     /// <summary>
     /// 手動排序後區域資料

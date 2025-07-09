@@ -69,12 +69,13 @@ namespace Chump_kuka.Controller
             ChatController.StepChanged += (s, e) => StepChanged?.Invoke(s, e);
         }
 
-        public static void SetBindArea(string area_code)
+        public async static Task<bool> ConnectIO_Module(IPEndPoint modbus_tco_ip)
         {
-            KukaParm.BindAreaModel = KukaAreaModel.Find(area_code, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
+            bool isconn = await _sensor_dispatcher.Start(modbus_tco_ip);
+            return isconn;
         }
 
-        public async static Task<bool> BuildBindArea(IPEndPoint modbus_tco_ip)
+        public static void BuildBindArea()
         {
             // 確認是否已經指定綁定區域名稱
             // 如果未指定名稱，開啟詢問表單
@@ -107,27 +108,20 @@ namespace Chump_kuka.Controller
             if (KukaParm.BindAreaModel == null)
             {
                 Log.Append($"綁定區域({Env.BindAreaName})不存在", "Error", "LocalAreaController.cs");
-                return false;
             }
-
-            // sensor_dispatcher.Enable = true;
-            bool isconn = await _sensor_dispatcher.Start(modbus_tco_ip);
-
-            return isconn;
-        }
-
-        /// <summary>
-        /// 重設區域IO數量，更新綁定區域時需要執行一次
-        /// </summary>
-        public static void ResetIOCount()
-        {
-            if(KukaParm.BindAreaModel != null)
+            else
             {
+                // 重設區域IO數量，更新綁定區域時需要執行一次
+
                 _sensor_dispatcher.SensorRead -= ModbusTCPDispatcher_SensorRead;
-                _sensor_dispatcher.RegisterCount = KukaParm.BindAreaModel.NodeList.Length * 2 + 1;      // 每個工作站 2 個 sensor + 按鈕 1 個
-                _sensor_dispatcher.SensorRead += ModbusTCPDispatcher_SensorRead;
+                if (KukaParm.BindAreaModel.NodeList != null)
+                {
+                    _sensor_dispatcher.RegisterCount = KukaParm.BindAreaModel.NodeList.Length * 2 + 1;      // 每個工作站 2 個 sensor + 按鈕 1 個
+                    _sensor_dispatcher.SensorRead += ModbusTCPDispatcher_SensorRead;
+                }
             }
         }
+
 
         /// <summary>
         /// 接收感測器資訊事件時，更新綁定模型資料
@@ -209,7 +203,7 @@ namespace Chump_kuka.Controller
             return status;
         }
 
-        public static void UpdateControl()
+        public static void UpdateBindControl()
         {
             // 判定綁定區域是否存在/更新
             if (KukaParm.BindAreaModel == null || BindControl == null) return;
@@ -220,14 +214,15 @@ namespace Chump_kuka.Controller
             //bind_control.Margin = new Padding(10);
             BindControl.AreaName = KukaParm.BindAreaModel.AreaName;
             BindControl.AreaCode = KukaParm.BindAreaModel.AreaCode;
-            BindControl.AreaNode = KukaParm.BindAreaModel.NodeList.ToArray();
-            BindControl.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus.ToArray());        // 初次建立，更新圖片
+            BindControl.AreaNode = KukaParm.BindAreaModel.NodeList?.ToArray();
+            BindControl.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus?.ToArray());        // 初次建立，更新圖片
             // KukaParm.BindAreaModel.ControlUI = bind_control;
         }
 
         public static void InitAreaStatus()
         {
             int[] current_status = KukaParm.BindAreaModel?.NodeStatus;       // 當前區域狀態
+            if (current_status == null) return;
 
             _RecordNodeStatus = current_status;
         }
@@ -240,6 +235,8 @@ namespace Chump_kuka.Controller
             // * 自動設定搬運任務的起點與終點
 
             int[] current_status = KukaParm.BindAreaModel?.NodeStatus;       // 當前區域狀態
+
+            if (current_status == null) return false;
 
             // 第一次執行，初始化歷史狀態
             if (_record_node_status == null)

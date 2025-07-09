@@ -131,7 +131,7 @@ namespace Chump_kuka.Dispatchers
                 }
                 catch (Exception ex)
                 {
-                    Log.Append($"訪問 KUKA API 失敗 (第 {attempt} 次): {ex}", "ERROR", "KukaAPiHandle");
+                    Log.Append($"{handleResponse.Method.Name} 訪問 KUKA API 失敗 (第 {attempt} 次)", "ERROR", "KukaAPiHandle");
                     await Task.Delay(delayMilliseconds);
                 }
             }
@@ -169,7 +169,7 @@ namespace Chump_kuka.Dispatchers
         {
             var request_body = new
             {
-                areaCodes = KukaParm.KukaAreaModels.Select(a => a.AreaCode).ToList()
+                areaCodes = KukaParm.KukaOriginAreaModels.Select(a => a.AreaCode).ToList()
             };
 
             _api_queue.Enqueue(() => RequestApiAsync("areaNodesQuery", request_body, HandleNodesResponse));

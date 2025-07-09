@@ -48,7 +48,6 @@ namespace Chump_kuka.Forms
                     }
                 }
             }));
-            
         }
 
         private void Setting_Load(object sender, EventArgs e)
@@ -144,14 +143,13 @@ namespace Chump_kuka.Forms
         {
             // Console.WriteLine(KukaParm.KukaAreaModels);
             IPEndPoint ip = new IPEndPoint(IPAddress.Parse(modbus_ip.Text), int.Parse(modbus_port.Text));
-            bool isconn = await LocalAreaController.BuildBindArea(ip);
+            bool isconn = await LocalAreaController.ConnectIO_Module(ip);
 
             sensor_check.Change = isconn;
             sensor_check.Visible = true;
             if (isconn)
             {
                 Env.SensorModbusTcp = ip;
-                LocalAreaController.ResetIOCount();
             }
         }
 
@@ -177,6 +175,11 @@ namespace Chump_kuka.Forms
             // 依序執行連線任務
             await RunTask(15, 20, "等待 iCAPS 伺服器開啟...", ServerTask());
             await RunTask(35, 40, "等待 KUKA API 連線...", KukaApiTask());
+            await RunTask(55, 60, "等待 Modbus Tcp 連線...", SensorModbusTask());
+            await RunTask(75, 80, "等待 KUKA 回應監聽開啟...", KukaResponseTask());
+            await RunTask(95, 100, "等待工時監測伺服器開啟...", RecordLogTask());
+            //bind_comboBox.SelectedIndex = 0;        // 強制套用當前選項
+            progress_msg.Text = "已完成";
 
             if (switch_sever.Checked)
             {
@@ -185,43 +188,36 @@ namespace Chump_kuka.Forms
                 {
                     List<string> sortedItems = strategy_string.Split(';').ToList();
 
-                    List<KukaAreaModel> temp = new List<KukaAreaModel>();
-                    foreach (var name in sortedItems)
-                    {
-                        var matched = KukaParm.KukaOriginAreaModels.FirstOrDefault(p => p.AreaName == name);
-                        if (matched != null)
-                        {
-                            if (matched.NodeList == null)
-                            {
-                                Console.WriteLine("Is NULL");
-                            }
-                            temp.Add(matched);
-                        }
-                    }
-
-                    KukaParm.KukaAreaModels = temp;
+                    SetStrategy(sortedItems);
                 }
             }
-            else
+        }
+
+        private void SetStrategy(List<string> sortedItems)
+        {
+            
+            List<KukaAreaModel> temp = new List<KukaAreaModel>();
+            foreach (var name in sortedItems)
             {
-                await Task.Delay(2000);
+                var matched = KukaParm.KukaOriginAreaModels.FirstOrDefault(p => p.AreaName == name);
+                if (matched != null)
+                {
+                    temp.Add(matched);
+                }
             }
 
-            await RunTask(55, 60, "等待 Modbus Tcp 連線...", SensorModbusTask());
-            await RunTask(75, 80, "等待 KUKA 回應監聽開啟...", KukaResponseTask());
-            await RunTask(95, 100, "等待工時監測伺服器開啟...", RecordLogTask());
-            //bind_comboBox.SelectedIndex = 0;        // 強制套用當前選項
-            progress_msg.Text = "已完成";
+            KukaParm.KukaAreaModels = temp;
         }
 
         private void bind_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (KukaParm.KukaAreaModels.Count == 0) return;     // 尚未取得 api 資料，暫不處理
             if((sender as ComboBox).SelectedItem is KukaAreaModel select_model)
             {
                 KukaParm.BindAreaModel = select_model;      // 將指定模型淺複製為 BindAreaModel (數值更改會影響原列表)
             }
 
-            LocalAreaController.ResetIOCount();
+            LocalAreaController.BuildBindArea();
         }
 
         private void switch_client_CheckedChanged(object sender, EventArgs e)
@@ -237,18 +233,7 @@ namespace Chump_kuka.Forms
             List<string> list = KukaParm.KukaOriginAreaModels.Select(m => m.AreaName).ToList();
             List<string> sortedItems = SortableListForm.ShowDialogAndSort(list);
 
-            KukaParm.KukaAreaModels = new List<KukaAreaModel>();
-            List <KukaAreaModel> temp = new List<KukaAreaModel>();
-            foreach (var name in sortedItems)
-            {
-                var matched = KukaParm.KukaOriginAreaModels.FirstOrDefault(p => p.AreaName == name);
-                if (matched != null)
-                {
-                    temp.Add(matched);
-                }
-            }
-
-            KukaParm.KukaAreaModels = temp;
+            SetStrategy(sortedItems);
 
             Env.Strategy = string.Join(";", sortedItems);
             // MessageBox.Show(KukaParm.KukaAreaModels[0].AreaName);
@@ -258,7 +243,7 @@ namespace Chump_kuka.Forms
 
             if (KukaParm.BindAreaModel == null)
             {
-                Log.Append($"綁定區域({Env.BindAreaName})不存在", "Error", "LocalAreaController.cs");
+                Log.Append($"綁定區域({Env.BindAreaName})不存在", "ERROR", "LocalAreaController.cs");
             }
         }
 
