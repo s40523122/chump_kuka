@@ -179,9 +179,25 @@ namespace Chump_kuka.Dispatchers
         /// <summary>
         /// 將派車任務請求加入 API 等待列表
         /// </summary>
-        public void AppendCarryTask()
+        public void AppendCarryTask(CarryNode[] carry_nodes)
         {
             long timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+            List<dynamic> mission_data = new List<dynamic>();
+            bool put_down = true;      // 表示貨架是否放下
+            foreach (CarryNode node in carry_nodes)
+            {
+                put_down = !put_down;       // 切換放下/頂升
+                mission_data.Add(new
+                {
+                    sequence = 1,
+                    position = node.Code,     //"A000000002",
+                    type = node.Type,     // "NODE_AREA",
+                    putDown = put_down,
+                    passStrategy = "AUTO",
+                    waitingMillis = 0
+                });
+            }
 
             var request_body = new
             {
@@ -201,27 +217,7 @@ namespace Chump_kuka.Dispatchers
                 unlockRobotId = "",
                 unlockMissionCode = "",
                 idleNode = "",
-                missionData = new[]
-                {
-                    new
-                    {
-                        sequence = 1,
-                        position = KukaParm.StartNode.Code,     //"A000000002",
-                        type = KukaParm.StartNode.Type,     // "NODE_AREA",
-                        putDown = false,
-                        passStrategy = "AUTO",
-                        waitingMillis = 0
-                    },
-                    new
-                    {
-                        sequence = 2,
-                        position = KukaParm.GoalNode.Code,     //"A000000003",
-                        type = KukaParm.GoalNode.Type,     // "NODE_AREA",
-                        putDown = true,
-                        passStrategy = "AUTO",
-                        waitingMillis = 0
-                    }
-                }
+                missionData = mission_data.ToArray(),
             };
 
             _api_queue.Enqueue(() => RequestApiAsync("submitMission", request_body, HandleCarryResponse));

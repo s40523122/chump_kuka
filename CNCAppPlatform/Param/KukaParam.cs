@@ -282,6 +282,12 @@ public class KukaAreaModel
             }
         }
     }
+
+    /// <summary>
+    /// 鎖定節點，允許區域自動搬運
+    /// </summary>
+    public List<string> LockNodes { get; set; } = new List<string>();
+
     public KukaAreaModel(JObject json_object = null)
     {
         if (json_object == null) return;
@@ -340,6 +346,7 @@ public class KukaAreaModel
         }
         else if (index == KukaParm.KukaAreaModels.Count - 1)
         {
+            // 該筆資料為最後一筆，下一筆回到首筆資料
             return KukaParm.KukaAreaModels[0];
         }
         else
@@ -354,4 +361,14 @@ public class CarryNode
     public string Code { get; set; }
     public string Type { get; set; }
     public string Name { get; set; } = "null";
+
+    public CarryNode(KukaAreaModel node_model = null)
+    {
+        if (node_model != null)
+        {
+            Code = node_model.AreaCode;
+            Type = "NODE_AREA";
+            Name = node_model.AreaName;
+        }
+    }
 }

@@ -204,30 +204,75 @@ namespace Chump_kuka
             //KukaApiController.PubCarryTask();
         }
 
+        private static bool IsAreaFully(KukaAreaModel area_model)
+        {
+            // 若滿載，返回 true，反之 false
+            return !area_model.NodeStatus.Contains(0);
+        }
+
         private static bool FindAndAssignTask()
         {
             foreach (CarryTask task in _task_queue)
             {
                 if (task.Called && task.FinishTime == null)
                 {
-                    // 檢查目標區域是否滿載
+                    // 檢查目標是否滿載
                     if (task.GoalNode.Type == "NODE_AREA")
                     {
+                        KukaAreaModel start_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.AreaCode == task.StartNode.Code);
                         KukaAreaModel target_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.AreaCode == task.GoalNode.Code);
-                        if (!target_area.NodeStatus.Contains(0))
+
+                        CarryNode[] carry_nodes;
+                        if (IsAreaFully(target_area))
                         {
                             // 目標區域滿載，跳過這一筆
                             ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標區域滿載，優先執行下一筆任務");
-                            continue;
+
+                            if (IsAreaFully(start_area))        // 若當前區域滿載
+                            {
+                                if (!target_area.Next().NodeStatus.Contains(0))
+                                {
+                                    ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標區域皆滿載，優先執行下一筆任務");
+                                    continue;
+                                }
+
+                                carry_nodes = new CarryNode[]
+                                {
+                                    _current_task.GoalNode,
+                                    new CarryNode(target_area.Next()),
+                                    _current_task.StartNode,
+                                    _current_task.GoalNode
+                                };
+                                ChatController.PubLog($"當前任務[{task.ID}]啟動策略。優先執行下一筆任務");
+                            }
+                            else
+                            {
+                                carry_nodes = new CarryNode[]
+                                {
+                                    _current_task.GoalNode,
+                                    new CarryNode(start_area),
+                                    _current_task.StartNode,
+                                    _current_task.GoalNode
+                                };
+                            }
                         }
-                            
+                        else
+                        {
+                            carry_nodes = new CarryNode[]
+                            {
+                                _current_task.StartNode,
+                                _current_task.GoalNode
+                            };
+                         
+                        }
+                        KukaApiController.PubCarryTask(carry_nodes);
                     }
                     _current_task = task;
 
                     // 修改 start_node goal_node
                     KukaParm.StartNode = _current_task.StartNode;
                     KukaParm.GoalNode = _current_task.GoalNode;
-                    if(!Debugger.IsAttached) KukaApiController.PubCarryTask();
+                    KukaApiController.PubCarryTask();
                     // KukaApiController.PubCarryTask();
 
                     ChatController.PubLog($"已派發任務，ID: {_current_task.ID}");

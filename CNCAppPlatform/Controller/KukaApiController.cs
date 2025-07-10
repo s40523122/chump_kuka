@@ -6,6 +6,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Policy;
@@ -57,9 +58,9 @@ namespace Chump_kuka
         /// <summary>
         /// 將派車任務請求加入 API 等待列表
         /// </summary>
-        public static void PubCarryTask()
+        public static void PubCarryTask(CarryNode[] carry_nodes)
         {
-            _api_task.AppendCarryTask();        // 建立搬運任務
+            if (!Debugger.IsAttached) _api_task.AppendCarryTask(carry_nodes);        // 建立搬運任務
 
             // CarryTaskPub?.Invoke(null, null);       // 已建立任務，更新 UI
         }
