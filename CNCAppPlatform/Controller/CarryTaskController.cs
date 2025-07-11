@@ -210,12 +210,19 @@ namespace Chump_kuka
             return !area_model.NodeStatus.Contains(0);
         }
 
+        private static bool IsLockExist(KukaAreaModel area_model)
+        {
+            // 若存在lock，返回 true，反之 false
+            return area_model.LockNodes.Count > 0;
+        }
+
         private static bool FindAndAssignTask()
         {
             foreach (CarryTask task in _task_queue)
             {
                 if (task.Called && task.FinishTime == null)
                 {
+                    _current_task = task;
                     // 檢查目標是否滿載
                     if (task.GoalNode.Type == "NODE_AREA")
                     {
@@ -223,37 +230,62 @@ namespace Chump_kuka
                         KukaAreaModel target_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.AreaCode == task.GoalNode.Code);
 
                         CarryNode[] carry_nodes;
-                        if (IsAreaFully(target_area))
+                        if (IsAreaFully(target_area))       // 若目標區域滿載
                         {
-                            // 目標區域滿載，跳過這一筆
-                            ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標區域滿載，優先執行下一筆任務");
+                            ChatController.PubLog($"[task_{task.ID}] > 目標區域滿載。");
 
                             if (IsAreaFully(start_area))        // 若當前區域滿載
                             {
-                                if (!target_area.Next().NodeStatus.Contains(0))
+                                if (IsLockExist(target_area))        // 若目標可調整
+                                {
+                                    string lock_node = target_area.LockNodes[0];
+                                    carry_nodes = new CarryNode[]
+                                    {
+                                        new CarryNode()
+                                        {
+                                            Code = lock_node,
+                                            Type = "NODE_POINT",
+                                            Name = lock_node,
+                                        },
+                                        new CarryNode(target_area.Next()),
+                                        _current_task.StartNode,
+                                        _current_task.GoalNode
+                                    };
+                                    target_area.LockNodes.Remove(lock_node);
+                                    ChatController.PubLog($"[task_{task.ID}] > 啟動策略B。");
+                                }
+                                else
                                 {
                                     ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標區域皆滿載，優先執行下一筆任務");
                                     continue;
                                 }
-
-                                carry_nodes = new CarryNode[]
-                                {
-                                    _current_task.GoalNode,
-                                    new CarryNode(target_area.Next()),
-                                    _current_task.StartNode,
-                                    _current_task.GoalNode
-                                };
-                                ChatController.PubLog($"當前任務[{task.ID}]啟動策略。優先執行下一筆任務");
+                                
                             }
-                            else
+                            else        // 若當前區域有空位
                             {
-                                carry_nodes = new CarryNode[]
+                                if (IsLockExist(target_area))        // 若目標可調整
                                 {
-                                    _current_task.GoalNode,
-                                    new CarryNode(start_area),
-                                    _current_task.StartNode,
-                                    _current_task.GoalNode
-                                };
+                                    string lock_node = target_area.LockNodes[0];
+                                    carry_nodes = new CarryNode[]
+                                    {
+                                        new CarryNode()
+                                        {
+                                            Code = lock_node,
+                                            Type = "NODE_POINT",
+                                            Name = lock_node,
+                                        },
+                                        new CarryNode(start_area),
+                                        _current_task.StartNode,
+                                        _current_task.GoalNode
+                                    };
+                                    target_area.LockNodes.Remove(lock_node);
+                                    ChatController.PubLog($"[task_{task.ID}] > 啟動策略B。");
+                                }
+                                else
+                                {
+                                    ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標區域皆滿載，優先執行下一筆任務");
+                                    continue;
+                                }
                             }
                         }
                         else
@@ -267,13 +299,13 @@ namespace Chump_kuka
                         }
                         KukaApiController.PubCarryTask(carry_nodes);
                     }
-                    _current_task = task;
+                    else
+                    {
+                        continue;       // 暫不處理 point
+                    }
+                    
 
                     // 修改 start_node goal_node
-                    KukaParm.StartNode = _current_task.StartNode;
-                    KukaParm.GoalNode = _current_task.GoalNode;
-                    KukaApiController.PubCarryTask();
-                    // KukaApiController.PubCarryTask();
 
                     ChatController.PubLog($"已派發任務，ID: {_current_task.ID}");
 
