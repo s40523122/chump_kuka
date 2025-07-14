@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Xml.Linq;
+using static Chump_kuka.Log;
 
 namespace Chump_kuka
 {
@@ -44,9 +45,9 @@ namespace Chump_kuka
             int.TryParse(INiReader.ReadINIFile(file_path, "tasks", "task_last_id"), out int record_count);        // 任務數量
             if (record_count > 0)
             {
-                for (int index = 0; index < record_count; index++)
+                for (int index = 1; index <= record_count; index++)
                 {
-                    string task = INiReader.ReadINIFile(file_path, "tasks", $"{index + 1}", 65535);
+                    string task = INiReader.ReadINIFile(file_path, "tasks", $"{index}", 65535);
                     if(task == "")      // 任務已被刪除
                     {
                         continue;
@@ -67,7 +68,8 @@ namespace Chump_kuka
             // 任務清單檔案依日期建立&儲存
             
             string file_path = KukaParm.GetTodayTaskPath();
-            INiReader.WriteINIFile(file_path, "tasks", "task_last_id", _task_queue[_task_queue.Count - 1].ID.ToString());     // 紀錄最後一筆任務id
+            int last_id = _task_queue.Count > 0 ? _task_queue[_task_queue.Count - 1].ID : 0;
+            INiReader.WriteINIFile(file_path, "tasks", "task_last_id", last_id.ToString());     // 紀錄最後一筆任務id
             
             int change_index = e.NewIndex;
 
@@ -204,16 +206,23 @@ namespace Chump_kuka
             //KukaApiController.PubCarryTask();
         }
 
-        private static bool IsAreaFully(KukaAreaModel area_model)
+        private static bool IsAreaFully(KukaAreaModel area_model, out bool is_init)
         {
+            is_init = true;
+            if (area_model.NodeStatus == null)
+            {
+                is_init = false;
+                return true;
+            }
             // 若滿載，返回 true，反之 false
-            return !area_model.NodeStatus.Contains(0);
+            bool status = !area_model.NodeStatus.Contains(0);
+            return status;
         }
 
         private static bool IsLockExist(KukaAreaModel area_model)
         {
             // 若存在lock，返回 true，反之 false
-            return area_model.LockNodes.Count > 0;
+            return area_model.LockNodes?.Count > 0;
         }
 
         private static bool FindAndAssignTask()
@@ -222,19 +231,25 @@ namespace Chump_kuka
             {
                 if (task.Called && task.FinishTime == null)
                 {
+                    
                     _current_task = task;
                     // 檢查目標是否滿載
                     if (task.GoalNode.Type == "NODE_AREA")
                     {
-                        KukaAreaModel start_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.AreaCode == task.StartNode.Code);
+                        KukaAreaModel start_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.NodeList.Contains(task.StartNode.Code));
                         KukaAreaModel target_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.AreaCode == task.GoalNode.Code);
 
                         CarryNode[] carry_nodes;
-                        if (IsAreaFully(target_area))       // 若目標區域滿載
+                        if (IsAreaFully(target_area, out bool init))       // 若目標區域滿載
                         {
+                            if (!init)
+                            {
+                                ChatController.PubLog($"[task_{task.ID}] > 目標區域尚未完成初始化，優先執行下一筆任務。");
+                                continue;
+                            }
                             ChatController.PubLog($"[task_{task.ID}] > 目標區域滿載。");
 
-                            if (IsAreaFully(start_area))        // 若當前區域滿載
+                            if (IsAreaFully(start_area, out bool _))        // 若當前區域滿載
                             {
                                 if (IsLockExist(target_area))        // 若目標可調整
                                 {
@@ -252,6 +267,7 @@ namespace Chump_kuka
                                         _current_task.GoalNode
                                     };
                                     target_area.LockNodes.Remove(lock_node);
+                                    ChatController.SyncNodeStatus(target_area);
                                     ChatController.PubLog($"[task_{task.ID}] > 啟動策略B。");
                                 }
                                 else
@@ -279,6 +295,7 @@ namespace Chump_kuka
                                         _current_task.GoalNode
                                     };
                                     target_area.LockNodes.Remove(lock_node);
+                                    ChatController.SyncNodeStatus(target_area);
                                     ChatController.PubLog($"[task_{task.ID}] > 啟動策略B。");
                                 }
                                 else
@@ -473,14 +490,43 @@ namespace Chump_kuka
 
     public class CarryTask
     {
+        private bool _called = false;
+        private DateTime? _finish_time;
+        private string _log_msg = "";
+
+
         public int ID { get; set; }
-        public bool Called { get; set; } = false;
+        public bool Called 
+        { 
+            get => _called;
+            set
+            {
+                _called = value;
+                WriteIni();
+            }
+        }
         public string AreaCode { get; set; }
         public CarryNode StartNode { get; set; }
         public CarryNode GoalNode { get; set; }
         public DateTime CreateTime { get; set; }
-        public DateTime? FinishTime { get; set; }
-        public string LogMsg { get; set; } = "";
+        public DateTime? FinishTime 
+        { 
+            get => _finish_time;
+            set
+            {
+                _finish_time = value;
+                WriteIni();
+            } 
+        }
+        public string LogMsg 
+        { 
+            get => _log_msg;
+            set 
+            {
+                _log_msg = value;
+                WriteIni();
+            } 
+        }
 
         public CarryTask(int task_id, bool called, CarryNode start_node, CarryNode goal_node, string areaCode)
         {
@@ -491,6 +537,13 @@ namespace Chump_kuka
             CreateTime = DateTime.Now;
             AreaCode = areaCode;
             FinishTime = null;
+        }
+
+        private void WriteIni()
+        {
+            string file_path = KukaParm.GetTodayTaskPath();
+            string task_msg = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            INiReader.WriteINIFile(file_path, "tasks", ID.ToString(), task_msg);       //單筆任務寫入
         }
     }
 }

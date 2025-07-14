@@ -129,14 +129,22 @@ namespace Chump_kuka.Controller
             //    KukaParm.KukaAreaModels = areas;
             string[] origin_code_array = KukaParm.KukaAreaModels.Select(m => m.AreaCode).ToArray();       // 將所有代碼取出為陣列
             string[] source_code_array = areas.Select(m => m.AreaCode).ToArray();       // 將所有代碼取出為陣列
-            if (origin_code_array != source_code_array)
+            if (origin_code_array != source_code_array)     // 只判定區域代碼是否修正
+            {
                 KukaParm.KukaAreaModels = areas;
 
-            foreach (KukaAreaModel source_area in areas)
-            {
-                var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaName == source_area.AreaName);
-                base_model.CompareAndUpdate(source_area);
-            }
+                foreach (KukaAreaModel source_area in areas)
+                {
+                    var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaName == source_area.AreaName);
+                    base_model.CompareAndUpdate(source_area);
+
+                    // 防止因 JSON 轉換導致出現 null 資料
+                    if (source_area.LockNodes == null)
+                    {
+                        source_area.LockNodes = new List<string>();
+                    }
+                }
+            } 
         }
 
         private static void NodesCb(string message)
@@ -144,6 +152,7 @@ namespace Chump_kuka.Controller
             KukaAreaModel receive_area = JsonConvert.DeserializeObject<KukaAreaModel>(message);
             KukaAreaModel find_area = KukaAreaModel.Find(receive_area.AreaName, KukaParm.KukaAreaModels);
             find_area.NodeStatus = receive_area.NodeStatus;
+            find_area.LockNodes = receive_area.LockNodes;
         }
 
         private static void FeedCb(string message)
@@ -373,7 +382,7 @@ namespace Chump_kuka.Controller
             }
             else
             {
-                _mqtt.Publisher("del_task", task_id);
+                _mqtt?.Publisher("del_task", task_id);
             }
         }
 

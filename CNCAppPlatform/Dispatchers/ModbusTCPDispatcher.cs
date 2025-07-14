@@ -39,13 +39,13 @@ namespace Chump_kuka
             {
                 if (sensor_modbus_tcp == null)
                 {
-                    Log.Append("尚未設定 Modbus TCP 連接資訊", "Error", "ModbusTCPManager.cs");
+                    Log.Append("尚未設定 Modbus TCP 連接資訊", "ERROR", "ModbusTCPManager.cs");
                     return false;
                 }
                 bool conn = await modbusService.Connect(sensor_modbus_tcp.Address.ToString(), sensor_modbus_tcp.Port);
                 if (!conn)
                 {
-                    Log.Append($"無法建立 Modbus TCP 連線。({sensor_modbus_tcp.ToString()})", "Error", "ModbusTCPManager.cs");
+                    Log.Append($"無法建立 Modbus TCP 連線。({sensor_modbus_tcp.ToString()})", "ERROR", "ModbusTCPManager.cs");
                     return false;
                 }
             }
@@ -72,7 +72,7 @@ namespace Chump_kuka
             }
             catch (Exception ex) 
             {
-                Log.Append($"Modbus TCP 連線發生意外。({ex.Message})", "Error", "ModbusTCPManager.cs");
+                Log.Append($"Modbus TCP 連線發生意外。({ex.Message})", "ERROR", "ModbusTCPManager.cs");
                 requestTimer.Stop();
                 modbusService?.Disconnect();        // 如果已建立連線則中斷連線
             }

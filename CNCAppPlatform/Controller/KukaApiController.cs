@@ -60,7 +60,8 @@ namespace Chump_kuka
         /// </summary>
         public static void PubCarryTask(CarryNode[] carry_nodes)
         {
-            if (!Debugger.IsAttached) _api_task.AppendCarryTask(carry_nodes);        // 建立搬運任務
+            //if (!Debugger.IsAttached) _api_task.AppendCarryTask(carry_nodes);        // 建立搬運任務
+            _api_task.AppendCarryTask(carry_nodes);        // 建立搬運任務
 
             // CarryTaskPub?.Invoke(null, null);       // 已建立任務，更新 UI
         }

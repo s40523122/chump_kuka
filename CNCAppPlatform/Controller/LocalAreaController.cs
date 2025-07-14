@@ -234,6 +234,8 @@ namespace Chump_kuka.Controller
             {
                 KukaParm.BindAreaModel.LockNodes.Remove(select_node.ContainerName);
             }
+
+            ChatController.SyncNodeStatus(KukaParm.BindAreaModel);
         }
 
         public static void InitAreaStatus()

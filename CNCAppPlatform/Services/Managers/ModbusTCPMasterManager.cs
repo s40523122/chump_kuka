@@ -73,7 +73,7 @@ namespace Chump_kuka
             catch (TimeoutException)
             {
                 // MessageBox.Show("ModbusService Error: 連線超過時間，已被中斷");
-                Log.Append("ModbusService Error: 連線超過時間，已被中斷", "Error", this.GetType().Name);
+                Log.Append("ModbusService Error: 連線超過時間，已被中斷", "ERROR", this.GetType().Name);
             }
 
             catch (Exception ex)

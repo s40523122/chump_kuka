@@ -258,7 +258,7 @@ public class KukaAreaModel
                 _node_list = value;
                 //ModelChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeList)));
 
-                _node_status = new int[_node_list.Length % 2];
+                _node_status = new int[_node_list.Length / 2];
             }
         }
     }
@@ -354,6 +354,7 @@ public class KukaAreaModel
             return KukaParm.KukaAreaModels[index+1];
         }
     }
+
     public override string ToString() => AreaName;
 }
 public class CarryNode
