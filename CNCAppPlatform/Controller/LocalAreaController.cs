@@ -19,6 +19,8 @@ namespace Chump_kuka.Controller
     {
         private static ModbusTCPDispatcher _sensor_dispatcher = null;
         private static int[] _record_node_status;
+        private static DateTime _area_update_time = DateTime.Now;       // 區域最後更新時間
+
         private static int[] _RecordNodeStatus        // 紀錄的區域狀態
         {
             get => _record_node_status;
@@ -131,14 +133,15 @@ namespace Chump_kuka.Controller
         private static void ModbusTCPDispatcher_SensorRead(object sender, SensorDataEventArgs e)
         {
             int[] current_node_status = ToNodeStatus(e.Data).ToArray();    // 當前節點狀態
-            
-            // 如果節點狀態有變更才執行
-            if (!current_node_status.SequenceEqual(KukaParm.BindAreaModel.NodeStatus))
+
+            // 如果節點狀態有變更才執行 ( 或距離上次更新超過5秒 )
+            if (!current_node_status.SequenceEqual(KukaParm.BindAreaModel.NodeStatus) || ((DateTime.Now - _area_update_time).TotalSeconds > 5))
             {
                 KukaParm.BindAreaModel.NodeStatus = current_node_status;
                 BindControl?.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus.ToArray());        // 更新圖片
 
                 ChatController.SyncNodeStatus(KukaParm.BindAreaModel);
+                _area_update_time = DateTime.Now;
             }
 
             // 若區域滿載達指定時數後，觸發亮燈
