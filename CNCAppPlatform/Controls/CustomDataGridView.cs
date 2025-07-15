@@ -98,8 +98,30 @@ public class CustomDataGridView : DataGridView
         AllowUserToAddRows = false;
         // InitializeColumns(columns);
         Resize += CustomDataGridView_Resize;
+        CellClick += CustomDataGridView_CellClick;
 
         AutoGenerateColumns = false;
+    }
+
+    /// <summary>
+    /// 點擊表格後，複製格位內容文字
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void CustomDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+    {
+
+        // 如果點到標題列（header），就不處理
+        if (e.RowIndex < 0 || e.ColumnIndex < 0)
+            return;
+
+        var value = Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
+        if (!string.IsNullOrEmpty(value))
+        {
+            Clipboard.SetText(value);
+            MessageBox.Show($"已複製: {value}", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        
     }
 
     private void CustomDataGridView_Resize(object sender, EventArgs e)
