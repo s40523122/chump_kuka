@@ -125,7 +125,7 @@ namespace Chump_kuka.Dispatchers
 
                     // 因 robotQuery 會發出太多次請求，屏蔽 Log 紀錄
                     if (apiName != "robotQuery")
-                        Log.Append($"收到來自 /{apiName} 的回應", "INFO", "KukaAPiHandle");
+                        Log.Append($"收到來自 /{apiName} 的回應\n{responseBody}", "KAPI", "KukaAPiHandle");
 
                     return;
                 }
@@ -159,7 +159,7 @@ namespace Chump_kuka.Dispatchers
         public void AppendAreaTask()
         {
             _api_queue.Enqueue(() => RequestApiAsync("areaQuery", null, HandleAreaResponse));
-            Log.Append("已加入 /areaQuery 於請求等待列表", "INFO", "KukaAPiHandle");
+            Log.Append("已加入 /areaQuery 於請求等待列表", "KAPI", "KukaAPiHandle");
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace Chump_kuka.Dispatchers
             };
 
             _api_queue.Enqueue(() => RequestApiAsync("areaNodesQuery", request_body, HandleNodesResponse));
-            Log.Append("已加入 /areaNodesQuery 於請求等待列表", "INFO", "KukaAPiHandle");
+            Log.Append("已加入 /areaNodesQuery 於請求等待列表", "KAPI", "KukaAPiHandle");
         }
 
         /// <summary>
@@ -219,9 +219,11 @@ namespace Chump_kuka.Dispatchers
                 idleNode = "",
                 missionData = mission_data.ToArray(),
             };
-
+            
             _api_queue.Enqueue(() => RequestApiAsync("submitMission", request_body, HandleCarryResponse));
-            Log.Append("已加入 /submitMission 於請求等待列表", "INFO", "KukaAPiHandle");
+
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(request_body);
+            Log.Append($"已加入 /submitMission 於請求等待列表\n{json}", "KAPI", "KukaAPiHandle");
         }
 
         /// <summary>
@@ -271,7 +273,7 @@ namespace Chump_kuka.Dispatchers
 
         private void HandleCarryResponse(JObject resp_json)
         {
-            Log.Append($"已成功派發任務", "Info", "");
+            Log.Append($"已成功派發任務", "KAPI", "");
         }
 
     }
