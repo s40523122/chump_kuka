@@ -185,12 +185,13 @@ namespace Chump_kuka.Dispatchers
 
             List<dynamic> mission_data = new List<dynamic>();
             bool put_down = true;      // 表示貨架是否放下
+            int seq = 1;
             foreach (CarryNode node in carry_nodes)
             {
                 put_down = !put_down;       // 切換放下/頂升
                 mission_data.Add(new
                 {
-                    sequence = 1,
+                    sequence = seq++,
                     position = node.Code,     //"A000000002",
                     type = node.Type,     // "NODE_AREA",
                     putDown = put_down,

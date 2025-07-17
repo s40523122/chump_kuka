@@ -200,7 +200,7 @@ namespace Chump_kuka.Forms
             foreach (var name in sortedItems)
             {
                 var matched = KukaParm.KukaOriginAreaModels.FirstOrDefault(p => p.AreaName == name);
-                if (matched != null)
+                if (matched != null && matched.NodeList.Length > 0)
                 {
                     temp.Add(matched);
                 }
