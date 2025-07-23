@@ -15,6 +15,9 @@ namespace Chump_kuka
 {
     public partial class Container : UserControl
     {
+        private bool _lock = false;
+
+
         [Description("容器名稱。"), Category("自訂值")]
         public string ContainerName
         {
@@ -31,6 +34,7 @@ namespace Chump_kuka
                 try
                 {
                     doubleImg1.Image = value; 
+                    lock_pic.BackgroundImage = value;
                 }
                 catch (Exception ex)
                 {
@@ -71,7 +75,26 @@ namespace Chump_kuka
         private bool _checked = false;
 
         [Description("當元件為已核取狀態時，是否顯示鎖。"), Category("自訂值")]
-        public bool ShowLock{ get; set; } = false;
+        public bool ShowLock
+        { 
+            get => _lock;
+            set 
+            {
+                _lock = value;
+                if (_lock)
+                {
+                    
+                    //lock_pic.DataBindings.Add("BackColor", doubleImg1, "BackColor");
+                    lock_pic.BackColor = Color.MediumSpringGreen;
+                    //lock_pic.BackgroundImage = doubleImg1.Image;
+                    lock_pic.BringToFront();
+                }
+                else
+                {
+                    doubleImg1.BringToFront();
+                }
+            }
+        }
 
         
         public Color ImgColor 
@@ -104,22 +127,7 @@ namespace Chump_kuka
 
             // 觸發事件，並傳遞按鈕資訊
             ContainerClick?.Invoke(this, new ControlClickEventArgs(Name, this));
-
-            if (ShowLock)
-            {
-                lock_pic.BackColor = doubleImg1.BackColor;
-                lock_pic.BackgroundImage = doubleImg1.Image;
-                lock_pic.BringToFront();
-            }
         }
 
-        private void lock_pic_Click(object sender, EventArgs e)
-        {
-            Checked = !Checked;
-
-            // 觸發事件，並傳遞按鈕資訊
-            ContainerClick?.Invoke(this, new ControlClickEventArgs(Name, this));
-            doubleImg1.BringToFront();
-        }
     }
 }

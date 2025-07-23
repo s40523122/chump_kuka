@@ -103,7 +103,6 @@
             this.lock_pic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.lock_pic.TabIndex = 3;
             this.lock_pic.TabStop = false;
-            this.lock_pic.Click += new System.EventHandler(this.lock_pic_Click);
             // 
             // label1
             // 

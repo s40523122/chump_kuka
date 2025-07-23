@@ -101,7 +101,7 @@
             // 
             this.kukaAreaControl1.AllowClick = true;
             this.kukaAreaControl1.AllowContainerClick = true;
-            this.kukaAreaControl1.AllowContainerLock = true;
+            this.kukaAreaControl1.AllowContainerLock = false;
             this.kukaAreaControl1.AreaName = "scaleLabel1";
             this.kukaAreaControl1.AreaNode = new KukaNodeModel[0];
             this.kukaAreaControl1.Checked = false;

@@ -93,16 +93,15 @@ namespace Chump_kuka.Controls
 
                 containerPanel.Controls.Clear();
                 _nodes = value;
-                for (int i = 0; i < _nodes.Length; i++)
+                foreach (KukaNodeModel node in _nodes)
                 {
                     Container container = new Container()
                     {
-                        ContainerName = _nodes[i].NodeName,
+                        ContainerName = node.NodeName,
                         Size = container1.Size,
-                        Enabled = AllowContainerClick,
-                        Parent = this
+                        Enabled = AllowContainerClick
                     };
-                    _nodes[i].PropertyChanged += (sender, e) =>
+                    node.PropertyChanged += (sender, e) =>
                     {
                         KukaNodeModel model = (sender as KukaNodeModel);
                         switch (e.PropertyName)
@@ -115,7 +114,6 @@ namespace Chump_kuka.Controls
                             case nameof(KukaNodeModel.NodeStatus):
                                 container.ImgColor = _container_colors[model.NodeStatus];
                                 break;
-
                         }
                     };
 
