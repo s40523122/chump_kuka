@@ -16,6 +16,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Xml.Linq;
 using System.IO;
+using System.Collections.ObjectModel;
 
 /// <summary>
 /// KukaParm 類別 (全域設定管理)
@@ -219,13 +220,92 @@ public static class KukaParm
     }
 }
 
-public class KukaAreaModel
+public class KukaNodeModel : INotifyPropertyChanged
+{
+    private int _rack_status = -1;      // 貨架狀態 {0: 無貨架, 1: 空貨架, 2: 滿貨架}
+    private int _node_status = -1;      // 節點狀態 {0: 普通, 1: 上鎖, 2: 等待搬運}
+
+    // 建立屬性值發生變化的通知事件
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected void OnPropertyChanged(string name) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+    public string NodeCode { get; set; }
+    public string NodeName { get => NodeCode; }
+    public int RackStatus 
+    { 
+        get => _rack_status;
+        set
+        {
+            if (_rack_status == value) return;
+            _rack_status = value;
+            OnPropertyChanged(nameof(RackStatus));
+        } 
+    }       
+    public int NodeStatus 
+    { 
+        get => _node_status;
+        set
+        {
+            if (_node_status == value) return;
+            _node_status = value;
+            OnPropertyChanged(nameof(NodeStatus));
+        } 
+    }    
+
+    public KukaNodeModel(string nodeCode)
+    {
+        NodeCode = nodeCode;
+    }
+    public override string ToString() =>
+        Newtonsoft.Json.JsonConvert.SerializeObject(this);
+
+    public KukaNodeModel Clone()
+    {
+        return new KukaNodeModel(this.NodeCode)
+        {
+            RackStatus = this.RackStatus,
+            NodeStatus = this.NodeStatus
+        };
+    }
+
+    // 為了比較內容，要實作 Equals 與 GetHashCode
+    public override bool Equals(object obj)
+    {
+        if (obj is KukaNodeModel other)
+            return NodeCode == other.NodeCode;
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        // 使用 .NET Framework 安全寫法
+        unchecked
+        {
+            int hash = 17;
+            hash = hash * 23 + (NodeCode?.GetHashCode() ?? 0);
+            hash = hash * 23 + RackStatus.GetHashCode();
+            hash = hash * 23 + NodeStatus.GetHashCode();
+            return hash;
+        }
+    }
+
+}
+
+public class KukaAreaModel : INotifyPropertyChanged
 {
     //public event PropertyChangedEventHandler NodeStatusChanged;
     //public event PropertyChangedEventHandler ModelChanged;
 
-    private int[] _node_status;
-    private string[] _node_list;
+    private string _name;
+    private int[] _node_status = new int[0];
+    private KukaNodeModel[] _node_list = new KukaNodeModel[0];
+
+    // 建立屬性值發生變化的通知事件
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected void OnPropertyChanged(string name) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     /// <summary>
     /// 區域編碼 ex: area001
@@ -235,7 +315,15 @@ public class KukaAreaModel
     /// <summary>
     /// 區域名稱 ex: 加工區
     /// </summary>
-    public string AreaName { get; set; }
+    public string AreaName 
+    { 
+        get => _name;
+        set
+        {
+            _name = value;
+            OnPropertyChanged(nameof(AreaName));        // 屬性發生變化
+        } 
+    }
 
     /// <summary>
     /// 區域類型 {1: 庫區, 2: 作業區, 3: 暫存區, 4: 緩存區}
@@ -248,7 +336,7 @@ public class KukaAreaModel
     /// <summary>
     /// 點位集合
     /// </summary>
-    public string[] NodeList
+    public KukaNodeModel[] NodeList
     {
         get => _node_list;
         set
@@ -258,11 +346,25 @@ public class KukaAreaModel
                 _node_list = value;
                 //ModelChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeList)));
 
-                _node_status = new int[_node_list.Length / 2];
+                //_node_status = new int[_node_list.Length / 2];
+
+                foreach (KukaNodeModel node in value)
+                {
+                    // node.PropertyChanged += Node_PropertyChanged;
+                }
+
+                OnPropertyChanged(nameof(NodeList));        // 屬性發生變化
             }
         }
     }
 
+    private void Node_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(NodeList));
+    }
+
+    public int[] NodeStatus {  get; set; }
+    /*
     /// <summary>
     /// 貨架狀態 {0: 無貨架, 1: 空貨架, 2: 滿貨架}
     /// </summary>
@@ -278,10 +380,13 @@ public class KukaAreaModel
 
                 ControlUI?.UpdateContainerImage(value);     // 更新圖片
 
+                OnPropertyChanged(nameof(NodeStatus));        // 屬性發生變化
+
                 //NodeStatusChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeStatus)));
             }
         }
     }
+    */
 
     /// <summary>
     /// 鎖定節點，允許區域自動搬運
@@ -294,7 +399,12 @@ public class KukaAreaModel
                 
         AreaCode = json_object["areaCode"].ToString();
         AreaName = json_object["areaName"].ToString();
-        NodeList = json_object["nodeList"].ToObject<string[]>();      // 集合查詢到的區域代碼為陣列
+        //NodeList = json_object["nodeList"].ToObject<string[]>();      // 集合查詢到的區域代碼為陣列
+    }
+
+    public bool IsNodeExist(string node_code ) { 
+        KukaNodeModel node = NodeList.FirstOrDefault(_node => _node.NodeCode ==  node_code);
+        return node != null;
     }
 
     public bool CheckAndUpdate(KukaAreaModel param)
@@ -324,7 +434,7 @@ public class KukaAreaModel
         this.AreaName = source_model.AreaName;
         this.AreaType = source_model.AreaType;
         this.NodeList = source_model.NodeList;
-        this.NodeStatus = source_model.NodeStatus;
+        //this.NodeStatus = source_model.NodeStatus;
     }
 
     /// <summary>

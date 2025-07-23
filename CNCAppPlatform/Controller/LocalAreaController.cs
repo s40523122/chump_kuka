@@ -217,8 +217,8 @@ namespace Chump_kuka.Controller
             //bind_control.Margin = new Padding(10);
             BindControl.AreaName = KukaParm.BindAreaModel.AreaName;
             BindControl.AreaCode = KukaParm.BindAreaModel.AreaCode;
-            BindControl.AreaNode = KukaParm.BindAreaModel.NodeList?.ToArray();
-            BindControl.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus?.ToArray());        // 初次建立，更新圖片
+            BindControl.AreaNode = KukaParm.BindAreaModel.NodeList;
+            BindControl.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus);        // 初次建立，更新圖片
 
             BindControl.ContainerClick -= BindControl_ContainerClick;
             BindControl.ContainerClick += BindControl_ContainerClick;
@@ -308,13 +308,13 @@ namespace Chump_kuka.Controller
                 //}
                 // 目標是否滿仔應該在搬運前判定，而不是建立時判定
 
-                string carry_node = KukaParm.BindAreaModel.NodeList[node_action.IndexOf(1)];        // 找到第一個需要入貨的節點
+                KukaNodeModel carry_node = KukaParm.BindAreaModel.NodeList[node_action.IndexOf(1)];        // 找到第一個需要入貨的節點
 
                 // 設定搬運起點與終點
                 KukaParm.StartNode = new CarryNode()
                 {
-                    Code = carry_node,
-                    Name = carry_node,
+                    Code = carry_node.NodeCode,
+                    Name = carry_node.NodeName,
                     Type = "NODE_POINT"
                 };
 

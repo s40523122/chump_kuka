@@ -161,7 +161,7 @@ namespace Chump_kuka
             // 取得起始區域代號
 
             string start_area_code; 
-            KukaAreaModel try_find = KukaParm.KukaAreaModels.FirstOrDefault(m => m.NodeList.Contains(KukaParm.StartNode.Code));
+            KukaAreaModel try_find = KukaParm.KukaAreaModels.FirstOrDefault(m => m.IsNodeExist(KukaParm.StartNode.Code));
             if(try_find == null)
             {
                 start_area_code = KukaParm.StartNode.Code;
@@ -236,7 +236,7 @@ namespace Chump_kuka
                     // 檢查目標是否滿載
                     if (task.GoalNode.Type == "NODE_AREA")
                     {
-                        KukaAreaModel start_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.NodeList.Contains(task.StartNode.Code));
+                        KukaAreaModel start_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.IsNodeExist(task.StartNode.Code));
                         KukaAreaModel target_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.AreaCode == task.GoalNode.Code);
 
                         CarryNode[] carry_nodes;

@@ -49,17 +49,17 @@ namespace Chump_kuka.Forms
             this.led_bot_out = new iCAPS.DoubleImg();
             this.led_task_over = new iCAPS.DoubleImg();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
+            this.bind_area_control = new Chump_kuka.Controls.KukaAreaControl();
             this.scaleButton1 = new iCAPS.ScaleButton();
             this.panel2 = new System.Windows.Forms.Panel();
             this.local_reset = new iCAPS.DoubleImg();
             this.scaleLabel8 = new iCAPS.ScaleLabel();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.myPanel2 = new iCAPS.myPanel();
+            this.treeGridView1 = new Chump_kuka.Controls.TreeGridView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.task_list_reset = new iCAPS.DoubleImg();
             this.scaleLabel9 = new iCAPS.ScaleLabel();
-            this.bind_area_control = new Chump_kuka.Controls.KukaAreaControl();
-            this.treeGridView1 = new Chump_kuka.Controls.TreeGridView();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.myPanel1.SuspendLayout();
@@ -373,6 +373,25 @@ namespace Chump_kuka.Forms
             this.tableLayoutPanel5.Size = new System.Drawing.Size(503, 436);
             this.tableLayoutPanel5.TabIndex = 0;
             // 
+            // bind_area_control
+            // 
+            this.bind_area_control.AllowClick = false;
+            this.bind_area_control.AllowContainerClick = true;
+            this.bind_area_control.AllowContainerLock = true;
+            this.bind_area_control.AreaName = "No Area Bind";
+            this.bind_area_control.Checked = false;
+            this.bind_area_control.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bind_area_control.Enabled = false;
+            this.bind_area_control.Location = new System.Drawing.Point(0, 54);
+            this.bind_area_control.Margin = new System.Windows.Forms.Padding(0);
+            this.bind_area_control.Name = "bind_area_control";
+            this.bind_area_control.NodeStatus = new int[] {
+        0,
+        0,
+        0};
+            this.bind_area_control.Size = new System.Drawing.Size(503, 327);
+            this.bind_area_control.TabIndex = 0;
+            // 
             // scaleButton1
             // 
             this.scaleButton1.BackColor = System.Drawing.SystemColors.Control;
@@ -455,6 +474,19 @@ namespace Chump_kuka.Forms
             this.myPanel2.Size = new System.Drawing.Size(567, 376);
             this.myPanel2.TabIndex = 1;
             // 
+            // treeGridView1
+            // 
+            this.treeGridView1.AutoIDVisible = false;
+            this.treeGridView1.ColumnRatios = new float[0];
+            this.treeGridView1.Columns = new Chump_kuka.Controls.TreeColumn[0];
+            this.treeGridView1.DataSource = null;
+            this.treeGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeGridView1.Location = new System.Drawing.Point(0, 0);
+            this.treeGridView1.LogColName = null;
+            this.treeGridView1.Name = "treeGridView1";
+            this.treeGridView1.Size = new System.Drawing.Size(567, 376);
+            this.treeGridView1.TabIndex = 0;
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.task_list_reset);
@@ -496,41 +528,6 @@ namespace Chump_kuka.Forms
             this.scaleLabel9.TabIndex = 0;
             this.scaleLabel9.Text = "任務清單";
             this.scaleLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // bind_area_control
-            // 
-            this.bind_area_control.AllowClick = false;
-            this.bind_area_control.AllowContainerClick = true;
-            this.bind_area_control.AllowContainerLock = true;
-            this.bind_area_control.AreaName = "No Area Bind";
-            this.bind_area_control.AreaNode = new string[] {
-        "1",
-        "2",
-        "3"};
-            this.bind_area_control.Checked = false;
-            this.bind_area_control.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bind_area_control.Location = new System.Drawing.Point(0, 54);
-            this.bind_area_control.Margin = new System.Windows.Forms.Padding(0);
-            this.bind_area_control.Name = "bind_area_control";
-            this.bind_area_control.NodeStatus = new int[] {
-        0,
-        0,
-        0};
-            this.bind_area_control.Size = new System.Drawing.Size(503, 327);
-            this.bind_area_control.TabIndex = 0;
-            // 
-            // treeGridView1
-            // 
-            this.treeGridView1.AutoIDVisible = false;
-            this.treeGridView1.ColumnRatios = new float[0];
-            this.treeGridView1.Columns = new Chump_kuka.Controls.TreeColumn[0];
-            this.treeGridView1.DataSource = null;
-            this.treeGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeGridView1.Location = new System.Drawing.Point(0, 0);
-            this.treeGridView1.LogColName = null;
-            this.treeGridView1.Name = "treeGridView1";
-            this.treeGridView1.Size = new System.Drawing.Size(567, 376);
-            this.treeGridView1.TabIndex = 0;
             // 
             // f02_MainMission
             // 

@@ -132,16 +132,13 @@
             // 
             // kuka_area3
             // 
+            this.kuka_area3.AllowClick = true;
+            this.kuka_area3.AllowContainerClick = true;
+            this.kuka_area3.AllowContainerLock = false;
             this.kuka_area3.AreaName = "Area_3";
-            this.kuka_area3.AreaNode = new string[] {
-        "42",
-        "43",
-        "44",
-        "45",
-        "46",
-        "47"};
             this.kuka_area3.Checked = false;
             this.kuka_area3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kuka_area3.Enabled = false;
             this.kuka_area3.Location = new System.Drawing.Point(10, 254);
             this.kuka_area3.Margin = new System.Windows.Forms.Padding(10);
             this.kuka_area3.Name = "kuka_area3";
@@ -157,14 +154,13 @@
             // 
             // kuka_area2
             // 
+            this.kuka_area2.AllowClick = true;
+            this.kuka_area2.AllowContainerClick = true;
+            this.kuka_area2.AllowContainerLock = false;
             this.kuka_area2.AreaName = "Area_2";
-            this.kuka_area2.AreaNode = new string[] {
-        "36",
-        "37",
-        "38",
-        "39"};
             this.kuka_area2.Checked = false;
             this.kuka_area2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kuka_area2.Enabled = false;
             this.kuka_area2.Location = new System.Drawing.Point(374, 10);
             this.kuka_area2.Margin = new System.Windows.Forms.Padding(10);
             this.kuka_area2.Name = "kuka_area2";
@@ -178,12 +174,13 @@
             // 
             // kuka_area1
             // 
+            this.kuka_area1.AllowClick = true;
+            this.kuka_area1.AllowContainerClick = true;
+            this.kuka_area1.AllowContainerLock = false;
             this.kuka_area1.AreaName = "Area_1";
-            this.kuka_area1.AreaNode = new string[] {
-        "25",
-        "26"};
             this.kuka_area1.Checked = false;
             this.kuka_area1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kuka_area1.Enabled = false;
             this.kuka_area1.Location = new System.Drawing.Point(10, 10);
             this.kuka_area1.Margin = new System.Windows.Forms.Padding(10);
             this.kuka_area1.Name = "kuka_area1";

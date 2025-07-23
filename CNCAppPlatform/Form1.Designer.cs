@@ -32,13 +32,20 @@
             this.enable_api_btn = new System.Windows.Forms.Button();
             this.open_log_button = new System.Windows.Forms.CheckBox();
             this.btnUdpLog = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.kukaAreaControl1 = new Chump_kuka.Controls.KukaAreaControl();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.kukaAreaControl1);
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Location = new System.Drawing.Point(266, 131);
             this.panel1.Size = new System.Drawing.Size(959, 689);
+            this.panel1.Controls.SetChildIndex(this.enable_side, 0);
+            this.panel1.Controls.SetChildIndex(this.button1, 0);
+            this.panel1.Controls.SetChildIndex(this.kukaAreaControl1, 0);
             // 
             // enable_api_btn
             // 
@@ -80,6 +87,31 @@
             this.btnUdpLog.Visible = false;
             this.btnUdpLog.Click += new System.EventHandler(this.btnUdpLog_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(753, 316);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(74, 38);
+            this.button1.TabIndex = 2;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // kukaAreaControl1
+            // 
+            this.kukaAreaControl1.AllowClick = true;
+            this.kukaAreaControl1.AllowContainerClick = true;
+            this.kukaAreaControl1.AllowContainerLock = true;
+            this.kukaAreaControl1.AreaName = "scaleLabel1";
+            this.kukaAreaControl1.AreaNode = new KukaNodeModel[0];
+            this.kukaAreaControl1.Checked = false;
+            this.kukaAreaControl1.Location = new System.Drawing.Point(211, 222);
+            this.kukaAreaControl1.Margin = new System.Windows.Forms.Padding(2);
+            this.kukaAreaControl1.Name = "kukaAreaControl1";
+            this.kukaAreaControl1.NodeStatus = null;
+            this.kukaAreaControl1.Size = new System.Drawing.Size(382, 267);
+            this.kukaAreaControl1.TabIndex = 3;
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -103,6 +135,8 @@
         private System.Windows.Forms.Button enable_api_btn;
         private System.Windows.Forms.CheckBox open_log_button;
         private System.Windows.Forms.Button btnUdpLog;
+        private System.Windows.Forms.Button button1;
+        private Controls.KukaAreaControl kukaAreaControl1;
     }
 }
 

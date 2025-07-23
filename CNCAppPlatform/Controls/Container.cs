@@ -1,4 +1,5 @@
-﻿using Chump_kuka.Forms;
+﻿using Chump_kuka.Controls;
+using Chump_kuka.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -71,6 +72,13 @@ namespace Chump_kuka
 
         [Description("當元件為已核取狀態時，是否顯示鎖。"), Category("自訂值")]
         public bool ShowLock{ get; set; } = false;
+
+        
+        public Color ImgColor 
+        { 
+            get => doubleImg1.BackColor; 
+            set => doubleImg1.BackColor = value; 
+        }
 
         public string Type { get { return "NODE_POINT"; } }
 

@@ -13,23 +13,44 @@ namespace Chump_kuka.Controls
 {
     public partial class KukaAreaControl : UserControl
     {
-        private string[] _nodes = new string[] { };
+        private KukaAreaModel _model = new KukaAreaModel();
+        private KukaNodeModel[] _nodes = new KukaNodeModel[] { };
         private bool _checked = false;
-        private int[] _node_status = new int[] { };
+        private int[] _node_status = null;
         private bool _allow_click = true;
+        private Color[] _container_colors = new Color[3] { Color.CadetBlue, Color.White, Color.Orange};
 
         // 定義事件，使用自定義參數
         public event EventHandler<ControlClickEventArgs> ContainerClick;
         public event EventHandler<ControlClickEventArgs> AreaClick;
 
+        public Image[] ContainerImgs;
         public string Type { get { return "NODE_AREA"; } }
         public string AreaCode = "";
+
+        public KukaAreaModel Model 
+        { 
+            get => _model;
+            set
+            {
+                if (value != null)
+                {
+                    _model.PropertyChanged -= _model_PropertyChanged;       // 解除既有綁定事件
+                    _model = value;     // 重新指定模型
+                    _model.PropertyChanged += _model_PropertyChanged;       // 綁定新事件
+                }
+            } 
+        }
 
         [Description("區域名稱。"), Category("自訂值")]
         public string AreaName
         {
             get => label1.Text; 
-            set { label1.Text = value; }
+            set 
+            { 
+                if (Model.AreaName != value) Model.AreaName = value; 
+                label1.Text = value;
+            }
         }
 
         [Description("區域中是否可點擊。"), Category("自訂值")]
@@ -63,24 +84,43 @@ namespace Chump_kuka.Controls
         public bool AllowContainerLock { get; set; } = false;
 
         [Description("區域中的節點。"), Category("自訂值")]
-        public string[] AreaNode
+        public KukaNodeModel[] AreaNode
         {
-            get => _nodes; 
-            set 
+            get => _nodes;
+            set
             {
-                if (_nodes == value) return;        // 如果資訊未更新，不處理
+                if (_nodes.SequenceEqual(value) || value == null) return;        // 如果資訊未更新，不處理
 
                 containerPanel.Controls.Clear();
-                if (value == null) return;
-                _nodes = value; 
+                _nodes = value;
                 for (int i = 0; i < _nodes.Length; i++)
                 {
-                    Container container = new Container() 
-                    { 
-                        ContainerName = _nodes[i], 
-                        Size = container1.Size ,
+                    Container container = new Container()
+                    {
+                        ContainerName = _nodes[i].NodeName,
+                        Size = container1.Size,
                         Enabled = AllowContainerClick,
+                        Parent = this
                     };
+                    _nodes[i].PropertyChanged += (sender, e) =>
+                    {
+                        KukaNodeModel model = (sender as KukaNodeModel);
+                        switch (e.PropertyName)
+                        {
+                            // 貨架狀態
+                            case nameof(KukaNodeModel.RackStatus):
+                                UpdateSingleContainerImage(container, model.RackStatus);        // 更新貨架狀態圖片
+                                break;
+                            // 節點狀態
+                            case nameof(KukaNodeModel.NodeStatus):
+                                container.ImgColor = _container_colors[model.NodeStatus];
+                                break;
+
+                        }
+                    };
+
+                    // container.ImageIndex = -1;
+                    //UpdateSingleContainerImage(container, _nodes[i].RackStatus);
                     container.ContainerClick += Container_ContainerClick;
                     containerPanel.Controls.Add(container);
 
@@ -89,7 +129,7 @@ namespace Chump_kuka.Controls
                         container.ShowLock = true;
                     }
                 }
-                _node_status = new int[_nodes.Length];
+                // _node_status = new int[_nodes.Length];
             }
         }
 
@@ -113,27 +153,46 @@ namespace Chump_kuka.Controls
             }
         }
 
-        [Description("設定節點狀態。"), Category("自訂值")]
+        [Description("設定節點狀態。\n0: 無貨架\n1: 空載\n2: 滿載"), Category("自訂值")]
         public int[] NodeStatus
         {
             get => _node_status; 
             set
             {
-                if (value == _node_status) return;
-                if (value.Length < _nodes.Length)
-                {
-                    MessageBox.Show("節點狀態與節點數量不吻合");
-                    return;
-                }
+                if (value == _node_status || value == null) return;
+                _node_status = value;
+                //if (value.Length < _nodes.Length)
+                //{
+                //    MessageBox.Show("節點狀態與節點數量不吻合");
+                //    return;
+                //}
                 UpdateContainerImage(value);
             }
         }
         public KukaAreaControl()
         {
             InitializeComponent();
+            ContainerImgs = new Image[3] { null, doubleImg1.Image, doubleImg1.SubImg };
+
             Controls.Remove(samplePanel);
             custom_border.Dock = DockStyle.Fill;
             SizeChanged += Kuka_area_SizeChanged;
+        }
+
+        private void _model_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            KukaAreaModel model = (sender as KukaAreaModel);
+            switch (e.PropertyName)
+            {
+                // 區域名稱
+                case nameof(KukaAreaModel.AreaName):
+                    AreaName = model.AreaName;
+                    break;
+                // 節點內容
+                case nameof(KukaAreaModel.NodeList):
+                    AreaNode = model.NodeList;
+                    break;
+            }
         }
 
         /// <summary>
@@ -168,6 +227,36 @@ namespace Chump_kuka.Controls
                     // 輸入 container_status 數量少於區域內的容器
                 }
             }
+        }
+
+        public void UpdateSingleContainerImage(Container container, int container_status)
+        {
+            int i = 0;
+
+            try
+            {
+                switch (container_status)
+                {
+                    case 0:
+                        // 無交換站
+                        container.ContainerImage = null;
+                        break;
+                    case 1:
+                        // 有交換站 & 無料
+                        container.ContainerImage = doubleImg1.Image;
+                        break;
+                    case 2:
+                        // 有交換站 & 有料
+                        container.ContainerImage = doubleImg1.SubImg;
+                        break;
+                }
+                
+            }
+            catch
+            {
+                // 輸入 container_status 數量少於區域內的容器
+            }
+            
         }
 
         /// <summary>

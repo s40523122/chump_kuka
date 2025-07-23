@@ -195,7 +195,7 @@ namespace Chump_kuka.Dispatchers
             if (_area_step == 2)
             {
                 string current_position = jsonObj["currentPosition"].ToString();
-                KukaAreaModel area_model = KukaParm.KukaAreaModels.FirstOrDefault(area => area.NodeList.Contains(current_position));
+                KukaAreaModel area_model = KukaParm.KukaAreaModels.FirstOrDefault(area => area.IsNodeExist(current_position));
                 area_code = area_model.AreaCode;
             }
 

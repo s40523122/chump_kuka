@@ -92,7 +92,7 @@ namespace Chump_kuka.Forms
                         Dock = DockStyle.Fill,
                         Margin = new Padding(10),
                         AreaCode = area.AreaCode,
-                        AreaNode = area.NodeList?.ToArray()
+                        //AreaNode = area.NodeList?.ToArray()
                     };
 
                     kuka_area.ContainerClick += Kuka_area1_ContainerClick;

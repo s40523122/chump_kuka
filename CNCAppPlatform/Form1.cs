@@ -23,6 +23,12 @@ namespace Chump_kuka
     {
         private UdpChatRoom _udp_chat_room = new UdpChatRoom();
         private LogWindow _log_window;
+
+        KukaAreaModel aa = new KukaAreaModel()
+        {
+            AreaName = "Hello"
+        };
+
         public Form1()
         {
             InitializeComponent();
@@ -31,6 +37,12 @@ namespace Chump_kuka
 
             //string binPath = Path.Combine(Application.StartupPath, "config\\layout.ini");
             //MessageBox.Show("Bin 資料夾路徑：" + binPath);
+
+
+ 
+            
+
+            kukaAreaControl1.Model = aa;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -70,6 +82,38 @@ namespace Chump_kuka
                 _udp_chat_room.Hide();
             }
             _udp_chat_room.Show();
+        }
+
+        int step = 0;
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            switch (step)
+            {
+                case 0:
+                    aa.AreaName = "Sawadika";
+                    aa.NodeList = new KukaNodeModel[2]
+                    {
+                    new KukaNodeModel("ee"),
+                    new KukaNodeModel("gg")
+                    };
+                    step++;
+                    break;
+                case 1:
+                    kukaAreaControl1.AreaName = "Ohio";
+                    aa.NodeList[0].RackStatus = 1;
+                    aa.NodeList[1].RackStatus = 0;
+                    aa.NodeList[0].NodeStatus = 1;
+                    step++;
+                    break;
+                case 2:
+                    
+                    aa.NodeList[0].RackStatus = 1;
+                    aa.NodeList[1].RackStatus = 2;
+                    aa.NodeList[1].NodeStatus = 2;
+                    kukaAreaControl1.AreaName = "Wensday";
+                    step++;
+                    break;
+            }
         }
     }
 }
