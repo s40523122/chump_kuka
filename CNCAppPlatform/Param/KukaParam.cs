@@ -257,6 +257,7 @@ public class KukaNodeModel : INotifyPropertyChanged
     {
         NodeCode = nodeCode;
     }
+
     public override string ToString() =>
         Newtonsoft.Json.JsonConvert.SerializeObject(this);
 
@@ -482,4 +483,30 @@ public class CarryNode
             Name = node_model.AreaName;
         }
     }
+}
+
+public class KukaOriginAreaModel
+{
+    /// <summary>
+    /// 區域編碼 ex: area001
+    /// </summary>
+    public string AreaCode { get; set; }
+
+    /// <summary>
+    /// 區域名稱 ex: 加工區
+    /// </summary>
+    public string AreaName { get; set; }
+
+    /// <summary>
+    /// 區域類型 {1: 庫區, 2: 作業區, 3: 暫存區, 4: 緩存區}
+    /// </summary>
+    public int AreaType { get; set; }
+
+    /// <summary>
+    /// 點位集合
+    /// </summary>
+    public string[] NodeList { get; set; }
+
+    public int[] NodeStatus { get; set; }
+
 }

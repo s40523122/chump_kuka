@@ -122,7 +122,31 @@ namespace Chump_kuka.Controller
         private static void AreaCb(string message)
         {
             // 若字串為區域類別，解析資料訊息後，將比較後差異處，更新為接收資料
-            List<KukaAreaModel> areas = JsonConvert.DeserializeObject<List<KukaAreaModel>>(message);
+            List<KukaOriginAreaModel> origin_areas = JsonConvert.DeserializeObject<List<KukaOriginAreaModel>>(message);
+
+            #region 版本補丁
+            List<KukaAreaModel> areas = new List<KukaAreaModel>();
+            foreach (KukaOriginAreaModel origin in origin_areas)
+            {
+                List<KukaNodeModel> nodes = new List<KukaNodeModel>();
+                for (int i=0; i<origin.NodeList.Length; i++)
+                {
+                    nodes.Add(new KukaNodeModel(origin.NodeList[i])
+                    {
+                        RackStatus = origin.NodeStatus[i],
+                    });
+                }
+            
+                areas.Add(new KukaAreaModel()
+                {
+                    AreaName = origin.AreaName,
+                    AreaCode = origin.AreaCode,
+                    AreaType = origin.AreaType,
+                    NodeList = nodes.ToArray()
+                });
+            }
+
+            #endregion 版本補丁
 
             // 如果接收列表資訊與當前不同，更新當前列表
             //if (KukaParm.KukaAreaModels.Count == 0)
@@ -144,15 +168,46 @@ namespace Chump_kuka.Controller
                         source_area.LockNodes = new List<string>();
                     }
                 }
-            } 
+            }
         }
 
         private static void NodesCb(string message)
         {
-            KukaAreaModel receive_area = JsonConvert.DeserializeObject<KukaAreaModel>(message);
+            KukaOriginAreaModel origin = JsonConvert.DeserializeObject<KukaOriginAreaModel>(message);
+            #region 版本補丁
+            
+            List<KukaNodeModel> nodes = new List<KukaNodeModel>();
+            for (int i = 0; i < origin.NodeList.Length; i++)
+            {
+                nodes.Add(new KukaNodeModel(origin.NodeList[i])
+                {
+                    RackStatus = origin.NodeStatus[i],
+                });
+            }
+
+            KukaAreaModel receive_area = new KukaAreaModel()
+            {
+                AreaName = origin.AreaName,
+                AreaCode = origin.AreaCode,
+                AreaType = origin.AreaType,
+                NodeList = nodes.ToArray()
+            };
+            
+
+            #endregion 版本補丁
+            
             KukaAreaModel find_area = KukaAreaModel.Find(receive_area.AreaName, KukaParm.KukaAreaModels);
-            find_area.NodeStatus = receive_area.NodeStatus;
-            find_area.LockNodes = receive_area.LockNodes;
+            if (find_area != null)
+            {
+                // find_area.NodeStatus = receive_area.NodeStatus;
+                for (int i = 0; i < receive_area.NodeList.Length; i++)
+                {
+                    find_area.NodeList[i].RackStatus = receive_area.NodeList[i].RackStatus;
+                    find_area.NodeList[i].NodeStatus = receive_area.NodeList[i].NodeStatus;
+                }
+                // find_area.LockNodes = receive_area.LockNodes;
+            }
+
         }
 
         private static void FeedCb(string message)

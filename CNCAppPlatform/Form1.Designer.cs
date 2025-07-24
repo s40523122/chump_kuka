@@ -89,12 +89,13 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(753, 316);
+            this.button1.Location = new System.Drawing.Point(793, 56);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(74, 38);
             this.button1.TabIndex = 2;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // kukaAreaControl1
@@ -105,12 +106,13 @@
             this.kukaAreaControl1.AreaName = "scaleLabel1";
             this.kukaAreaControl1.AreaNode = new KukaNodeModel[0];
             this.kukaAreaControl1.Checked = false;
-            this.kukaAreaControl1.Location = new System.Drawing.Point(211, 222);
+            this.kukaAreaControl1.Location = new System.Drawing.Point(381, 18);
             this.kukaAreaControl1.Margin = new System.Windows.Forms.Padding(2);
             this.kukaAreaControl1.Name = "kukaAreaControl1";
             this.kukaAreaControl1.NodeStatus = null;
             this.kukaAreaControl1.Size = new System.Drawing.Size(382, 267);
             this.kukaAreaControl1.TabIndex = 3;
+            this.kukaAreaControl1.Visible = false;
             // 
             // Form1
             // 

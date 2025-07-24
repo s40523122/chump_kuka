@@ -37,6 +37,10 @@ namespace Chump_kuka.Controls
                 {
                     _model.PropertyChanged -= _model_PropertyChanged;       // 解除既有綁定事件
                     _model = value;     // 重新指定模型
+
+                    AreaName = _model.AreaName;
+                    AreaNode = _model.NodeList;
+                    
                     _model.PropertyChanged += _model_PropertyChanged;       // 綁定新事件
                 }
             } 
@@ -101,6 +105,11 @@ namespace Chump_kuka.Controls
                         Size = container1.Size,
                         Enabled = AllowContainerClick
                     };
+
+                    // 更新貨架狀態圖片
+                    UpdateSingleContainerImage(container, node.RackStatus);        
+                    container.ImgColor = _container_colors[Math.Max(node.NodeStatus, 0)];
+
                     node.PropertyChanged += (sender, e) =>
                     {
                         KukaNodeModel model = (sender as KukaNodeModel);

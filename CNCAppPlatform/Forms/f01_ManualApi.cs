@@ -77,32 +77,34 @@ namespace Chump_kuka.Forms
             this.Invoke(new Action(() =>
             {
 
-                tableLayoutPanel2.Controls.Clear();
+                //tableLayoutPanel2.Controls.Clear();
 
                 KukaParm.StartNode = KukaParm.GoalNode = null;
 
                 /* 加入區域 Control */
                 // 目前只支援到 4 組，超過可能會有 UI 顯示問題
-                foreach (KukaAreaModel area in KukaParm.KukaAreaModels)
+                KukaAreaModel model = KukaParm.KukaAreaModels[0];
+                foreach (KukaAreaControl area_ctrl in tableLayoutPanel2.Controls)
                 {
-                    KukaAreaControl kuka_area = new KukaAreaControl
-                    {
-                        AllowClick = true,
-                        AreaName = area.AreaName,
-                        Dock = DockStyle.Fill,
-                        Margin = new Padding(10),
-                        AreaCode = area.AreaCode,
-                        //AreaNode = area.NodeList?.ToArray()
-                    };
+                    area_ctrl.Model = model;
+                    model = model.Next();
+                    //KukaAreaControl kuka_area = new KukaAreaControl
+                    //{
+                    //    AllowClick = true,
+                    //    AreaName = area.AreaName,
+                    //    Dock = DockStyle.Fill,
+                    //    Margin = new Padding(10),
+                    //    AreaCode = area.AreaCode,
+                    //    //AreaNode = area.NodeList?.ToArray()
+                    //};
 
-                    kuka_area.ContainerClick += Kuka_area1_ContainerClick;
-                    kuka_area.AreaClick += Area_AreaClick;
+                    //kuka_area.ContainerClick += Kuka_area1_ContainerClick;
+                    //kuka_area.AreaClick += Area_AreaClick;
 
-                    kuka_area.UpdateContainerImage(area.NodeStatus?.ToArray());        // 初次建立，更新圖片
-                    area.ControlUI = kuka_area;       // 將建立的使用者控制項與模型綁定
+                    //kuka_area.UpdateContainerImage(area.NodeStatus?.ToArray());        // 初次建立，更新圖片
+                    //area.ControlUI = kuka_area;       // 將建立的使用者控制項與模型綁定
 
-                    // KukaParm.AreaControls.Add(kuka_area);
-                    tableLayoutPanel2.Controls.Add(kuka_area);
+                    //tableLayoutPanel2.Controls.Add(kuka_area);
                 }
             }));
         }
