@@ -132,13 +132,26 @@ namespace Chump_kuka.Controller
         /// <param name="e"></param>
         private static void ModbusTCPDispatcher_SensorRead(object sender, SensorDataEventArgs e)
         {
-            int[] current_node_status = ToNodeStatus(e.Data).ToArray();    // 當前節點狀態
-
+            int[] sensor_node_status = ToNodeStatus(e.Data).ToArray();    // 當前節點狀態
+            int[] model_node_status = KukaParm.BindAreaModel.NodeList.Select(n => n.RackStatus).ToArray();
             // 如果節點狀態有變更才執行 ( 或距離上次更新超過5秒 )
-            if (!current_node_status.SequenceEqual(KukaParm.BindAreaModel.NodeStatus) || ((DateTime.Now - _area_update_time).TotalSeconds > 5))
+            if (!sensor_node_status.SequenceEqual(model_node_status) || ((DateTime.Now - _area_update_time).TotalSeconds > 5))
             {
-                KukaParm.BindAreaModel.NodeStatus = current_node_status;
-                BindControl?.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus.ToArray());        // 更新圖片
+                //KukaParm.BindAreaModel.NodeStatus = current_node_status;
+                //BindControl?.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus.ToArray());        // 更新圖片
+
+                // 判定感測器數量是否正確
+                if(KukaParm.BindAreaModel.NodeList.Length != sensor_node_status.Length)
+                {
+                    MsgBox.Show("感測器數量與模型不符");
+                    return;
+                }
+
+                // 更新感測器資訊
+                for( int i = 0; i < KukaParm.BindAreaModel.NodeList.Length; i++)
+                {
+                    KukaParm.BindAreaModel.NodeList[i].RackStatus = sensor_node_status[i];
+                }
 
                 ChatController.SyncNodeStatus(KukaParm.BindAreaModel);
                 _area_update_time = DateTime.Now;
@@ -218,7 +231,7 @@ namespace Chump_kuka.Controller
             BindControl.AreaName = KukaParm.BindAreaModel.AreaName;
             BindControl.AreaCode = KukaParm.BindAreaModel.AreaCode;
             BindControl.AreaNode = KukaParm.BindAreaModel.NodeList;
-            BindControl.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus);        // 初次建立，更新圖片
+            //BindControl.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus);        // 初次建立，更新圖片
 
             BindControl.ContainerClick -= BindControl_ContainerClick;
             BindControl.ContainerClick += BindControl_ContainerClick;
@@ -243,7 +256,10 @@ namespace Chump_kuka.Controller
 
         public static void InitAreaStatus()
         {
-            int[] current_status = KukaParm.BindAreaModel?.NodeStatus;       // 當前區域狀態
+            // 當前區域狀態
+            int[] current_status = KukaParm.BindAreaModel?.NodeList
+               .Select(node => node.RackStatus)
+               .ToArray();
             if (current_status == null) return;
 
             _RecordNodeStatus = current_status;
@@ -256,7 +272,10 @@ namespace Chump_kuka.Controller
             // * 返回當前是否可派發任務
             // * 自動設定搬運任務的起點與終點
 
-            int[] current_status = KukaParm.BindAreaModel?.NodeStatus;       // 當前區域狀態
+            // 當前區域狀態
+            int[] current_status = KukaParm.BindAreaModel?.NodeList
+               .Select(node => node.RackStatus)
+               .ToArray();
 
             if (current_status == null) return false;
 

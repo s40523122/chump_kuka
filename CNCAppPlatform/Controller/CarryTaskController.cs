@@ -209,14 +209,17 @@ namespace Chump_kuka
         private static bool IsAreaFully(KukaAreaModel area_model, out bool is_init)
         {
             is_init = true;
-            if (area_model.NodeStatus == null)
+            if (area_model.NodeList == null)
             {
                 is_init = false;
                 return true;
             }
             // 若滿載，返回 true，反之 false
-            bool status = !area_model.NodeStatus.Contains(0);
-            return status;
+            bool status = area_model.NodeList
+                .Select(node => node.RackStatus)
+                .ToArray()
+                .Contains(0);
+            return !status;
         }
 
         private static bool IsLockExist(KukaAreaModel area_model)

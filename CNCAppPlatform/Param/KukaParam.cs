@@ -364,31 +364,6 @@ public class KukaAreaModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(NodeList));
     }
 
-    public int[] NodeStatus {  get; set; }
-    /*
-    /// <summary>
-    /// 貨架狀態 {0: 無貨架, 1: 空貨架, 2: 滿貨架}
-    /// </summary>
-    public int[] NodeStatus 
-    { 
-        get => _node_status;
-        set
-        {
-            if (_node_status == null || !_node_status.SequenceEqual(value))
-            {
-                _node_status = value;
-                // NodeStatusChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeStatus)));
-
-                ControlUI?.UpdateContainerImage(value);     // 更新圖片
-
-                OnPropertyChanged(nameof(NodeStatus));        // 屬性發生變化
-
-                //NodeStatusChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeStatus)));
-            }
-        }
-    }
-    */
-
     /// <summary>
     /// 鎖定節點，允許區域自動搬運
     /// </summary>

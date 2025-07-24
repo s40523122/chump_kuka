@@ -143,13 +143,6 @@
             this.kuka_area1.Location = new System.Drawing.Point(10, 10);
             this.kuka_area1.Margin = new System.Windows.Forms.Padding(10);
             this.kuka_area1.Name = "kuka_area1";
-            this.kuka_area1.NodeStatus = new int[] {
-        0,
-        0,
-        0,
-        0,
-        0,
-        0};
             this.kuka_area1.Size = new System.Drawing.Size(344, 224);
             this.kuka_area1.TabIndex = 2;
             // 
@@ -166,11 +159,6 @@
             this.kuka_area2.Location = new System.Drawing.Point(374, 10);
             this.kuka_area2.Margin = new System.Windows.Forms.Padding(10);
             this.kuka_area2.Name = "kuka_area2";
-            this.kuka_area2.NodeStatus = new int[] {
-        0,
-        0,
-        0,
-        0};
             this.kuka_area2.Size = new System.Drawing.Size(345, 224);
             this.kuka_area2.TabIndex = 1;
             // 
@@ -187,9 +175,6 @@
             this.kuka_area3.Location = new System.Drawing.Point(10, 254);
             this.kuka_area3.Margin = new System.Windows.Forms.Padding(10);
             this.kuka_area3.Name = "kuka_area3";
-            this.kuka_area3.NodeStatus = new int[] {
-        0,
-        0};
             this.kuka_area3.Size = new System.Drawing.Size(344, 224);
             this.kuka_area3.TabIndex = 0;
             // 

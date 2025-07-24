@@ -109,7 +109,6 @@
             this.kukaAreaControl1.Location = new System.Drawing.Point(381, 18);
             this.kukaAreaControl1.Margin = new System.Windows.Forms.Padding(2);
             this.kukaAreaControl1.Name = "kukaAreaControl1";
-            this.kukaAreaControl1.NodeStatus = null;
             this.kukaAreaControl1.Size = new System.Drawing.Size(382, 267);
             this.kukaAreaControl1.TabIndex = 3;
             this.kukaAreaControl1.Visible = false;

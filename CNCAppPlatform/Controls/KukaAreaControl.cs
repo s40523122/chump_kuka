@@ -160,22 +160,6 @@ namespace Chump_kuka.Controls
             }
         }
 
-        [Description("設定節點狀態。\n0: 無貨架\n1: 空載\n2: 滿載"), Category("自訂值")]
-        public int[] NodeStatus
-        {
-            get => _node_status; 
-            set
-            {
-                if (value == _node_status || value == null) return;
-                _node_status = value;
-                //if (value.Length < _nodes.Length)
-                //{
-                //    MessageBox.Show("節點狀態與節點數量不吻合");
-                //    return;
-                //}
-                UpdateContainerImage(value);
-            }
-        }
         public KukaAreaControl()
         {
             InitializeComponent();
@@ -199,40 +183,6 @@ namespace Chump_kuka.Controls
                 case nameof(KukaAreaModel.NodeList):
                     AreaNode = model.NodeList;
                     break;
-            }
-        }
-
-        /// <summary>
-        /// 更新容器圖片
-        /// </summary>
-        /// <param name="container_status"></param>
-        public void UpdateContainerImage(int[] container_status)
-        {
-            int i = 0;
-            foreach (Container _container in containerPanel.Controls)
-            {
-                try
-                {
-                    switch (container_status[i++])
-                    {
-                        case 0:
-                            // 無交換站
-                            _container.ContainerImage = null;
-                            break;
-                        case 1:
-                            // 有交換站 & 無料
-                            _container.ContainerImage = doubleImg1.Image;
-                            break;
-                        case 2:
-                            // 有交換站 & 有料
-                            _container.ContainerImage = doubleImg1.SubImg;
-                            break;
-                    }
-                }
-                catch 
-                {
-                    // 輸入 container_status 數量少於區域內的容器
-                }
             }
         }
 
