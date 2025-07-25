@@ -16,6 +16,8 @@ namespace Chump_kuka
     public partial class Container : UserControl
     {
         private bool _lock = false;
+        private Color _origin_back_color = Color.CadetBlue;     // 預設背景顏色
+        private Color _replace_back_color;      //  外部修改背景顏色
 
 
         [Description("容器名稱。"), Category("自訂值")]
@@ -33,8 +35,7 @@ namespace Chump_kuka
             {
                 try
                 {
-                    doubleImg1.Image = value; 
-                    lock_pic.BackgroundImage = value;
+                    doubleImg1.BackgroundImage = value; 
                 }
                 catch (Exception ex)
                 {
@@ -62,12 +63,14 @@ namespace Chump_kuka
                     case true:
                         doubleImg1.BackColor = Color.MediumSpringGreen;
                         panel2.BackColor = Color.OrangeRed;
-                        Text = "已選定";
+                        if(Text == "")
+                            Text = "已選定";
                         break;
                     case false:
-                        doubleImg1.BackColor = Color.CadetBlue;
+                        doubleImg1.BackColor = (_replace_back_color == null) ? _origin_back_color : _replace_back_color;
                         panel2.BackColor = Color.DarkOrange;
-                        Text = "";
+                        if (Text == "已選定")
+                            Text = "";
                         break;
                 }
             }
@@ -81,26 +84,20 @@ namespace Chump_kuka
             set 
             {
                 _lock = value;
-                if (_lock)
-                {
-                    
-                    //lock_pic.DataBindings.Add("BackColor", doubleImg1, "BackColor");
-                    lock_pic.BackColor = Color.MediumSpringGreen;
-                    //lock_pic.BackgroundImage = doubleImg1.Image;
-                    lock_pic.BringToFront();
-                }
-                else
-                {
-                    doubleImg1.BringToFront();
-                }
+
+                doubleImg1.Change = _lock;
             }
         }
 
         
         public Color ImgColor 
         { 
-            get => doubleImg1.BackColor; 
-            set => doubleImg1.BackColor = value; 
+            get => doubleImg1.BackColor;
+            set
+            {
+                _replace_back_color = value;
+                doubleImg1.BackColor = _replace_back_color;
+            }
         }
 
         public string Type { get { return "NODE_POINT"; } }

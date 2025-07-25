@@ -32,7 +32,6 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.doubleImg1 = new iCAPS.DoubleImg();
-            this.lock_pic = new System.Windows.Forms.PictureBox();
             this.label1 = new iCAPS.ScaleLabel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -41,7 +40,6 @@
             this.tableLayoutPanel1.SuspendLayout();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lock_pic)).BeginInit();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -66,7 +64,6 @@
             // panel3
             // 
             this.panel3.Controls.Add(this.doubleImg1);
-            this.panel3.Controls.Add(this.lock_pic);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(3, 88);
             this.panel3.Name = "panel3";
@@ -76,33 +73,21 @@
             // doubleImg1
             // 
             this.doubleImg1.BackColor = System.Drawing.Color.CadetBlue;
-            this.doubleImg1.Change = false;
+            this.doubleImg1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.doubleImg1.Change = true;
             this.doubleImg1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.doubleImg1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.doubleImg1.EnableCilck = false;
+            this.doubleImg1.Image = ((System.Drawing.Image)(resources.GetObject("doubleImg1.Image")));
             this.doubleImg1.Location = new System.Drawing.Point(0, 0);
             this.doubleImg1.Name = "doubleImg1";
             this.doubleImg1.SetSquare = false;
             this.doubleImg1.Size = new System.Drawing.Size(411, 391);
             this.doubleImg1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.doubleImg1.SubImg = ((System.Drawing.Image)(resources.GetObject("doubleImg1.SubImg")));
+            this.doubleImg1.SubImg = null;
             this.doubleImg1.TabIndex = 2;
             this.doubleImg1.TabStop = false;
-            this.doubleImg1.Tag = ((object)(resources.GetObject("doubleImg1.Tag")));
             this.doubleImg1.Click += new System.EventHandler(this.doubleImg1_Click);
-            // 
-            // lock_pic
-            // 
-            this.lock_pic.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.lock_pic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.lock_pic.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lock_pic.Image = ((System.Drawing.Image)(resources.GetObject("lock_pic.Image")));
-            this.lock_pic.Location = new System.Drawing.Point(0, 0);
-            this.lock_pic.Name = "lock_pic";
-            this.lock_pic.Size = new System.Drawing.Size(411, 391);
-            this.lock_pic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.lock_pic.TabIndex = 3;
-            this.lock_pic.TabStop = false;
             // 
             // label1
             // 
@@ -176,7 +161,6 @@
             this.tableLayoutPanel1.PerformLayout();
             this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.doubleImg1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lock_pic)).EndInit();
             this.panel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
@@ -194,6 +178,5 @@
         private iCAPS.ScaleLabel label2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.PictureBox lock_pic;
     }
 }
