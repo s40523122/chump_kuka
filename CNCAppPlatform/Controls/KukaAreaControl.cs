@@ -104,12 +104,16 @@ namespace Chump_kuka.Controls
                     {
                         ContainerName = node.NodeName,
                         Size = container1.Size,
-                        Enabled = AllowContainerClick
+                        Enabled = AllowContainerClick,
+                        Tag = node
                     };
 
                     // 更新貨架狀態圖片
                     UpdateSingleContainerImage(container, node.RackStatus);        
                     container.ImgColor = _container_colors[Math.Max(node.NodeStatus, 0)];
+                    // 若 model.NodeStatus == 1，表示節點已上鎖
+                    if (node.NodeStatus == 1) container.ShowLock = true;
+                    else container.ShowLock = false;
 
                     node.PropertyChanged += (sender, e) =>
                     {

@@ -321,5 +321,13 @@ namespace Chump_kuka.Forms
         {
             ChatController.UpdateTaskList();
         }
+
+        private void bind_area_control_ContainerClick(object sender, ControlClickEventArgs e)
+        {
+            Container container = e.Control as Container;
+
+            // 如果貨架已上鎖，解鎖；反之上鎖
+            (container.Tag as KukaNodeModel).NodeStatus = container.ShowLock ? 0 : 1;
+        }
     }
 }

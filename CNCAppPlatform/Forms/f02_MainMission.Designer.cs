@@ -387,6 +387,7 @@ namespace Chump_kuka.Forms
             this.bind_area_control.Name = "bind_area_control";
             this.bind_area_control.Size = new System.Drawing.Size(503, 327);
             this.bind_area_control.TabIndex = 0;
+            this.bind_area_control.ContainerClick += new System.EventHandler<Chump_kuka.ControlClickEventArgs>(this.bind_area_control_ContainerClick);
             // 
             // scaleButton1
             // 
