@@ -39,6 +39,7 @@ namespace Chump_kuka.Controls
                     _model = value;     // 重新指定模型
 
                     AreaName = _model.AreaName;
+                    AreaCode = _model.AreaCode;
                     AreaNode = _model.NodeList;
                     
                     _model.PropertyChanged += _model_PropertyChanged;       // 綁定新事件
@@ -122,6 +123,10 @@ namespace Chump_kuka.Controls
                             // 節點狀態
                             case nameof(KukaNodeModel.NodeStatus):
                                 container.ImgColor = _container_colors[model.NodeStatus];
+
+                                // 若 model.NodeStatus == 1，表示節點已上鎖
+                                if (model.NodeStatus == 1) container.ShowLock = true;
+                                else container.ShowLock = false;
                                 break;
                         }
                     };

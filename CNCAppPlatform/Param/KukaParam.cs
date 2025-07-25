@@ -223,7 +223,7 @@ public static class KukaParm
 public class KukaNodeModel : INotifyPropertyChanged
 {
     private int _rack_status = -1;      // 貨架狀態 {0: 無貨架, 1: 空貨架, 2: 滿貨架}
-    private int _node_status = -1;      // 節點狀態 {0: 普通, 1: 上鎖, 2: 等待搬運}
+    private int _node_status = -1;      // 節點狀態 {0: 普通, 1: 上鎖, 2: 已建立任務}
 
     // 建立屬性值發生變化的通知事件
     public event PropertyChangedEventHandler PropertyChanged;
@@ -248,6 +248,23 @@ public class KukaNodeModel : INotifyPropertyChanged
         set
         {
             if (_node_status == value) return;
+
+            if (_node_status == 2)
+            {
+                MsgBox.Show("選用貨架已佔用!");
+                return;
+            }
+
+            if(value == 1)
+            {
+                if (_rack_status != 1)
+                {
+                    // 若不是空貨架無法上鎖
+                    MsgBox.Show("僅能上鎖空貨架!");
+                    return;      
+                }
+            }
+
             _node_status = value;
             OnPropertyChanged(nameof(NodeStatus));
         } 

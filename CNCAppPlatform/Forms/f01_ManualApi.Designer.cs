@@ -33,9 +33,6 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.kuka_area1 = new Chump_kuka.Controls.KukaAreaControl();
-            this.kuka_area2 = new Chump_kuka.Controls.KukaAreaControl();
-            this.kuka_area3 = new Chump_kuka.Controls.KukaAreaControl();
             this.scaleLabel2 = new iCAPS.ScaleLabel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
@@ -47,8 +44,11 @@
             this.selected_1 = new iCAPS.ScaleLabel();
             this.go_direction = new iCAPS.DoubleImg();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
-            this.kukaRobotStatus1 = new Chump_kuka.Controls.KukaRobotStatus();
             this.scaleLabel1 = new iCAPS.ScaleLabel();
+            this.kuka_area1 = new Chump_kuka.Controls.KukaAreaControl();
+            this.kuka_area2 = new Chump_kuka.Controls.KukaAreaControl();
+            this.kuka_area3 = new Chump_kuka.Controls.KukaAreaControl();
+            this.kukaRobotStatus1 = new Chump_kuka.Controls.KukaRobotStatus();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -129,54 +129,6 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 18F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(729, 488);
             this.tableLayoutPanel2.TabIndex = 1;
-            // 
-            // kuka_area1
-            // 
-            this.kuka_area1.AllowClick = true;
-            this.kuka_area1.AllowContainerClick = true;
-            this.kuka_area1.AllowContainerLock = false;
-            this.kuka_area1.AreaName = "Area_1";
-            this.kuka_area1.AreaNode = new KukaNodeModel[0];
-            this.kuka_area1.Checked = false;
-            this.kuka_area1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kuka_area1.Enabled = false;
-            this.kuka_area1.Location = new System.Drawing.Point(10, 10);
-            this.kuka_area1.Margin = new System.Windows.Forms.Padding(10);
-            this.kuka_area1.Name = "kuka_area1";
-            this.kuka_area1.Size = new System.Drawing.Size(344, 224);
-            this.kuka_area1.TabIndex = 2;
-            // 
-            // kuka_area2
-            // 
-            this.kuka_area2.AllowClick = true;
-            this.kuka_area2.AllowContainerClick = true;
-            this.kuka_area2.AllowContainerLock = false;
-            this.kuka_area2.AreaName = "Area_2";
-            this.kuka_area2.AreaNode = new KukaNodeModel[0];
-            this.kuka_area2.Checked = false;
-            this.kuka_area2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kuka_area2.Enabled = false;
-            this.kuka_area2.Location = new System.Drawing.Point(374, 10);
-            this.kuka_area2.Margin = new System.Windows.Forms.Padding(10);
-            this.kuka_area2.Name = "kuka_area2";
-            this.kuka_area2.Size = new System.Drawing.Size(345, 224);
-            this.kuka_area2.TabIndex = 1;
-            // 
-            // kuka_area3
-            // 
-            this.kuka_area3.AllowClick = true;
-            this.kuka_area3.AllowContainerClick = true;
-            this.kuka_area3.AllowContainerLock = false;
-            this.kuka_area3.AreaName = "Area_3";
-            this.kuka_area3.AreaNode = new KukaNodeModel[0];
-            this.kuka_area3.Checked = false;
-            this.kuka_area3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kuka_area3.Enabled = false;
-            this.kuka_area3.Location = new System.Drawing.Point(10, 254);
-            this.kuka_area3.Margin = new System.Windows.Forms.Padding(10);
-            this.kuka_area3.Name = "kuka_area3";
-            this.kuka_area3.Size = new System.Drawing.Size(344, 224);
-            this.kuka_area3.TabIndex = 0;
             // 
             // scaleLabel2
             // 
@@ -340,14 +292,6 @@
             this.tableLayoutPanel7.Size = new System.Drawing.Size(271, 343);
             this.tableLayoutPanel7.TabIndex = 5;
             // 
-            // kukaRobotStatus1
-            // 
-            this.kukaRobotStatus1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kukaRobotStatus1.Location = new System.Drawing.Point(3, 44);
-            this.kukaRobotStatus1.Name = "kukaRobotStatus1";
-            this.kukaRobotStatus1.Size = new System.Drawing.Size(265, 296);
-            this.kukaRobotStatus1.TabIndex = 4;
-            // 
             // scaleLabel1
             // 
             this.scaleLabel1.AutoSize = true;
@@ -361,6 +305,65 @@
             this.scaleLabel1.TabIndex = 4;
             this.scaleLabel1.Text = "機器人狀態";
             this.scaleLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // kuka_area1
+            // 
+            this.kuka_area1.AllowClick = true;
+            this.kuka_area1.AllowContainerClick = true;
+            this.kuka_area1.AllowContainerLock = false;
+            this.kuka_area1.AreaName = "Area_1";
+            this.kuka_area1.AreaNode = new KukaNodeModel[0];
+            this.kuka_area1.Checked = false;
+            this.kuka_area1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kuka_area1.Location = new System.Drawing.Point(10, 10);
+            this.kuka_area1.Margin = new System.Windows.Forms.Padding(10);
+            this.kuka_area1.Name = "kuka_area1";
+            this.kuka_area1.Size = new System.Drawing.Size(344, 224);
+            this.kuka_area1.TabIndex = 2;
+            this.kuka_area1.ContainerClick += new System.EventHandler<Chump_kuka.ControlClickEventArgs>(this.Kuka_area1_ContainerClick);
+            this.kuka_area1.AreaClick += new System.EventHandler<Chump_kuka.ControlClickEventArgs>(this.Area_AreaClick);
+            // 
+            // kuka_area2
+            // 
+            this.kuka_area2.AllowClick = true;
+            this.kuka_area2.AllowContainerClick = true;
+            this.kuka_area2.AllowContainerLock = false;
+            this.kuka_area2.AreaName = "Area_2";
+            this.kuka_area2.AreaNode = new KukaNodeModel[0];
+            this.kuka_area2.Checked = false;
+            this.kuka_area2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kuka_area2.Location = new System.Drawing.Point(374, 10);
+            this.kuka_area2.Margin = new System.Windows.Forms.Padding(10);
+            this.kuka_area2.Name = "kuka_area2";
+            this.kuka_area2.Size = new System.Drawing.Size(345, 224);
+            this.kuka_area2.TabIndex = 1;
+            this.kuka_area2.ContainerClick += new System.EventHandler<Chump_kuka.ControlClickEventArgs>(this.Kuka_area1_ContainerClick);
+            this.kuka_area2.AreaClick += new System.EventHandler<Chump_kuka.ControlClickEventArgs>(this.Area_AreaClick);
+            // 
+            // kuka_area3
+            // 
+            this.kuka_area3.AllowClick = true;
+            this.kuka_area3.AllowContainerClick = true;
+            this.kuka_area3.AllowContainerLock = false;
+            this.kuka_area3.AreaName = "Area_3";
+            this.kuka_area3.AreaNode = new KukaNodeModel[0];
+            this.kuka_area3.Checked = false;
+            this.kuka_area3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kuka_area3.Location = new System.Drawing.Point(10, 254);
+            this.kuka_area3.Margin = new System.Windows.Forms.Padding(10);
+            this.kuka_area3.Name = "kuka_area3";
+            this.kuka_area3.Size = new System.Drawing.Size(344, 224);
+            this.kuka_area3.TabIndex = 0;
+            this.kuka_area3.ContainerClick += new System.EventHandler<Chump_kuka.ControlClickEventArgs>(this.Kuka_area1_ContainerClick);
+            this.kuka_area3.AreaClick += new System.EventHandler<Chump_kuka.ControlClickEventArgs>(this.Area_AreaClick);
+            // 
+            // kukaRobotStatus1
+            // 
+            this.kukaRobotStatus1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kukaRobotStatus1.Location = new System.Drawing.Point(3, 44);
+            this.kukaRobotStatus1.Name = "kukaRobotStatus1";
+            this.kukaRobotStatus1.Size = new System.Drawing.Size(265, 296);
+            this.kukaRobotStatus1.TabIndex = 4;
             // 
             // f01_ManualApi
             // 

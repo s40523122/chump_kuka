@@ -131,10 +131,9 @@ namespace Chump_kuka.Controller
                 List<KukaNodeModel> nodes = new List<KukaNodeModel>();
                 for (int i=0; i<origin.NodeList.Length; i++)
                 {
-                    nodes.Add(new KukaNodeModel(origin.NodeList[i])
-                    {
-                        RackStatus = origin.NodeStatus[i],
-                    });
+                    KukaNodeModel new_node = new KukaNodeModel(origin.NodeList[i]);
+                    if (origin.NodeStatus.Length > i) new_node.RackStatus = origin.NodeStatus[i];
+                    nodes.Add(new_node);
                 }
             
                 areas.Add(new KukaAreaModel()
