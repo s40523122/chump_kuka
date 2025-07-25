@@ -255,18 +255,25 @@ namespace Chump_kuka.Dispatchers
 
         private void HandleNodesResponse(JObject resp_json)
         {
-            var nodeData = resp_json["data"].ToObject<List<dynamic>>();
+            var node_data = resp_json["data"].ToObject<List<dynamic>>();
 
             // List<KukaAreaModel> _kuka_areas = KukaParm.KukaAreaModels.Select(area => (KukaAreaModel)area.Clone()).ToList();
 
             // 將第二個 JSON 的 nodeList 合併進 areas
             foreach (var area in KukaParm.KukaOriginAreaModels)
             {
+                List<KukaNodeModel> models = new List<KukaNodeModel>();
+
                 // 根據 areaCode 尋找匹配的 nodeList
-                var matchingNode = nodeData.FirstOrDefault(x => x.areaCode == area.AreaCode);
-                if (matchingNode != null)
+                var matching_data = node_data.FirstOrDefault(x => x.areaCode == area.AreaCode);
+                
+                if (matching_data != null)
                 {
-                    area.NodeList = matchingNode.nodeList.ToObject<string[]>();
+                    foreach (string node_id in matching_data.nodeList)
+                    {
+                        models.Add(new KukaNodeModel(node_id));
+                    }
+                    area.NodeList = models.ToArray();
                 }
             }
             // KukaParm.KukaAreaModels = _kuka_areas;
