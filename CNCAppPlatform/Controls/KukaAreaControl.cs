@@ -105,7 +105,7 @@ namespace Chump_kuka.Controls
                         ContainerName = node.NodeName,
                         Size = container1.Size,
                         Enabled = AllowContainerClick,
-                        Tag = node
+                        BindingModel = node
                     };
 
                     // 更新貨架狀態圖片

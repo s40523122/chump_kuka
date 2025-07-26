@@ -458,27 +458,24 @@ namespace Chump_kuka
                 return;
             }
 
-            if (_current_task != null)
+
+            if (_current_task?.ID == rm_id)
             {
-                if (_current_task.ID == rm_id)
-                {
-                    ChatController.PubLog($"搬運任務[{rm_id}]運行中，無法移除");
-                    return;
-                }
+                ChatController.PubLog($"搬運任務[{rm_id}]運行中，無法移除");
+                return;
+            }
+
+            KukaModel.CarryTask target = _task_queue.FirstOrDefault(m => m.ID == rm_id);       // 找到 ID 對應任務
+            if (target != null)
+            {
+                _task_queue.Remove(target);
+                ChatController.PubLog($"已從任務列表中移除搬運任務[{rm_id}]");
             }
             else
             {
-                KukaModel.CarryTask target = _task_queue.FirstOrDefault(m => m.ID == rm_id);       // 找到 ID 對應任務
-                if (target != null)
-                {
-                    _task_queue.Remove(target);
-                    ChatController.PubLog($"已從任務列表中移除搬運任務[{rm_id}]");
-                }
-                else
-                {
-                    ChatController.PubLog($"找不到指定任務[{rm_id}]");
-                }
+                ChatController.PubLog($"找不到指定任務[{rm_id}]");
             }
+            
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
     }

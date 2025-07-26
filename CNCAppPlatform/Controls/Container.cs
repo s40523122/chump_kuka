@@ -19,6 +19,8 @@ namespace Chump_kuka
         private Color _origin_back_color = Color.CadetBlue;     // 預設背景顏色
         private Color _replace_back_color;      //  外部修改背景顏色
 
+        [Description("綁定模型資料"), Category("自訂值")]
+        public dynamic BindingModel { get; set; } = null;
 
         [Description("容器名稱。"), Category("自訂值")]
         public string ContainerName
@@ -56,22 +58,23 @@ namespace Chump_kuka
         {
             get { return _checked; }
             set 
-            { 
+            {
+                if (_checked == value) return;
                 _checked = value;
-                switch (_checked)
+                if (_checked)
                 {
-                    case true:
-                        doubleImg1.BackColor = Color.MediumSpringGreen;
-                        panel2.BackColor = Color.OrangeRed;
-                        if(Text == "")
-                            Text = "已選定";
-                        break;
-                    case false:
-                        doubleImg1.BackColor = (_replace_back_color == null) ? _origin_back_color : _replace_back_color;
-                        panel2.BackColor = Color.DarkOrange;
-                        if (Text == "已選定")
-                            Text = "";
-                        break;
+                    doubleImg1.BackColor = Color.MediumSpringGreen;
+                    panel2.BackColor = Color.OrangeRed;
+                    if (Text == "")
+                        Text = "已選定";
+                }
+                else 
+                { 
+                    doubleImg1.BackColor = (_replace_back_color == null) ? _origin_back_color : _replace_back_color;
+                    ShowLock = _lock;       // 保持鎖定狀態
+                    panel2.BackColor = Color.DarkOrange;
+                    if (Text == "已選定")
+                        Text = "";
                 }
             }
         }
@@ -87,6 +90,7 @@ namespace Chump_kuka
 
                 doubleImg1.Change = _lock;
                 if (_lock) doubleImg1.BackColor = Color.DeepSkyBlue;
+                else doubleImg1.BackColor = (_replace_back_color == null) ? _origin_back_color : _replace_back_color;
             }
         }
 
@@ -124,7 +128,7 @@ namespace Chump_kuka
             Checked = !Checked;
 
             // 觸發事件，並傳遞按鈕資訊
-            ContainerClick?.Invoke(this, new ControlClickEventArgs(Name, this));
+            ContainerClick?.Invoke(this, new ControlClickEventArgs(ContainerName, this));
         }
 
     }

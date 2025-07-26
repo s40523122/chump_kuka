@@ -328,7 +328,7 @@ namespace Chump_kuka.Forms
             container.Checked = !container.Checked;     // 停用預設點擊事件
 
             // 如果貨架已上鎖，解鎖；反之上鎖
-            KukaModel.Node click_node = container.Tag as KukaModel.Node;
+            KukaModel.Node click_node = container.BindingModel as KukaModel.Node;
             click_node.Lock = !click_node.Lock;
         }
     }
