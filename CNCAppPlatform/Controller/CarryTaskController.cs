@@ -57,6 +57,8 @@ namespace Chump_kuka
 
                 _task_id = record_count + 1;
                 _id_table = _task_queue.Select(t => t.ID.ToString()).ToList();      // 將所有 ID 加進暫存任務 ID 表
+
+                initTimer();        // 自動開始流程
             }
 
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
@@ -160,11 +162,25 @@ namespace Chump_kuka
             }
             // 取得起始區域代號
 
-            string start_area_code; 
-            KukaAreaModel try_find = KukaParm.KukaAreaModels.FirstOrDefault(m => m.IsNodeExist(KukaParm.StartNode.Code));
+            string start_area_code;
+
+            KukaAreaModel try_find = null;     // 嘗試尋找起始區域
+            KukaNodeModel node_model = null;        // 起始節點
+
+            foreach (KukaAreaModel area_model in KukaParm.KukaAreaModels)
+            {
+                node_model = area_model.GetNode(KukaParm.StartNode.Code);
+                if (node_model != null)
+                {
+                    try_find = area_model;
+                    break;
+                }
+            }
+
+
             if(try_find == null)
             {
-                start_area_code = KukaParm.StartNode.Code;
+                start_area_code = KukaParm.StartNode.Code;      // 找不到所屬區域，表示本身即為區域編號
             }
             else
             {
@@ -193,6 +209,11 @@ namespace Chump_kuka
             _task_id++;
             _task_queue.Add(task);
 
+            if(node_model != null)
+            {
+                node_model.NodeStatus = 2;
+            }
+
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
 
             // 非等待或最後一區的任務優先執行
@@ -219,7 +240,7 @@ namespace Chump_kuka
                 .Select(node => node.RackStatus)
                 .ToArray()
                 .Contains(0);
-            return !status;
+            return status;
         }
 
         private static bool IsLockExist(KukaAreaModel area_model)
@@ -239,7 +260,7 @@ namespace Chump_kuka
                     // 檢查目標是否滿載
                     if (task.GoalNode.Type == "NODE_AREA")
                     {
-                        KukaAreaModel start_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.IsNodeExist(task.StartNode.Code));
+                        KukaAreaModel start_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.GetNode(task.StartNode.Code) != null);
                         KukaAreaModel target_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.AreaCode == task.GoalNode.Code);
 
                         CarryNode[] carry_nodes;

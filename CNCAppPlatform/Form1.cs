@@ -91,32 +91,30 @@ namespace Chump_kuka
             {
                 case 0:
                     aa.AreaName = "Sawadika";
-                    aa.NodeList = new KukaNodeModel[2]
+                    aa.NodeList = new KukaNodeModel[3]
                     {
                         new KukaNodeModel("ee"),
-                        new KukaNodeModel("gg")
+                        new KukaNodeModel("gg"),
+                        new KukaNodeModel("dd")
                     };
                     step++;
                     break;
                 case 1:
-                    kukaAreaControl1.AreaName = "Ohio";
                     aa.NodeList[0].RackStatus = 2;
                     aa.NodeList[1].RackStatus = 0;
-                    aa.NodeList[0].NodeStatus = 1;
+                    aa.NodeList[0].NodeStatus = 0;
                     step++;
                     break;
                 case 2:
                     
-                    aa.NodeList[0].RackStatus = 1;
-                    aa.NodeList[1].RackStatus = 2;
-                    aa.NodeList[1].NodeStatus = 2;
-                    kukaAreaControl1.AreaName = "Wensday";
+                    aa.NodeList[0].RackStatus = 0;
+                    aa.NodeList[1].RackStatus = 1;
+                    aa.NodeList[2].RackStatus = 2;
+                    aa.NodeList[2].NodeStatus = 2;
                     step++;
                     break;
                 case 3:
 
-                    aa.NodeList[0].RackStatus = 0;
-                    aa.NodeList[1].RackStatus = 0;
                     //aa.NodeList[0].NodeStatus = 0;
                     aa.NodeList[1].NodeStatus = 0;
                     step++;

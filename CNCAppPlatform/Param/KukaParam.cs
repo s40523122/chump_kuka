@@ -241,7 +241,11 @@ public class KukaNodeModel : INotifyPropertyChanged
             _rack_status = value;
             OnPropertyChanged(nameof(RackStatus));
         } 
-    }       
+    }
+
+    /// <summary>
+    /// 節點狀態 {0: 普通, 1: 上鎖, 2: 已建立任務}
+    /// </summary>
     public int NodeStatus 
     { 
         get => _node_status;
@@ -395,9 +399,14 @@ public class KukaAreaModel : INotifyPropertyChanged
         //NodeList = json_object["nodeList"].ToObject<string[]>();      // 集合查詢到的區域代碼為陣列
     }
 
-    public bool IsNodeExist(string node_code ) { 
-        KukaNodeModel node = NodeList.FirstOrDefault(_node => _node.NodeCode ==  node_code);
-        return node != null;
+    /// <summary>
+    /// 取得指定節點模型
+    /// </summary>
+    /// <param name="node_code"></param>
+    /// <returns></returns>
+    public KukaNodeModel GetNode(string node_code ) { 
+        KukaNodeModel node = NodeList.FirstOrDefault(_node => _node.NodeCode == node_code);
+        return node;
     }
 
     public bool CheckAndUpdate(KukaAreaModel param)
