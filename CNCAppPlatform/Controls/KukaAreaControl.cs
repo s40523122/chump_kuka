@@ -18,7 +18,7 @@ namespace Chump_kuka.Controls
         private bool _checked = false;
         private int[] _node_status = null;
         private bool _allow_click = true;
-        private Color[] _container_colors = new Color[3] { Color.CadetBlue, Color.DeepSkyBlue, Color.Orange};
+        private Color[] _container_colors = new Color[2] { Color.CadetBlue, Color.Orange};
 
         // 定義事件，使用自定義參數
         public event EventHandler<ControlClickEventArgs> ContainerClick;
@@ -127,10 +127,10 @@ namespace Chump_kuka.Controls
                             // 節點狀態
                             case nameof(KukaModel.Node.NodeStatus):
                                 container.ImgColor = _container_colors[Math.Max(node.NodeStatus, 0)];
-
-                                // 若 model.NodeStatus == 1，表示節點已上鎖
-                                if (model.NodeStatus == 1) container.ShowLock = true;
-                                else container.ShowLock = false;
+                                break;
+                            // 上鎖狀態
+                            case nameof(KukaModel.Node.Lock):
+                                container.ShowLock = model.Lock;
                                 break;
                         }
                     };

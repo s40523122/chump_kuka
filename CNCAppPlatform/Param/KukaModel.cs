@@ -16,7 +16,8 @@ namespace Chump_kuka
         public class Node : INotifyPropertyChanged
         {
             private int _rack_status = -1;      // 貨架狀態 {0: 無貨架, 1: 空貨架, 2: 滿貨架}
-            private int _node_status = -1;      // 節點狀態 {0: 普通, 1: 上鎖, 2: 已建立任務}
+            private int _node_status = -1;      // 節點狀態 {0: 普通, 1: 已建立任務}
+            private bool _lock = false;
 
             // 建立屬性值發生變化的通知事件
             public event PropertyChangedEventHandler PropertyChanged;
@@ -37,7 +38,7 @@ namespace Chump_kuka
             }
 
             /// <summary>
-            /// 節點狀態 {0: 普通, 1: 上鎖, 2: 已建立任務}
+            /// 節點狀態 {0: 普通, 1: 已建立任務}
             /// </summary>
             public int NodeStatus
             {
@@ -52,7 +53,23 @@ namespace Chump_kuka
                         return;
                     }
 
-                    if (value == 1)
+                    _node_status = value;
+                    OnPropertyChanged(nameof(NodeStatus));
+                }
+            }
+
+            public bool Lock 
+            { 
+                get => _lock;
+                set
+                {
+                    if (_node_status == 1)
+                    {
+                        MsgBox.Show("選用貨架已佔用，無法上/解鎖!");
+                        return;
+                    }
+
+                    if (value)
                     {
                         if (_rack_status != 1)
                         {
@@ -62,9 +79,9 @@ namespace Chump_kuka
                         }
                     }
 
-                    _node_status = value;
-                    OnPropertyChanged(nameof(NodeStatus));
-                }
+                    _lock = value;
+                    OnPropertyChanged(nameof(Lock));
+                } 
             }
 
             public Node(string nodeCode)

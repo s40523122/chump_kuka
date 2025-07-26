@@ -211,7 +211,7 @@ namespace Chump_kuka
 
             if(node_model != null)
             {
-                node_model.NodeStatus = 2;
+                node_model.NodeStatus = 1;
             }
 
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI

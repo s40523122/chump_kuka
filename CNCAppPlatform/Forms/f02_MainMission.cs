@@ -325,9 +325,11 @@ namespace Chump_kuka.Forms
         private void bind_area_control_ContainerClick(object sender, ControlClickEventArgs e)
         {
             Container container = e.Control as Container;
-            container.Checked = !container.Checked;
+            container.Checked = !container.Checked;     // 停用預設點擊事件
+
             // 如果貨架已上鎖，解鎖；反之上鎖
-            (container.Tag as KukaModel.Node).NodeStatus = container.ShowLock ? 0 : 1;
+            KukaModel.Node click_node = container.Tag as KukaModel.Node;
+            click_node.Lock = !click_node.Lock;
         }
     }
 }

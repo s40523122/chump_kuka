@@ -86,6 +86,7 @@ namespace Chump_kuka
                 _lock = value;
 
                 doubleImg1.Change = _lock;
+                if (_lock) doubleImg1.BackColor = Color.DeepSkyBlue;
             }
         }
 
