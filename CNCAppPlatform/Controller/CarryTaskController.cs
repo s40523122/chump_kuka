@@ -18,9 +18,9 @@ namespace Chump_kuka
     {
         private static bool _agv_running = false;
         private static int _task_id = 1;
-        private static CarryTask _current_task = null;
+        private static KukaModel.CarryTask _current_task = null;
         
-        private static BindingList<CarryTask> _task_queue = new BindingList<CarryTask>();      // 搬運任務佇列
+        private static BindingList<KukaModel.CarryTask> _task_queue = new BindingList<KukaModel.CarryTask>();      // 搬運任務佇列
 
         private static System.Timers.Timer _task_timer;
 
@@ -52,7 +52,7 @@ namespace Chump_kuka
                     {
                         continue;
                     }
-                    _task_queue.Add(Newtonsoft.Json.JsonConvert.DeserializeObject<CarryTask>(task));
+                    _task_queue.Add(Newtonsoft.Json.JsonConvert.DeserializeObject<KukaModel.CarryTask>(task));
                 }
 
                 _task_id = record_count + 1;
@@ -83,7 +83,7 @@ namespace Chump_kuka
             }
             else
             {
-                CarryTask task = _task_queue[change_index];       // 取得更新項目
+                KukaModel.CarryTask task = _task_queue[change_index];       // 取得更新項目
                 string task_msg = Newtonsoft.Json.JsonConvert.SerializeObject(task);
                 INiReader.WriteINIFile(file_path, "tasks", task.ID.ToString(), task_msg);       //單筆任務寫入
 
@@ -164,10 +164,10 @@ namespace Chump_kuka
 
             string start_area_code;
 
-            KukaAreaModel try_find = null;     // 嘗試尋找起始區域
-            KukaNodeModel node_model = null;        // 起始節點
+            KukaModel.Area try_find = null;     // 嘗試尋找起始區域
+            KukaModel.Node node_model = null;        // 起始節點
 
-            foreach (KukaAreaModel area_model in KukaParm.KukaAreaModels)
+            foreach (KukaModel.Area area_model in KukaParm.KukaAreaModels)
             {
                 node_model = area_model.GetNode(KukaParm.StartNode.Code);
                 if (node_model != null)
@@ -199,7 +199,7 @@ namespace Chump_kuka
             }
             
             // 建立搬運任務資訊
-            CarryTask task = new CarryTask(_task_id, !wait, KukaParm.StartNode, KukaParm.GoalNode, start_area_code);
+            KukaModel.CarryTask task = new KukaModel.CarryTask(_task_id, !wait, KukaParm.StartNode, KukaParm.GoalNode, start_area_code);
 
             // 最後一區的任務優先執行
             if (start_area_code == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count - 1].AreaCode)
@@ -227,7 +227,7 @@ namespace Chump_kuka
             //KukaApiController.PubCarryTask();
         }
 
-        private static bool IsAreaFully(KukaAreaModel area_model, out bool is_init)
+        private static bool IsAreaFully(KukaModel.Area area_model, out bool is_init)
         {
             is_init = true;
             if (area_model.NodeList == null)
@@ -243,7 +243,7 @@ namespace Chump_kuka
             return status;
         }
 
-        private static bool IsLockExist(KukaAreaModel area_model)
+        private static bool IsLockExist(KukaModel.Area area_model)
         {
             // 若存在lock，返回 true，反之 false
             return area_model.LockNodes?.Count > 0;
@@ -251,7 +251,7 @@ namespace Chump_kuka
 
         private static bool FindAndAssignTask()
         {
-            foreach (CarryTask task in _task_queue)
+            foreach (KukaModel.CarryTask task in _task_queue)
             {
                 if (task.Called && task.FinishTime == null)
                 {
@@ -260,10 +260,10 @@ namespace Chump_kuka
                     // 檢查目標是否滿載
                     if (task.GoalNode.Type == "NODE_AREA")
                     {
-                        KukaAreaModel start_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.GetNode(task.StartNode.Code) != null);
-                        KukaAreaModel target_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.AreaCode == task.GoalNode.Code);
+                        KukaModel.Area start_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.GetNode(task.StartNode.Code) != null);
+                        KukaModel.Area target_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.AreaCode == task.GoalNode.Code);
 
-                        CarryNode[] carry_nodes;
+                        KukaModel.CarryNode[] carry_nodes;
                         if (IsAreaFully(target_area, out bool init))       // 若目標區域滿載
                         {
                             if (!init)
@@ -278,15 +278,15 @@ namespace Chump_kuka
                                 if (IsLockExist(target_area))        // 若目標可調整
                                 {
                                     string lock_node = target_area.LockNodes[0];
-                                    carry_nodes = new CarryNode[]
+                                    carry_nodes = new KukaModel.CarryNode[]
                                     {
-                                        new CarryNode()
+                                        new KukaModel.CarryNode()
                                         {
                                             Code = lock_node,
                                             Type = "NODE_POINT",
                                             Name = lock_node,
                                         },
-                                        new CarryNode(target_area.Next()),
+                                        new KukaModel.CarryNode(target_area.Next()),
                                         _current_task.StartNode,
                                         _current_task.GoalNode
                                     };
@@ -306,15 +306,15 @@ namespace Chump_kuka
                                 if (IsLockExist(target_area))        // 若目標可調整
                                 {
                                     string lock_node = target_area.LockNodes[0];
-                                    carry_nodes = new CarryNode[]
+                                    carry_nodes = new KukaModel.CarryNode[]
                                     {
-                                        new CarryNode()
+                                        new KukaModel.CarryNode()
                                         {
                                             Code = lock_node,
                                             Type = "NODE_POINT",
                                             Name = lock_node,
                                         },
-                                        new CarryNode(start_area),
+                                        new KukaModel.CarryNode(start_area),
                                         _current_task.StartNode,
                                         _current_task.GoalNode
                                     };
@@ -331,7 +331,7 @@ namespace Chump_kuka
                         }
                         else
                         {
-                            carry_nodes = new CarryNode[]
+                            carry_nodes = new KukaModel.CarryNode[]
                             {
                                 _current_task.StartNode,
                                 _current_task.GoalNode
@@ -362,9 +362,9 @@ namespace Chump_kuka
         /// 將任務模型列表轉換成簡化模型，方便資料傳輸
         /// </summary>
         /// <returns></returns>
-        public static SimpleCarryTask[] GetQueueArray()
+        public static KukaModel.SimpleCarryTask[] GetQueueArray()
         {
-            var simple_queue = _task_queue.Select(q => new SimpleCarryTask(q)).ToArray();
+            var simple_queue = _task_queue.Select(q => new KukaModel.SimpleCarryTask(q)).ToArray();
             return simple_queue;
         }
         
@@ -376,7 +376,7 @@ namespace Chump_kuka
         private static bool GetCallTask(string start_area_code)
         {
             // 找到符合開始區域且尚未執行的第一筆資料
-            CarryTask call_task = _task_queue.FirstOrDefault(m => m.AreaCode == start_area_code && m.Called == false && m.FinishTime == null);
+            KukaModel.CarryTask call_task = _task_queue.FirstOrDefault(m => m.AreaCode == start_area_code && m.Called == false && m.FinishTime == null);
             if (call_task != null)
             {
                 call_task.Called = true;
@@ -468,7 +468,7 @@ namespace Chump_kuka
             }
             else
             {
-                CarryTask target = _task_queue.FirstOrDefault(m => m.ID == rm_id);       // 找到 ID 對應任務
+                KukaModel.CarryTask target = _task_queue.FirstOrDefault(m => m.ID == rm_id);       // 找到 ID 對應任務
                 if (target != null)
                 {
                     _task_queue.Remove(target);
@@ -484,90 +484,5 @@ namespace Chump_kuka
     }
 
 
-    public class SimpleCarryTask
-    {
-        public string Called { get; set; }
-        public int ID { get; set; }
-        public string StartNode { get; set; }
-        public string GoalNode { get; set; }
-        public string CreateTime { get; set; }
-        public string FinishTime { get; set; }
-        public string LogMsg { get; set; }
-
-        public SimpleCarryTask() { }
-        public SimpleCarryTask(CarryTask task)
-        {
-            ID = task.ID;
-            StartNode = task.StartNode.Name;
-            GoalNode = task.GoalNode.Name;
-            CreateTime = task.CreateTime.ToString(@"MM/dd tt hh:mm");
-            FinishTime = task.FinishTime?.ToString(@"MM/dd tt hh:mm");
-            Called = task.Called ? "🔔" : "🔕";
-            LogMsg = task.LogMsg;
-
-            if(FinishTime == null)
-            {
-                FinishTime = "";
-            }
-        }
-    }
-
-    public class CarryTask
-    {
-        private bool _called = false;
-        private DateTime? _finish_time;
-        private string _log_msg = "";
-
-
-        public int ID { get; set; }
-        public bool Called 
-        { 
-            get => _called;
-            set
-            {
-                _called = value;
-                WriteIni();
-            }
-        }
-        public string AreaCode { get; set; }
-        public CarryNode StartNode { get; set; }
-        public CarryNode GoalNode { get; set; }
-        public DateTime CreateTime { get; set; }
-        public DateTime? FinishTime 
-        { 
-            get => _finish_time;
-            set
-            {
-                _finish_time = value;
-                WriteIni();
-            } 
-        }
-        public string LogMsg 
-        { 
-            get => _log_msg;
-            set 
-            {
-                _log_msg = value;
-                WriteIni();
-            } 
-        }
-
-        public CarryTask(int task_id, bool called, CarryNode start_node, CarryNode goal_node, string areaCode)
-        {
-            ID = task_id;
-            Called = called;
-            StartNode = start_node;
-            GoalNode = goal_node;
-            CreateTime = DateTime.Now;
-            AreaCode = areaCode;
-            FinishTime = null;
-        }
-
-        private void WriteIni()
-        {
-            string file_path = KukaParm.GetTodayTaskPath();
-            string task_msg = Newtonsoft.Json.JsonConvert.SerializeObject(this);
-            INiReader.WriteINIFile(file_path, "tasks", ID.ToString(), task_msg);       //單筆任務寫入
-        }
-    }
+    
 }

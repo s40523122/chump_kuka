@@ -503,7 +503,7 @@ namespace Chump_kuka.Forms
             this.bind_area_control.AllowContainerClick = true;
             this.bind_area_control.AllowContainerLock = false;
             this.bind_area_control.AreaName = "No Area Bind";
-            this.bind_area_control.AreaNode = new KukaNodeModel[0];
+            this.bind_area_control.AreaNode = new KukaModel.Node[0];
             this.bind_area_control.Checked = false;
             this.bind_area_control.Dock = System.Windows.Forms.DockStyle.Fill;
             this.bind_area_control.Location = new System.Drawing.Point(0, 54);

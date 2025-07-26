@@ -103,7 +103,7 @@
             this.kukaAreaControl1.AllowContainerClick = true;
             this.kukaAreaControl1.AllowContainerLock = true;
             this.kukaAreaControl1.AreaName = "scaleLabel1";
-            this.kukaAreaControl1.AreaNode = new KukaNodeModel[0];
+            this.kukaAreaControl1.AreaNode = new KukaModel.Node[0];
             this.kukaAreaControl1.Checked = false;
             this.kukaAreaControl1.Location = new System.Drawing.Point(17, 14);
             this.kukaAreaControl1.Margin = new System.Windows.Forms.Padding(2);

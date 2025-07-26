@@ -87,7 +87,7 @@ namespace Chump_kuka.Controller
                 Form form = new Form() { StartPosition = FormStartPosition.CenterParent };
 
                 ComboBox comboBox = new ComboBox();
-                foreach (KukaAreaModel area in KukaParm.KukaAreaModels)
+                foreach (KukaModel.Area area in KukaParm.KukaAreaModels)
                 {
                     comboBox.Items.Add(area.AreaName);
                 }
@@ -327,17 +327,17 @@ namespace Chump_kuka.Controller
                 //}
                 // 目標是否滿仔應該在搬運前判定，而不是建立時判定
 
-                KukaNodeModel carry_node = KukaParm.BindAreaModel.NodeList[node_action.IndexOf(1)];        // 找到第一個需要入貨的節點
+                KukaModel.Node carry_node = KukaParm.BindAreaModel.NodeList[node_action.IndexOf(1)];        // 找到第一個需要入貨的節點
 
                 // 設定搬運起點與終點
-                KukaParm.StartNode = new CarryNode()
+                KukaParm.StartNode = new KukaModel.CarryNode()
                 {
                     Code = carry_node.NodeCode,
                     Name = carry_node.NodeName,
                     Type = "NODE_POINT"
                 };
 
-                KukaParm.GoalNode = new CarryNode()
+                KukaParm.GoalNode = new KukaModel.CarryNode()
                 {
                     Code = KukaParm.BindAreaModel.Next().AreaCode,       // "A000000002",
                     Name = KukaParm.BindAreaModel.Next().AreaName,       // "倉庫區",

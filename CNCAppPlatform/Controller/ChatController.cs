@@ -122,21 +122,21 @@ namespace Chump_kuka.Controller
         private static void AreaCb(string message)
         {
             // 若字串為區域類別，解析資料訊息後，將比較後差異處，更新為接收資料
-            List<KukaOriginAreaModel> origin_areas = JsonConvert.DeserializeObject<List<KukaOriginAreaModel>>(message);
+            List<KukaModel.KukaOriginAreaModel> origin_areas = JsonConvert.DeserializeObject<List<KukaModel.KukaOriginAreaModel>>(message);
 
             #region 版本補丁
-            List<KukaAreaModel> areas = new List<KukaAreaModel>();
-            foreach (KukaOriginAreaModel origin in origin_areas)
+            List<KukaModel.Area> areas = new List<KukaModel.Area>();
+            foreach (KukaModel.KukaOriginAreaModel origin in origin_areas)
             {
-                List<KukaNodeModel> nodes = new List<KukaNodeModel>();
+                List<KukaModel.Node> nodes = new List<KukaModel.Node>();
                 for (int i=0; i<origin.NodeList.Length; i++)
                 {
-                    KukaNodeModel new_node = new KukaNodeModel(origin.NodeList[i]);
+                    KukaModel.Node new_node = new KukaModel.Node(origin.NodeList[i]);
                     if (origin.NodeStatus.Length > i) new_node.RackStatus = origin.NodeStatus[i];
                     nodes.Add(new_node);
                 }
             
-                areas.Add(new KukaAreaModel()
+                areas.Add(new KukaModel.Area()
                 {
                     AreaName = origin.AreaName,
                     AreaCode = origin.AreaCode,
@@ -156,7 +156,7 @@ namespace Chump_kuka.Controller
             {
                 KukaParm.KukaAreaModels = areas;
 
-                foreach (KukaAreaModel source_area in areas)
+                foreach (KukaModel.Area source_area in areas)
                 {
                     var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaName == source_area.AreaName);
                     base_model.CompareAndUpdate(source_area);
@@ -172,30 +172,29 @@ namespace Chump_kuka.Controller
 
         private static void NodesCb(string message)
         {
-            KukaOriginAreaModel origin = JsonConvert.DeserializeObject<KukaOriginAreaModel>(message);
+            KukaModel.KukaOriginAreaModel origin = JsonConvert.DeserializeObject<KukaModel.KukaOriginAreaModel>(message);
             #region 版本補丁
-            
-            List<KukaNodeModel> nodes = new List<KukaNodeModel>();
+            List<KukaModel.Node> nodes = new List<KukaModel.Node>();
             for (int i = 0; i < origin.NodeList.Length; i++)
             {
-                nodes.Add(new KukaNodeModel(origin.NodeList[i])
+                nodes.Add(new KukaModel.Node(origin.NodeList[i])
                 {
                     RackStatus = origin.NodeStatus[i],
                 });
             }
 
-            KukaAreaModel receive_area = new KukaAreaModel()
+            KukaModel.Area receive_area = new KukaModel.Area()
             {
                 AreaName = origin.AreaName,
                 AreaCode = origin.AreaCode,
                 AreaType = origin.AreaType,
                 NodeList = nodes.ToArray()
             };
-            
+
 
             #endregion 版本補丁
-            
-            KukaAreaModel find_area = KukaAreaModel.Find(receive_area.AreaName, KukaParm.KukaAreaModels);
+
+            KukaModel.Area find_area = KukaModel.Area.Find(receive_area.AreaName, KukaParm.KukaAreaModels);
             if (find_area != null)
             {
                 // find_area.NodeStatus = receive_area.NodeStatus;
@@ -254,7 +253,7 @@ namespace Chump_kuka.Controller
 
         private static void CarryListCb(string message)
         {
-            SimpleCarryTask[] tasks = JsonConvert.DeserializeObject<List<SimpleCarryTask>>(message).ToArray();
+            KukaModel.SimpleCarryTask[] tasks = JsonConvert.DeserializeObject<List<KukaModel.SimpleCarryTask>>(message).ToArray();
             CarryTaskUpdated?.Invoke(null, tasks);
         }
 
@@ -350,7 +349,7 @@ namespace Chump_kuka.Controller
         /// <summary>
         /// 所有主/從站同步搬運任務
         /// </summary>
-        public static void SyncCarryTask(SimpleCarryTask[] tasks)
+        public static void SyncCarryTask(KukaModel.SimpleCarryTask[] tasks)
         {
             CarryTaskUpdated?.Invoke(null, tasks);
 
@@ -362,7 +361,7 @@ namespace Chump_kuka.Controller
         /// <summary>
         /// 所有主/從站同步所有節點狀態
         /// </summary>
-        public static void SyncNodeStatus(KukaAreaModel update_model)
+        public static void SyncNodeStatus(KukaModel.Area update_model)
         {
             string nodes_json = JsonConvert.SerializeObject(update_model, Formatting.Indented);
             _mqtt.Publisher("area/nodes", nodes_json);
@@ -416,7 +415,7 @@ namespace Chump_kuka.Controller
                 // 若 wait = true，透過 "carry" 主題傳遞資料，代表需要等待叫車訊號。
                 string topic_name = wait ? "carry" : "carry/auto";
 
-                CarryNode[] nodes = new CarryNode[2]
+                KukaModel.CarryNode[] nodes = new KukaModel.CarryNode[2]
                 {
                     KukaParm.StartNode,
                     KukaParm.GoalNode
@@ -460,7 +459,7 @@ namespace Chump_kuka.Controller
 
         private static void ParseAndUpdateCarryNode(string carry_node_msg)
         {
-            List<CarryNode> nodes = JsonConvert.DeserializeObject<List<CarryNode>>(carry_node_msg);
+            List<KukaModel.CarryNode> nodes = JsonConvert.DeserializeObject<List<KukaModel.CarryNode>>(carry_node_msg);
             KukaParm.StartNode = nodes[0];
             KukaParm.GoalNode = nodes[1];
         }

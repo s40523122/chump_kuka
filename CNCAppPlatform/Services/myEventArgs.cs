@@ -54,6 +54,6 @@ namespace Chump_kuka
         }
     }
 
-    public delegate void CarryTasksEventHandler(object sender, SimpleCarryTask[] e);
+    internal delegate void CarryTasksEventHandler(object sender, KukaModel.SimpleCarryTask[] e);
 
 }

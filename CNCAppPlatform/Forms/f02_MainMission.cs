@@ -95,7 +95,7 @@ namespace Chump_kuka.Forms
             }));
         }
 
-        private void ChatController_CarryTaskUpdated(object sender, SimpleCarryTask[] e)
+        private void ChatController_CarryTaskUpdated(object sender, KukaModel.SimpleCarryTask[] e)
         {
             //dataGridView1.Invoke(new Action(() => {
             //    dataGridView1.DataSource = e;
@@ -327,7 +327,7 @@ namespace Chump_kuka.Forms
             Container container = e.Control as Container;
             container.Checked = !container.Checked;
             // 如果貨架已上鎖，解鎖；反之上鎖
-            (container.Tag as KukaNodeModel).NodeStatus = container.ShowLock ? 0 : 1;
+            (container.Tag as KukaModel.Node).NodeStatus = container.ShowLock ? 0 : 1;
         }
     }
 }

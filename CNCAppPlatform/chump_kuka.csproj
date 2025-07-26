@@ -329,6 +329,7 @@
     <Compile Include="Forms\f01_ManualApi.Designer.cs">
       <DependentUpon>f01_ManualApi.cs</DependentUpon>
     </Compile>
+    <Compile Include="Param\KukaModel.cs" />
     <Compile Include="Param\KukaParam.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

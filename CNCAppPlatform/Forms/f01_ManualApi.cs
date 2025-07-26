@@ -83,7 +83,7 @@ namespace Chump_kuka.Forms
 
                 /* 加入區域 Control */
                 // 目前只支援到 4 組，超過可能會有 UI 顯示問題
-                KukaAreaModel model = KukaParm.KukaAreaModels[0];
+                KukaModel.Area model = KukaParm.KukaAreaModels[0];
                 foreach (KukaAreaControl area_ctrl in tableLayoutPanel2.Controls)
                 {
                     area_ctrl.Model = model;
@@ -122,7 +122,7 @@ namespace Chump_kuka.Forms
                     //selected_1.Text = area.AreaName;
 
                     // Test
-                    KukaParm.StartNode = new CarryNode
+                    KukaParm.StartNode = new KukaModel.CarryNode
                     {
                         Code = area.AreaCode,
                         Type = area.Type,
@@ -135,7 +135,7 @@ namespace Chump_kuka.Forms
                     //selected_2.Text = area.AreaName;
 
                     // Test
-                    KukaParm.GoalNode = new CarryNode
+                    KukaParm.GoalNode = new KukaModel.CarryNode
                     {
                         Code = area.AreaCode,
                         Type = area.Type,
@@ -185,7 +185,7 @@ namespace Chump_kuka.Forms
                     //selected_1.Text = container.ContainerName;
 
                     // Test
-                    KukaParm.StartNode = new CarryNode
+                    KukaParm.StartNode = new KukaModel.CarryNode
                     {
                         Code = container.ContainerName,
                         Type = container.Type,
@@ -198,7 +198,7 @@ namespace Chump_kuka.Forms
                     //selected_2.Text = container.ContainerName;
 
                     // Test
-                    KukaParm.GoalNode = new CarryNode
+                    KukaParm.GoalNode = new KukaModel.CarryNode
                     {
                         Code = container.ContainerName,
                         Type = container.Type,

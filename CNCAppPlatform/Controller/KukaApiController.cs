@@ -58,7 +58,7 @@ namespace Chump_kuka
         /// <summary>
         /// 將派車任務請求加入 API 等待列表
         /// </summary>
-        public static void PubCarryTask(CarryNode[] carry_nodes)
+        public static void PubCarryTask(KukaModel.CarryNode[] carry_nodes)
         {
             //if (!Debugger.IsAttached) _api_task.AppendCarryTask(carry_nodes);        // 建立搬運任務
             _api_task.AppendCarryTask(carry_nodes);        // 建立搬運任務

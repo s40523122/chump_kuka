@@ -11,10 +11,10 @@ using System.Windows.Forms;
 
 namespace Chump_kuka.Controls
 {
-    public partial class KukaAreaControl : UserControl
+    internal partial class KukaAreaControl : UserControl
     {
-        private KukaAreaModel _model = new KukaAreaModel();
-        private KukaNodeModel[] _nodes = new KukaNodeModel[] { };
+        private KukaModel.Area _model = new KukaModel.Area();
+        private KukaModel.Node[] _nodes = new KukaModel.Node[] { };
         private bool _checked = false;
         private int[] _node_status = null;
         private bool _allow_click = true;
@@ -28,7 +28,7 @@ namespace Chump_kuka.Controls
         public string Type { get { return "NODE_AREA"; } }
         public string AreaCode = "";
 
-        public KukaAreaModel Model 
+        public KukaModel.Area Model 
         { 
             get => _model;
             set
@@ -89,7 +89,7 @@ namespace Chump_kuka.Controls
         public bool AllowContainerLock { get; set; } = false;
 
         [Description("區域中的節點。"), Category("自訂值")]
-        public KukaNodeModel[] AreaNode
+        public KukaModel.Node[] AreaNode
         {
             get => _nodes;
             set
@@ -98,7 +98,7 @@ namespace Chump_kuka.Controls
 
                 containerPanel.Controls.Clear();
                 _nodes = value;
-                foreach (KukaNodeModel node in _nodes)
+                foreach (KukaModel.Node node in _nodes)
                 {
                     Container container = new Container()
                     {
@@ -117,15 +117,15 @@ namespace Chump_kuka.Controls
 
                     node.PropertyChanged += (sender, e) =>
                     {
-                        KukaNodeModel model = (sender as KukaNodeModel);
+                        KukaModel.Node model = (sender as KukaModel.Node);
                         switch (e.PropertyName)
                         {
                             // 貨架狀態
-                            case nameof(KukaNodeModel.RackStatus):
+                            case nameof(KukaModel.Node.RackStatus):
                                 UpdateSingleContainerImage(container, model.RackStatus);        // 更新貨架狀態圖片
                                 break;
                             // 節點狀態
-                            case nameof(KukaNodeModel.NodeStatus):
+                            case nameof(KukaModel.Node.NodeStatus):
                                 container.ImgColor = _container_colors[Math.Max(node.NodeStatus, 0)];
 
                                 // 若 model.NodeStatus == 1，表示節點已上鎖
@@ -181,15 +181,15 @@ namespace Chump_kuka.Controls
 
         private void _model_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            KukaAreaModel model = (sender as KukaAreaModel);
+            KukaModel.Area model = (sender as KukaModel.Area);
             switch (e.PropertyName)
             {
                 // 區域名稱
-                case nameof(KukaAreaModel.AreaName):
+                case nameof(KukaModel.Area.AreaName):
                     AreaName = model.AreaName;
                     break;
                 // 節點內容
-                case nameof(KukaAreaModel.NodeList):
+                case nameof(KukaModel.Area.NodeList):
                     AreaNode = model.NodeList;
                     break;
             }

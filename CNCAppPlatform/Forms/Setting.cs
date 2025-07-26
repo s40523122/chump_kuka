@@ -37,7 +37,7 @@ namespace Chump_kuka.Forms
             {
                 // 當區域列表出現變化時，同步更新綁定區域的下拉式選單，以便及時更改綁定區域
                 bind_comboBox.Items.Clear();
-                foreach (KukaAreaModel area in KukaParm.KukaAreaModels)
+                foreach (KukaModel.Area area in KukaParm.KukaAreaModels)
                 {
                     bind_comboBox.Items.Add(area);
                     
@@ -196,7 +196,7 @@ namespace Chump_kuka.Forms
         private void SetStrategy(List<string> sortedItems)
         {
             
-            List<KukaAreaModel> temp = new List<KukaAreaModel>();
+            List<KukaModel.Area> temp = new List<KukaModel.Area>();
             foreach (var name in sortedItems)
             {
                 var matched = KukaParm.KukaOriginAreaModels.FirstOrDefault(p => p.AreaName == name);
@@ -212,7 +212,7 @@ namespace Chump_kuka.Forms
         private void bind_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (KukaParm.KukaAreaModels.Count == 0) return;     // 尚未取得 api 資料，暫不處理
-            if((sender as ComboBox).SelectedItem is KukaAreaModel select_model)
+            if((sender as ComboBox).SelectedItem is KukaModel.Area select_model)
             {
                 KukaParm.BindAreaModel = select_model;      // 將指定模型淺複製為 BindAreaModel (數值更改會影響原列表)
             }
@@ -238,7 +238,7 @@ namespace Chump_kuka.Forms
             Env.Strategy = string.Join(";", sortedItems);
             // MessageBox.Show(KukaParm.KukaAreaModels[0].AreaName);
 
-            KukaParm.BindAreaModel = KukaAreaModel.Find(Env.BindAreaName, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
+            KukaParm.BindAreaModel = KukaModel.Area.Find(Env.BindAreaName, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
 
 
             if (KukaParm.BindAreaModel == null)

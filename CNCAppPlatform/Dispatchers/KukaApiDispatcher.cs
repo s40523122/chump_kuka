@@ -179,14 +179,14 @@ namespace Chump_kuka.Dispatchers
         /// <summary>
         /// 將派車任務請求加入 API 等待列表
         /// </summary>
-        public void AppendCarryTask(CarryNode[] carry_nodes)
+        public void AppendCarryTask(KukaModel.CarryNode[] carry_nodes)
         {
             long timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
             List<dynamic> mission_data = new List<dynamic>();
             bool put_down = true;      // 表示貨架是否放下
             int seq = 1;
-            foreach (CarryNode node in carry_nodes)
+            foreach (KukaModel.CarryNode node in carry_nodes)
             {
                 put_down = !put_down;       // 切換放下/頂升
                 mission_data.Add(new
@@ -247,7 +247,7 @@ namespace Chump_kuka.Dispatchers
 
         private void HandleAreaResponse(JObject resp_json)
         {
-            KukaParm.KukaOriginAreaModels = resp_json["data"].ToObject<List<KukaAreaModel>>();
+            KukaParm.KukaOriginAreaModels = resp_json["data"].ToObject<List<KukaModel.Area>>();
 
             // 加入節點查詢
             //AppendNodesTask();
@@ -262,7 +262,7 @@ namespace Chump_kuka.Dispatchers
             // 將第二個 JSON 的 nodeList 合併進 areas
             foreach (var area in KukaParm.KukaOriginAreaModels)
             {
-                List<KukaNodeModel> models = new List<KukaNodeModel>();
+                List<KukaModel.Node> models = new List<KukaModel.Node>();
 
                 // 根據 areaCode 尋找匹配的 nodeList
                 var matching_data = node_data.FirstOrDefault(x => x.areaCode == area.AreaCode);
@@ -271,7 +271,7 @@ namespace Chump_kuka.Dispatchers
                 {
                     foreach (string node_id in matching_data.nodeList)
                     {
-                        models.Add(new KukaNodeModel(node_id));
+                        models.Add(new KukaModel.Node(node_id));
                     }
                     area.NodeList = models.ToArray();
                 }

@@ -312,7 +312,7 @@
             this.kuka_area1.AllowContainerClick = true;
             this.kuka_area1.AllowContainerLock = false;
             this.kuka_area1.AreaName = "Area_1";
-            this.kuka_area1.AreaNode = new KukaNodeModel[0];
+            this.kuka_area1.AreaNode = new KukaModel.Node[0];
             this.kuka_area1.Checked = false;
             this.kuka_area1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.kuka_area1.Location = new System.Drawing.Point(10, 10);
@@ -329,7 +329,7 @@
             this.kuka_area2.AllowContainerClick = true;
             this.kuka_area2.AllowContainerLock = false;
             this.kuka_area2.AreaName = "Area_2";
-            this.kuka_area2.AreaNode = new KukaNodeModel[0];
+            this.kuka_area2.AreaNode = new KukaModel.Node[0];
             this.kuka_area2.Checked = false;
             this.kuka_area2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.kuka_area2.Location = new System.Drawing.Point(374, 10);
@@ -346,7 +346,7 @@
             this.kuka_area3.AllowContainerClick = true;
             this.kuka_area3.AllowContainerLock = false;
             this.kuka_area3.AreaName = "Area_3";
-            this.kuka_area3.AreaNode = new KukaNodeModel[0];
+            this.kuka_area3.AreaNode = new KukaModel.Node[0];
             this.kuka_area3.Checked = false;
             this.kuka_area3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.kuka_area3.Location = new System.Drawing.Point(10, 254);

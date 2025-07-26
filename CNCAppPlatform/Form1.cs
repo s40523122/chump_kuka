@@ -24,7 +24,7 @@ namespace Chump_kuka
         private UdpChatRoom _udp_chat_room = new UdpChatRoom();
         private LogWindow _log_window;
 
-        KukaAreaModel aa = new KukaAreaModel()
+        KukaModel.Area aa = new KukaModel.Area()
         {
             AreaName = "Hello"
         };
@@ -91,11 +91,11 @@ namespace Chump_kuka
             {
                 case 0:
                     aa.AreaName = "Sawadika";
-                    aa.NodeList = new KukaNodeModel[3]
+                    aa.NodeList = new KukaModel.Node[3]
                     {
-                        new KukaNodeModel("ee"),
-                        new KukaNodeModel("gg"),
-                        new KukaNodeModel("dd")
+                        new KukaModel.Node("ee"),
+                        new KukaModel.Node("gg"),
+                        new KukaModel.Node("dd")
                     };
                     step++;
                     break;
