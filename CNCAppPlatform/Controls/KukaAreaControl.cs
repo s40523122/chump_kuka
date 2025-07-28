@@ -1,4 +1,5 @@
-﻿using iCAPS;
+﻿using CookComputing.XmlRpc;
+using iCAPS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -94,8 +95,8 @@ namespace Chump_kuka.Controls
             get => _nodes;
             set
             {
-                if (_nodes.SequenceEqual(value) || value == null) return;        // 如果資訊未更新，不處理
-
+                if (value == null) return;
+                if (_nodes.SequenceEqual(value)) return;        // 如果資訊未更新，不處理
                 containerPanel.Controls.Clear();
                 _nodes = value;
                 foreach (KukaModel.Node node in _nodes)
@@ -112,8 +113,7 @@ namespace Chump_kuka.Controls
                     UpdateSingleContainerImage(container, node.RackStatus);        
                     container.ImgColor = _container_colors[Math.Max(node.NodeStatus, 0)];
                     // 若 model.NodeStatus == 1，表示節點已上鎖
-                    if (node.NodeStatus == 1) container.ShowLock = true;
-                    else container.ShowLock = false;
+                    container.ShowLock = node.Lock;
 
                     node.PropertyChanged += (sender, e) =>
                     {

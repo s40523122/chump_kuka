@@ -1,7 +1,9 @@
-﻿using Chump_kuka.Controller;
+﻿using CefSharp.DevTools.DOM;
+using Chump_kuka.Controller;
 using Chump_kuka.Dispatchers;
 using iCAPS;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -10,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Xml.Linq;
+using static Chump_kuka.KukaModel;
 using static Chump_kuka.Log;
 
 namespace Chump_kuka
@@ -19,6 +22,7 @@ namespace Chump_kuka
         private static bool _agv_running = false;
         private static int _task_id = 1;
         private static KukaModel.CarryTask _current_task = null;
+        private static KukaModel.CarryTask _plan_task = null;      // 加入策略任務，優先執行
         
         private static BindingList<KukaModel.CarryTask> _task_queue = new BindingList<KukaModel.CarryTask>();      // 搬運任務佇列
 
@@ -38,9 +42,11 @@ namespace Chump_kuka
             _task_queue.ListChanged += task_queue_ListChanged;
         }
 
+        /// <summary>
+        /// 取得當天 InI 檔案內紀錄的任務，並實例
+        /// </summary>
         private static void InitRecordTasks()
         {
-            // 取得當天 InI 檔案內紀錄的任務，並實例
             string file_path = KukaParm.GetTodayTaskPath();
             int.TryParse(INiReader.ReadINIFile(file_path, "tasks", "task_last_id"), out int record_count);        // 任務數量
             if (record_count > 0)
@@ -64,6 +70,11 @@ namespace Chump_kuka
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
 
+        /// <summary>
+        /// 當任務狀態更改時，自動儲存 InI
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private static void task_queue_ListChanged(object sender, ListChangedEventArgs e)
         {
             // 當任務狀態更改時，自動儲存，防止系統崩潰後，資料消失
@@ -108,6 +119,7 @@ namespace Chump_kuka
             //_task_timer.Enabled = true;
             //_task_timer.Tick += ProcessNextApiAsync;
         }
+
         private static async void ProcessNextApiAsync(object sender, EventArgs e)
         {
             // 停止計時器，確保在請求處理中不會再觸發計時器
@@ -136,13 +148,12 @@ namespace Chump_kuka
             // 接收到叫車命令，尋找可派發任務
             string start_area_code = e.Message;
 
-            HttpListenerDispatcher.ManualHeardEvent(start_area_code, 1);        // 觸發接收報工系統 call 事件
-
-            bool can_carry = GetCallTask(start_area_code);
-            if (can_carry)
+            string can_carry_mission_code = GetCallTask(start_area_code);
+            if (can_carry_mission_code != null)
             {
                 // KukaApiController.PubCarryTask();
                 ChatController.PubLog($"接收叫車任務，等待執行。");
+                HttpListenerDispatcher.ManualHeardEvent(can_carry_mission_code, start_area_code, 1);        // 觸發接收報工系統 call 事件
             }
             else
             {
@@ -154,208 +165,169 @@ namespace Chump_kuka
         /// 將搬運任務加入等待列表
         /// </summary>
         /// <param name="wait">若為 true，需等待報工系統通知；反之，直接派發任務。</param>
-        public static void AddToQueue(bool wait=true)
+        public static void AddToQueue(KukaModel.CarryModel start_node, KukaModel.CarryModel goal_node, out string mission_code, bool wait=true, 
+                    bool is_plan = false)
         {
+            mission_code = "";
+
+            // 初始化計時器
             if (_task_timer == null)
             {
                 initTimer();
             }
-            // 取得起始區域代號
 
-            string start_area_code;
-
-            KukaModel.Area try_find = null;     // 嘗試尋找起始區域
-            KukaModel.Node node_model = null;        // 起始節點
-
-            foreach (KukaModel.Area area_model in KukaParm.KukaAreaModels)
-            {
-                node_model = area_model.GetNode(KukaParm.StartNode.Code);
-                if (node_model != null)
-                {
-                    try_find = area_model;
-                    break;
-                }
-            }
-
-
-            if(try_find == null)
-            {
-                start_area_code = KukaParm.StartNode.Code;      // 找不到所屬區域，表示本身即為區域編號
-            }
-            else
-            {
-                start_area_code = try_find.AreaCode;
-            }
-
-            // 判定是否重複起始點(起始點已在任務列表中，且該任務尚未完成)
+            // 判定是否建立重複起始點(起始點已在任務列表中，且該任務尚未完成)
             bool exists_task = _task_queue.Any(m => 
-                                        m.StartNode.Code == KukaParm.StartNode.Code && 
-                                        m.StartNode.Type == KukaParm.StartNode.Type  && 
+                                        m.StartNode.NodeModel?.NodeCode == start_node.NodeModel?.NodeCode && 
                                         m.FinishTime == null);
             if (exists_task)
             {
-                ChatController.PubLog("派發重複任務");
+                ChatController.PubError("派發重複任務 !");
                 return;
             }
             
             // 建立搬運任務資訊
-            KukaModel.CarryTask task = new KukaModel.CarryTask(_task_id, !wait, KukaParm.StartNode, KukaParm.GoalNode, start_area_code);
+            KukaModel.CarryTask task = new KukaModel.CarryTask(_task_id, !wait, start_node, goal_node);
+            mission_code = task.MissionCode;
+
+            // 判斷是否為策略任務
+            if (is_plan)
+            {
+                _plan_task = task;
+            }
 
             // 最後一區的任務優先執行
-            if (start_area_code == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count - 1].AreaCode)
+            if (start_node.AreaModel?.AreaCode == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count - 1].AreaCode)
             {
                 task.Called = true;
             }
             _task_id++;
-            _task_queue.Add(task);
 
-            if(node_model != null)
+            _task_queue.Add(task);      // 加入佇列
+
+            // 如果起點是 node 標記為任務占用
+            if(start_node.NodeModel != null)
             {
-                node_model.NodeStatus = 1;
+                start_node.NodeModel.NodeStatus = 1;
             }
 
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
-
-            // 非等待或最後一區的任務優先執行
-            //if (!wait || start_code == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count-1].AreaCode)
-            //{
-            //    _current_task = task;
-            //    KukaApiController.PubCarryTask();
-            //}
-            // 先全部開放
-            //_current_task = task;
-            //KukaApiController.PubCarryTask();
         }
 
-        private static bool IsAreaFully(KukaModel.Area area_model, out bool is_init)
-        {
-            is_init = true;
-            if (area_model.NodeList == null)
-            {
-                is_init = false;
-                return true;
-            }
-            // 若滿載，返回 true，反之 false
-            bool status = area_model.NodeList
-                .Select(node => node.RackStatus)
-                .ToArray()
-                .Contains(0);
-            return status;
-        }
-
-        private static bool IsLockExist(KukaModel.Area area_model)
-        {
-            // 若存在lock，返回 true，反之 false
-            return area_model.LockNodes?.Count > 0;
-        }
-
+        /// <summary>
+        /// 尋找可執行的搬運任務
+        /// </summary>
+        /// <returns></returns>
         private static bool FindAndAssignTask()
         {
+            // 策略任務優先執行
+            if(_plan_task != null)
+            {
+                KukaApiController.PubCarryTask(_plan_task);
+                _current_task = _plan_task;
+                ChatController.PubLog($"已派發任務，ID: {_current_task.ID}");
+               
+                _plan_task = null;
+                return true;
+            }
+
             foreach (KukaModel.CarryTask task in _task_queue)
             {
                 if (task.Called && task.FinishTime == null)
                 {
-                    
-                    _current_task = task;
-                    // 檢查目標是否滿載
-                    if (task.GoalNode.Type == "NODE_AREA")
+                    KukaModel.Node goal_node = task.GoalNode.NodeModel;
+                    // 檢查目標是否為貨架點
+                    if (!task.GoalNode.IsArea)     // 目標為貨架點
                     {
-                        KukaModel.Area start_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.GetNode(task.StartNode.Code) != null);
-                        KukaModel.Area target_area = KukaParm.KukaAreaModels.FirstOrDefault(m => m.AreaCode == task.GoalNode.Code);
-
-                        KukaModel.CarryNode[] carry_nodes;
-                        if (IsAreaFully(target_area, out bool init))       // 若目標區域滿載
+                        // 檢查目標貨架點是否搬允許搬運
+                        
+                        if (goal_node.IsEmpty())
                         {
-                            if (!init)
-                            {
-                                ChatController.PubLog($"[task_{task.ID}] > 目標區域尚未完成初始化，優先執行下一筆任務。");
-                                continue;
-                            }
-                            ChatController.PubLog($"[task_{task.ID}] > 目標區域滿載。");
-
-                            if (IsAreaFully(start_area, out bool _))        // 若當前區域滿載
-                            {
-                                if (IsLockExist(target_area))        // 若目標可調整
-                                {
-                                    string lock_node = target_area.LockNodes[0];
-                                    carry_nodes = new KukaModel.CarryNode[]
-                                    {
-                                        new KukaModel.CarryNode()
-                                        {
-                                            Code = lock_node,
-                                            Type = "NODE_POINT",
-                                            Name = lock_node,
-                                        },
-                                        new KukaModel.CarryNode(target_area.Next()),
-                                        _current_task.StartNode,
-                                        _current_task.GoalNode
-                                    };
-                                    target_area.LockNodes.Remove(lock_node);
-                                    ChatController.SyncNodeStatus(target_area);
-                                    ChatController.PubLog($"[task_{task.ID}] > 啟動策略B。");
-                                }
-                                else
-                                {
-                                    ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標區域皆滿載，優先執行下一筆任務");
-                                    continue;
-                                }
-                                
-                            }
-                            else        // 若當前區域有空位
-                            {
-                                if (IsLockExist(target_area))        // 若目標可調整
-                                {
-                                    string lock_node = target_area.LockNodes[0];
-                                    carry_nodes = new KukaModel.CarryNode[]
-                                    {
-                                        new KukaModel.CarryNode()
-                                        {
-                                            Code = lock_node,
-                                            Type = "NODE_POINT",
-                                            Name = lock_node,
-                                        },
-                                        new KukaModel.CarryNode(start_area),
-                                        _current_task.StartNode,
-                                        _current_task.GoalNode
-                                    };
-                                    target_area.LockNodes.Remove(lock_node);
-                                    ChatController.SyncNodeStatus(target_area);
-                                    ChatController.PubLog($"[task_{task.ID}] > 啟動策略B。");
-                                }
-                                else
-                                {
-                                    ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標區域皆滿載，優先執行下一筆任務");
-                                    continue;
-                                }
-                            }
+                            // 貨架點無占用，可直接派發任務
                         }
                         else
                         {
-                            carry_nodes = new KukaModel.CarryNode[]
+                            // 貨架點占用，判斷是否上鎖
+                            if (goal_node.Lock)
                             {
-                                _current_task.StartNode,
-                                _current_task.GoalNode
-                            };
-                         
+                                // 貨架點已鎖定，執行策略
+                                KukaModel.Area start_area = task.StartNode.IsArea ? task.StartNode.AreaModel : task.StartNode.NodeModel.Parent;
+                                TaskPlan(task.ID, goal_node, start_area);
+                                return false;
+                            }
+
+                            ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標貨架點滿載，優先執行下一筆任務");
+                            continue;
                         }
-                        KukaApiController.PubCarryTask(carry_nodes);
                     }
-                    else
+                    else       // 目標為區域
                     {
-                        continue;       // 暫不處理 point
+                        KukaModel.Area goal_area = task.GoalNode.AreaModel;
+                        // 先搜尋是否有空貨架點
+                        KukaModel.Node empty_node = goal_area?.GetEmptyNode();
+                        if (empty_node == null)
+                        {
+                            // 沒有空貨架點，搜尋是否有上鎖貨架點
+                            KukaModel.Node lock_node = goal_area?.GetLockNode();
+                            if(lock_node == null)
+                            {
+                                // 找不到上鎖貨架，執行下一筆
+                                ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標區域皆滿載，優先執行下一筆任務");
+                                continue;
+                            }
+
+                            // 找到上鎖貨架，執行策略
+                            KukaModel.Area start_area = task.StartNode.IsArea ? task.StartNode.AreaModel : task.StartNode.NodeModel.Parent;
+                            TaskPlan(task.ID, lock_node, start_area);
+                            return false;
+                        }
+                        else
+                        {
+                            // 加入可搬運貨架點
+                            task.GoalNode.NodeModel = empty_node;
+                        }
                     }
                     
-
-                    // 修改 start_node goal_node
-
+                    // 派發 API
+                    KukaApiController.PubCarryTask(task);
+                    _current_task = task;
                     ChatController.PubLog($"已派發任務，ID: {_current_task.ID}");
 
-                    return true;
+                    return true; 
                 }
             }
 
             return false;
-            // ChatController.PubLog($"無任務派發");
+        }
+
+        private static bool TaskPlan(int task_id, KukaModel.Node lock_node, Area start_area)
+        {
+            // 執行搬運策略
+            // 需確認已經指定目標貨架點，並且該貨架點已鎖定
+
+            KukaModel.Node start_empty_node = start_area.GetEmptyNode();
+            if (start_empty_node != null)       // 策略A => 將上鎖貨架搬運到當前區域無佔用位置
+            {
+                ChatController.PubLog($"[task_{task_id}] > 啟動策略A，搬運到起始區域。");
+
+                AddToQueue(new CarryModel(lock_node.NodeName, null, lock_node),
+                            new CarryModel(start_empty_node.NodeName, null, start_empty_node),
+                            out string mission_code, true);
+                AppendTaskLog(mission_code, $"[task_{task_id}] 策略A [搬運到起始區域]\n===");
+            }
+            else        // 策略B => 將上鎖貨架搬運到下一區域無佔用位置
+            {
+                // 目前區域無空位，更換策略至下一區域
+                KukaModel.Node next_empty_node = lock_node.Parent?.Next().GetEmptyNode();
+                if (next_empty_node == null) return false;      // 找不到下一目標
+
+                ChatController.PubLog($"[task_{task_id}] > 啟動策略B，搬運到下一區域。");
+                AddToQueue(new CarryModel(lock_node.NodeName, null, lock_node),
+                            new CarryModel(next_empty_node.NodeName, null, next_empty_node),
+                            out string mission_code, true);
+                AppendTaskLog(mission_code, $"[task_{task_id}] 策略B [搬運到下一區域]\n===");
+            }
+            return true;
         }
 
         /// <summary>
@@ -364,7 +336,7 @@ namespace Chump_kuka
         /// <returns></returns>
         public static KukaModel.SimpleCarryTask[] GetQueueArray()
         {
-            var simple_queue = _task_queue.Select(q => new KukaModel.SimpleCarryTask(q)).ToArray();
+            var simple_queue = _task_queue.Select(queue => new KukaModel.SimpleCarryTask(queue)).ToArray();
             return simple_queue;
         }
         
@@ -373,47 +345,51 @@ namespace Chump_kuka
         /// </summary>
         /// <param name="start_area_code"></param>
         /// <returns></returns>
-        private static bool GetCallTask(string start_area_code)
+        private static string GetCallTask(string start_area_code)
         {
             // 找到符合開始區域且尚未執行的第一筆資料
-            KukaModel.CarryTask call_task = _task_queue.FirstOrDefault(m => m.AreaCode == start_area_code && m.Called == false && m.FinishTime == null);
+            KukaModel.CarryTask call_task = _task_queue.FirstOrDefault(task => task.StartNode.AreaModel.AreaCode == start_area_code &&
+                                                                                task.Called == false &&
+                                                                                task.FinishTime == null);
             if (call_task != null)
             {
                 call_task.Called = true;
                 ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
-                return true;
+                return call_task.MissionCode;
             }
-            return false;
+
+            return null;
         }
 
-        private static bool PubCarryList()
-        {
-            if (_current_task != null)
-            {
-                // Console.WriteLine($"找到的資料: Start = {foundModel.StartNode}, Goal = {foundModel.GoalNode}");
-                // 自動指派起始終點節點
-                KukaParm.StartNode = _current_task.StartNode;
-                KukaParm.GoalNode = _current_task.GoalNode;
-                // _current_task.Called = true;       // 已呼叫
+        //private static bool PubCarryList()
+        //{
+        //    if (_current_task != null)
+        //    {
+        //        // Console.WriteLine($"找到的資料: Start = {foundModel.StartNode}, Goal = {foundModel.GoalNode}");
+        //        // 自動指派起始終點節點
+        //        KukaParm.StartNode = _current_task.StartNode;
+        //        KukaParm.GoalNode = _current_task.GoalNode;
+        //        // _current_task.Called = true;       // 已呼叫
 
-                ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
-                return true;
-            }
-            else
-            {
-                Console.WriteLine("找不到指定名稱的資料。");
-                return false;
-            }
-        }
+        //        ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("找不到指定名稱的資料。");
+        //        return false;
+        //    }
+        //}
 
         /// <summary>
         /// 回報任務完成，並重置 _current_task
         /// </summary>
-        public static void FeedbackFinish()
+        public static void FeedbackFinish(string mission_code)
         {
-            if (_current_task != null) 
-                _current_task.FinishTime = DateTime.Now;
-            // _current_task = null;
+            //if (_current_task != null) 
+            //    _current_task.FinishTime = DateTime.Now;
+            KukaModel.CarryTask finish_task = _task_queue.FirstOrDefault(task => task.MissionCode == mission_code);
+            finish_task.FinishTime = DateTime.Now;
 
             _task_timer.Start();
 
@@ -423,11 +399,13 @@ namespace Chump_kuka
         /// <summary>
         /// 回報任務失敗，並重置 _current_task
         /// </summary>
-        public static void FeedbackFail()
+        public static void FeedbackFail(string mission_code)
         {
-            if (_current_task != null)
-                _current_task.FinishTime = DateTime.MinValue;
+            //if (_current_task != null)
+            //    _current_task.FinishTime = DateTime.MinValue;
             // _current_task = null;
+            KukaModel.CarryTask cancle_task = _task_queue.FirstOrDefault(task => task.MissionCode == mission_code);
+            cancle_task.FinishTime = DateTime.MinValue;
 
             _task_timer.Start();
 
@@ -438,10 +416,13 @@ namespace Chump_kuka
         /// 增加任務狀態紀錄
         /// </summary>
         /// <param name="log_message"></param>
-        public static void AppendTaskLog(string log_message)
+        public static void AppendTaskLog(string mission_code, string log_message)
         {
-            if (_current_task != null)
-                _current_task.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] {log_message}\n";
+            //if (_current_task != null)
+            //    _current_task.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] {log_message}\n";
+            KukaModel.CarryTask task = _task_queue.FirstOrDefault(t => t.MissionCode == mission_code);
+            task.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] {log_message}\n";
+
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
 
@@ -454,14 +435,14 @@ namespace Chump_kuka
             int.TryParse(task_id, out int rm_id);
             if (rm_id == 0)
             {
-                ChatController.PubLog($"錯誤: 請確認搬運任務編號正確[{rm_id}]");
+                ChatController.PubError($"錯誤: 請確認搬運任務編號正確[{rm_id}]");
                 return;
             }
 
 
             if (_current_task?.ID == rm_id)
             {
-                ChatController.PubLog($"搬運任務[{rm_id}]運行中，無法移除");
+                ChatController.PubError($"搬運任務[{rm_id}]運行中，無法移除");
                 return;
             }
 

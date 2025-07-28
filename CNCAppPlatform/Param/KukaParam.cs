@@ -34,8 +34,8 @@ using System.Collections.ObjectModel;
 
 internal static class KukaParm
 {
-    private static KukaModel.CarryNode _start_node = new KukaModel.CarryNode();
-    private static KukaModel.CarryNode _goal_node = new KukaModel.CarryNode();
+    private static KukaModel.CarryModel _start_node;
+    private static KukaModel.CarryModel _goal_node;
     private static string _robot_status_feedback_time = "--";
     private static JArray _robot_status_infos = new JArray();
     private static List<KukaModel.Area> _kuka_area_models = new List<KukaModel.Area>();
@@ -47,7 +47,7 @@ internal static class KukaParm
     public static event PropertyChangedEventHandler RobotStatusChanged;
     public static event PropertyChangedEventHandler AreaChanged;
     //public static event PropertyChangedEventHandler AreaStatusChanged;
-    public static event PropertyChangedEventHandler CarryChanged;
+    //public static event PropertyChangedEventHandler CarryChanged;
     public static event PropertyChangedEventHandler BindChanged;        // 當綁定區域改變後
 
     public static string GetTodayTaskPath()
@@ -56,30 +56,30 @@ internal static class KukaParm
         return Path.Combine(Application.StartupPath, "tasks\\" + file_name);
     }
 
-    public static KukaModel.CarryNode StartNode       // 手動派車起點
-    {
-        get => _start_node;
-        set
-        {
-            if (_start_node != value)
-            {
-                _start_node = value;
-                OnCarryChanged(nameof(StartNode));
-            }
-        }
-    }
-    public static KukaModel.CarryNode GoalNode      // 手動派車終點
-    {
-        get => _goal_node;
-        set
-        {
-            if (_goal_node != value)
-            {
-                _goal_node = value;
-                OnCarryChanged(nameof(GoalNode));
-            }
-        }
-    }
+    //public static KukaModel.CarryNode StartNode       // 手動派車起點
+    //{
+    //    get => _start_node;
+    //    set
+    //    {
+    //        if (_start_node != value)
+    //        {
+    //            _start_node = value;
+    //            OnCarryChanged(nameof(StartNode));
+    //        }
+    //    }
+    //}
+    //public static KukaModel.CarryNode GoalNode      // 手動派車終點
+    //{
+    //    get => _goal_node;
+    //    set
+    //    {
+    //        if (_goal_node != value)
+    //        {
+    //            _goal_node = value;
+    //            OnCarryChanged(nameof(GoalNode));
+    //        }
+    //    }
+    //}
 
     //public static string RobotStatusFeedbackTime
     //{
@@ -214,10 +214,10 @@ internal static class KukaParm
         RobotStatusChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
     }
 
-    private static void OnCarryChanged(string propertyName)
-    {
-        CarryChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
-    }
+    //private static void OnCarryChanged(string propertyName)
+    //{
+    //    CarryChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
+    //}
 }
 
 

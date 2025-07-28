@@ -179,32 +179,35 @@ namespace Chump_kuka.Dispatchers
         /// <summary>
         /// 將派車任務請求加入 API 等待列表
         /// </summary>
-        public void AppendCarryTask(KukaModel.CarryNode[] carry_nodes)
+        public void AppendCarryTask(KukaModel.CarryTask carry_task)
         {
-            long timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-
-            List<dynamic> mission_data = new List<dynamic>();
-            bool put_down = true;      // 表示貨架是否放下
-            int seq = 1;
-            foreach (KukaModel.CarryNode node in carry_nodes)
-            {
-                put_down = !put_down;       // 切換放下/頂升
-                mission_data.Add(new
+            dynamic[] mission_data = new dynamic[2]
                 {
-                    sequence = seq++,
-                    position = node.Code,     //"A000000002",
-                    type = node.Type,     // "NODE_AREA",
-                    putDown = put_down,
-                    passStrategy = "AUTO",
-                    waitingMillis = 0
-                });
-            }
+                    new
+                    {
+                        sequence = 1,
+                        position = carry_task.StartNode.NodeModel.NodeCode,     //"A000000002",
+                        type = "NODE_POINT",     // "NODE_AREA",
+                        putDown = false,
+                        passStrategy = "AUTO",
+                        waitingMillis = 0
+                    },
+                    new
+                    {
+                        sequence = 2,
+                        position = carry_task.GoalNode.NodeModel.NodeCode,     //"A000000002",
+                        type = "NODE_POINT",     // "NODE_AREA",
+                        putDown = true,
+                        passStrategy = "AUTO",
+                        waitingMillis = 0
+                    }
+                };
 
             var request_body = new
             {
                 orgId = "chump",     //"9001",
-                requestId = $"request{timestamp}",
-                missionCode = $"mission{timestamp}",
+                requestId = $"request{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}",
+                missionCode = carry_task.MissionCode,
                 missionType = "RACK_MOVE",
                 viewBoardType = "",
                 robotType = "LIFT",

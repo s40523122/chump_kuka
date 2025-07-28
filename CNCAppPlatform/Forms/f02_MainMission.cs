@@ -189,9 +189,9 @@ namespace Chump_kuka.Forms
                 Log.Append("按下綠色按鈕", "INFO", "f02");
 
                 // 取得可搬運貨架位置
-                bool can_carry = LocalAreaController.TryCreateCarryTask();
+                KukaModel.Node can_carry_node = LocalAreaController.TryCreateCarryTask();
 
-                if (!can_carry)
+                if (can_carry_node == null)
                 {
                     Log.Append("當前狀態不可搬運", "WARN", "f02");
                     return;     // 不可搬運狀態，跳過
@@ -204,8 +204,12 @@ namespace Chump_kuka.Forms
                 Light(1);       // 表示物料已進站
                 LocalAreaController.AreaReadyFunc();
 
-                ChatController.AppendCarryTask(wait_call);
-                // KukaApiController.SendCarryTask();
+                // 建立搬運任務
+                KukaModel.CarryModel start_carry_node = new KukaModel.CarryModel(can_carry_node.NodeName, null, can_carry_node);
+                KukaModel.Area next_area = can_carry_node.Parent.Next();
+                KukaModel.CarryModel goal_carry_node = new KukaModel.CarryModel(next_area.AreaName, next_area, null);
+
+                ChatController.AppendCarryTask(start_carry_node, goal_carry_node, wait_call);
             }
         }
 

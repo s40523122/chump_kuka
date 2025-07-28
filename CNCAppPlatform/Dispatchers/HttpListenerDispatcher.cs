@@ -33,7 +33,7 @@ namespace Chump_kuka.Dispatchers
             return _kuka_listener.IsRunning;
         }
 
-        private static void CalcAreaStep(string task_status)
+        private static void CalcAreaStep(string mission_code, string task_status)
         {
             string status = "INFO";
             string message = "";
@@ -141,7 +141,7 @@ namespace Chump_kuka.Dispatchers
             }
 
             Log.Append(message, status, "HttpListenerDispatcher");
-            CarryTaskController.AppendTaskLog(message);
+            CarryTaskController.AppendTaskLog(mission_code, message);
         }
 
         static string area_code = "";      // 任務起始區域編碼
@@ -180,13 +180,14 @@ namespace Chump_kuka.Dispatchers
                 };
 
             string task_status = jsonObj["missionStatus"].ToString();
+            string mission_code = jsonObj["missionCode"].ToString();
 
-            CalcAreaStep(task_status);      // 計算當前步數
+            CalcAreaStep(mission_code, task_status);      // 計算當前步數
             
             // 若任務取消
             if (task_status == "CANCELED")
             {
-                CarryTaskController.FeedbackFail();     // 回報任務失敗
+                CarryTaskController.FeedbackFail(mission_code);     // 回報任務失敗
                 _area_step = 0;     // 重置步數
                 return;
             }
@@ -202,12 +203,12 @@ namespace Chump_kuka.Dispatchers
             // 觸發接收事件
             if (area_code != "")
             {
-                Heard.Invoke(sender, new HeardEventArgs(area_code, _area_step));
+                Heard.Invoke(sender, new HeardEventArgs(mission_code, area_code, _area_step));
             }
         }
-        public static void ManualHeardEvent(string area_code,int step)
+        public static void ManualHeardEvent(string mission_code, string area_code,int step)
         {
-            Heard.Invoke(null, new HeardEventArgs(area_code, step));
+            Heard.Invoke(null, new HeardEventArgs(mission_code, area_code, step));
         }
 
         private static void _kuka_listener_MessageReceived1(object sender, HttpMessageEventArgs e)
@@ -267,11 +268,13 @@ namespace Chump_kuka.Dispatchers
 
         public class HeardEventArgs : EventArgs
         {
+            public string MissionCode { get; set; }
             public string AreaCode { get; set; }
             public int Step { get; set; }
 
-            public HeardEventArgs(string area_code, int step)
+            public HeardEventArgs(string mission_code, string area_code, int step)
             {
+                MissionCode = mission_code;
                 AreaCode = area_code;
                 Step = step;
             }

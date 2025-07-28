@@ -265,7 +265,7 @@ namespace Chump_kuka.Controller
             _RecordNodeStatus = current_status;
         }
 
-        public static bool TryCreateCarryTask()
+        public static KukaModel.Node TryCreateCarryTask()
         {
             // 透過與歷史狀態的比對，判定當前區域的動作狀態
             // 若動作狀態為可出貨，執行以下
@@ -277,13 +277,13 @@ namespace Chump_kuka.Controller
                .Select(node => node.RackStatus)
                .ToArray();
 
-            if (current_status == null) return false;
+            if (current_status == null) return null;
 
             // 第一次執行，初始化歷史狀態
             if (_record_node_status == null)
             {
                 _RecordNodeStatus = current_status;
-                return false;
+                return null;
             }
 
             // 若狀態無改變，無需處理
@@ -291,7 +291,7 @@ namespace Chump_kuka.Controller
             {
                 MsgBox.ShowFlash("貨架狀態沒有變化", "區域貨架異常", 1000);
                 Log.Append("貨架狀態沒有變化", "WARN", "LocalAreaController");
-                return false;
+                return null;
             }
 
             List<int> node_action = new List<int>();        // 區域動作狀態判定
@@ -308,51 +308,27 @@ namespace Chump_kuka.Controller
             {
                 MsgBox.Show("資料異常", "區域貨架異常");
                 Log.Append($"資料異常 [{string.Join(",", _record_node_status)}] => [{string.Join(",", current_status)}]", "ERROR", "LocalAreaController");
-                return false;
-            }
-            else if (node_action.Count(n => n == 1) >= 2)
-            {
-                MsgBox.Show("可派發任務 > 1 筆", "區域貨架異常");
-                Log.Append("可派發任務 > 1 筆", "WARN", "LocalAreaController");
-                return false;
+                return null;
             }
             else if (node_action.Contains(1))
             {
-                // 目標區域不可進貨（滿載）
-                //if (KukaParm.TargetAreaModel.NodeStatus.Length>0 && !KukaParm.TargetAreaModel.NodeStatus.Contains(0))
-                //{
-                //    MsgBox.Show("目標區域滿載", "搬運任務異常");
-                //    Log.Append("目標區域滿載", "WARN", "LocalAreaController");
-                //    return false;
-                //}
-                // 目標是否滿仔應該在搬運前判定，而不是建立時判定
-
-                KukaModel.Node carry_node = KukaParm.BindAreaModel.NodeList[node_action.IndexOf(1)];        // 找到第一個需要入貨的節點
-
-                // 設定搬運起點與終點
-                KukaParm.StartNode = new KukaModel.CarryNode()
+                if (node_action.Count(n => n == 1) >= 2)
                 {
-                    Code = carry_node.NodeCode,
-                    Name = carry_node.NodeName,
-                    Type = "NODE_POINT"
-                };
-
-                KukaParm.GoalNode = new KukaModel.CarryNode()
-                {
-                    Code = KukaParm.BindAreaModel.Next().AreaCode,       // "A000000002",
-                    Name = KukaParm.BindAreaModel.Next().AreaName,       // "倉庫區",
-                    Type = "NODE_AREA"
-                };
-
+                    MsgBox.Show("可派發任務 > 1 筆", "區域貨架異常");
+                    Log.Append("可派發任務 > 1 筆", "WARN", "LocalAreaController");
+                    return null;
+                }
+                
                 _RecordNodeStatus = current_status;        // 更新歷史狀態
 
-
-                return true;
+                return KukaParm.BindAreaModel.NodeList[node_action.IndexOf(1)];        // 找到第一個需要入貨的節點;
             }
             _RecordNodeStatus = current_status;        // 更新歷史狀態
             // 沒有可派任務
-            return false;
+            return null;
         }
+
+        
 
         public static void TurnOnLight()
         {

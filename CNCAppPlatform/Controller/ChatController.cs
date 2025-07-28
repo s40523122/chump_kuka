@@ -69,21 +69,34 @@ namespace Chump_kuka.Controller
             _mqtt.Subscriber("carry/finish", CarryFinishCb);
             _mqtt.Subscriber("carry/list", CarryListCb);
             _mqtt.Subscriber("heard", HeardCb);
+            _mqtt.Subscriber("log/error", ErrorCb);
 
             SayHi();        // 初次上線，通知取得區域資料
 
             return true;
         }
 
-        public static async void PubLog(string message)
+        public static void PubLog(string message)
         {
             Log.Append(message, "ASYNC", "ChatController");
             _mqtt.Publisher("log", message);
         }
 
+        public static void PubError(string message)
+        {
+            ErrorCb(message);
+            _mqtt.Publisher("log/error", message);
+        }
+
         private static void LogCb(string message)
         {
             Log.Append(message, "ASYNC", "ChatController");
+        }
+
+        private static void ErrorCb(string message)
+        {
+            MsgBox.Show(message, "錯誤");
+            Log.Append(message, "ERROR", "ChatController");
         }
 
         private static void HelloCb(string message)
@@ -222,9 +235,9 @@ namespace Chump_kuka.Controller
             try
             {
                 PubLog("接收排程搬運任務");
-                ParseAndUpdateCarryNode(message);
+                ParseAndUpdateCarryNode(message, out KukaModel.CarryModel start_carry_node, out KukaModel.CarryModel goal_carry_node);
                 // KukaApiController.PubCarryTask();
-                AppendCarryTask(true);
+                AppendCarryTask(start_carry_node, goal_carry_node, true);
             }
             catch (Exception _e)
             {
@@ -236,9 +249,9 @@ namespace Chump_kuka.Controller
             try
             {
                 PubLog("接收基本搬運任務");
-                ParseAndUpdateCarryNode(message);
+                ParseAndUpdateCarryNode(message, out KukaModel.CarryModel start_carry_node, out KukaModel.CarryModel goal_carry_node);
                 // KukaApiController.PubCarryTask();
-                AppendCarryTask(false);
+                AppendCarryTask(start_carry_node, goal_carry_node, false);
             }
             catch (Exception _e)
             {
@@ -248,7 +261,9 @@ namespace Chump_kuka.Controller
 
         private static void CarryFinishCb(string message)
         {
-            SendCarryFinish(message);
+            // 解析訊息為 [ 任務編號, 區域標號 ]
+            List<string> mission_area = JsonConvert.DeserializeObject<List<string>>(message);
+            SendCarryFinish(mission_area[0], mission_area[1]);
         }
 
         private static void CarryListCb(string message)
@@ -280,10 +295,11 @@ namespace Chump_kuka.Controller
             // 如果 step 為 7 代表搬運任務已完成
             if (e.Step == 7)
             {
-                CarryTaskController.FeedbackFinish();
-                int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaCode == e.AreaCode);       // 找到起點區域的 index
-                int next_index = (index+1) % KukaParm.KukaAreaModels.Count;     // 使用「模運算」達到環狀效果
-                SendCarryFinish(KukaParm.KukaAreaModels[next_index].AreaCode);         // 通知目標區域更新(起點區域index+1)
+                CarryTaskController.FeedbackFinish(e.MissionCode);
+                //int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaCode == e.AreaCode);       // 找到起點區域的 index
+                //int next_index = (index+1) % KukaParm.KukaAreaModels.Count;     // 使用「模運算」達到環狀效果
+                KukaModel.Area heard_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == e.AreaCode);
+                SendCarryFinish(e.MissionCode, heard_area.Next().AreaCode);         // 通知目標區域更新(起點區域index+1)
             }
 
             // 若監聽目標為綁定區域
@@ -371,12 +387,12 @@ namespace Chump_kuka.Controller
         /// 當完成搬運任務時，通知目標區域更新狀態
         /// </summary>
         /// <param name="area_code"></param>
-        public static void SendCarryFinish(string area_code)
+        public static void SendCarryFinish(string mission_code, string area_code)
         {
             // 如果目標是當前模組，直接觸發步驟 0，通知工作站更新狀態
             if (area_code == KukaParm.BindAreaModel.AreaCode)
             {
-                HttpListenerDispatcher.HeardEventArgs _e = new HttpListenerDispatcher.HeardEventArgs(area_code, 0);
+                HttpListenerDispatcher.HeardEventArgs _e = new HttpListenerDispatcher.HeardEventArgs(mission_code, area_code, 0);
 
                 StepChanged.Invoke(null, _e);
                 Log.Append("Get finish", "INFO", "ChatController");
@@ -384,7 +400,11 @@ namespace Chump_kuka.Controller
             else
             {
                 if (_is_master)
-                    _mqtt.Publisher("carry/finish", area_code);
+                {
+                    string[] send_info = new string[2] { mission_code, area_code };
+                    _mqtt.Publisher("carry/finish", JsonConvert.SerializeObject(send_info));
+                }
+                    
             }
         }
 
@@ -402,12 +422,12 @@ namespace Chump_kuka.Controller
             }
         }
 
-        public static void AppendCarryTask(bool wait=true)
+        public static void AppendCarryTask(KukaModel.CarryModel start_node, KukaModel.CarryModel goal_node, bool wait=true)
         {
             if (_is_master)        
             {
                 // 若為 master 端，將任務加入等候區
-                CarryTaskController.AddToQueue(wait);
+                CarryTaskController.AddToQueue(start_node, goal_node, out _, wait);
             }
             else
             {
@@ -415,10 +435,10 @@ namespace Chump_kuka.Controller
                 // 若 wait = true，透過 "carry" 主題傳遞資料，代表需要等待叫車訊號。
                 string topic_name = wait ? "carry" : "carry/auto";
 
-                KukaModel.CarryNode[] nodes = new KukaModel.CarryNode[2]
+                string[] nodes = new string[2]
                 {
-                    KukaParm.StartNode,
-                    KukaParm.GoalNode
+                    $"{start_node.Name};{start_node.AreaModel.AreaCode};{start_node.NodeModel.NodeCode}",
+                    $"{goal_node.Name};{goal_node.AreaModel.AreaCode};{goal_node.NodeModel.NodeCode}",
                 };
 
                 string task_node_string = JsonConvert.SerializeObject(nodes, Formatting.Indented);
@@ -457,11 +477,30 @@ namespace Chump_kuka.Controller
             _mqtt.Publisher("resend_task", task_id);
         }
 
-        private static void ParseAndUpdateCarryNode(string carry_node_msg)
+        private static void ParseAndUpdateCarryNode(string carry_node_msg, out KukaModel.CarryModel start_carry_node, out KukaModel.CarryModel goal_carry_node)
         {
-            List<KukaModel.CarryNode> nodes = JsonConvert.DeserializeObject<List<KukaModel.CarryNode>>(carry_node_msg);
-            KukaParm.StartNode = nodes[0];
-            KukaParm.GoalNode = nodes[1];
+            List<string> nodes = JsonConvert.DeserializeObject<List<string>>(carry_node_msg);
+            
+            string[] start_info = nodes[0].Split(';');
+            string[] goal_info = nodes[1].Split(';');
+            KukaModel.Node start_node = null, goal_node = null;
+            foreach (KukaModel.Area area in KukaParm.KukaAreaModels)
+            {
+                if (start_node == null)
+                {
+                    start_node = area.GetNode(start_info[2]);
+                }
+                if (goal_node == null)
+                {
+                    goal_node = area.GetNode(goal_info[2]);
+                }
+            }
+            start_carry_node = new KukaModel.CarryModel(start_info[0],
+                                                  KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == start_info[1]),
+                                                  start_node);
+            goal_carry_node = new KukaModel.CarryModel(goal_info[0],
+                                                  KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == goal_info[1]),
+                                                  goal_node);
         }
     }
 }

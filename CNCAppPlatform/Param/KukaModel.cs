@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reactive;
 
 namespace Chump_kuka
 {
@@ -84,10 +85,15 @@ namespace Chump_kuka
                 } 
             }
 
-            public Node(string nodeCode)
+            [JsonIgnore]
+            public Area Parent { get; set; }
+
+            public Node(string node_code)
             {
-                NodeCode = nodeCode;
+                NodeCode = node_code;
             }
+
+            public bool IsEmpty() => NodeStatus == 0 && RackStatus == 0;
 
             public override string ToString() =>
                 Newtonsoft.Json.JsonConvert.SerializeObject(this);
@@ -138,7 +144,8 @@ namespace Chump_kuka
             public event PropertyChangedEventHandler PropertyChanged;
             protected void OnPropertyChanged(string name) =>
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-
+            
+            #region 屬性
             /// <summary>
             /// 區域編碼 ex: area001
             /// </summary>
@@ -162,9 +169,6 @@ namespace Chump_kuka
             /// </summary>
             public int AreaType { get; set; }
 
-            [JsonIgnore]        // 避免序列化循環引用
-            public KukaAreaControl ControlUI { get; set; }
-
             /// <summary>
             /// 點位集合
             /// </summary>
@@ -175,6 +179,7 @@ namespace Chump_kuka
                 {
                     if (_node_list == null || !_node_list.SequenceEqual(value))
                     {
+                        _node_list = null;
                         _node_list = value;
                         //ModelChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeList)));
 
@@ -183,6 +188,7 @@ namespace Chump_kuka
                         foreach (Node node in value)
                         {
                             // node.PropertyChanged += Node_PropertyChanged;
+                            node.Parent = this;
                         }
 
                         OnPropertyChanged(nameof(NodeList));        // 屬性發生變化
@@ -199,6 +205,7 @@ namespace Chump_kuka
             /// 鎖定節點，允許區域自動搬運
             /// </summary>
             public List<string> LockNodes { get; set; } = new List<string>();
+            #endregion 屬性
 
             public Area(JObject json_object = null)
             {
@@ -278,23 +285,28 @@ namespace Chump_kuka
                 }
             }
 
+            public Node GetEmptyNode() => _node_list.FirstOrDefault(node => node.IsEmpty());
+            public Node GetLockNode() => _node_list.FirstOrDefault(node => node.Lock);
+
             public override string ToString() => AreaName;
         }
 
-        public class CarryNode
+        public class CarryModel
         {
-            public string Code { get; set; }
-            public string Type { get; set; }
             public string Name { get; set; } = "null";
 
-            public CarryNode(KukaModel.Area node_model = null)
+            public bool IsArea { get; set; }
+
+            public Area AreaModel { get; set; }
+
+            public Node NodeModel { get; set; }
+
+            public CarryModel(string name, Area area_model, Node node_model)
             {
-                if (node_model != null)
-                {
-                    Code = node_model.AreaCode;
-                    Type = "NODE_AREA";
-                    Name = node_model.AreaName;
-                }
+                Name = name;
+                AreaModel = area_model;
+                NodeModel = node_model;
+                IsArea = node_model == null ? true : false;
             }
         }
 
@@ -315,13 +327,20 @@ namespace Chump_kuka
                 StartNode = task.StartNode.Name;
                 GoalNode = task.GoalNode.Name;
                 CreateTime = task.CreateTime.ToString(@"MM/dd tt hh:mm");
-                FinishTime = task.FinishTime?.ToString(@"MM/dd tt hh:mm");
                 Called = task.Called ? "🔔" : "🔕";
                 LogMsg = task.LogMsg;
 
-                if (FinishTime == null)
+                if (task.FinishTime == null)
                 {
                     FinishTime = "";
+                }
+                else if (task.FinishTime == DateTime.MinValue)
+                {
+                    FinishTime = "已取消";
+                }
+                else
+                {
+                    FinishTime = task.FinishTime?.ToString(@"MM/dd tt hh:mm");
                 }
             }
         }
@@ -333,7 +352,10 @@ namespace Chump_kuka
             private string _log_msg = "";
 
 
-            public int ID { get; set; }
+            public int ID { get; private set; }
+
+            public string MissionCode { get; private set; }
+
             public bool Called
             {
                 get => _called;
@@ -343,9 +365,9 @@ namespace Chump_kuka
                     WriteIni();
                 }
             }
-            public string AreaCode { get; set; }
-            public CarryNode StartNode { get; set; }
-            public CarryNode GoalNode { get; set; }
+            // public string AreaCode { get; set; }
+            public CarryModel StartNode { get; set; }
+            public CarryModel GoalNode { get; set; }
             public DateTime CreateTime { get; set; }
             public DateTime? FinishTime
             {
@@ -356,6 +378,7 @@ namespace Chump_kuka
                     WriteIni();
                 }
             }
+
             public string LogMsg
             {
                 get => _log_msg;
@@ -366,14 +389,14 @@ namespace Chump_kuka
                 }
             }
 
-            public CarryTask(int task_id, bool called, CarryNode start_node, CarryNode goal_node, string areaCode)
+            public CarryTask(int task_id, bool called, CarryModel start_node, CarryModel goal_node)
             {
                 ID = task_id;
+                MissionCode = $"mission{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
                 Called = called;
                 StartNode = start_node;
                 GoalNode = goal_node;
                 CreateTime = DateTime.Now;
-                AreaCode = areaCode;
                 FinishTime = null;
             }
 
