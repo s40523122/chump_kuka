@@ -207,7 +207,7 @@ namespace Chump_kuka.Forms
                 // 建立搬運任務
                 KukaModel.CarryModel start_carry_node = new KukaModel.CarryModel(can_carry_node.NodeName, null, can_carry_node);
                 KukaModel.Area next_area = can_carry_node.Parent.Next();
-                KukaModel.CarryModel goal_carry_node = new KukaModel.CarryModel(next_area.AreaName, next_area, null);
+                KukaModel.CarryModel goal_carry_node = new KukaModel.CarryModel(next_area.AreaName, next_area.AreaCode, null);
 
                 ChatController.AppendCarryTask(start_carry_node, goal_carry_node, wait_call);
             }

@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
@@ -95,7 +96,7 @@ namespace Chump_kuka.Dispatchers
         /// <summary>
         /// 發送 API 請求
         /// </summary>
-        private async Task RequestApiAsync(string apiName, object requestBody, Action<JObject> handleResponse)
+        private async Task RequestApiAsync(string apiName, dynamic requestBody, Action<JObject> handleResponse)
         {
             if (!_enable) return;
 
@@ -116,7 +117,14 @@ namespace Chump_kuka.Dispatchers
                     JObject resp_json = JObject.Parse(responseBody);
                     if (!(bool)resp_json["success"])
                     {
-                        Log.Append($"訪問 KUKA API 發生異常。 [{(string)resp_json["code"]}] {(string)resp_json["message"]}", "ERROR", $"/{apiName}");
+                        string message = $"訪問 KUKA API 發生異常。 [{(string)resp_json["code"]}] {(string)resp_json["message"]}";
+                        Log.Append(message, "ERROR", $"/{apiName}");
+                        if(apiName == "submitMission")
+                        {
+                            CarryTaskController.FeedbackFail(requestBody.missionCode);     // 回報任務失敗
+                            CarryTaskController.AppendTaskLog(requestBody.missionCode, message);
+                        }
+                            
                         return;
                     }
 
@@ -211,7 +219,7 @@ namespace Chump_kuka.Dispatchers
                 missionType = "RACK_MOVE",
                 viewBoardType = "",
                 robotType = "LIFT",
-                robotModels = new string[] { },
+                robotModels = Debugger.IsAttached ? new string[] { "1" } : new string[] { },        // Debug模式下，派發虛擬機器人
                 robotIds = new string[] {},
                 priority = 1,
                 containerType = "",

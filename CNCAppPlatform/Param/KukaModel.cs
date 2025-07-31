@@ -17,7 +17,7 @@ namespace Chump_kuka
         public class Node : INotifyPropertyChanged
         {
             private int _rack_status = -1;      // 貨架狀態 {0: 無貨架, 1: 空貨架, 2: 滿貨架}
-            private int _node_status = -1;      // 節點狀態 {0: 普通, 1: 已建立任務}
+            private int _node_status = 0;      // 節點狀態 {0: 普通, 1: 已建立任務}
             private bool _lock = false;
 
             // 建立屬性值發生變化的通知事件
@@ -27,6 +27,33 @@ namespace Chump_kuka
 
             public string NodeCode { get; set; }
             public string NodeName { get => NodeCode; }
+
+            public bool Lock
+            {
+                get => _lock;
+                set
+                {
+                    if (_node_status == 1)
+                    {
+                        MsgBox.Show("選用貨架已佔用，無法上/解鎖!");
+                        return;
+                    }
+
+                    if (value)
+                    {
+                        if (_rack_status != 1)
+                        {
+                            // 若不是空貨架無法上鎖
+                            MsgBox.Show("僅能上鎖空貨架!");
+                            return;
+                        }
+                    }
+
+                    _lock = value;
+                    OnPropertyChanged(nameof(Lock));
+                }
+            }
+
             public int RackStatus
             {
                 get => _rack_status;
@@ -57,32 +84,6 @@ namespace Chump_kuka
                     _node_status = value;
                     OnPropertyChanged(nameof(NodeStatus));
                 }
-            }
-
-            public bool Lock 
-            { 
-                get => _lock;
-                set
-                {
-                    if (_node_status == 1)
-                    {
-                        MsgBox.Show("選用貨架已佔用，無法上/解鎖!");
-                        return;
-                    }
-
-                    if (value)
-                    {
-                        if (_rack_status != 1)
-                        {
-                            // 若不是空貨架無法上鎖
-                            MsgBox.Show("僅能上鎖空貨架!");
-                            return;
-                        }
-                    }
-
-                    _lock = value;
-                    OnPropertyChanged(nameof(Lock));
-                } 
             }
 
             [JsonIgnore]
@@ -201,10 +202,6 @@ namespace Chump_kuka
                 OnPropertyChanged(nameof(NodeList));
             }
 
-            /// <summary>
-            /// 鎖定節點，允許區域自動搬運
-            /// </summary>
-            public List<string> LockNodes { get; set; } = new List<string>();
             #endregion 屬性
 
             public Area(JObject json_object = null)
@@ -295,18 +292,16 @@ namespace Chump_kuka
         {
             public string Name { get; set; } = "null";
 
-            public bool IsArea { get; set; }
-
-            public Area AreaModel { get; set; }
+            public string AreaCode { get; set; }
 
             public Node NodeModel { get; set; }
 
-            public CarryModel(string name, Area area_model, Node node_model)
+            public CarryModel(string name, string area_code, Node node_model)
             {
                 Name = name;
-                AreaModel = area_model;
+                AreaCode = area_code;
                 NodeModel = node_model;
-                IsArea = node_model == null ? true : false;
+                //IsArea = node_model == null ? true : false;
             }
         }
 
@@ -352,9 +347,9 @@ namespace Chump_kuka
             private string _log_msg = "";
 
 
-            public int ID { get; private set; }
+            public int ID { get; set; }
 
-            public string MissionCode { get; private set; }
+            public string MissionCode { get; set; }
 
             public bool Called
             {
@@ -391,13 +386,16 @@ namespace Chump_kuka
 
             public CarryTask(int task_id, bool called, CarryModel start_node, CarryModel goal_node)
             {
-                ID = task_id;
-                MissionCode = $"mission{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
-                Called = called;
-                StartNode = start_node;
-                GoalNode = goal_node;
-                CreateTime = DateTime.Now;
-                FinishTime = null;
+                if (task_id != 0)       // 防止 Json 因序列化時，自動實作，出現錯誤
+                {
+                    ID = task_id;
+                    MissionCode = $"mission{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
+                    Called = called;
+                    StartNode = start_node;
+                    GoalNode = goal_node;
+                    CreateTime = DateTime.Now;
+                    FinishTime = null;
+                }
             }
 
             private void WriteIni()

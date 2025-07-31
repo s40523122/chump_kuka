@@ -233,26 +233,26 @@ namespace Chump_kuka.Controller
             BindControl.AreaNode = KukaParm.BindAreaModel.NodeList;
             //BindControl.UpdateContainerImage(KukaParm.BindAreaModel.NodeStatus);        // 初次建立，更新圖片
 
-            BindControl.ContainerClick -= BindControl_ContainerClick;
-            BindControl.ContainerClick += BindControl_ContainerClick;
+            //BindControl.ContainerClick -= BindControl_ContainerClick;
+            //BindControl.ContainerClick += BindControl_ContainerClick;
             // KukaParm.BindAreaModel.ControlUI = bind_control;
         }
 
-        private static void BindControl_ContainerClick(object sender, ControlClickEventArgs e)
-        {
-            // 若點擊，將該節點加入鎖定清單，供系統搬運調節策略使用
-            Container select_node = (e.Control as Container);
-            if (select_node.Checked)
-            {
-                KukaParm.BindAreaModel.LockNodes.Add(select_node.ContainerName);
-            }
-            else
-            {
-                KukaParm.BindAreaModel.LockNodes.Remove(select_node.ContainerName);
-            }
+        //private static void BindControl_ContainerClick(object sender, ControlClickEventArgs e)
+        //{
+        //    // 若點擊，將該節點加入鎖定清單，供系統搬運調節策略使用
+        //    Container select_node = (e.Control as Container);
+        //    if (select_node.Checked)
+        //    {
+        //        KukaParm.BindAreaModel.LockNodes.Add(select_node.ContainerName);
+        //    }
+        //    else
+        //    {
+        //        KukaParm.BindAreaModel.LockNodes.Remove(select_node.ContainerName);
+        //    }
 
-            ChatController.SyncNodeStatus(KukaParm.BindAreaModel);
-        }
+        //    ChatController.SyncNodeStatus(KukaParm.BindAreaModel);
+        //}
 
         public static void InitAreaStatus()
         {

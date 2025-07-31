@@ -123,7 +123,7 @@ namespace Chump_kuka.Forms
                     //selected_1.Text = area.AreaName;
 
                     // Test
-                    _start_carry = new KukaModel.CarryModel(area.AreaName, area.Model, null);
+                    _start_carry = new KukaModel.CarryModel(area.AreaName, area.AreaCode, null);
                 }
                 else if (_goal_carry == null)        // else if (selected_2.Tag == null)
                 {
@@ -131,7 +131,7 @@ namespace Chump_kuka.Forms
                     //selected_2.Text = area.AreaName;
 
                     // Test
-                    _goal_carry = new KukaModel.CarryModel(area.AreaName, area.Model, null);
+                    _goal_carry = new KukaModel.CarryModel(area.AreaName, area.AreaCode, null);
                 }
                 else
                 {

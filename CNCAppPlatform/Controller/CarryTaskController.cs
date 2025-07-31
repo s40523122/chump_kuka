@@ -32,6 +32,7 @@ namespace Chump_kuka
 
         public static event Action<bool> OnTimerAlive;     // 計時器啟用事件
 
+        public static KukaModel.CarryTask CurrentTask { get => _current_task; }
 
         static CarryTaskController()
         {
@@ -197,7 +198,7 @@ namespace Chump_kuka
             }
 
             // 最後一區的任務優先執行
-            if (start_node.AreaModel?.AreaCode == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count - 1].AreaCode)
+            if (start_node.AreaCode == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count - 1].AreaCode)
             {
                 task.Called = true;
             }
@@ -224,8 +225,7 @@ namespace Chump_kuka
             if(_plan_task != null)
             {
                 KukaApiController.PubCarryTask(_plan_task);
-                _current_task = _plan_task;
-                ChatController.PubLog($"已派發任務，ID: {_current_task.ID}");
+                ChatController.PubLog($"已派發任務，ID: {_plan_task.ID}");
                
                 _plan_task = null;
                 return true;
@@ -237,7 +237,7 @@ namespace Chump_kuka
                 {
                     KukaModel.Node goal_node = task.GoalNode.NodeModel;
                     // 檢查目標是否為貨架點
-                    if (!task.GoalNode.IsArea)     // 目標為貨架點
+                    if (task.GoalNode.AreaCode != null)     // 目標為貨架點
                     {
                         // 檢查目標貨架點是否搬允許搬運
                         
@@ -251,7 +251,10 @@ namespace Chump_kuka
                             if (goal_node.Lock)
                             {
                                 // 貨架點已鎖定，執行策略
-                                KukaModel.Area start_area = task.StartNode.IsArea ? task.StartNode.AreaModel : task.StartNode.NodeModel.Parent;
+                                KukaModel.Area start_area;
+                                if (task.StartNode.NodeModel != null) start_area = task.StartNode.NodeModel.Parent;
+                                else start_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == task.StartNode.AreaCode);
+
                                 TaskPlan(task.ID, goal_node, start_area);
                                 return false;
                             }
@@ -262,7 +265,7 @@ namespace Chump_kuka
                     }
                     else       // 目標為區域
                     {
-                        KukaModel.Area goal_area = task.GoalNode.AreaModel;
+                        KukaModel.Area goal_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == task.GoalNode.AreaCode);
                         // 先搜尋是否有空貨架點
                         KukaModel.Node empty_node = goal_area?.GetEmptyNode();
                         if (empty_node == null)
@@ -277,7 +280,9 @@ namespace Chump_kuka
                             }
 
                             // 找到上鎖貨架，執行策略
-                            KukaModel.Area start_area = task.StartNode.IsArea ? task.StartNode.AreaModel : task.StartNode.NodeModel.Parent;
+                            KukaModel.Area start_area;
+                            if (task.StartNode.NodeModel != null) start_area = task.StartNode.NodeModel.Parent;
+                            else start_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == task.StartNode.AreaCode);
                             TaskPlan(task.ID, lock_node, start_area);
                             return false;
                         }
@@ -327,6 +332,7 @@ namespace Chump_kuka
                             out string mission_code, true);
                 AppendTaskLog(mission_code, $"[task_{task_id}] 策略B [搬運到下一區域]\n===");
             }
+            _current_task = _task_queue.FirstOrDefault(task => task.ID == task_id);
             return true;
         }
 
@@ -348,7 +354,7 @@ namespace Chump_kuka
         private static string GetCallTask(string start_area_code)
         {
             // 找到符合開始區域且尚未執行的第一筆資料
-            KukaModel.CarryTask call_task = _task_queue.FirstOrDefault(task => task.StartNode.AreaModel.AreaCode == start_area_code &&
+            KukaModel.CarryTask call_task = _task_queue.FirstOrDefault(task => task.StartNode.AreaCode == start_area_code &&
                                                                                 task.Called == false &&
                                                                                 task.FinishTime == null);
             if (call_task != null)
@@ -391,6 +397,22 @@ namespace Chump_kuka
             KukaModel.CarryTask finish_task = _task_queue.FirstOrDefault(task => task.MissionCode == mission_code);
             finish_task.FinishTime = DateTime.Now;
 
+            // 判斷結完成的任務是否為策略任務
+            if (mission_code == _plan_task.MissionCode)
+            {
+                // 若是策略任務，移轉鎖定狀態
+                if (_plan_task.StartNode.NodeModel.Lock)
+                {
+                    _plan_task.StartNode.NodeModel.Lock = false;
+                    _plan_task.GoalNode.NodeModel.Lock = true;
+                }
+
+                _plan_task.StartNode.NodeModel.NodeStatus = 0;
+            }
+            else
+            {
+                _current_task.StartNode.NodeModel.NodeStatus = 0;
+            }
             _task_timer.Start();
 
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
@@ -440,7 +462,7 @@ namespace Chump_kuka
             }
 
 
-            if (_current_task?.ID == rm_id)
+            if (_current_task?.ID == rm_id || _plan_task?.ID == rm_id)
             {
                 ChatController.PubError($"搬運任務[{rm_id}]運行中，無法移除");
                 return;

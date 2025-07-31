@@ -173,12 +173,6 @@ namespace Chump_kuka.Controller
                 {
                     var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaName == source_area.AreaName);
                     base_model.CompareAndUpdate(source_area);
-
-                    // 防止因 JSON 轉換導致出現 null 資料
-                    if (source_area.LockNodes == null)
-                    {
-                        source_area.LockNodes = new List<string>();
-                    }
                 }
             }
         }
@@ -437,8 +431,8 @@ namespace Chump_kuka.Controller
 
                 string[] nodes = new string[2]
                 {
-                    $"{start_node.Name};{start_node.AreaModel.AreaCode};{start_node.NodeModel.NodeCode}",
-                    $"{goal_node.Name};{goal_node.AreaModel.AreaCode};{goal_node.NodeModel.NodeCode}",
+                    $"{start_node.Name};{start_node.AreaCode};{start_node.NodeModel.NodeCode}",
+                    $"{goal_node.Name};{goal_node.AreaCode};{goal_node.NodeModel.NodeCode}",
                 };
 
                 string task_node_string = JsonConvert.SerializeObject(nodes, Formatting.Indented);
@@ -495,12 +489,8 @@ namespace Chump_kuka.Controller
                     goal_node = area.GetNode(goal_info[2]);
                 }
             }
-            start_carry_node = new KukaModel.CarryModel(start_info[0],
-                                                  KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == start_info[1]),
-                                                  start_node);
-            goal_carry_node = new KukaModel.CarryModel(goal_info[0],
-                                                  KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == goal_info[1]),
-                                                  goal_node);
+            start_carry_node = new KukaModel.CarryModel(start_info[0], start_info[1], start_node);
+            goal_carry_node = new KukaModel.CarryModel(goal_info[0], goal_info[1], goal_node);
         }
     }
 }
