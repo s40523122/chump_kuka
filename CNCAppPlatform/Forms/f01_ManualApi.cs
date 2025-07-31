@@ -21,6 +21,24 @@ namespace Chump_kuka.Forms
     {
         private KukaModel.CarryModel _start_carry = null;
         private KukaModel.CarryModel _goal_carry = null;
+        private KukaModel.CarryModel StartCarry 
+        { 
+            get => _start_carry;
+            set
+            {
+                _start_carry = value;
+                selected_1.Text = value.Name;
+            } 
+        }
+        private KukaModel.CarryModel GoalCarry
+        {
+            get => _goal_carry;
+            set
+            {
+                _goal_carry= value;
+                selected_2.Text = value.Name;
+            }
+        }
         public f01_ManualApi()
         {
             InitializeComponent();
@@ -117,21 +135,21 @@ namespace Chump_kuka.Forms
             if (area.Checked)
             {
                 
-                if (_start_carry == null)     //if (selected_1.Tag == null)
+                if (StartCarry == null)     //if (selected_1.Tag == null)
                 {
                     //selected_1.Tag = area;
                     //selected_1.Text = area.AreaName;
 
                     // Test
-                    _start_carry = new KukaModel.CarryModel(area.AreaName, area.AreaCode, null);
+                    StartCarry = new KukaModel.CarryModel(area.AreaName, area.AreaCode, null);
                 }
-                else if (_goal_carry == null)        // else if (selected_2.Tag == null)
+                else if (GoalCarry == null)        // else if (selected_2.Tag == null)
                 {
                     //selected_2.Tag = area;
                     //selected_2.Text = area.AreaName;
 
                     // Test
-                    _goal_carry = new KukaModel.CarryModel(area.AreaName, area.AreaCode, null);
+                    GoalCarry = new KukaModel.CarryModel(area.AreaName, area.AreaCode, null);
                 }
                 else
                 {
@@ -152,19 +170,16 @@ namespace Chump_kuka.Forms
                 //    c.Tag = null;
                 //    c.Text = "null";
                 //});
-                if (_start_carry != null && _start_carry.Name == area.AreaName)
+                if (StartCarry != null && StartCarry.Name == area.AreaName)
                 {
-                    _start_carry = null; // 把 StartNode 設為 null
+                    StartCarry = null; // 把 StartNode 設為 null
                 }
 
-                else if (_goal_carry != null && _goal_carry.Name == area.AreaName)
+                else if (GoalCarry != null && GoalCarry.Name == area.AreaName)
                 {
-                    _goal_carry = null; // 把 GoalNode 設為 null
+                    GoalCarry = null; // 把 GoalNode 設為 null
                 }
             }
-
-            selected_1.Text = _start_carry?.Name ?? "null";
-            selected_2.Text = _goal_carry?.Name ?? "null";
         }
 
         private void Kuka_area1_ContainerClick(object sender, ControlClickEventArgs e)
@@ -173,21 +188,21 @@ namespace Chump_kuka.Forms
 
             if (container.Checked)
             {
-                if (_start_carry == null)     //if (selected_1.Tag == null)
+                if (StartCarry == null)     //if (selected_1.Tag == null)
                 {
                     //selected_1.Tag = container;
                     //selected_1.Text = container.ContainerName;
 
                     // Test
-                    _start_carry = new KukaModel.CarryModel(container.ContainerName, null, container.BindingModel);
+                    StartCarry = new KukaModel.CarryModel(container.ContainerName, null, container.BindingModel);
                 }
-                else if (_goal_carry == null)     //else if (selected_2.Tag == null)
+                else if (GoalCarry == null)     //else if (selected_2.Tag == null)
                 {
                     //selected_2.Tag = container;
                     //selected_2.Text = container.ContainerName;
 
                     // Test
-                    _goal_carry = new KukaModel.CarryModel(container.ContainerName, null, container.BindingModel);
+                    GoalCarry = new KukaModel.CarryModel(container.ContainerName, null, container.BindingModel);
                 }
                 else
                 {
@@ -208,19 +223,16 @@ namespace Chump_kuka.Forms
                 //    c.Tag = null;
                 //    c.Text = "null";
                 //});
-                if (_start_carry != null && _start_carry.Name == container.ContainerName)
+                if (StartCarry != null && StartCarry.Name == container.ContainerName)
                 {
-                    _start_carry = null; // 把 StartNode 設為 null
+                    StartCarry = null; // 把 StartNode 設為 null
                 }
 
-                else if (_goal_carry != null && _goal_carry.Name == container.ContainerName)
+                else if (GoalCarry != null && GoalCarry.Name == container.ContainerName)
                 {
-                    _goal_carry = null; // 把 GoalNode 設為 null
+                    GoalCarry = null; // 把 GoalNode 設為 null
                 }
             }
-
-            selected_1.Text = _start_carry?.Name ?? "null";
-            selected_2.Text = _goal_carry?.Name ?? "null";
         }
 
        
@@ -249,10 +261,9 @@ namespace Chump_kuka.Forms
                 //positions.Reverse();
                 //types.Reverse();
                 //texts.Reverse();
-                (_start_carry, _goal_carry) = (_goal_carry, _start_carry);
+                //(_start_carry, _goal_carry) = (_goal_carry, _start_carry);
+                (StartCarry, GoalCarry) = (GoalCarry, StartCarry);
                 go_direction.Change = !go_direction.Change;
-                selected_1.Text = _start_carry?.Name ?? "null";
-                selected_2.Text = _goal_carry?.Name ?? "null";
             }
 
             //DialogResult dialogResult = MessageBox.Show($"是否執行派車任務?\n{texts[0]} -> {texts[1]}", "info", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
