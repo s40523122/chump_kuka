@@ -41,7 +41,7 @@ namespace Chump_kuka
 
                     if (value)
                     {
-                        if (_rack_status != 1)
+                        if (_rack_status != 1 && _rack_status != -1)
                         {
                             // 若不是空貨架無法上鎖
                             MsgBox.Show("僅能上鎖空貨架!");

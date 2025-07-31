@@ -75,7 +75,7 @@ namespace Chump_kuka
         /// </summary>
         /// <param name="topic"></param>
         /// <param name="payload"></param>
-        public async void Publisher(string topic, string payload) 
+        public async void Publisher(string topic, string payload, int qos=2)
         {
             if (mqttService == null)
             {
@@ -83,7 +83,7 @@ namespace Chump_kuka
                 return;
             }
 
-            await mqttService.PublishAsync(topic, payload, 2);
+            await mqttService.PublishAsync(topic, payload, qos);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Chump_kuka
         /// </summary>
         /// <param name="topic"></param>
         /// <param name="qosLevel"></param>
-        public async void Subscriber(string topic, Action<string> func)
+        public async void Subscriber(string topic, Action<string> func, int qos=2)
         {
             if (mqttService == null)
             {
@@ -99,7 +99,7 @@ namespace Chump_kuka
                 return;
             }
 
-            await mqttService.SubscribeAsync(topic, 2);
+            await mqttService.SubscribeAsync(topic, qos);
 
             callback_funcs[topic] = func;
         }

@@ -27,7 +27,7 @@ namespace Chump_kuka.Forms
             set
             {
                 _start_carry = value;
-                selected_1.Text = value.Name;
+                selected_1.Text = _start_carry == null ? "null" : _start_carry.Name;
             } 
         }
         private KukaModel.CarryModel GoalCarry
@@ -36,7 +36,7 @@ namespace Chump_kuka.Forms
             set
             {
                 _goal_carry= value;
-                selected_2.Text = value.Name;
+                selected_2.Text = _goal_carry == null ? "null" : _goal_carry.Name;
             }
         }
         public f01_ManualApi()
@@ -62,6 +62,8 @@ namespace Chump_kuka.Forms
             //KukaParm.CarryChanged -= KukaParm_CarryChanged;
             //KukaParm.CarryChanged += KukaParm_CarryChanged;
             //KukaParm_CarryChanged(null, null);
+            StartCarry = null;
+            GoalCarry = null;
         }
 
         private void F01_ManualApi_VisibleChanged(object sender, EventArgs e)

@@ -63,7 +63,7 @@ namespace Chump_kuka.Controller
 
             _mqtt.Subscriber("log", LogCb);
             _mqtt.Subscriber("hello", HelloCb);
-            _mqtt.Subscriber("robot", RobotCb);
+            _mqtt.Subscriber("robot", RobotCb, 0);
             _mqtt.Subscriber("area", AreaCb);
             _mqtt.Subscriber("area/nodes", NodesCb);
             _mqtt.Subscriber("carry/finish", CarryFinishCb);
@@ -135,30 +135,33 @@ namespace Chump_kuka.Controller
         private static void AreaCb(string message)
         {
             // 若字串為區域類別，解析資料訊息後，將比較後差異處，更新為接收資料
-            List<KukaModel.KukaOriginAreaModel> origin_areas = JsonConvert.DeserializeObject<List<KukaModel.KukaOriginAreaModel>>(message);
+
 
             #region 版本補丁
-            List<KukaModel.Area> areas = new List<KukaModel.Area>();
-            foreach (KukaModel.KukaOriginAreaModel origin in origin_areas)
-            {
-                List<KukaModel.Node> nodes = new List<KukaModel.Node>();
-                for (int i=0; i<origin.NodeList.Length; i++)
-                {
-                    KukaModel.Node new_node = new KukaModel.Node(origin.NodeList[i]);
-                    if (origin.NodeStatus.Length > i) new_node.RackStatus = origin.NodeStatus[i];
-                    nodes.Add(new_node);
-                }
+            //List<KukaModel.KukaOriginAreaModel> origin_areas = JsonConvert.DeserializeObject<List<KukaModel.KukaOriginAreaModel>>(message);
+            //List<KukaModel.Area> areas = new List<KukaModel.Area>();
+            //foreach (KukaModel.KukaOriginAreaModel origin in origin_areas)
+            //{
+            //    List<KukaModel.Node> nodes = new List<KukaModel.Node>();
+            //    for (int i=0; i<origin.NodeList.Length; i++)
+            //    {
+            //        KukaModel.Node new_node = new KukaModel.Node(origin.NodeList[i]);
+            //        if (origin.NodeStatus.Length > i) new_node.RackStatus = origin.NodeStatus[i];
+            //        nodes.Add(new_node);
+            //    }
             
-                areas.Add(new KukaModel.Area()
-                {
-                    AreaName = origin.AreaName,
-                    AreaCode = origin.AreaCode,
-                    AreaType = origin.AreaType,
-                    NodeList = nodes.ToArray()
-                });
-            }
+            //    areas.Add(new KukaModel.Area()
+            //    {
+            //        AreaName = origin.AreaName,
+            //        AreaCode = origin.AreaCode,
+            //        AreaType = origin.AreaType,
+            //        NodeList = nodes.ToArray()
+            //    });
+            //}
 
             #endregion 版本補丁
+
+            List<KukaModel.Area> areas = JsonConvert.DeserializeObject<List<KukaModel.Area>>(message);
 
             // 如果接收列表資訊與當前不同，更新當前列表
             //if (KukaParm.KukaAreaModels.Count == 0)
@@ -169,37 +172,40 @@ namespace Chump_kuka.Controller
             {
                 KukaParm.KukaAreaModels = areas;
 
-                foreach (KukaModel.Area source_area in areas)
-                {
-                    var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaName == source_area.AreaName);
-                    base_model.CompareAndUpdate(source_area);
-                }
+                //foreach (KukaModel.Area source_area in areas)
+                //{
+                //    var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaName == source_area.AreaName);
+                //    base_model.CompareAndUpdate(source_area);
+                //}
             }
         }
 
         private static void NodesCb(string message)
         {
-            KukaModel.KukaOriginAreaModel origin = JsonConvert.DeserializeObject<KukaModel.KukaOriginAreaModel>(message);
-            #region 版本補丁
-            List<KukaModel.Node> nodes = new List<KukaModel.Node>();
-            for (int i = 0; i < origin.NodeList.Length; i++)
-            {
-                nodes.Add(new KukaModel.Node(origin.NodeList[i])
-                {
-                    RackStatus = origin.NodeStatus[i],
-                });
-            }
 
-            KukaModel.Area receive_area = new KukaModel.Area()
-            {
-                AreaName = origin.AreaName,
-                AreaCode = origin.AreaCode,
-                AreaType = origin.AreaType,
-                NodeList = nodes.ToArray()
-            };
+            //#region 版本補丁
+            //KukaModel.KukaOriginAreaModel origin = JsonConvert.DeserializeObject<KukaModel.KukaOriginAreaModel>(message);
+            //List<KukaModel.Node> nodes = new List<KukaModel.Node>();
+            //for (int i = 0; i < origin.NodeList.Length; i++)
+            //{
+            //    nodes.Add(new KukaModel.Node(origin.NodeList[i])
+            //    {
+            //        RackStatus = origin.NodeStatus[i],
+            //    });
+            //}
 
+            //KukaModel.Area receive_area = new KukaModel.Area()
+            //{
+            //    AreaName = origin.AreaName,
+            //    AreaCode = origin.AreaCode,
+            //    AreaType = origin.AreaType,
+            //    NodeList = nodes.ToArray()
+            //};
 
-            #endregion 版本補丁
+            //return;
+            //#endregion 版本補丁
+            KukaModel.Area receive_area = JsonConvert.DeserializeObject<KukaModel.Area>(message);
+
 
             KukaModel.Area find_area = KukaModel.Area.Find(receive_area.AreaName, KukaParm.KukaAreaModels);
             if (find_area != null)
@@ -208,6 +214,7 @@ namespace Chump_kuka.Controller
                 for (int i = 0; i < receive_area.NodeList.Length; i++)
                 {
                     find_area.NodeList[i].RackStatus = receive_area.NodeList[i].RackStatus;
+                    find_area.NodeList[i].Lock = receive_area.NodeList[i].Lock;
                     find_area.NodeList[i].NodeStatus = receive_area.NodeList[i].NodeStatus;
                 }
                 // find_area.LockNodes = receive_area.LockNodes;
@@ -342,7 +349,7 @@ namespace Chump_kuka.Controller
             {
                 string jsonOutput = JsonConvert.SerializeObject(KukaParm.RobotStatusInfos, Formatting.Indented);
 
-                _mqtt.Publisher("robot", jsonOutput);
+                _mqtt.Publisher("robot", jsonOutput, 0);
             }
             catch (Exception ex)
             {
@@ -432,7 +439,7 @@ namespace Chump_kuka.Controller
                 string[] nodes = new string[2]
                 {
                     $"{start_node.Name};{start_node.AreaCode};{start_node.NodeModel.NodeCode}",
-                    $"{goal_node.Name};{goal_node.AreaCode};{goal_node.NodeModel.NodeCode}",
+                    $"{goal_node.Name};{goal_node.AreaCode};{goal_node.NodeModel?.NodeCode}",
                 };
 
                 string task_node_string = JsonConvert.SerializeObject(nodes, Formatting.Indented);
