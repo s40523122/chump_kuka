@@ -360,7 +360,9 @@ namespace Chump_kuka
                     WriteIni();
                 }
             }
-            // public string AreaCode { get; set; }
+
+            public bool IsPlan { get; set; } = false;
+
             public CarryModel StartNode { get; set; }
             public CarryModel GoalNode { get; set; }
             public DateTime CreateTime { get; set; }

@@ -219,8 +219,8 @@ namespace Chump_kuka.Dispatchers
                 missionType = "RACK_MOVE",
                 viewBoardType = "",
                 robotType = "LIFT",
-                robotModels = Debugger.IsAttached ? new string[] { "1" } : new string[] { },        // Debug模式下，派發虛擬機器人
-                robotIds = new string[] {},
+                robotModels = new string[] { },
+                robotIds = Debugger.IsAttached ? new string[] { "1" } : new string[] { },        // Debug模式下，派發虛擬機器人
                 priority = 1,
                 containerType = "",
                 containerCode = "",
