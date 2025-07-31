@@ -1,4 +1,5 @@
-﻿using Chump_kuka.Controller;
+﻿using CefSharp.DevTools.CSS;
+using Chump_kuka.Controller;
 using Chump_kuka.Controls;
 using iCAPS;
 using System;
@@ -333,6 +334,22 @@ namespace Chump_kuka.Forms
 
             // 如果貨架已上鎖，解鎖；反之上鎖
             KukaModel.Node click_node = container.BindingModel as KukaModel.Node;
+
+            if (click_node.NodeStatus == 1)
+            {
+                MsgBox.Show("選用貨架已佔用，無法上/解鎖!");
+                return;
+            }
+
+            if (!click_node.Lock)
+            {
+                if (click_node.RackStatus != 1)
+                {
+                    // 若不是空貨架無法上鎖
+                    MsgBox.Show("僅能上鎖空貨架!");
+                    return;
+                }
+            }
             click_node.Lock = !click_node.Lock;
         }
     }

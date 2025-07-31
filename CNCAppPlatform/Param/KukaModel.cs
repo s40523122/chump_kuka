@@ -33,22 +33,6 @@ namespace Chump_kuka
                 get => _lock;
                 set
                 {
-                    if (_node_status == 1)
-                    {
-                        MsgBox.Show("選用貨架已佔用，無法上/解鎖!");
-                        return;
-                    }
-
-                    if (value)
-                    {
-                        if (_rack_status != 1 && _rack_status != -1)
-                        {
-                            // 若不是空貨架無法上鎖
-                            MsgBox.Show("僅能上鎖空貨架!");
-                            return;
-                        }
-                    }
-
                     _lock = value;
                     OnPropertyChanged(nameof(Lock));
                 }
