@@ -80,7 +80,7 @@ namespace Chump_kuka
         }
         private bool _checked = false;
 
-        [Description("當元件為已核取狀態時，是否顯示鎖。"), Category("自訂值")]
+        [Description("是否顯示鎖。"), Category("自訂值")]
         public bool ShowLock
         { 
             get => _lock;

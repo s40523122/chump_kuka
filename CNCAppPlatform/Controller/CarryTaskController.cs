@@ -340,9 +340,9 @@ namespace Chump_kuka
 
                 AddToQueue(new CarryModel(lock_node.NodeName, null, lock_node),
                             new CarryModel(start_empty_node.NodeName, null, start_empty_node),
-                            out string mission_code, false);
+                            out string mission_code, false, true);
                 AppendTaskLog(mission_code, $"[task_{task_id}] 策略A [搬運到起始區域]\n===");
-            }
+            } 
             else        // 策略B => 將上鎖貨架搬運到下一區域無佔用位置
             {
                 // 目前區域無空位，更換策略至下一區域
@@ -352,7 +352,7 @@ namespace Chump_kuka
                 ChatController.PubLog($"[task_{task_id}] > 啟動策略B，搬運到下一區域。");
                 AddToQueue(new CarryModel(lock_node.NodeName, null, lock_node),
                             new CarryModel(next_empty_node.NodeName, null, next_empty_node),
-                            out string mission_code, false);
+                            out string mission_code, false, true);
                 AppendTaskLog(mission_code, $"[task_{task_id}] 策略B [搬運到下一區域]\n===");
             }
             _current_task = _task_queue.FirstOrDefault(task => task.ID == task_id);
