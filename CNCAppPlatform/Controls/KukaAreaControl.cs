@@ -132,7 +132,6 @@ namespace Chump_kuka.Controls
                             // 上鎖狀態
                             case nameof(KukaModel.Node.Lock):
                                 container.ShowLock = model.Lock;
-                                ChatController.SyncNodeStatus(model.Parent);
                                 break;
                         }
                     };

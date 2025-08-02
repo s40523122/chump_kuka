@@ -351,6 +351,8 @@ namespace Chump_kuka.Forms
                 }
             }
             click_node.Lock = !click_node.Lock;
+
+            ChatController.SyncNodeStatus(KukaParm.BindAreaModel);
         }
     }
 }
