@@ -79,7 +79,7 @@ namespace Chump_kuka.Controller
         public static void PubLog(string message)
         {
             Log.Append(message, "ASYNC", "ChatController");
-            _mqtt.Publisher("log", message);
+            _mqtt?.Publisher("log", message);
         }
 
         public static void PubError(string message)

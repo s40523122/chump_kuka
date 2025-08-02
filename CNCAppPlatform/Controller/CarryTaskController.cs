@@ -225,7 +225,7 @@ namespace Chump_kuka
             // 最後一區的任務優先執行
             if (start_node.AreaCode == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count - 1].AreaCode)
             {
-                task.Called = true;
+                task.IsCalled = true;
             }
             _task_id++;
 
@@ -246,7 +246,7 @@ namespace Chump_kuka
         /// <returns></returns>
         private static bool FindAndAssignTask()
         {
-            CarryTask plan_task = _task_queue.FirstOrDefault(task => task.Called && task.FinishTime == null && task.IsPlan);
+            CarryTask plan_task = _task_queue.FirstOrDefault(task => task.IsCalled && task.FinishTime == null && task.IsPlan);
             if (plan_task != null)
             {
                 KukaApiController.PubCarryTask(plan_task);
@@ -256,7 +256,7 @@ namespace Chump_kuka
 
             foreach (KukaModel.CarryTask task in _task_queue)
             {
-                if (task.Called && task.FinishTime == null)
+                if (task.IsCalled && task.FinishTime == null)
                 {
                     KukaModel.Node goal_node = task.GoalNode.NodeModel;
                     // 檢查目標是否為貨架點
@@ -378,11 +378,11 @@ namespace Chump_kuka
         {
             // 找到符合開始區域且尚未執行的第一筆資料
             KukaModel.CarryTask call_task = _task_queue.FirstOrDefault(task => task.StartNode.AreaCode == start_area_code &&
-                                                                                task.Called == false &&
+                                                                                task.IsCalled == false &&
                                                                                 task.FinishTime == null);
             if (call_task != null)
             {
-                call_task.Called = true;
+                call_task.IsCalled = true;
                 ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
                 return call_task.MissionCode;
             }

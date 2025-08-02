@@ -1,4 +1,5 @@
-﻿using CookComputing.XmlRpc;
+﻿using Chump_kuka.Controller;
+using CookComputing.XmlRpc;
 using iCAPS;
 using System;
 using System.Collections.Generic;
@@ -131,6 +132,7 @@ namespace Chump_kuka.Controls
                             // 上鎖狀態
                             case nameof(KukaModel.Node.Lock):
                                 container.ShowLock = model.Lock;
+                                ChatController.SyncNodeStatus(model.Parent);
                                 break;
                         }
                     };

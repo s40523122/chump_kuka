@@ -62,8 +62,6 @@ namespace Chump_kuka.Forms
             //KukaParm.CarryChanged -= KukaParm_CarryChanged;
             //KukaParm.CarryChanged += KukaParm_CarryChanged;
             //KukaParm_CarryChanged(null, null);
-            StartCarry = null;
-            GoalCarry = null;
         }
 
         private void F01_ManualApi_VisibleChanged(object sender, EventArgs e)
@@ -73,11 +71,11 @@ namespace Chump_kuka.Forms
             {
                 F01_ManualApi_Load(null, null);
             }
-            
-            //KukaParm.StartNode = null;
-            //KukaParm.GoalNode = null;
 
-            foreach(KukaAreaControl area_ctrl in tableLayoutPanel2.Controls)
+            StartCarry = null;
+            GoalCarry = null;
+
+            foreach (KukaAreaControl area_ctrl in tableLayoutPanel2.Controls)
             {
                 area_ctrl.Checked = false;
                 area_ctrl.ResetContainer();

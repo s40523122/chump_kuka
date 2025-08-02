@@ -46,7 +46,6 @@ namespace Chump_kuka.Controls
             if (e.ListChangedType == ListChangedType.ItemAdded)
             {
                 // 用 Index 取出新增的物件
-                var newItem = Log.LogData[e.NewIndex].Status;
                 CreateLabel(Log.LogData[e.NewIndex].Status);        // 判定&建立篩選按鈕
             }
         }

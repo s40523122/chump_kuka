@@ -306,7 +306,7 @@ namespace Chump_kuka
                 StartNode = task.StartNode.Name;
                 GoalNode = task.GoalNode.Name;
                 CreateTime = task.CreateTime.ToString(@"MM/dd tt hh:mm");
-                Called = task.Called ? "🔔" : "🔕";
+                Called = task.IsCalled ? "🔔" : "🔕";
                 LogMsg = task.LogMsg;
 
                 if (task.FinishTime == null)
@@ -335,7 +335,7 @@ namespace Chump_kuka
 
             public string MissionCode { get; set; }
 
-            public bool Called
+            public bool IsCalled
             {
                 get => _called;
                 set
@@ -376,7 +376,7 @@ namespace Chump_kuka
                 {
                     ID = task_id;
                     MissionCode = $"mission{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
-                    Called = called;
+                    IsCalled = called;
                     StartNode = start_node;
                     GoalNode = goal_node;
                     CreateTime = DateTime.Now;
