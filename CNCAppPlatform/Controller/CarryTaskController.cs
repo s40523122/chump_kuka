@@ -497,6 +497,7 @@ namespace Chump_kuka
             KukaModel.CarryTask target = _task_queue.FirstOrDefault(m => m.ID == rm_id);       // 找到 ID 對應任務
             if (target != null)
             {
+                target.StartNode.NodeModel.NodeStatus = 0;
                 _task_queue.Remove(target);
                 ChatController.PubLog($"已從任務列表中移除搬運任務[{rm_id}]");
             }
