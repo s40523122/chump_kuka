@@ -32,7 +32,7 @@ namespace Chump_kuka
         [Description("容器圖片。"), Category("自訂值")]
         public Image ContainerImage
         {
-            get { return doubleImg1.Image; }
+            get { return doubleImg1.BackgroundImage; }
             set
             {
                 try
@@ -87,10 +87,11 @@ namespace Chump_kuka
             set 
             {
                 _lock = value;
-
-                doubleImg1.Change = _lock;
+                
                 if (_lock) doubleImg1.BackColor = Color.DeepSkyBlue;
                 else doubleImg1.BackColor = (_replace_back_color == null) ? _origin_back_color : _replace_back_color;
+
+                doubleImg1.Change = _lock;
             }
         }
 
