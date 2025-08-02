@@ -246,11 +246,13 @@ namespace Chump_kuka
         /// <returns></returns>
         private static bool FindAndAssignTask()
         {
+            // 優先派發策略任務
             CarryTask plan_task = _task_queue.FirstOrDefault(task => task.IsCalled && task.FinishTime == null && task.IsPlan);
             if (plan_task != null)
             {
                 KukaApiController.PubCarryTask(plan_task);
-                ChatController.PubLog($"已派發任務，ID: {plan_task.ID}");
+                if(Debugger.IsAttached) _current_task = plan_task;
+                ChatController.PubLog($"已派發策略任務，ID: {plan_task.ID}");
                 return true;
             }
 
@@ -497,6 +499,7 @@ namespace Chump_kuka
             KukaModel.CarryTask target = _task_queue.FirstOrDefault(m => m.ID == rm_id);       // 找到 ID 對應任務
             if (target != null)
             {
+                target.StartNode.NodeModel.NodeStatus = 0;
                 _task_queue.Remove(target);
                 ChatController.PubLog($"已從任務列表中移除搬運任務[{rm_id}]");
             }

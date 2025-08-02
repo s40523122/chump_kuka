@@ -69,9 +69,11 @@ namespace Chump_kuka
         {
             //Env.enble_kuka_api = true;
             //KukaApiController.Enable = true;
-            Log.Append("Info", "INFO", "Form1");
-            Log.Append("Test", "TEST", "Form1");
+            //Log.Append("Info", "INFO", "Form1");
+            //Log.Append("Test", "TEST", "Form1");
             //MsgBox.Show("Test");
+
+            CarryTaskController.FeedbackFinish(CarryTaskController.CurrentTask.MissionCode);
         }
 
 

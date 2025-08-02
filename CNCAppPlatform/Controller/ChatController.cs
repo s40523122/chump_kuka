@@ -226,7 +226,8 @@ namespace Chump_kuka.Controller
         {
             if (_is_master)
             {
-                Log.Append("接收到報工任務", "info", "ChatController");
+                //Log.Append("接收到報工任務", "INFO", "ChatController");
+                PubLog("接收到報工任務");
                 SendFeedbackInfo(message);
             }
         }

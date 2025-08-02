@@ -69,9 +69,10 @@ namespace Chump_kuka
                         Text = "已選定";
                 }
                 else 
-                { 
-                    doubleImg1.BackColor = (_replace_back_color == null) ? _origin_back_color : _replace_back_color;
+                {
                     ShowLock = _lock;       // 保持鎖定狀態
+                    doubleImg1.BackColor = (_replace_back_color == null) ? _origin_back_color : _replace_back_color;
+                    
                     panel2.BackColor = Color.DarkOrange;
                     if (Text == "已選定")
                         Text = "";
@@ -88,8 +89,10 @@ namespace Chump_kuka
             {
                 _lock = value;
                 
-                if (_lock) doubleImg1.BackColor = Color.DeepSkyBlue;
-                else doubleImg1.BackColor = (_replace_back_color == null) ? _origin_back_color : _replace_back_color;
+                if (_lock) 
+                    doubleImg1.BackColor = Color.DeepSkyBlue;
+                else 
+                    doubleImg1.BackColor = (_replace_back_color == null) ? _origin_back_color : _replace_back_color;
 
                 doubleImg1.Change = _lock;
             }
