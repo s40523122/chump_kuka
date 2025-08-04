@@ -206,7 +206,6 @@ namespace Chump_kuka.Controller
             //#endregion 版本補丁
             KukaModel.Area receive_area = JsonConvert.DeserializeObject<KukaModel.Area>(message);
 
-
             KukaModel.Area find_area = KukaModel.Area.Find(receive_area.AreaName, KukaParm.KukaAreaModels);
             if (find_area != null)
             {

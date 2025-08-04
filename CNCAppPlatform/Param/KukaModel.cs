@@ -37,7 +37,6 @@ namespace Chump_kuka
                     if (_is_lock == value) return;
                     _is_lock = value;
                     OnPropertyChanged(nameof(IsLock));
-                    ChatController.SyncNodeStatus(this.Parent);
                 }
             }
 
@@ -70,7 +69,6 @@ namespace Chump_kuka
 
                     _node_status = value;
                     OnPropertyChanged(nameof(NodeStatus));
-                    ChatController.SyncNodeStatus(this.Parent);
                 }
             }
 

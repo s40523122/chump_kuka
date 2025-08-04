@@ -351,6 +351,7 @@ namespace Chump_kuka.Forms
                 }
             }
             click_node.IsLock = !click_node.IsLock;
+            ChatController.SyncNodeStatus(click_node.Parent);
         }
     }
 }
