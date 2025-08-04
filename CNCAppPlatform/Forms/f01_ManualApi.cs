@@ -271,8 +271,8 @@ namespace Chump_kuka.Forms
             if (dialogResult == DialogResult.Yes)
             {
                 // KukaApiController.PubCarryTask();
+                MsgBox.ShowFlash("加入等候任務列表...", "手動派車", 1000);
                 ChatController.AppendCarryTask(_start_carry, _goal_carry, false);
-                MsgBox.ShowFlash("已加入等候任務", "手動派車", 1000);
             }
 
             

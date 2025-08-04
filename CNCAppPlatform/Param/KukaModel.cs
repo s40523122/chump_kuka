@@ -177,6 +177,7 @@ namespace Chump_kuka
                 get => _node_list;
                 set
                 {
+                    if (value == null) return;
                     if (_node_list == null || !_node_list.SequenceEqual(value))
                     {
                         _node_list = null;
