@@ -341,7 +341,7 @@ namespace Chump_kuka.Forms
                 return;
             }
 
-            if (!click_node.Lock)
+            if (!click_node.IsLock)
             {
                 if (click_node.RackStatus != 1)
                 {
@@ -350,9 +350,7 @@ namespace Chump_kuka.Forms
                     return;
                 }
             }
-            click_node.Lock = !click_node.Lock;
-
-            ChatController.SyncNodeStatus(KukaParm.BindAreaModel);
+            click_node.IsLock = !click_node.IsLock;
         }
     }
 }

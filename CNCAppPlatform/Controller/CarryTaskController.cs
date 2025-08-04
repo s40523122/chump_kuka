@@ -273,7 +273,7 @@ namespace Chump_kuka
                         else
                         {
                             // 貨架點占用，判斷是否上鎖
-                            if (goal_node.Lock)
+                            if (goal_node.IsLock)
                             {
                                 // 貨架點已鎖定，執行策略
                                 KukaModel.Area start_area;
@@ -344,6 +344,7 @@ namespace Chump_kuka
                             new CarryModel(start_empty_node.NodeName, null, start_empty_node),
                             out string mission_code, false, true);
                 AppendTaskLog(mission_code, $"[task_{task_id}] 策略A [搬運到起始區域]\n===");
+                start_empty_node.IsLock = true;
             } 
             else        // 策略B => 將上鎖貨架搬運到下一區域無佔用位置
             {
@@ -426,10 +427,10 @@ namespace Chump_kuka
             if (finish_task.IsPlan)
             {
                 // 若是策略任務，移轉鎖定狀態
-                if (finish_task.StartNode.NodeModel.Lock)
+                if (finish_task.StartNode.NodeModel.IsLock)
                 {
-                    finish_task.StartNode.NodeModel.Lock = false;
-                    finish_task.GoalNode.NodeModel.Lock = true;
+                    finish_task.StartNode.NodeModel.IsLock = false;
+                    finish_task.GoalNode.NodeModel.IsLock = true;
                 }
 
                 finish_task.StartNode.NodeModel.NodeStatus = 0;
