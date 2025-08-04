@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reactive;
+using Chump_kuka.Controller;
 
 namespace Chump_kuka
 {
@@ -18,7 +19,7 @@ namespace Chump_kuka
         {
             private int _rack_status = -1;      // 貨架狀態 {0: 無貨架, 1: 空貨架, 2: 滿貨架}
             private int _node_status = 0;      // 節點狀態 {0: 普通, 1: 已建立任務}
-            private bool _lock = false;
+            private bool _is_lock = false;
 
             // 建立屬性值發生變化的通知事件
             public event PropertyChangedEventHandler PropertyChanged;
@@ -28,13 +29,15 @@ namespace Chump_kuka
             public string NodeCode { get; set; }
             public string NodeName { get => NodeCode; }
 
-            public bool Lock
+            public bool IsLock
             {
-                get => _lock;
+                get => _is_lock;
                 set
                 {
-                    _lock = value;
-                    OnPropertyChanged(nameof(Lock));
+                    if (_is_lock == value) return;
+                    _is_lock = value;
+                    OnPropertyChanged(nameof(IsLock));
+                    ChatController.SyncNodeStatus(this.Parent);
                 }
             }
 
@@ -67,15 +70,29 @@ namespace Chump_kuka
 
                     _node_status = value;
                     OnPropertyChanged(nameof(NodeStatus));
+                    ChatController.SyncNodeStatus(this.Parent);
                 }
             }
 
             [JsonIgnore]
-            public Area Parent { get; set; }
+            public Area Parent 
+            { 
+                get; 
+                set; 
+            }
 
-            public Node(string node_code)
+            [JsonConstructor]
+            public Node(string nodeCode, bool isLock, int rackStatus, int nodeStatus)
             {
-                NodeCode = node_code;
+                NodeCode = nodeCode;
+                _is_lock = isLock;
+                _rack_status = rackStatus;
+                _node_status = nodeStatus;
+            }
+
+            public Node(string jj)
+            {
+                NodeCode = jj;
             }
 
             public bool IsEmpty() => NodeStatus == 0 && RackStatus == 0;
@@ -188,6 +205,14 @@ namespace Chump_kuka
 
             #endregion 屬性
 
+            [JsonConstructor]
+            public Area(string areaCode, string areaName, int areaType, Node[] nodeList)
+            {
+                AreaCode = areaCode;
+                _name = areaName;
+                AreaType = areaType;
+                _node_list = nodeList;
+            }
             public Area(JObject json_object = null)
             {
                 if (json_object == null) return;
@@ -267,7 +292,7 @@ namespace Chump_kuka
             }
 
             public Node GetEmptyNode() => _node_list.FirstOrDefault(node => node.IsEmpty());
-            public Node GetLockNode() => _node_list.FirstOrDefault(node => node.Lock);
+            public Node GetLockNode() => _node_list.FirstOrDefault(node => node.IsLock);
 
             public override string ToString() => AreaName;
         }

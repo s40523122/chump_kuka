@@ -214,7 +214,7 @@ namespace Chump_kuka.Controller
                 for (int i = 0; i < receive_area.NodeList.Length; i++)
                 {
                     find_area.NodeList[i].RackStatus = receive_area.NodeList[i].RackStatus;
-                    find_area.NodeList[i].Lock = receive_area.NodeList[i].Lock;
+                    find_area.NodeList[i].IsLock = receive_area.NodeList[i].IsLock;
                     find_area.NodeList[i].NodeStatus = receive_area.NodeList[i].NodeStatus;
                 }
                 // find_area.LockNodes = receive_area.LockNodes;
@@ -382,6 +382,7 @@ namespace Chump_kuka.Controller
         public static void SyncNodeStatus(KukaModel.Area update_model)
         {
             string nodes_json = JsonConvert.SerializeObject(update_model, Formatting.Indented);
+
             _mqtt.Publisher("area/nodes", nodes_json);
         }
 
@@ -441,6 +442,7 @@ namespace Chump_kuka.Controller
                 {
                     $"{start_node.Name};{start_node.AreaCode};{start_node.NodeModel.NodeCode}",
                     $"{goal_node.Name};{goal_node.AreaCode};{goal_node.NodeModel?.NodeCode}",
+
                 };
 
                 string task_node_string = JsonConvert.SerializeObject(nodes, Formatting.Indented);

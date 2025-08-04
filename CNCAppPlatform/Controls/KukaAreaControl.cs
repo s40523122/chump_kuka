@@ -114,26 +114,29 @@ namespace Chump_kuka.Controls
                     UpdateSingleContainerImage(container, node.RackStatus);        
                     container.ImgColor = _container_colors[Math.Max(node.NodeStatus, 0)];
                     // 若 model.NodeStatus == 1，表示節點已上鎖
-                    container.ShowLock = node.Lock;
+                    container.ShowLock = node.IsLock;
 
                     node.PropertyChanged += (sender, e) =>
                     {
                         KukaModel.Node model = (sender as KukaModel.Node);
-                        switch (e.PropertyName)
+                        container.Invoke(new Action(() =>
                         {
-                            // 貨架狀態
-                            case nameof(KukaModel.Node.RackStatus):
-                                UpdateSingleContainerImage(container, model.RackStatus);        // 更新貨架狀態圖片
-                                break;
-                            // 節點狀態
-                            case nameof(KukaModel.Node.NodeStatus):
-                                container.ImgColor = _container_colors[Math.Max(node.NodeStatus, 0)];
-                                break;
-                            // 上鎖狀態
-                            case nameof(KukaModel.Node.Lock):
-                                container.ShowLock = model.Lock;
-                                break;
-                        }
+                            switch (e.PropertyName)
+                            {
+                                // 貨架狀態
+                                case nameof(KukaModel.Node.RackStatus):
+                                    UpdateSingleContainerImage(container, model.RackStatus);        // 更新貨架狀態圖片
+                                    break;
+                                // 節點狀態
+                                case nameof(KukaModel.Node.NodeStatus):
+                                    container.ImgColor = _container_colors[Math.Max(node.NodeStatus, 0)];
+                                    break;
+                                // 上鎖狀態
+                                case nameof(KukaModel.Node.IsLock):
+                                    container.ShowLock = model.IsLock;
+                                    break;
+                            }
+                        }));
                     };
 
                     // container.ImageIndex = -1;
