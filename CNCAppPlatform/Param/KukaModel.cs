@@ -209,7 +209,7 @@ namespace Chump_kuka
                 AreaCode = areaCode;
                 _name = areaName;
                 AreaType = areaType;
-                _node_list = nodeList;
+                NodeList = nodeList;
             }
             public Area(JObject json_object = null)
             {

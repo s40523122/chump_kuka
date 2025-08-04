@@ -236,7 +236,7 @@ namespace Chump_kuka
             {
                 start_node.NodeModel.NodeStatus = 1;
             }
-
+            ChatController.SyncNodeStatus(start_node.NodeModel.Parent);
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
 
@@ -443,6 +443,7 @@ namespace Chump_kuka
             _current_task = null;
             _task_timer.Start();
 
+            ChatController.SyncNodeStatus(finish_task.StartNode.NodeModel.Parent);
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
 
@@ -457,6 +458,7 @@ namespace Chump_kuka
             KukaModel.CarryTask cancle_task = _task_queue.FirstOrDefault(task => task.MissionCode == mission_code);
             cancle_task.FinishTime = DateTime.MinValue;
             _current_task.StartNode.NodeModel.NodeStatus = 0;
+            ChatController.SyncNodeStatus(_current_task.StartNode.NodeModel.Parent);
             _current_task = null;
 
             _task_timer.Start();
@@ -502,6 +504,7 @@ namespace Chump_kuka
             if (target != null)
             {
                 target.StartNode.NodeModel.NodeStatus = 0;
+                ChatController.SyncNodeStatus(target.StartNode.NodeModel.Parent);
                 _task_queue.Remove(target);
                 ChatController.PubLog($"已從任務列表中移除搬運任務[{rm_id}]");
             }
