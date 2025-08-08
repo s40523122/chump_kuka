@@ -37,6 +37,7 @@ namespace Chump_kuka
                     if (_is_lock == value) return;
                     _is_lock = value;
                     OnPropertyChanged(nameof(IsLock));
+                    KukaParm.WriteParamHistory();
                 }
             }
 
@@ -69,6 +70,7 @@ namespace Chump_kuka
 
                     _node_status = value;
                     OnPropertyChanged(nameof(NodeStatus));
+                    KukaParm.WriteParamHistory();
                 }
             }
 
@@ -111,7 +113,7 @@ namespace Chump_kuka
             public override bool Equals(object obj)
             {
                 if (obj is Node other)
-                    return NodeCode == other.NodeCode;
+                    return NodeCode == other.NodeCode && IsLock == other.IsLock && NodeStatus == other.NodeStatus;
 
                 return false;
             }
@@ -193,6 +195,7 @@ namespace Chump_kuka
                         }
 
                         OnPropertyChanged(nameof(NodeList));        // 屬性發生變化
+                        KukaParm.WriteParamHistory();
                     }
                 }
             }

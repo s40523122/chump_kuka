@@ -95,13 +95,13 @@ namespace Chump_kuka.Controller
 
         private static void ErrorCb(string message)
         {
-            MsgBox.Show(message, "錯誤");
+            // MsgBox.Show(message, "錯誤");
             Log.Append(message, "ERROR", "ChatController");
         }
 
         private static void HelloCb(string message)
         {
-            Log.Append("接收call", "info", "ChatController");
+            Log.Append("接收呼叫", "INFO", "ChatController");
             
             if (!_is_master)        // 非伺服端不要傳遞訊息
                 return;
@@ -110,7 +110,7 @@ namespace Chump_kuka.Controller
                 string jsonOutput = JsonConvert.SerializeObject(KukaParm.KukaAreaModels, Formatting.Indented);
 
                 _mqtt.Publisher("area", jsonOutput);
-                Log.Append("回應call", "info", "ChatController");
+                Log.Append("回應呼叫", "INFO", "ChatController");
             }
             catch (Exception ex)
             {

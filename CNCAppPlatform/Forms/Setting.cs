@@ -206,7 +206,23 @@ namespace Chump_kuka.Forms
                 }
             }
 
+            // 匯入歷史資料
+            string history_json = KukaParm.GetParamHistory;
+
             KukaParm.KukaAreaModels = temp;
+
+            if (history_json != "")
+            {
+                List<KukaModel.Area> history_areas = Newtonsoft.Json.JsonConvert.DeserializeObject<List<KukaModel.Area>>(history_json);
+                foreach(KukaModel.Area history_area in history_areas)
+                {
+                    KukaModel.Area find_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == history_area.AreaCode);
+                    if (find_area != null)
+                    {
+                        find_area.NodeList = history_area.NodeList;
+                    }
+                }
+            }
         }
 
         private void bind_SelectedIndexChanged(object sender, EventArgs e)

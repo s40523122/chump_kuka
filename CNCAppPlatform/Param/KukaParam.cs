@@ -43,7 +43,7 @@ internal static class KukaParm
     private static KukaModel.Area _target_area = null;
 
     // public static List<KukaAreaControl> AreaControls = new List<KukaAreaControl>();     // 已記錄的區域控制項
-
+    public static string ParamPath = Path.Combine(Application.StartupPath, "config\\param.ini");
     public static event PropertyChangedEventHandler RobotStatusChanged;
     public static event PropertyChangedEventHandler AreaChanged;
     //public static event PropertyChangedEventHandler AreaStatusChanged;
@@ -54,6 +54,13 @@ internal static class KukaParm
     {
         string file_name = "task" + DateTime.Today.ToString(@"yyyyMMdd") + ".ini";
         return Path.Combine(Application.StartupPath, "tasks\\" + file_name);
+    }
+
+    public static string GetParamHistory { get => INiReader.ReadINIFile(ParamPath, "kuka", "area_models", 2550); }
+
+    public static void WriteParamHistory()
+    {
+        INiReader.WriteINIFile(ParamPath, "kuka", "area_models", JsonConvert.SerializeObject(_kuka_area_models));
     }
 
     //public static KukaModel.CarryNode StartNode       // 手動派車起點
@@ -160,6 +167,7 @@ internal static class KukaParm
             if (change) 
             {
                 AreaChanged?.Invoke(_kuka_area_models, new PropertyChangedEventArgs(nameof(KukaAreaModels)));
+                WriteParamHistory();
             }
 
             // origin
