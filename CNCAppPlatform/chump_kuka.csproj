@@ -239,6 +239,12 @@
     <Compile Include="Controls\LogWindow.Designer.cs">
       <DependentUpon>LogWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SensorSim.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\SensorSim.Designer.cs">
+      <DependentUpon>SensorSim.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SidePanel1.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -361,6 +367,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\LogWindow.resx">
       <DependentUpon>LogWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SensorSim.resx">
+      <DependentUpon>SensorSim.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SidePanel1.resx">
       <DependentUpon>SidePanel1.cs</DependentUpon>

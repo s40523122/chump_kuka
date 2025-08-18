@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.enable_api_btn = new System.Windows.Forms.Button();
             this.open_log_button = new System.Windows.Forms.CheckBox();
-            this.btnUdpLog = new System.Windows.Forms.Button();
+            this.btnSensorSim = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -69,29 +69,28 @@
             this.open_log_button.UseVisualStyleBackColor = true;
             this.open_log_button.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
-            // btnUdpLog
+            // btnSensorSim
             // 
-            this.btnUdpLog.Location = new System.Drawing.Point(827, 68);
-            this.btnUdpLog.Name = "btnUdpLog";
-            this.btnUdpLog.Size = new System.Drawing.Size(94, 39);
-            this.btnUdpLog.TabIndex = 47;
-            this.btnUdpLog.Text = "UDP Log";
-            this.btnUdpLog.UseVisualStyleBackColor = true;
-            this.btnUdpLog.Visible = false;
-            this.btnUdpLog.Click += new System.EventHandler(this.btnUdpLog_Click);
+            this.btnSensorSim.Location = new System.Drawing.Point(827, 68);
+            this.btnSensorSim.Name = "btnSensorSim";
+            this.btnSensorSim.Size = new System.Drawing.Size(94, 39);
+            this.btnSensorSim.TabIndex = 47;
+            this.btnSensorSim.Text = "Semsor Sim";
+            this.btnSensorSim.UseVisualStyleBackColor = true;
+            this.btnSensorSim.Click += new System.EventHandler(this.btnUdpLog_Click);
             // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1231, 820);
-            this.Controls.Add(this.btnUdpLog);
+            this.Controls.Add(this.btnSensorSim);
             this.Controls.Add(this.open_log_button);
             this.Controls.Add(this.enable_api_btn);
             this.Name = "Form1";
             this.Controls.SetChildIndex(this.panel1, 0);
             this.Controls.SetChildIndex(this.enable_api_btn, 0);
             this.Controls.SetChildIndex(this.open_log_button, 0);
-            this.Controls.SetChildIndex(this.btnUdpLog, 0);
+            this.Controls.SetChildIndex(this.btnSensorSim, 0);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -102,7 +101,7 @@
 
         private System.Windows.Forms.Button enable_api_btn;
         private System.Windows.Forms.CheckBox open_log_button;
-        private System.Windows.Forms.Button btnUdpLog;
+        private System.Windows.Forms.Button btnSensorSim;
     }
 }
 

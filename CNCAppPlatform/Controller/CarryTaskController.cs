@@ -206,6 +206,11 @@ namespace Chump_kuka
             {
                 initTimer();
             }
+            // 判斷起始區域是否有代號
+            if (start_node.AreaCode == null)
+            {
+                start_node.AreaCode = KukaParm.KukaAreaModels.FirstOrDefault(area => area.GetNode(start_node.NodeModel.NodeCode) != null).AreaCode;
+            }
 
             // 判定是否建立重複起始點(起始點已在任務列表中，且該任務尚未完成)
             bool exists_task = _task_queue.Any(m => 
@@ -220,6 +225,7 @@ namespace Chump_kuka
             // 建立搬運任務資訊
             KukaModel.CarryTask task = new KukaModel.CarryTask(_task_id, !wait, start_node, goal_node);
             mission_code = task.MissionCode;
+            task.LogMsg = $"已建立任務[{task.MissionCode}]";
             task.IsPlan = is_plan;      // 判斷是否為策略任務
 
             // 最後一區的任務優先執行
@@ -251,7 +257,8 @@ namespace Chump_kuka
             if (plan_task != null)
             {
                 KukaApiController.PubCarryTask(plan_task);
-                if(Debugger.IsAttached) _current_task = plan_task;
+                // 0818測試
+                // if(Debugger.IsAttached) _current_task = plan_task;
                 ChatController.PubLog($"已派發策略任務，ID: {plan_task.ID}");
                 return true;
             }
@@ -330,11 +337,11 @@ namespace Chump_kuka
             return false;
         }
 
-        private static bool TaskPlan(int task_id, KukaModel.Node lock_node, Area start_area)
+        private static async Task<bool> TaskPlan(int task_id, KukaModel.Node lock_node, Area start_area)
         {
             // 執行搬運策略
             // 需確認已經指定目標貨架點，並且該貨架點已鎖定
-
+            await Task.Delay(500);
             KukaModel.Node start_empty_node = start_area.GetEmptyNode();
             if (start_empty_node != null)       // 策略A => 將上鎖貨架搬運到當前區域無佔用位置
             {

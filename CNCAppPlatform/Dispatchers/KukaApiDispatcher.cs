@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -100,6 +101,16 @@ namespace Chump_kuka.Dispatchers
         {
             if (!_enable) return;
 
+            if (Debugger.IsAttached)
+            {
+                JObject sim_response = DebugApiSim(apiName);
+                if (sim_response != null)
+                {
+                    handleResponse(sim_response);
+                }
+                return;
+            }
+
             int maxRetries = 3;     // 最大重試次數
             int delayMilliseconds = 500;       // 重試間隔
 
@@ -143,6 +154,35 @@ namespace Chump_kuka.Dispatchers
                     await Task.Delay(delayMilliseconds);
                 }
             }
+        }
+
+        private JObject DebugApiSim(string api_name)
+        {
+            switch (api_name)
+            {
+                case "areaQuery":
+                    List<KukaModel.Area> area_sim = new List<KukaModel.Area>()
+                    {
+                        new KukaModel.Area("area001", "第一區", 0, null),
+                        new KukaModel.Area("area002", "第二區", 0, null),
+                        new KukaModel.Area("area003", "第三區", 0, null)
+                    };
+
+                    return new JObject { ["data"] = JArray.FromObject(area_sim) };
+                case "areaNodesQuery":
+                    List<dynamic> nodes_sim = new List<dynamic>()
+                    {
+                        new {areaCode = "area001", nodeList = new string[] { "10", "11" } },
+                        new {areaCode = "area002", nodeList = new string[] { "20", "21", "22" } },
+                        new {areaCode = "area003", nodeList = new string[] { "30", "31", "32", "33", "34" } }
+                    };
+                    return new JObject { ["data"] = JArray.FromObject(nodes_sim) };
+                case "robotQuery":
+                    return null;
+
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -190,26 +230,26 @@ namespace Chump_kuka.Dispatchers
         public void AppendCarryTask(KukaModel.CarryTask carry_task)
         {
             dynamic[] mission_data = new dynamic[2]
+            {
+                new
                 {
-                    new
-                    {
-                        sequence = 1,
-                        position = carry_task.StartNode.NodeModel.NodeCode,     //"A000000002",
-                        type = "NODE_POINT",     // "NODE_AREA",
-                        putDown = false,
-                        passStrategy = "AUTO",
-                        waitingMillis = 0
-                    },
-                    new
-                    {
-                        sequence = 2,
-                        position = carry_task.GoalNode.NodeModel.NodeCode,     //"A000000002",
-                        type = "NODE_POINT",     // "NODE_AREA",
-                        putDown = true,
-                        passStrategy = "AUTO",
-                        waitingMillis = 0
-                    }
-                };
+                    sequence = 1,
+                    position = carry_task.StartNode.NodeModel.NodeCode,     //"A000000002",
+                    type = "NODE_POINT",     // "NODE_AREA",
+                    putDown = false,
+                    passStrategy = "AUTO",
+                    waitingMillis = 0
+                },
+                new
+                {
+                    sequence = 2,
+                    position = carry_task.GoalNode.NodeModel.NodeCode,     //"A000000002",
+                    type = "NODE_POINT",     // "NODE_AREA",
+                    putDown = true,
+                    passStrategy = "AUTO",
+                    waitingMillis = 0
+                }
+            };
 
             var request_body = new
             {

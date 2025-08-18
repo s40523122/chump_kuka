@@ -38,7 +38,11 @@ namespace Chump_kuka
         private void Form1_Load(object sender, EventArgs e)
         {
             // Debug模式下，手動開啟 api 連線
-            if (!Debugger.IsAttached) { enable_api_btn.Visible = false; }
+            if (!Debugger.IsAttached) 
+            { 
+                enable_api_btn.Visible = false;
+                btnSensorSim.Visible = false;
+            }
             //_udp_chat_room.Show();
             //_udp_chat_room.Hide();
         }
@@ -69,11 +73,13 @@ namespace Chump_kuka
 
         private void btnUdpLog_Click(object sender, EventArgs e)
         {
-            if (_udp_chat_room.Visible)
-            {
-                _udp_chat_room.Hide();
-            }
-            _udp_chat_room.Show();
+            //if (_udp_chat_room.Visible)
+            //{
+            //    _udp_chat_room.Hide();
+            //}
+            //_udp_chat_room.Show();
+
+            new SensorSim().Show();
         }
 
         int step = 0;
