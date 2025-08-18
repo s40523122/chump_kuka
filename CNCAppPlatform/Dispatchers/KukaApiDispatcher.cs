@@ -5,11 +5,14 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using static Chump_kuka.KukaModel;
 
 namespace Chump_kuka.Dispatchers
 {
@@ -163,9 +166,9 @@ namespace Chump_kuka.Dispatchers
                 case "areaQuery":
                     List<KukaModel.Area> area_sim = new List<KukaModel.Area>()
                     {
-                        new KukaModel.Area("area001", "第一區", 0, null),
-                        new KukaModel.Area("area002", "第二區", 0, null),
-                        new KukaModel.Area("area003", "第三區", 0, null)
+                        new KukaModel.Area("area001", "備料區", 0, null),
+                        new KukaModel.Area("area002", "組裝區", 0, null),
+                        new KukaModel.Area("area003", "成品區", 0, null)
                     };
 
                     return new JObject { ["data"] = JArray.FromObject(area_sim) };
@@ -222,6 +225,27 @@ namespace Chump_kuka.Dispatchers
 
             _api_queue.Enqueue(() => RequestApiAsync("areaNodesQuery", request_body, HandleNodesResponse));
             Log.Append("已加入 /areaNodesQuery 於請求等待列表", "KAPI", "KukaAPiHandle");
+        }
+
+        /// <summary>
+        /// 強制取消派車任務
+        /// </summary>
+        public void ApplyCarryCancel(string mission_code)
+        {
+            var request_body = new
+            {
+                requestId = $"request{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}",
+                missionCode = mission_code,
+                containerCode = "",
+                position = "",
+                cancelMode = "FORCE",
+                reason = ""
+            };
+
+            _api_queue.Enqueue(() => RequestApiAsync("missionCancel", request_body, HandleCarryResponse));
+
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(request_body);
+            Log.Append($"已加入 /missionCancel 於請求等待列表\n{json}", "KAPI", "KukaAPiHandle");
         }
 
         /// <summary>

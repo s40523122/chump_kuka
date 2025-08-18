@@ -65,5 +65,13 @@ namespace Chump_kuka
 
             // CarryTaskPub?.Invoke(null, null);       // 已建立任務，更新 UI
         }
+
+        /// <summary>
+        /// 將強制取消派車任務請求加入 API 等待列表
+        /// </summary>
+        public static void PubCarryCancel(string mission_code)
+        {
+            _api_task.ApplyCarryCancel(mission_code);        // 強制取消任務
+        }
     }
 }

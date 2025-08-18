@@ -55,6 +55,7 @@ namespace Chump_kuka.Controller
                 _mqtt.Subscriber("carry/auto", CarryAutoCb);
                 _mqtt.Subscriber("feedback", FeedCb);
                 _mqtt.Subscriber("del_task", DelTaskCb);
+                _mqtt.Subscriber("resend_task", CancelTaskCb);
                 _mqtt.Subscriber("update_task", UpdateTaskCb);
 
                 KukaParm.RobotStatusChanged += KukaParm_RobotStatusChanged;          // 伺服器機器人資訊更新時，發佈到客戶端
@@ -279,6 +280,12 @@ namespace Chump_kuka.Controller
             CarryTaskController.RemoveTask(message);
         }
 
+        private static void CancelTaskCb(string message)
+        {
+            Log.Append($"已接收強制取消任務[{message}]", "CHAT", "ChatController");
+            CarryTaskController.CancelTask(message);
+        }
+
         private static void UpdateTaskCb(string message)
         {
             SyncCarryTask(CarryTaskController.GetQueueArray());
@@ -476,8 +483,18 @@ namespace Chump_kuka.Controller
 
         public static void ReSendTask(string task_id)
         {
-
-            _mqtt.Publisher("resend_task", task_id);
+            // 原功能重送任務已棄用
+            // 現在改成取消任務
+            // 為了向下兼容，沿用話題名稱
+            if (_is_master)
+            {
+                CancelTaskCb(task_id);
+            }
+            else
+            {
+                _mqtt.Publisher("resend_task", task_id);
+            }
+            
         }
 
         private static void ParseAndUpdateCarryNode(string carry_node_msg, out KukaModel.CarryModel start_carry_node, out KukaModel.CarryModel goal_carry_node)

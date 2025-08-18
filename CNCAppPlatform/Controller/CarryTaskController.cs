@@ -225,7 +225,7 @@ namespace Chump_kuka
             // 建立搬運任務資訊
             KukaModel.CarryTask task = new KukaModel.CarryTask(_task_id, !wait, start_node, goal_node);
             mission_code = task.MissionCode;
-            task.LogMsg = $"已建立任務[{task.MissionCode}]";
+            task.LogMsg = $"已建立任務[{task.MissionCode}]\n";
             task.IsPlan = is_plan;      // 判斷是否為策略任務
 
             // 最後一區的任務優先執行
@@ -522,8 +522,34 @@ namespace Chump_kuka
             
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
+
+        /// <summary>
+        /// 強制取消指定任務
+        /// </summary>
+        public static void CancelTask(string task_id)
+        {
+            int.TryParse(task_id, out int cancel_id);
+            if (cancel_id == 0)
+            {
+                ChatController.PubError($"錯誤: 請確認搬運任務編號正確[{cancel_id}]");
+                return;
+            }
+
+            KukaModel.CarryTask target = _task_queue.FirstOrDefault(m => m.ID == cancel_id);       // 找到 ID 對應任務
+            if (target != null)
+            {
+                KukaApiController.PubCarryCancel(target.MissionCode);
+                target.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] 已強制取消搬運任務\n";
+                target.FinishTime = DateTime.MinValue;
+                _current_task = null;
+                ChatController.PubLog($"已強制取消搬運任務[{cancel_id}]");
+            }
+            else
+            {
+                ChatController.PubLog($"找不到指定任務[{cancel_id}]");
+            }
+
+            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
+        }
     }
-
-
-    
 }

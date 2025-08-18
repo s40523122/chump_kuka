@@ -91,7 +91,7 @@ namespace Chump_kuka.Controls
                     flowLayoutPanel1.Controls.Add(data_row);
 
                     data_row.RemoveItem += Item_RemoveItem;
-                    data_row.ReSend += Data_row_ReSend;
+                    data_row.TaskCancel += TaskCancel;
                 }
                 
             }
@@ -191,10 +191,10 @@ namespace Chump_kuka.Controls
             }
         }
 
-        private void Data_row_ReSend(object sender, EventArgs e)
+        private void TaskCancel(object sender, EventArgs e)
         {
             TreeGridRow item = sender as TreeGridRow;
-            DialogResult check = MessageBox.Show($"確認重送任務[{item.ID}] =>\n 從 [{item.Items[0]}] 到 [{item.Items[1]}]", "移除任務確認", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            DialogResult check = MessageBox.Show($"確認強制取消任務[{item.ID}] =>\n 從 [{item.Items[0]}] 到 [{item.Items[1]}]", "強制取消任務確認", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (check == DialogResult.Yes)
             {
                 item.Dispose();
