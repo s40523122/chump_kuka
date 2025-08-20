@@ -55,7 +55,7 @@ namespace Chump_kuka.Controller
                 _mqtt.Subscriber("carry/auto", CarryAutoCb);
                 _mqtt.Subscriber("feedback", FeedCb);
                 _mqtt.Subscriber("del_task", DelTaskCb);
-                _mqtt.Subscriber("resend_task", CancelTaskCb);
+                _mqtt.Subscriber("cancel_task", CancelTaskCb);
                 _mqtt.Subscriber("update_task", UpdateTaskCb);
 
                 KukaParm.RobotStatusChanged += KukaParm_RobotStatusChanged;          // 伺服器機器人資訊更新時，發佈到客戶端
@@ -437,6 +437,14 @@ namespace Chump_kuka.Controller
             {
                 // 若為 master 端，將任務加入等候區
                 CarryTaskController.AddToQueue(start_node, goal_node, out _, wait);
+
+                string[] nodes = new string[2]
+                {
+                    $"{start_node.Name};{start_node.AreaCode};{start_node.NodeModel.NodeCode}",
+                    $"{goal_node.Name};{goal_node.AreaCode};{goal_node.NodeModel?.NodeCode}",
+
+                };
+                string task_node_string = JsonConvert.SerializeObject(nodes, Formatting.Indented);
             }
             else
             {
@@ -481,18 +489,15 @@ namespace Chump_kuka.Controller
             }
         }
 
-        public static void ReSendTask(string task_id)
+        public static void CancelTask(string task_id)
         {
-            // 原功能重送任務已棄用
-            // 現在改成取消任務
-            // 為了向下兼容，沿用話題名稱
             if (_is_master)
             {
                 CancelTaskCb(task_id);
             }
             else
             {
-                _mqtt.Publisher("resend_task", task_id);
+                _mqtt.Publisher("cancel_task", task_id);
             }
             
         }

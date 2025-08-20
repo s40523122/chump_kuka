@@ -42,6 +42,8 @@ namespace Chump_kuka
             _task_queue.ListChanged += task_queue_ListChanged;
         }
 
+        public static KukaModel.CarryTask FindCarryTask(string mission_code) => _task_queue.FirstOrDefault(task => task.MissionCode == mission_code);
+
         /// <summary>
         /// 取得當天 InI 檔案內紀錄的任務，並實例
         /// </summary>
@@ -426,7 +428,7 @@ namespace Chump_kuka
         {
             //if (_current_task != null) 
             //    _current_task.FinishTime = DateTime.Now;
-            KukaModel.CarryTask finish_task = _task_queue.FirstOrDefault(task => task.MissionCode == mission_code);
+            KukaModel.CarryTask finish_task = FindCarryTask(mission_code);
             finish_task.FinishTime = DateTime.Now;
 
             // 判斷結完成的任務是否為策略任務
@@ -541,6 +543,7 @@ namespace Chump_kuka
                 KukaApiController.PubCarryCancel(target.MissionCode);
                 target.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] 已強制取消搬運任務\n";
                 target.FinishTime = DateTime.MinValue;
+                target.StartNode.NodeModel.NodeStatus = 0;
                 _current_task = null;
                 ChatController.PubLog($"已強制取消搬運任務[{cancel_id}]");
             }

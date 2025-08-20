@@ -199,7 +199,7 @@ namespace Chump_kuka.Controls
             {
                 item.Dispose();
 
-                ChatController.ReSendTask(item.ID.ToString());
+                ChatController.CancelTask(item.ID.ToString());
             }
         }
     }
