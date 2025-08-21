@@ -340,20 +340,13 @@ namespace Chump_kuka.Controller
             _sensor_dispatcher.LightControl(false);
         }
 
-        public static int GetStationNo()
+        public static int GetStationNo(string area_code="")
         {
-            int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaName == KukaParm.BindAreaModel.AreaName);
-            return index == -1 ? 0 : index + 1;
+            if (area_code == "")
+                area_code = KukaParm.BindAreaModel.AreaCode;
 
-            switch (KukaParm.BindAreaModel.AreaName)
-            {
-                case "产线作业区":
-                    return  1;
-                case "产线上料区":
-                    return 2;
-                default:
-                    return 0;
-            }
+            int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaCode == KukaParm.GetAreaModel(area_code).AreaCode);
+            return index == -1 ? 0 : index + 1;
         }
 
         public static void PubReady()
@@ -427,6 +420,21 @@ namespace Chump_kuka.Controller
                 ChatController.SendFeedbackInfo(feedback_msgs[4]);
             }
                 
+        }
+
+        public static void PubCarryError(string area_code)
+        {
+            // 頭尾未形成迴圈
+            int _bind_station_no = GetStationNo(area_code) + 1;
+            string feedback_string = INiReader.ReadINIFile(Env.LayoutPath, "Control", $"station{_bind_station_no}");
+            string[] feedback_msgs = feedback_string.Split(';');
+
+            if (_bind_station_no != 0)
+            {
+                //ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_end");
+                ChatController.SendFeedbackInfo(feedback_msgs[5]);
+            }
+
         }
     }
 

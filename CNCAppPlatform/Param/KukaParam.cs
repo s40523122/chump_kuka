@@ -226,6 +226,8 @@ internal static class KukaParm
     //{
     //    CarryChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
     //}
+
+    public static KukaModel.Area GetAreaModel(string area_code) => _kuka_area_models.FirstOrDefault(area => area.AreaCode == area_code);
 }
 
 

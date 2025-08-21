@@ -122,7 +122,7 @@ namespace Chump_kuka.Controller
         private static void HeardCb(string message)
         {
             HttpListenerDispatcher.HeardEventArgs data = JsonConvert.DeserializeObject<HttpListenerDispatcher.HeardEventArgs>(message);
-            if (data.AreaCode == KukaParm.BindAreaModel.AreaCode)
+            if (data.StartAreaCode == KukaParm.BindAreaModel.AreaCode)
             {
                 PubToLocalController(null, data);     // 傳送至下一階段
             }
@@ -306,12 +306,13 @@ namespace Chump_kuka.Controller
                 CarryTaskController.FeedbackFinish(e.MissionCode);
                 //int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaCode == e.AreaCode);       // 找到起點區域的 index
                 //int next_index = (index+1) % KukaParm.KukaAreaModels.Count;     // 使用「模運算」達到環狀效果
-                KukaModel.Area heard_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == e.AreaCode);
+                KukaModel.Area heard_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == e.StartAreaCode);
                 SendCarryFinish(e.MissionCode, heard_area.Next().AreaCode);         // 通知目標區域更新(起點區域index+1)
+                e.Step = 0;
             }
 
             // 若監聽目標為綁定區域
-            if (e.AreaCode == KukaParm.BindAreaModel.AreaCode)
+            if (e.StartAreaCode == KukaParm.BindAreaModel.AreaCode)
             {
                 PubToLocalController(sender, e);     // 傳送至下一階段
                 
@@ -325,7 +326,7 @@ namespace Chump_kuka.Controller
                 _mqtt.Publisher("heard", message);
             }
 
-            PubLog($"Area_{e.AreaCode}:in step [{e.Step}]");
+            PubLog($"Area_{e.StartAreaCode}:in step [{e.Step}]");
         }
 
         private static void PubToLocalController(object sender, HttpListenerDispatcher.HeardEventArgs e)

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using Chump_kuka.Services.Managers;
 using Chump_kuka.Controller;
+using System.Messaging;
 
 namespace Chump_kuka.Dispatchers
 {
@@ -42,7 +43,6 @@ namespace Chump_kuka.Dispatchers
                 case 0:
                     if (task_status == "MOVE_BEGIN")
                     {
-                        area_code = "";
                         _area_step += 1;
                         message = "接收任務";
                     }
@@ -126,7 +126,6 @@ namespace Chump_kuka.Dispatchers
                     break;
                 case 7:
                     // 等同於 case 0
-                    area_code = "";
                     if (task_status == "MOVE_BEGIN")
                     {
                         _area_step = 1;
@@ -144,7 +143,7 @@ namespace Chump_kuka.Dispatchers
             CarryTaskController.AppendTaskLog(mission_code, message);
         }
 
-        static string area_code = "";      // 任務起始區域編碼
+        //static string area_code = "";      // 任務起始區域編碼
 
         private static void _kuka_listener_MessageReceived(object sender, HttpMessageEventArgs e)
         {
@@ -153,129 +152,141 @@ namespace Chump_kuka.Dispatchers
             // 將 JSON 解析為 JObject
             JObject jsonObj = JObject.Parse(e.Message);
 
-            // 設定一個映射字典，鍵是原來的值，值是要替換的值
-            var valueMapping = new Dictionary<string, string>
-                {
-                    { "MOVE_BEGIN", "开始移动" },
-                    { "ARRIVED", "到达任务节点" },
-                    { "UP_CONTAINER", "顶升完成" },
-                    { "DOWN_CONTAINER", "放下完成" },
-                    { "COMPLETED", "任务完成" },
-                    { "CANCELED", "任务取消完成" },
-                    { "ERROR", "任务执行报错" }
-                };
+            //// 設定一個映射字典，鍵是原來的值，值是要替換的值
+            //var valueMapping = new Dictionary<string, string>
+            //    {
+            //        { "MOVE_BEGIN", "开始移动" },
+            //        { "ARRIVED", "到达任务节点" },
+            //        { "UP_CONTAINER", "顶升完成" },
+            //        { "DOWN_CONTAINER", "放下完成" },
+            //        { "COMPLETED", "任务完成" },
+            //        { "CANCELED", "任务取消完成" },
+            //        { "ERROR", "任务执行报错" }
+            //    };
 
-            // 設定一個鍵名映射字典
-            var keyMapping = new Dictionary<string, string>
-                {
-                    { "missionCode", "作业id " },
-                    { "viewBoardType", "作业类型 " },
-                    { "containerCode", "容器编号" },
-                    { "currentPosition", "容器当前位置 " },
-                    { "slotCode", "当前所在槽位" },
-                    { "robotId", "执行当前任务的机器人id " },
-                    { "missionStatus", "作业当前状态 " },
-                    { "message", "说明信息" },
-                    { "missionData", "需要上报的定制信息对象" }
-                };
+            //// 設定一個鍵名映射字典
+            //var keyMapping = new Dictionary<string, string>
+            //    {
+            //        { "missionCode", "作业id " },
+            //        { "viewBoardType", "作业类型 " },
+            //        { "containerCode", "容器编号" },
+            //        { "currentPosition", "容器当前位置 " },
+            //        { "slotCode", "当前所在槽位" },
+            //        { "robotId", "执行当前任务的机器人id " },
+            //        { "missionStatus", "作业当前状态 " },
+            //        { "message", "说明信息" },
+            //        { "missionData", "需要上报的定制信息对象" }
+            //    };
 
             string task_status = jsonObj["missionStatus"].ToString();
             string mission_code = jsonObj["missionCode"].ToString();
 
-            CalcAreaStep(mission_code, task_status);      // 計算當前步數
             
+
+            // 從第2步(到達區域)判斷目前區域編碼
+            //if (_area_step == 2)
+            //{
+            //    string current_position = jsonObj["currentPosition"].ToString();
+            //    KukaModel.Area area_model = KukaParm.KukaAreaModels.FirstOrDefault(area => area.GetNode(current_position) != null);
+            //    area_code = area_model.AreaCode;
+            //}
+
+            // 用 mission code 取代原先節點判斷起始位置
+            KukaModel.CarryTask receive_task = CarryTaskController.FindCarryTask(mission_code);
+
             // 若任務取消
-            if (task_status == "CANCELED")
+            if (task_status == "ERROR")
+            {
+                CarryTaskController.AppendTaskLog(mission_code, $"任務異常 [{jsonObj["message"]}]");
+            }
+            else if (task_status == "CANCELED")
             {
                 CarryTaskController.FeedbackFail(mission_code);     // 回報任務失敗
+                LocalAreaController.PubCarryError(receive_task.StartNode.AreaCode);     // 通知報工系統任務失敗
                 _area_step = 0;     // 重置步數
                 return;
             }
-            
-            // 從第2步(到達區域)判斷目前區域編碼
-            if (_area_step == 2)
+            else
             {
-                string current_position = jsonObj["currentPosition"].ToString();
-                KukaModel.Area area_model = KukaParm.KukaAreaModels.FirstOrDefault(area => area.GetNode(current_position) != null);
-                area_code = area_model.AreaCode;
+                CalcAreaStep(mission_code, task_status);      // 計算當前步數
             }
 
             // 觸發接收事件
-            if (area_code != "")
+            if (receive_task != null)
             {
-                Heard.Invoke(sender, new HeardEventArgs(mission_code, area_code, _area_step));
+                Heard.Invoke(sender, new HeardEventArgs(mission_code, receive_task.StartNode.AreaCode, _area_step));
             }
         }
-        public static void ManualHeardEvent(string mission_code, string area_code,int step)
+        public static void ManualHeardEvent(string mission_code, string start_area_code,int step)
         {
-            Heard.Invoke(null, new HeardEventArgs(mission_code, area_code, step));
+            Heard.Invoke(null, new HeardEventArgs(mission_code, start_area_code, step));
         }
 
-        private static void _kuka_listener_MessageReceived1(object sender, HttpMessageEventArgs e)
-        {
-            // 將 JSON 解析為 JObject
-            JObject jsonObj = JObject.Parse(e.Message);
+        //private static void _kuka_listener_MessageReceived1(object sender, HttpMessageEventArgs e)
+        //{
+        //    // 將 JSON 解析為 JObject
+        //    JObject jsonObj = JObject.Parse(e.Message);
 
-            // 設定一個映射字典，鍵是原來的值，值是要替換的值
-            var valueMapping = new Dictionary<string, string>
-                {
-                    { "MOVE_BEGIN", "开始移动" },
-                    { "ARRIVED", "到达任务节点" },
-                    { "UP_CONTAINER", "顶升完成" },
-                    { "DOWN_CONTAINER", "放下完成" },
-                    { "COMPLETED", "任务完成" },
-                    { "CANCELED", "任务取消完成" },
-                    { "ERROR", "任务执行报错" }
-                };
+        //    // 設定一個映射字典，鍵是原來的值，值是要替換的值
+        //    var valueMapping = new Dictionary<string, string>
+        //        {
+        //            { "MOVE_BEGIN", "开始移动" },
+        //            { "ARRIVED", "到达任务节点" },
+        //            { "UP_CONTAINER", "顶升完成" },
+        //            { "DOWN_CONTAINER", "放下完成" },
+        //            { "COMPLETED", "任务完成" },
+        //            { "CANCELED", "任务取消完成" },
+        //            { "ERROR", "任务执行报错" }
+        //        };
 
-            // 設定一個鍵名映射字典
-            var keyMapping = new Dictionary<string, string>
-                {
-                    { "missionCode", "作业id " },
-                    { "viewBoardType", "作业类型 " },
-                    { "containerCode", "容器编号" },
-                    { "currentPosition", "容器当前位置 " },
-                    { "slotCode", "当前所在槽位" },
-                    { "robotId", "执行当前任务的机器人id " },
-                    { "missionStatus", "作业当前状态 " },
-                    { "message", "说明信息" },
-                    { "missionData", "需要上报的定制信息对象" }
-                };
+        //    // 設定一個鍵名映射字典
+        //    var keyMapping = new Dictionary<string, string>
+        //        {
+        //            { "missionCode", "作业id " },
+        //            { "viewBoardType", "作业类型 " },
+        //            { "containerCode", "容器编号" },
+        //            { "currentPosition", "容器当前位置 " },
+        //            { "slotCode", "当前所在槽位" },
+        //            { "robotId", "执行当前任务的机器人id " },
+        //            { "missionStatus", "作业当前状态 " },
+        //            { "message", "说明信息" },
+        //            { "missionData", "需要上报的定制信息对象" }
+        //        };
 
-            // 使用映射字典進行鍵名與值的轉換
-            foreach (var key in keyMapping.Keys)
-            {
-                if (jsonObj.ContainsKey(key))
-                {
-                    // 轉換鍵名
-                    jsonObj[keyMapping[key]] = jsonObj[key];
-                    jsonObj.Remove(key); // 刪除舊的鍵
+        //    // 使用映射字典進行鍵名與值的轉換
+        //    foreach (var key in keyMapping.Keys)
+        //    {
+        //        if (jsonObj.ContainsKey(key))
+        //        {
+        //            // 轉換鍵名
+        //            jsonObj[keyMapping[key]] = jsonObj[key];
+        //            jsonObj.Remove(key); // 刪除舊的鍵
 
-                    // 如果有值轉換，轉換值
-                    if (jsonObj[keyMapping[key]] != null && valueMapping.ContainsKey(jsonObj[keyMapping[key]].ToString()))
-                    {
-                        jsonObj[keyMapping[key]] = valueMapping[jsonObj[keyMapping[key]].ToString()];
-                    }
-                }
-            }
+        //            // 如果有值轉換，轉換值
+        //            if (jsonObj[keyMapping[key]] != null && valueMapping.ContainsKey(jsonObj[keyMapping[key]].ToString()))
+        //            {
+        //                jsonObj[keyMapping[key]] = valueMapping[jsonObj[keyMapping[key]].ToString()];
+        //            }
+        //        }
+        //    }
 
-            // 格式化 JSON 並顯示
-            string formattedJson = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
+        //    // 格式化 JSON 並顯示
+        //    string formattedJson = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
 
-            MessageBox.Show(formattedJson, "JSON 格式化顯示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            // MessageBox.Show($"收到 POST 請求: {postData}");
-        }
+        //    MessageBox.Show(formattedJson, "JSON 格式化顯示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //    // MessageBox.Show($"收到 POST 請求: {postData}");
+        //}
 
         public class HeardEventArgs : EventArgs
         {
-            public string MissionCode { get; set; }
-            public string AreaCode { get; set; }
+            public string MissionCode { get; private set; }
+            public string StartAreaCode { get; set; }
             public int Step { get; set; }
 
-            public HeardEventArgs(string mission_code, string area_code, int step)
+            public HeardEventArgs(string mission_code, string start_area_code, int step)
             {
                 MissionCode = mission_code;
-                AreaCode = area_code;
+                StartAreaCode = start_area_code;
                 Step = step;
             }
         }

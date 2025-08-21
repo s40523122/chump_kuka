@@ -130,6 +130,7 @@ namespace Chump_kuka.Forms
                     switch (e.Step)
                     {
                         case 0:
+                            LocalAreaController.InitAreaStatus();
                             LocalAreaController.TryCreateCarryTask();      // 更新區域狀態
                             break;
                         case 1:
@@ -142,6 +143,7 @@ namespace Chump_kuka.Forms
                         case 4:
                             Light(4);       // 搬運車出站
                             await Task.Delay(3000);
+                            LocalAreaController.InitAreaStatus();
                             LocalAreaController.TryCreateCarryTask();      // 更新區域狀態
                             break;
                         case 5:
