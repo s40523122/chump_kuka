@@ -23,6 +23,8 @@ namespace Chump_kuka.Dispatchers
         private System.Windows.Forms.Timer _api_timer;
         private ConcurrentQueue<Func<Task>> _api_queue = new ConcurrentQueue<Func<Task>>();
 
+        private List<KukaModel.Area> _raw_areas = null;
+
         public KukaApiDispatcher(string url)
         {
             _kuka_api_server = new HttpRequest(url, 5);
@@ -67,15 +69,15 @@ namespace Chump_kuka.Dispatchers
             // 透過向 /areaQuery 請求，判定是否通訊正常
             
             await RequestApiAsync("areaQuery", null, HandleAreaResponse);
-            if(KukaParm.KukaOriginAreaModels?.Count == 0) return false;
+            if(_raw_areas?.Count == 0) return false;
 
             var request_body = new
             {
-                areaCodes = KukaParm.KukaOriginAreaModels.Select(a => a.AreaCode).ToList()
+                areaCodes = _raw_areas.Select(a => a.AreaCode).ToList()
             };
             await RequestApiAsync("areaNodesQuery", request_body, HandleNodesResponse);
 
-            return (KukaParm.KukaOriginAreaModels.Count > 0) ? true : false;
+            return (_raw_areas?.Count > 0) ? true : false;
 
         }
 
@@ -218,9 +220,15 @@ namespace Chump_kuka.Dispatchers
         /// </summary>
         public void AppendNodesTask()
         {
+            if (_raw_areas == null)
+            {
+                Log.Append($"查詢節點資訊前，請先查詢區域資訊", "KAPI", "KukaAPiHandle");
+                return;
+            }
+
             var request_body = new
             {
-                areaCodes = KukaParm.KukaOriginAreaModels.Select(a => a.AreaCode).ToList()
+                areaCodes = _raw_areas.Select(a => a.AreaCode).ToList()
             };
 
             _api_queue.Enqueue(() => RequestApiAsync("areaNodesQuery", request_body, HandleNodesResponse));
@@ -322,7 +330,8 @@ namespace Chump_kuka.Dispatchers
 
         private void HandleAreaResponse(JObject resp_json)
         {
-            KukaParm.KukaOriginAreaModels = resp_json["data"].ToObject<List<KukaModel.Area>>();
+            Log.Append("嘗試處理API獲取區域資料", "KAPI", "KukaAPiHandle");
+            _raw_areas = resp_json["data"].ToObject<List<KukaModel.Area>>();
 
             // 加入節點查詢
             //AppendNodesTask();
@@ -330,12 +339,13 @@ namespace Chump_kuka.Dispatchers
 
         private void HandleNodesResponse(JObject resp_json)
         {
+            Log.Append("嘗試處理API獲取節點資料", "KAPI", "KukaAPiHandle");
             var node_data = resp_json["data"].ToObject<List<dynamic>>();
 
             // List<KukaAreaModel> _kuka_areas = KukaParm.KukaAreaModels.Select(area => (KukaAreaModel)area.Clone()).ToList();
 
             // 將第二個 JSON 的 nodeList 合併進 areas
-            foreach (var area in KukaParm.KukaOriginAreaModels)
+            foreach (var area in _raw_areas)
             {
                 List<KukaModel.Node> models = new List<KukaModel.Node>();
 
@@ -352,6 +362,10 @@ namespace Chump_kuka.Dispatchers
                 }
             }
             // KukaParm.KukaAreaModels = _kuka_areas;
+
+            KukaParm.SetRawAreaModels(_raw_areas);
+            _raw_areas = null;
+            Log.Append("成功從API更新區域狀態", "KAPI", "KukaAPiHandle");
         }
 
         private void HandleCarryResponse(JObject resp_json)

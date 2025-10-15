@@ -12,7 +12,7 @@ namespace Chump_kuka
         public SensorSim()
         {
             InitializeComponent();
-            _areas = KukaParm.KukaAreaModels;
+            _areas = KukaParm.GetAreaArray().ToList();
             SetupGrid();
             
         }

@@ -87,7 +87,7 @@ namespace Chump_kuka.Controller
                 Form form = new Form() { StartPosition = FormStartPosition.CenterParent };
 
                 ComboBox comboBox = new ComboBox();
-                foreach (KukaModel.Area area in KukaParm.KukaAreaModels)
+                foreach (KukaModel.Area area in KukaParm.GetAreaArray())
                 {
                     comboBox.Items.Add(area.AreaName);
                 }
@@ -345,7 +345,8 @@ namespace Chump_kuka.Controller
             if (area_code == "")
                 area_code = KukaParm.BindAreaModel.AreaCode;
 
-            int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaCode == KukaParm.GetAreaModel(area_code).AreaCode);
+            // int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaCode == KukaParm.GetAreaModel(area_code).AreaCode);
+            int index = KukaParm.GetAreaModel(area_code).Index;
             return index == -1 ? 0 : index + 1;
         }
 

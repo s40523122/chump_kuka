@@ -59,13 +59,13 @@ namespace Chump_kuka
                 case "station1_call":
                     // 發送 station1_agv_ready
                     // await listener.SendMessageAsync("station1_agv_ready");
-                    Called?.Invoke(sender, new TextEventArgs(KukaParm.KukaAreaModels[0].AreaCode));     // 傳遞第一區域發車命令
+                    Called?.Invoke(sender, new TextEventArgs(KukaParm.GetAreaModelByIndex(0).AreaCode));     // 傳遞第一區域發車命令
 
                     break;
                 case "station2_call":
                     // 發送 station1_agv_ready
                     // await listener.SendMessageAsync("station2_agv_ready");
-                    Called?.Invoke(sender, new TextEventArgs(KukaParm.KukaAreaModels[1].AreaCode));     // 傳遞第二區域發車命令
+                    Called?.Invoke(sender, new TextEventArgs(KukaParm.GetAreaModelByIndex(1).AreaCode));     // 傳遞第二區域發車命令
                     break;
                 default:
                     // 回傳確認訊息

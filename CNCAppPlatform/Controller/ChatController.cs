@@ -108,7 +108,7 @@ namespace Chump_kuka.Controller
                 return;
             try
             {
-                string jsonOutput = JsonConvert.SerializeObject(KukaParm.KukaAreaModels, Formatting.Indented);
+                string jsonOutput = JsonConvert.SerializeObject(KukaParm.GetAreaArray(), Formatting.Indented);
 
                 _mqtt.Publisher("area", jsonOutput);
                 Log.Append("回應呼叫", "INFO", "ChatController");
@@ -167,12 +167,11 @@ namespace Chump_kuka.Controller
             // 如果接收列表資訊與當前不同，更新當前列表
             //if (KukaParm.KukaAreaModels.Count == 0)
             //    KukaParm.KukaAreaModels = areas;
-            string[] origin_code_array = KukaParm.KukaAreaModels.Select(m => m.AreaCode).ToArray();       // 將所有代碼取出為陣列
+            string[] origin_code_array = KukaParm.GetAreaArray().Select(m => m.AreaCode).ToArray();       // 將所有代碼取出為陣列
             string[] source_code_array = areas.Select(m => m.AreaCode).ToArray();       // 將所有代碼取出為陣列
             if (origin_code_array != source_code_array)     // 只判定區域代碼是否修正
             {
-                KukaParm.KukaAreaModels = areas;
-
+                KukaParm.UpdateAreaModels(areas);
                 //foreach (KukaModel.Area source_area in areas)
                 //{
                 //    var base_model = KukaParm.KukaAreaModels.FirstOrDefault(b => b.AreaName == source_area.AreaName);
@@ -207,7 +206,8 @@ namespace Chump_kuka.Controller
             //#endregion 版本補丁
             KukaModel.Area receive_area = JsonConvert.DeserializeObject<KukaModel.Area>(message);
 
-            KukaModel.Area find_area = KukaModel.Area.Find(receive_area.AreaName, KukaParm.KukaAreaModels);
+            // KukaModel.Area find_area = KukaModel.Area.Find(receive_area.AreaName, KukaParm.KukaAreaModels);
+            KukaModel.Area find_area = KukaParm.GetAreaModel(receive_area.AreaCode);
             if (find_area != null)
             {
                 // find_area.NodeStatus = receive_area.NodeStatus;
@@ -306,7 +306,8 @@ namespace Chump_kuka.Controller
                 CarryTaskController.FeedbackFinish(e.MissionCode);
                 //int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaCode == e.AreaCode);       // 找到起點區域的 index
                 //int next_index = (index+1) % KukaParm.KukaAreaModels.Count;     // 使用「模運算」達到環狀效果
-                KukaModel.Area heard_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == e.StartAreaCode);
+                // KukaModel.Area heard_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == e.StartAreaCode);
+                KukaModel.Area heard_area = KukaParm.GetAreaModel(e.StartAreaCode);
                 SendCarryFinish(e.MissionCode, heard_area.Next().AreaCode);         // 通知目標區域更新(起點區域index+1)
                 e.Step = 0;
             }
@@ -510,7 +511,7 @@ namespace Chump_kuka.Controller
             string[] start_info = nodes[0].Split(';');
             string[] goal_info = nodes[1].Split(';');
             KukaModel.Node start_node = null, goal_node = null;
-            foreach (KukaModel.Area area in KukaParm.KukaAreaModels)
+            foreach (KukaModel.Area area in KukaParm.GetAreaArray())
             {
                 if (start_node == null)
                 {

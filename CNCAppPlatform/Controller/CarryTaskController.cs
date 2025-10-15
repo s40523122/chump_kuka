@@ -67,7 +67,7 @@ namespace Chump_kuka
                     {
                         if (raed_task?.StartNode.NodeModel != null)
                         {
-                            foreach (Area area in KukaParm.KukaAreaModels)
+                            foreach (Area area in KukaParm.GetAreaArray())
                             {
                                 KukaModel.Node node = area.GetNode(raed_task?.StartNode.NodeModel.NodeCode);
                                 if (node != null)
@@ -79,7 +79,7 @@ namespace Chump_kuka
                         }
                         if (raed_task?.GoalNode.NodeModel != null)
                         {
-                            foreach (Area area in KukaParm.KukaAreaModels)
+                            foreach (Area area in KukaParm.GetAreaArray())
                             {
                                 KukaModel.Node node = area.GetNode(raed_task?.StartNode.NodeModel.NodeCode);
                                 if (node != null)
@@ -209,10 +209,11 @@ namespace Chump_kuka
                 initTimer();
             }
             // 判斷起始區域是否有代號
-            if (start_node.AreaCode == null)
-            {
-                start_node.AreaCode = KukaParm.KukaAreaModels.FirstOrDefault(area => area.GetNode(start_node.NodeModel.NodeCode) != null).AreaCode;
-            }
+            //if (start_node.AreaCode == null)
+            //{
+            //    // start_node.AreaCode = KukaParm.KukaAreaModels.FirstOrDefault(area => area.GetNode(start_node.NodeModel.NodeCode) != null).AreaCode;
+            //    start_node.AreaCode = KukaParm.KukaAreaModels.FirstOrDefault(area => area.GetNode(start_node.NodeModel.NodeCode) != null).AreaCode;
+            //}
 
             // 判定是否建立重複起始點(起始點已在任務列表中，且該任務尚未完成)
             bool exists_task = _task_queue.Any(m => 
@@ -231,7 +232,8 @@ namespace Chump_kuka
             task.IsPlan = is_plan;      // 判斷是否為策略任務
 
             // 最後一區的任務優先執行
-            if (start_node.AreaCode == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count - 1].AreaCode)
+            // if (start_node.AreaCode == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count - 1].AreaCode)
+            if (start_node.AreaCode == KukaParm.GetAreaModelByIndex(KukaParm.GetAreaArray().Length - 1).AreaCode)
             {
                 task.IsCalled = true;
             }
@@ -287,7 +289,7 @@ namespace Chump_kuka
                                 // 貨架點已鎖定，執行策略
                                 KukaModel.Area start_area;
                                 if (task.StartNode.NodeModel != null) start_area = task.StartNode.NodeModel.Parent;
-                                else start_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == task.StartNode.AreaCode);
+                                else start_area = KukaParm.GetAreaModel(task.StartNode.AreaCode);
 
                                 TaskPlan(task.ID, goal_node, start_area);
                                 return false;
@@ -299,7 +301,7 @@ namespace Chump_kuka
                     }
                     else       // 目標為區域
                     {
-                        KukaModel.Area goal_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == task.GoalNode.AreaCode);
+                        KukaModel.Area goal_area = KukaParm.GetAreaModel(task.GoalNode.AreaCode);
                         // 先搜尋是否有空貨架點
                         KukaModel.Node empty_node = goal_area?.GetEmptyNode();
                         if (empty_node == null)
@@ -316,7 +318,7 @@ namespace Chump_kuka
                             // 找到上鎖貨架，執行策略
                             KukaModel.Area start_area;
                             if (task.StartNode.NodeModel != null) start_area = task.StartNode.NodeModel.Parent;
-                            else start_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == task.StartNode.AreaCode);
+                            else start_area = KukaParm.GetAreaModel(task.StartNode.AreaCode);
                             TaskPlan(task.ID, lock_node, start_area);
                             return false;
                         }

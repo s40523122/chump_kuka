@@ -50,7 +50,7 @@ namespace Chump_kuka.Forms
 
         private void F01_ManualApi_Load(object sender, EventArgs e)
         {
-            if(KukaParm.KukaAreaModels.Count > 0)
+            if(KukaParm.GetAreaArray().Length > 0)
             {
                 KukaParm_AreaChanged(this, null);
             }
@@ -102,7 +102,7 @@ namespace Chump_kuka.Forms
 
                 /* 加入區域 Control */
                 // 目前只支援到 4 組，超過可能會有 UI 顯示問題
-                KukaModel.Area model = KukaParm.KukaAreaModels[0];
+                KukaModel.Area model = KukaParm.GetAreaModelByIndex(0);
                 foreach (KukaAreaControl area_ctrl in tableLayoutPanel2.Controls)
                 {
                     area_ctrl.Model = model;
@@ -188,13 +188,15 @@ namespace Chump_kuka.Forms
 
             if (container.Checked)
             {
+                KukaModel.Node click_node = container.BindingModel;
+                string stay_area_code = click_node.Parent.AreaCode;
                 if (StartCarry == null)     //if (selected_1.Tag == null)
                 {
                     //selected_1.Tag = container;
                     //selected_1.Text = container.ContainerName;
 
                     // Test
-                    StartCarry = new KukaModel.CarryModel(container.ContainerName, null, container.BindingModel);
+                    StartCarry = new KukaModel.CarryModel(container.ContainerName, stay_area_code, click_node);
                 }
                 else if (GoalCarry == null)     //else if (selected_2.Tag == null)
                 {
@@ -202,7 +204,7 @@ namespace Chump_kuka.Forms
                     //selected_2.Text = container.ContainerName;
 
                     // Test
-                    GoalCarry = new KukaModel.CarryModel(container.ContainerName, null, container.BindingModel);
+                    GoalCarry = new KukaModel.CarryModel(container.ContainerName, stay_area_code, click_node);
                 }
                 else
                 {

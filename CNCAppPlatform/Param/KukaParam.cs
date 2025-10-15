@@ -17,6 +17,8 @@ using System.Windows.Interop;
 using System.Xml.Linq;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.Security.Cryptography;
+using CefSharp.DevTools.CSS;
 
 /// <summary>
 /// KukaParm 類別 (全域設定管理)
@@ -38,7 +40,8 @@ internal static class KukaParm
     private static KukaModel.CarryModel _goal_node;
     private static string _robot_status_feedback_time = "--";
     private static JArray _robot_status_infos = new JArray();
-    private static List<KukaModel.Area> _kuka_area_models = new List<KukaModel.Area>();
+    private static List<KukaModel.Area> _raw_area_models = new List<KukaModel.Area>();     // 原始 API 回應區域資料
+    private static List<KukaModel.Area> _area_models = new List<KukaModel.Area>();
     private static KukaModel.Area _bind_area = null;
     private static KukaModel.Area _target_area = null;
 
@@ -60,7 +63,7 @@ internal static class KukaParm
 
     public static void WriteParamHistory()
     {
-        INiReader.WriteINIFile(ParamPath, "kuka", "area_models", JsonConvert.SerializeObject(_kuka_area_models));
+        INiReader.WriteINIFile(ParamPath, "kuka", "area_models", JsonConvert.SerializeObject(_area_models));
     }
 
     //public static KukaModel.CarryNode StartNode       // 手動派車起點
@@ -114,11 +117,41 @@ internal static class KukaParm
         }
     }
 
-    /// <summary>
-    /// 原始 API 回應區域資料
-    /// </summary>
-    public static List<KukaModel.Area> KukaOriginAreaModels { get; set; } = new List<KukaModel.Area>();
+    public static void SetRawAreaModels(List<KukaModel.Area> input_areas)
+    {
+        _raw_area_models = input_areas;
+        Log.Append("修改原始區域資料", "SYSTEM", "KukaParam");
+    }
 
+    /// <summary>
+    /// 透過區域編碼找尋原始 API 回應的區域模型
+    /// </summary>
+    /// <param name="area_code"></param>
+    /// <returns></returns>
+    public static KukaModel.Area GetRawAreaModel(string area_code) => _raw_area_models.FirstOrDefault(p => p.AreaCode == area_code);
+
+    /// <summary>
+    /// 透過區域名稱查詢區域編碼，若無結果則返回 null
+    /// </summary>
+    public static string AreaName2Code(string area_name)
+    {
+        if (_raw_area_models.Count == 0) return null;
+        
+        // 建立字典
+        Dictionary<string, string> dict = _raw_area_models.ToDictionary(p => p.AreaName, p => p.AreaCode);
+
+        // 若搜尋到對應資料返回編碼資訊，反之返回 null
+        if ( dict.TryGetValue(area_name, out string area_code))
+        {
+            return area_code;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    /*
     /// <summary>
     /// 手動排序後區域資料
     /// </summary>
@@ -201,6 +234,87 @@ internal static class KukaParm
             //}
         }
     }
+    */
+
+    public static void UpdateAreaModels(List<KukaModel.Area> input_areas)
+    {
+        bool update_value = false;
+
+        // 遍歷現有列表資料，將不存在於輸入列表的物件移除，並更新存在物件
+        // 當物件存在且修改後，從輸入列表中移除
+        foreach (KukaModel.Area model in input_areas)
+        {
+            // 判段原始區域列表是否需要增減
+            KukaModel.Area exist_model = GetAreaModel(model.AreaCode);
+            
+            if (exist_model == null)      // 若找不到表示將輸入資料作為更新資料
+            {
+                update_value = true;      // 紀錄需更新
+            }
+            else
+            {
+                bool data_equal = model.CheckAndUpdate(exist_model);      // 判定資料內容是否變更
+                if (!data_equal)
+                {
+                    update_value = true;      // 紀錄需更新
+                }
+            }
+        }
+
+        if (update_value)
+        {
+            _area_models = input_areas;
+            AreaChanged?.Invoke(_area_models, new PropertyChangedEventArgs("KukaAreaModels"));
+            WriteParamHistory();
+        }
+    }
+
+    /// <summary>
+    /// 透過區域編碼找尋系統環境的區域模型
+    /// </summary>
+    public static KukaModel.Area[] GetAreaArray(bool is_raw = false)
+    { 
+        if (is_raw) return _raw_area_models.ToArray();
+        else return _area_models.ToArray(); 
+    }
+
+    /// <summary>
+    /// 透過 index 找尋系統環境的區域模型
+    /// </summary>
+    public static KukaModel.Area GetAreaModelByIndex(int index)
+    {
+        if (index >= _area_models.Count) index = 0;        // 若大於列表數量，從第一筆循環
+        return _area_models.FirstOrDefault(area => area.Index == index);
+    }
+
+    /// <summary>
+    /// 透過區域編碼找尋系統環境的區域模型
+    /// </summary>
+    public static KukaModel.Area GetAreaModel(string area_code) => _area_models.FirstOrDefault(area => area.AreaCode == area_code);
+
+    /// <summary>
+    /// 初始化區域搬運策略 ( index 設為 -1 )
+    /// </summary>
+    public static void ResetAreaStrategy()
+    {
+        foreach(KukaModel.Area area in _area_models)
+        {
+            area.SetIndex(-1); 
+        }
+    }
+
+    /// <summary>
+    /// 初始化區域搬運策略 ( index 設為 -1 )
+    /// </summary>
+    public static void InitAreaStrategy(List<KukaModel.Area> init_areas)
+    {
+        init_areas.RemoveAll(area => area.Index == -1);
+
+        // 重新排序
+        _area_models = init_areas.OrderBy(area => area.Index).ToList();
+        AreaChanged?.Invoke(_area_models, new PropertyChangedEventArgs("KukaAreaModels"));
+    }
+
 
     public static KukaModel.Area BindAreaModel
     {
@@ -227,7 +341,7 @@ internal static class KukaParm
     //    CarryChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
     //}
 
-    public static KukaModel.Area GetAreaModel(string area_code) => _kuka_area_models.FirstOrDefault(area => area.AreaCode == area_code);
+   
 }
 
 

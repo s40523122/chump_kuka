@@ -146,8 +146,13 @@ namespace Chump_kuka
             public event PropertyChangedEventHandler PropertyChanged;
             protected void OnPropertyChanged(string name) =>
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            
+
             #region 屬性
+            /// <summary>
+            /// 區域所在順序 (從 0 開始; -1 表示為定義)
+            /// </summary>
+            public int Index { get; private set; } = -1;
+
             /// <summary>
             /// 區域編碼 ex: area001
             /// </summary>
@@ -225,10 +230,13 @@ namespace Chump_kuka
             }
 
             /// <summary>
+            /// 設定區域所在順序
+            /// </summary>
+            public int SetIndex(int index) => Index = index;
+
+            /// <summary>
             /// 取得指定節點模型
             /// </summary>
-            /// <param name="node_code"></param>
-            /// <returns></returns>
             public Node GetNode(string node_code)
             {
                 Node node = NodeList.FirstOrDefault(_node => _node.NodeCode == node_code);
@@ -277,20 +285,21 @@ namespace Chump_kuka
 
             public Area Next()
             {
-                int index = KukaParm.KukaAreaModels.IndexOf(this);
-                if (index == -1)
-                {
-                    return this;
-                }
-                else if (index == KukaParm.KukaAreaModels.Count - 1)
-                {
-                    // 該筆資料為最後一筆，下一筆回到首筆資料
-                    return KukaParm.KukaAreaModels[0];
-                }
-                else
-                {
-                    return KukaParm.KukaAreaModels[index + 1];
-                }
+                //int index = KukaParm.KukaAreaModels.IndexOf(this);
+                //if (index == -1)
+                //{
+                //    return this;
+                //}
+                //else if (index == KukaParm.KukaAreaModels.Count - 1)
+                //{
+                //    // 該筆資料為最後一筆，下一筆回到首筆資料
+                //    return KukaParm.KukaAreaModels[0];
+                //}
+                //else
+                //{
+                //    return KukaParm.KukaAreaModels[index + 1];
+                //}
+                return KukaParm.GetAreaModelByIndex(Index+1);
             }
 
             public Node GetEmptyNode() => _node_list.FirstOrDefault(node => node.IsEmpty());

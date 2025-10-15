@@ -37,7 +37,7 @@ namespace Chump_kuka.Forms
             {
                 // 當區域列表出現變化時，同步更新綁定區域的下拉式選單，以便及時更改綁定區域
                 bind_comboBox.Items.Clear();
-                foreach (KukaModel.Area area in KukaParm.KukaAreaModels)
+                foreach (KukaModel.Area area in KukaParm.GetAreaArray())
                 {
                     bind_comboBox.Items.Add(area);
                     
@@ -183,51 +183,91 @@ namespace Chump_kuka.Forms
 
             if (switch_sever.Checked)
             {
-                string strategy_string = Env.Strategy;      // 取得策略(搬運區域順序)
-                if (strategy_string != "")
-                {
-                    List<string> sortedItems = strategy_string.Split(';').ToList();
-
-                    SetStrategy(sortedItems);
-                }
+                bool success = SetStrategy();
+                if (success)
+                    SyncHistoryData();
             }
         }
 
-        private void SetStrategy(List<string> sortedItems)
+        /// <summary>
+        /// 設定搬運順序策略
+        /// </summary>
+        private bool SetStrategy()
         {
-            
-            List<KukaModel.Area> temp = new List<KukaModel.Area>();
-            foreach (var name in sortedItems)
+            List<string> unmatch_data = new List<string>();
+            List<KukaModel.Area> match_models = new List<KukaModel.Area>();
+
+            KukaParm.ResetAreaStrategy();       // 重設策略 (全部區域 index 設為 -1)
+
+            string strategy_string = Env.Strategy;      // 取得策略(搬運區域順序)
+            if (strategy_string == "")      // 若找不到歷史搬運順序策略
             {
-                var matched = KukaParm.KukaOriginAreaModels.FirstOrDefault(p => p.AreaName == name);
-                if (matched != null && matched.NodeList.Length > 0)
+                // 開啟設定頁面
+                station_setting_Click(null, null);
+            }
+
+            List<string> area_queue = strategy_string.Split(';').ToList();
+
+            // 嘗試從 area_queue 中，找尋區域模型，並分配到存放區
+            foreach (string area_name in area_queue)
+            {
+                // var match_model = KukaParm.KukaOriginAreaModels.FirstOrDefault(p => p.AreaName == area_name);
+                KukaModel.Area match_model = KukaParm.GetRawAreaModel(KukaParm.AreaName2Code(area_name));
+                if (match_model  != null && match_model.NodeList.Length > 0)     // NodeList 數量需大於 0 才視為模型成立
                 {
-                    temp.Add(matched);
+                    match_models.Add(match_model);
+                }
+                else
+                {
+                    unmatch_data.Add(area_name);
                 }
             }
 
-            // 匯入歷史資料
-            string history_json = KukaParm.GetParamHistory;
+            if (unmatch_data.Count > 0)
+            {
+                Log.Append("策略調整發生異常", "SYSTEM", "Setting");
+                MsgBox.Show("找不到以下區域資訊:\n" + String.Join(";", unmatch_data));
+                return false;
+            }
+            else
+            {
+                for(int i=0; i<match_models.Count; i++)
+                {
+                    match_models[i].SetIndex(i);
+                }
+                KukaParm.InitAreaStrategy(match_models);       // 將多餘部分移除系統區域
+                Log.Append("完成策略調整", "SYSTEM", "Setting");
+                return true;
+            }
+        }
 
-            KukaParm.KukaAreaModels = temp;
+        private void SyncHistoryData()
+        {
+            // ------------
+            // 匯入歷史資料
+            // ------------
+            string history_json = KukaParm.GetParamHistory;
 
             if (history_json != "")
             {
                 List<KukaModel.Area> history_areas = Newtonsoft.Json.JsonConvert.DeserializeObject<List<KukaModel.Area>>(history_json);
-                foreach(KukaModel.Area history_area in history_areas)
+                foreach (KukaModel.Area history_area in history_areas)
                 {
-                    KukaModel.Area find_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == history_area.AreaCode);
+                    // KukaModel.Area find_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == history_area.AreaCode); 
+                    KukaModel.Area find_area = KukaParm.GetRawAreaModel(history_area.AreaCode);
                     if (find_area != null)
                     {
                         find_area.NodeList = history_area.NodeList;
                     }
                 }
             }
+
+            Log.Append("完成歷史資料匯入", "SYSTEM", "Setting");
         }
 
         private void bind_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (KukaParm.KukaAreaModels.Count == 0) return;     // 尚未取得 api 資料，暫不處理
+            // if (KukaParm.KukaAreaModels.Count == 0) return;     // 尚未取得 api 資料，暫不處理
             if((sender as ComboBox).SelectedItem is KukaModel.Area select_model)
             {
                 KukaParm.BindAreaModel = select_model;      // 將指定模型淺複製為 BindAreaModel (數值更改會影響原列表)
@@ -247,16 +287,16 @@ namespace Chump_kuka.Forms
         private void station_setting_Click(object sender, EventArgs e)
         {
             // List<string> items = new List<string> { "項目1", "項目2", "項目3", "項目4" };
-            List<string> list = KukaParm.KukaOriginAreaModels.Select(m => m.AreaName).ToList();
+            // List<string> list = KukaParm.KukaOriginAreaModels.Select(m => m.AreaName).ToList();
+            List<string> list = KukaParm.GetAreaArray(true).Select(area => area.AreaName).ToList();
             List<string> sortedItems = SortableListForm.ShowDialogAndSort(list);
 
-            SetStrategy(sortedItems);
-
             Env.Strategy = string.Join(";", sortedItems);
+            SetStrategy();
             // MessageBox.Show(KukaParm.KukaAreaModels[0].AreaName);
 
-            KukaParm.BindAreaModel = KukaModel.Area.Find(Env.BindAreaName, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
-
+            // KukaParm.BindAreaModel = KukaModel.Area.Find(Env.BindAreaName, KukaParm.KukaAreaModels);       // 將指定模型淺複製為 BindAreaModel
+            KukaParm.BindAreaModel = KukaParm.GetAreaModel(Env.BindAreaName);   // 將指定模型淺複製為 BindAreaModel
 
             if (KukaParm.BindAreaModel == null)
             {
@@ -296,7 +336,7 @@ namespace Chump_kuka.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Console.WriteLine(KukaParm.KukaAreaModels);
+            // Console.WriteLine(KukaParm.KukaAreaModels);
         }
     }
 }
