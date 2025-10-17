@@ -102,16 +102,16 @@ namespace Chump_kuka.Controller
 
         private static void HelloCb(string message)
         {
-            Log.Append("接收呼叫", "INFO", "ChatController");
-            
             if (!_is_master)        // 非伺服端不要傳遞訊息
                 return;
+
             try
             {
+                Log.Append("接收客戶端訊號...", "INFO", "ChatController");
                 string jsonOutput = JsonConvert.SerializeObject(KukaParm.GetAreaArray(), Formatting.Indented);
 
                 _mqtt.Publisher("area", jsonOutput);
-                Log.Append("回應呼叫", "INFO", "ChatController");
+                Log.Append("回應當前區域狀態", "INFO", "ChatController");
             }
             catch (Exception ex)
             {
@@ -368,8 +368,8 @@ namespace Chump_kuka.Controller
 
         public static void SayHi()
         {
-            Log.Append("已發送招呼", "INFO", "ChatController");
-            _mqtt.Publisher("hello", "HI");
+            Log.Append("呼叫伺服器，取得區域狀態", "INFO", "ChatController");
+            _mqtt.Publisher("hello", "Hi");
         }       
 
         /// <summary>

@@ -65,14 +65,15 @@ namespace Chump_kuka.Forms
             bind_comboBox.Text = Env.BindAreaName ?? "";
         }
 
-        private async Task RunTask(int start_val, int end_val, string running_msg, Task task)
+        private async Task RunTask(int start_val, int end_val, string running_msg, Func<Task> task)
         {
             // 設定任務開始前，進度條描述 & 數值
+            Log.SystemInfo(running_msg);
             progress_msg.Text = running_msg;
             progressBar1.Value = start_val;
 
             // 等待非同步任務完成
-            await task;
+            await task();
 
             // 任務開始前，進度條數值
             progressBar1.Value = end_val;
@@ -92,9 +93,15 @@ namespace Chump_kuka.Forms
             {
                 //KukaApiController.GetAreaInfo();
                 Env.KukaApiUrl = kuka_request_url.Text;
+                Log.SystemInfo("成功");
+                KukaApiController.GetRobotStatus();
+            }
+            else
+            {
+                Log.SystemInfo("連線異常");
             }
 
-            KukaApiController.GetRobotStatus();
+            
         }
         private async Task ServerTask()
         {
@@ -173,11 +180,11 @@ namespace Chump_kuka.Forms
             Env.LocalIp = local_ip_combo.Text;
             kuka_api_check.Visible = kuka_response_check.Visible = record_log_check.Visible = sensor_check.Visible = server_check.Visible = false;
             // 依序執行連線任務
-            await RunTask(15, 20, "等待 iCAPS 伺服器開啟...", ServerTask());
-            await RunTask(35, 40, "等待 KUKA API 連線...", KukaApiTask());
-            await RunTask(55, 60, "等待 Modbus Tcp 連線...", SensorModbusTask());
-            await RunTask(75, 80, "等待 KUKA 回應監聽開啟...", KukaResponseTask());
-            await RunTask(95, 100, "等待工時監測伺服器開啟...", RecordLogTask());
+            await RunTask(15, 20, "等待 iCAPS 伺服器開啟...", ServerTask);
+            await RunTask(35, 40, "等待 KUKA API 連線...", KukaApiTask);
+            await RunTask(55, 60, "等待 Modbus Tcp 連線...", SensorModbusTask);
+            await RunTask(75, 80, "等待 KUKA 回應監聽開啟...", KukaResponseTask);
+            await RunTask(95, 100, "等待工時監測伺服器開啟...", RecordLogTask);
             //bind_comboBox.SelectedIndex = 0;        // 強制套用當前選項
             progress_msg.Text = "已完成";
 

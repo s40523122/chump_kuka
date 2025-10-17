@@ -82,7 +82,5 @@ namespace Chump_kuka
             new SensorSim().Show();
         }
 
-        int step = 0;
-        
     }
 }
