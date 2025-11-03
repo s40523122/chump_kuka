@@ -43,7 +43,10 @@ namespace Chump_kuka
         public static SynchronizationContext UiContext { get; set; }        // 加入控制項的 SynchronizationContext.Current，防止跨執行續問題
 
         public static void SystemInfo(string info, string section = "Setting") => Append(info, "SYSTEM", section);
-        
+
+        public static void TestInfo(string message, [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0) => Append(message, "TTEST", $"{System.IO.Path.GetFileName(filePath)}:{lineNumber}");
+
+
         public static void Append(string message, string status, string section)
         {
             LogMsg new_msg = new LogMsg(_add_index++, message, status, section);

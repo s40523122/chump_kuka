@@ -68,7 +68,7 @@ namespace Chump_kuka.Forms
         private async Task RunTask(int start_val, int end_val, string running_msg, Func<Task> task)
         {
             // 設定任務開始前，進度條描述 & 數值
-            Log.SystemInfo(running_msg);
+            Log.SystemInfo("[INIT] " + running_msg);
             progress_msg.Text = running_msg;
             progressBar1.Value = start_val;
 
@@ -124,10 +124,17 @@ namespace Chump_kuka.Forms
             
             server_check.Change = isconn;
             server_check.Visible = true;
-            
-            // TODO
-            // 等待訊息回應，目前透過等待 1.5 秒完成此效果
-            await Task.Delay(1500);
+            if (isconn)
+            {
+                Log.SystemInfo("初始化成功");
+                // TODO
+                // 等待訊息回應，目前透過等待 1.5 秒完成此效果
+                await Task.Delay(1500);
+            }
+            else
+            {
+                Log.SystemInfo("初始化失敗");
+            }
         }
 
         private async Task RecordLogTask()
@@ -157,6 +164,11 @@ namespace Chump_kuka.Forms
             if (isconn)
             {
                 Env.SensorModbusTcp = ip;
+                Log.SystemInfo("初始化成功");
+            }
+            else
+            {
+                Log.SystemInfo("初始化失敗");
             }
         }
 
@@ -177,6 +189,7 @@ namespace Chump_kuka.Forms
 
         private async void connTest_Click(object sender, EventArgs e)
         {
+            Log.TestInfo("測試看看");
             Env.LocalIp = local_ip_combo.Text;
             kuka_api_check.Visible = kuka_response_check.Visible = record_log_check.Visible = sensor_check.Visible = server_check.Visible = false;
             // 依序執行連線任務

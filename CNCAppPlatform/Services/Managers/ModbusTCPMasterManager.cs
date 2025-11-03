@@ -79,6 +79,7 @@ namespace Chump_kuka
             catch (Exception ex)
             {
                 MessageBox.Show("ModbusService Error: 連線失敗: " + ex.Message);
+                Log.Append("ModbusService Error: 連線失敗: " + ex.Message, "ERROR", this.GetType().Name);
             }
             Disconnect();
             return false;
@@ -115,7 +116,7 @@ namespace Chump_kuka
         /// </summary>
         /// <param name="count">要讀取的輸入數量</param>
         /// <returns>DI 狀態陣列</returns>
-        public bool[] ReadDI(int count)
+        public bool[] ReadDI(int count) 
         {
             if (master == null) 
                 return new bool[count];
