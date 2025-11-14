@@ -360,7 +360,7 @@ namespace Chump_kuka
             }
         }
 
-        public class CarryTask
+        public class CarryTask : INotifyPropertyChanged
         {
             private bool _called = false;
             private DateTime? _finish_time;
@@ -378,6 +378,7 @@ namespace Chump_kuka
                 {
                     _called = value;
                     WriteIni();
+                    OnPropertyChanged(nameof(IsCalled));
                 }
             }
 
@@ -393,6 +394,7 @@ namespace Chump_kuka
                 {
                     _finish_time = value;
                     WriteIni();
+                    OnPropertyChanged(nameof(FinishTime));
                 }
             }
 
@@ -403,8 +405,15 @@ namespace Chump_kuka
                 {
                     _log_msg = value;
                     WriteIni();
+                    OnPropertyChanged(nameof(LogMsg));
                 }
             }
+
+            /// <summary>
+            /// 資料軟刪除時間，若未刪除則為 string.Empty
+            /// </summary>
+            [JsonProperty]
+            public bool IsDeleted { get; private set; } = false;
 
             public CarryTask(int task_id, bool called, CarryModel start_node, CarryModel goal_node)
             {
@@ -426,6 +435,18 @@ namespace Chump_kuka
                 string task_msg = Newtonsoft.Json.JsonConvert.SerializeObject(this);
                 INiReader.WriteINIFile(file_path, "tasks", ID.ToString(), task_msg);       //單筆任務寫入
             }
+
+            public void SoftDelete()
+            {
+                IsDeleted = true;
+                LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] 已刪除任務\n";
+                OnPropertyChanged(nameof(IsDeleted));
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            protected void OnPropertyChanged(string propertyName)
+                => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
     }

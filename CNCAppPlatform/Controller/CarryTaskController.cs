@@ -1,19 +1,16 @@
-﻿using CefSharp.DevTools.DOM;
-using Chump_kuka.Controller;
+﻿using Chump_kuka.Controller;
 using Chump_kuka.Dispatchers;
 using iCAPS;
+using IniParser.Model;
+using IniParser;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Documents;
-using System.Xml.Linq;
 using static Chump_kuka.KukaModel;
-using static Chump_kuka.Log;
+using System.Collections.Generic;
+using System.Web.Caching;
+using System.Windows;
 
 namespace Chump_kuka
 {
@@ -27,7 +24,7 @@ namespace Chump_kuka
 
         private static System.Timers.Timer _task_timer;
 
-        private static List<string> _id_table = new List<string>();      // 暫存任務 ID 表，若任務柱列被刪除，可查詢刪除ID
+        // private static List<string> _id_table = new List<string>();      // 暫存任務 ID 表，若任務柱列被刪除，可查詢刪除ID
 
         public static event Action<bool> OnTimerAlive;     // 計時器啟用事件
 
@@ -47,7 +44,7 @@ namespace Chump_kuka
         /// <summary>
         /// 取得當天 InI 檔案內紀錄的任務，並實例
         /// </summary>
-        private static void InitRecordTasks()
+        /*private static void InitRecordTasks()
         {
             string file_path = KukaParm.GetTodayTaskPath();
             int.TryParse(INiReader.ReadINIFile(file_path, "tasks", "task_last_id"), out int record_count);        // 任務數量
@@ -56,51 +53,139 @@ namespace Chump_kuka
                 for (int index = 1; index <= record_count; index++)
                 {
                     string task_json = INiReader.ReadINIFile(file_path, "tasks", $"{index}", 65535);
-                    if(task_json == "")      // 任務已被刪除
-                    {
-                        continue;
-                    }
-                    CarryTask raed_task = Newtonsoft.Json.JsonConvert.DeserializeObject<CarryTask>(task_json);
                     
+                    CarryTask read_task = Newtonsoft.Json.JsonConvert.DeserializeObject<CarryTask>(task_json);
+
+                    // 若 DeletedAt == string.Empty 表示任務已刪除，跳過此筆
+                    if (read_task.IsDeleted) continue;
+
                     // 未完成任務需綁定模型
-                    if(raed_task.FinishTime == null)
+                    if(read_task.FinishTime == null)
                     {
-                        if (raed_task?.StartNode.NodeModel != null)
+                        if (read_task?.StartNode.NodeModel != null)
                         {
                             foreach (Area area in KukaParm.GetAreaArray())
                             {
-                                KukaModel.Node node = area.GetNode(raed_task?.StartNode.NodeModel.NodeCode);
+                                KukaModel.Node node = area.GetNode(read_task?.StartNode.NodeModel.NodeCode);
                                 if (node != null)
                                 {
-                                    raed_task.StartNode.NodeModel = node;
+                                    read_task.StartNode.NodeModel = node;
                                     break;
                                 }
                             }
                         }
-                        if (raed_task?.GoalNode.NodeModel != null)
+                        if (read_task?.GoalNode.NodeModel != null)
                         {
                             foreach (Area area in KukaParm.GetAreaArray())
                             {
-                                KukaModel.Node node = area.GetNode(raed_task?.StartNode.NodeModel.NodeCode);
+                                KukaModel.Node node = area.GetNode(read_task?.StartNode.NodeModel.NodeCode);
                                 if (node != null)
                                 {
-                                    raed_task.GoalNode.NodeModel = node;
+                                    read_task.GoalNode.NodeModel = node;
                                     break;
                                 }
                             }
                         }
                     }
                     
-                    _task_queue.Add(raed_task);
+                    _task_queue.Add(read_task);
                 }
 
                 _task_id = record_count + 1;
-                _id_table = _task_queue.Select(t => t.ID.ToString()).ToList();      // 將所有 ID 加進暫存任務 ID 表
 
                 initTimer();        // 自動開始流程
             }
 
-            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
+            
+        }*/
+
+        public static Dictionary<string, string> ReadBySection(string filePath, string sectionName)
+        {
+            // 1. 建立解析器
+            var parser = new FileIniDataParser();
+
+            Dictionary<string, string> output = new Dictionary<string, string>();
+
+            // 2. 讀取 INI 檔案
+            try
+            {
+                IniData data = parser.ReadFile(filePath);
+
+                // 檢查 Section 是否存在
+                if (data.Sections.ContainsSection(sectionName))
+                {
+                    KeyDataCollection databaseSection = data.Sections[sectionName];
+
+                    // 迭代該 Section 中的所有 Key-Value
+                    foreach (KeyData key in databaseSection)
+                    {
+                        output[key.KeyName] = key.Value;
+                        // Console.WriteLine($"{key.KeyName} = {key.Value}");
+                    }
+
+                    return output;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return output;
+            }
+}
+
+        private static void InitRecordTasks()
+        {
+            string file_path = KukaParm.GetTodayTaskPath();
+            Dictionary<string, string> tasks_array = ReadBySection(file_path, "tasks");
+
+            foreach (KeyValuePair<string, string> task in tasks_array)
+            {
+
+                CarryTask read_task = Newtonsoft.Json.JsonConvert.DeserializeObject<CarryTask>(task.Value);
+
+                // 若 DeletedAt == string.Empty 表示任務已刪除，跳過此筆
+                if (read_task.IsDeleted) continue;
+
+                // 未完成任務需綁定模型
+                if (read_task.FinishTime == null)
+                {
+                    if (read_task?.StartNode.NodeModel != null)
+                    {
+                        foreach (Area area in KukaParm.GetAreaArray())
+                        {
+                            KukaModel.Node node = area.GetNode(read_task?.StartNode.NodeModel.NodeCode);
+                            if (node != null)
+                            {
+                                read_task.StartNode.NodeModel = node;
+                                break;
+                            }
+                        }
+                    }
+                    if (read_task?.GoalNode.NodeModel != null)
+                    {
+                        foreach (Area area in KukaParm.GetAreaArray())
+                        {
+                            KukaModel.Node node = area.GetNode(read_task?.StartNode.NodeModel.NodeCode);
+                            if (node != null)
+                            {
+                                read_task.GoalNode.NodeModel = node;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                _task_queue.Add(read_task);
+            }
+
+            _task_id = tasks_array.Count + 1;
+
+            initTimer();        // 自動開始流程
+
         }
 
         /// <summary>
@@ -114,29 +199,24 @@ namespace Chump_kuka
             // 任務清單檔案依日期建立&儲存
             
             string file_path = KukaParm.GetTodayTaskPath();
-            int last_id = _task_queue.Count > 0 ? _task_queue[_task_queue.Count - 1].ID : 0;
-            INiReader.WriteINIFile(file_path, "tasks", "task_last_id", last_id.ToString());     // 紀錄最後一筆任務id
+            //int last_id = _task_queue.Count > 0 ? _task_queue[_task_queue.Count - 1].ID : 0;
+            //INiReader.WriteINIFile(file_path, "tasks", "task_last_id", last_id.ToString());     // 紀錄最後一筆任務id
             
-            int change_index = e.NewIndex;
+            int change_index = e.NewIndex;      // 受變更影響的索引
 
-            if (e.ListChangedType == ListChangedType.ItemDeleted)       // 如果是刪除事件
-            {
-                string rm_id = _id_table[change_index];
-                INiReader.WriteINIFile(file_path, "tasks", rm_id, null);
-                _id_table.Remove(rm_id);
-            }
-            else
+            // 更新事件
+            if (e.ListChangedType == ListChangedType.ItemChanged)
             {
                 KukaModel.CarryTask task = _task_queue[change_index];       // 取得更新項目
                 string task_msg = Newtonsoft.Json.JsonConvert.SerializeObject(task);
                 INiReader.WriteINIFile(file_path, "tasks", task.ID.ToString(), task_msg);       //單筆任務寫入
+            }
+            else if (e.ListChangedType == ListChangedType.ItemAdded)
+            {
+                
+            }
 
-                // 若新資料，加進暫存任務 ID 表
-                if (e.ListChangedType == ListChangedType.ItemAdded)
-                {
-                    _id_table.Add(task.ID.ToString());
-                }
-            }            
+            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
 
         private static void initTimer()
@@ -247,7 +327,6 @@ namespace Chump_kuka
                 start_node.NodeModel.NodeStatus = 1;
             }
             ChatController.SyncNodeStatus(start_node.NodeModel.Parent);
-            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
 
         /// <summary>
@@ -396,7 +475,6 @@ namespace Chump_kuka
             if (call_task != null)
             {
                 call_task.IsCalled = true;
-                ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
                 return call_task.MissionCode;
             }
 
@@ -455,7 +533,6 @@ namespace Chump_kuka
             _task_timer.Start();
 
             ChatController.SyncNodeStatus(finish_task.StartNode.NodeModel.Parent);
-            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
 
         /// <summary>
@@ -473,8 +550,6 @@ namespace Chump_kuka
             _current_task = null;
 
             _task_timer.Start();
-
-            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
 
         /// <summary>
@@ -487,44 +562,43 @@ namespace Chump_kuka
             //    _current_task.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] {log_message}\n";
             KukaModel.CarryTask task = _task_queue.FirstOrDefault(t => t.MissionCode == mission_code);
             task.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] {log_message}\n";
-
-            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
 
         /// <summary>
         /// 刪除指定任務
         /// </summary>
         /// <param name="log_message"></param>
-        public static void RemoveTask(string task_id)
+        public static void RemoveTask(int task_id)
         {
-            int.TryParse(task_id, out int rm_id);
-            if (rm_id == 0)
+            // 任務 id 不得為 0
+            if (task_id == 0)
             {
-                ChatController.PubError($"錯誤: 請確認搬運任務編號正確[{rm_id}]");
+                ChatController.PubError($"錯誤: 請確認搬運任務編號正確[{task_id}]");
                 return;
             }
 
-
-            if (_current_task?.ID == rm_id)
+            // 執行中任務不得刪除
+            if (_current_task?.ID == task_id)
             {
-                ChatController.PubError($"搬運任務[{rm_id}]運行中，無法移除");
+                ChatController.PubError($"搬運任務[{task_id}]運行中，無法移除");
                 return;
             }
 
-            KukaModel.CarryTask target = _task_queue.FirstOrDefault(m => m.ID == rm_id);       // 找到 ID 對應任務
+            KukaModel.CarryTask target = _task_queue.FirstOrDefault(m => m.ID == task_id);       // 找到 ID 對應任務
             if (target != null)
             {
-                target.StartNode.NodeModel.NodeStatus = 0;
-                ChatController.SyncNodeStatus(target.StartNode.NodeModel.Parent);
+                // target.StartNode.NodeModel.NodeStatus = 0;
+                // ChatController.SyncNodeStatus(target.StartNode.NodeModel.Parent);
+                target.SoftDelete();        // 軟刪除
+
+                // 從當前佇列移除
                 _task_queue.Remove(target);
-                ChatController.PubLog($"已從任務列表中移除搬運任務[{rm_id}]");
+                ChatController.PubLog($"已從任務列表中移除搬運任務[{task_id}]");
             }
             else
             {
-                ChatController.PubLog($"找不到指定任務[{rm_id}]");
+                ChatController.PubLog($"找不到指定任務[{task_id}]");
             }
-            
-            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
 
         /// <summary>
@@ -553,8 +627,6 @@ namespace Chump_kuka
             {
                 ChatController.PubLog($"找不到指定任務[{cancel_id}]");
             }
-
-            ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
     }
 }

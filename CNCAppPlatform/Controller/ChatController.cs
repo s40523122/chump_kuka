@@ -277,7 +277,8 @@ namespace Chump_kuka.Controller
         private static void DelTaskCb(string message)
         {
             Log.Append($"已接收刪除任務[{message}]", "CHAT", "ChatController");
-            CarryTaskController.RemoveTask(message);
+            int.TryParse(message, out int task_id);
+            CarryTaskController.RemoveTask(task_id);
         }
 
         private static void CancelTaskCb(string message)
