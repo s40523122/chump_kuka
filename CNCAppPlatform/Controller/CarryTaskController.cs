@@ -132,7 +132,7 @@ namespace Chump_kuka
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                // MessageBox.Show(e.Message);
                 return output;
             }
 }
@@ -141,6 +141,8 @@ namespace Chump_kuka
         {
             string file_path = KukaParm.GetTodayTaskPath();
             Dictionary<string, string> tasks_array = ReadBySection(file_path, "tasks");
+
+            if (tasks_array.Count == 0) MsgBox.Show("今日尚未建立可執行任務");
 
             foreach (KeyValuePair<string, string> task in tasks_array)
             {
