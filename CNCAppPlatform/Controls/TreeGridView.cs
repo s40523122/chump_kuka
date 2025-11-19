@@ -194,12 +194,12 @@ namespace Chump_kuka.Controls
         private void TaskCancel(object sender, EventArgs e)
         {
             TreeGridRow item = sender as TreeGridRow;
-            DialogResult check = MessageBox.Show($"確認強制取消任務[{item.ID}] =>\n 從 [{item.Items[0]}] 到 [{item.Items[1]}]", "強制取消任務確認", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            DialogResult check = MessageBox.Show($"確認強制取消任務[{item.Items[0]}] =>\n 從 [{item.Items[1]}] 到 [{item.Items[2]}]", "強制取消任務確認", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (check == DialogResult.Yes)
             {
                 item.Dispose();
 
-                ChatController.CancelTask(item.ID.ToString());
+                ChatController.CancelTask(item.Items[0].ToString());
             }
         }
     }
