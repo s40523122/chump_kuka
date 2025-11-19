@@ -364,7 +364,6 @@ namespace Chump_kuka.Dispatchers
             // KukaParm.KukaAreaModels = _kuka_areas;
 
             KukaParm.SetRawAreaModels(_raw_areas);
-            _raw_areas = null;
             Log.Append("成功從API更新區域狀態", "KAPI", "KukaAPiHandle");
         }
 

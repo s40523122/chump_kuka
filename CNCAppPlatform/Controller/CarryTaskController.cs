@@ -624,6 +624,8 @@ namespace Chump_kuka
                 target.StartNode.NodeModel.NodeStatus = 0;
                 _current_task = null;
                 ChatController.PubLog($"已強制取消搬運任務[{cancel_id}]");
+
+                _task_timer.Start();
             }
             else
             {
