@@ -120,7 +120,7 @@ namespace Chump_kuka.Controls
                         robot_id.Text = (string)KukaParm.RobotStatusInfos[current_index]["robotId"];
                         robot_type.Text = (string)KukaParm.RobotStatusInfos[current_index]["robotType"];
                         container_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["containerCode"];
-                        map_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["mapCode"];
+                        mission_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["missionCode"];
                         Dictionary<string, string> status_dict = new Dictionary<string, string>() { { "1", "離場" }, { "2", "離線" }, { "3", "空閒" }, { "4", "任務中" }, { "5", "充電中" }, { "6", "更新中" }, { "7", "異常" } };
                         status.Text = status_dict[(string)KukaParm.RobotStatusInfos[current_index]["status"]];
                         Dictionary<string, string> occupy_dict = new Dictionary<string, string>() { { "0", "未占用" }, { "1", "占用中" } };

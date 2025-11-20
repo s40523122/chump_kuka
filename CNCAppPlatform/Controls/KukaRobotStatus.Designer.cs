@@ -35,7 +35,7 @@
             this.occupy_status = new iCAPS.ScaleLabel();
             this.container_code = new iCAPS.ScaleLabel();
             this.status = new iCAPS.ScaleLabel();
-            this.map_code = new iCAPS.ScaleLabel();
+            this.mission_code = new iCAPS.ScaleLabel();
             this.robot_type = new iCAPS.ScaleLabel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.server_reject = new System.Windows.Forms.TableLayoutPanel();
@@ -93,7 +93,7 @@
             this.tableLayoutPanel1.Controls.Add(this.occupy_status, 1, 5);
             this.tableLayoutPanel1.Controls.Add(this.container_code, 1, 3);
             this.tableLayoutPanel1.Controls.Add(this.status, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.map_code, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.mission_code, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.robot_type, 1, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
@@ -137,7 +137,7 @@
             this.scaleLabel4.Name = "scaleLabel4";
             this.scaleLabel4.Size = new System.Drawing.Size(132, 42);
             this.scaleLabel4.TabIndex = 1;
-            this.scaleLabel4.Text = "地圖編號";
+            this.scaleLabel4.Text = "任務編號";
             this.scaleLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // scaleLabel3
@@ -343,20 +343,20 @@
             this.status.Text = "--";
             this.status.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // map_code
+            // mission_code
             // 
-            this.map_code.AutoSize = true;
-            this.map_code.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.map_code.Factor = 0.28F;
-            this.map_code.Font = new System.Drawing.Font("微軟正黑體", 11.76F);
-            this.map_code.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.map_code.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.map_code.Location = new System.Drawing.Point(141, 84);
-            this.map_code.Name = "map_code";
-            this.map_code.Size = new System.Drawing.Size(164, 42);
-            this.map_code.TabIndex = 1;
-            this.map_code.Text = "--";
-            this.map_code.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.mission_code.AutoSize = true;
+            this.mission_code.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mission_code.Factor = 0.28F;
+            this.mission_code.Font = new System.Drawing.Font("微軟正黑體", 11.76F);
+            this.mission_code.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.mission_code.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.mission_code.Location = new System.Drawing.Point(141, 84);
+            this.mission_code.Name = "mission_code";
+            this.mission_code.Size = new System.Drawing.Size(164, 42);
+            this.mission_code.TabIndex = 1;
+            this.mission_code.Text = "--";
+            this.mission_code.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // robot_type
             // 
@@ -466,7 +466,7 @@
         private iCAPS.ScaleLabel occupy_status;
         private iCAPS.ScaleLabel container_code;
         private iCAPS.ScaleLabel status;
-        private iCAPS.ScaleLabel map_code;
+        private iCAPS.ScaleLabel mission_code;
         private iCAPS.ScaleLabel robot_type;
         private iCAPS.ScaleLabel update_time;
         private iCAPS.ScaleLabel scaleLabel17;
