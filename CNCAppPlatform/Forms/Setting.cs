@@ -28,7 +28,7 @@ namespace Chump_kuka.Forms
             KukaParm.AreaChanged += AreaChanged; ;
             // VisibleChanged += (s, e) => comboBox1.Text = KukaParm.BindArea?.AreaName;
 
-            bind_comboBox.Items.Add("加工區");
+            bind_comboBox.Items.Add("Area404");
         }
 
         private void AreaChanged(object sender, PropertyChangedEventArgs e)
@@ -118,6 +118,7 @@ namespace Chump_kuka.Forms
             IPEndPoint listen_server_ipep = new IPEndPoint(IPAddress.Parse(linker_server_ip.Text), int.Parse(linker_server_port.Text));       // 開啟 Linker 通訊
 
             bool isconn = await ChatController.Init(Env.ICapsServer, listen_server_ipep);
+            await Task.Delay(500);      // 等待初始化
 
             Env.IcapsLinkerServerIp = linker_server_ip.Text;
             Env.IcapsLinkerServerPort = linker_server_port.Text;
@@ -201,6 +202,15 @@ namespace Chump_kuka.Forms
             //bind_comboBox.SelectedIndex = 0;        // 強制套用當前選項
             progress_msg.Text = "已完成";
 
+            if (bind_comboBox.Items.Contains("Area404"))
+            {
+                ChatController.SayHi();
+                await MsgBox.ShowFlash("未獲取區域資料，嘗試再次連線...", "資料錯誤", 500);
+                if (bind_comboBox.Items.Contains("Area404"))
+                {
+                    MsgBox.Show("未獲取區域資料，請重新連線測試");
+                }
+            }
             if (switch_sever.Checked)
             {
                 bool success = SetStrategy();

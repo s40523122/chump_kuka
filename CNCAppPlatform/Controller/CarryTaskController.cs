@@ -41,10 +41,10 @@ namespace Chump_kuka
 
         public static KukaModel.CarryTask FindCarryTask(string mission_code) => _task_queue.FirstOrDefault(task => task.MissionCode == mission_code);
 
-        /// <summary>
+        /*/// <summary>
         /// 取得當天 InI 檔案內紀錄的任務，並實例
         /// </summary>
-        /*private static void InitRecordTasks()
+        private static void InitRecordTasks()
         {
             string file_path = KukaParm.GetTodayTaskPath();
             int.TryParse(INiReader.ReadINIFile(file_path, "tasks", "task_last_id"), out int record_count);        // 任務數量
@@ -99,6 +99,9 @@ namespace Chump_kuka
             
         }*/
 
+        /// <summary>
+        /// 讀取 ini檔案，並取得 section 內容
+        /// </summary>
         public static Dictionary<string, string> ReadBySection(string filePath, string sectionName)
         {
             // 1. 建立解析器
@@ -139,6 +142,7 @@ namespace Chump_kuka
 
         private static void InitRecordTasks()
         {
+            // 取得今日日期以讀取任務清單
             string file_path = KukaParm.GetTodayTaskPath();
             Dictionary<string, string> tasks_array = ReadBySection(file_path, "tasks");
 
@@ -187,7 +191,6 @@ namespace Chump_kuka
             _task_id = tasks_array.Count + 1;
 
             initTimer();        // 自動開始流程
-
         }
 
         /// <summary>

@@ -76,7 +76,7 @@ namespace Chump_kuka.Dispatchers
                 areaCodes = _raw_areas.Select(a => a.AreaCode).ToList()
             };
             await RequestApiAsync("areaNodesQuery", request_body, HandleNodesResponse);
-
+            
             return (_raw_areas?.Count > 0) ? true : false;
 
         }

@@ -72,8 +72,7 @@ namespace Chump_kuka.Controller
             _mqtt.Subscriber("heard", HeardCb);
             _mqtt.Subscriber("log/error", ErrorCb);
 
-            SayHi();        // 初次上線，通知取得區域資料
-
+             SayHi();        // 初次上線，通知取得區域資料
             return true;
         }
 
