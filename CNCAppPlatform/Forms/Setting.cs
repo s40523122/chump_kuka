@@ -202,6 +202,12 @@ namespace Chump_kuka.Forms
             //bind_comboBox.SelectedIndex = 0;        // 強制套用當前選項
             progress_msg.Text = "已完成";
 
+            if (switch_sever.Checked)
+            {
+                bool success = SetStrategy();
+                if (success)
+                    SyncHistoryData();
+            }
             if (bind_comboBox.Items.Contains("Area404"))
             {
                 ChatController.SayHi();
@@ -210,12 +216,6 @@ namespace Chump_kuka.Forms
                 {
                     MsgBox.Show("未獲取區域資料，請重新連線測試");
                 }
-            }
-            if (switch_sever.Checked)
-            {
-                bool success = SetStrategy();
-                if (success)
-                    SyncHistoryData();
             }
         }
 

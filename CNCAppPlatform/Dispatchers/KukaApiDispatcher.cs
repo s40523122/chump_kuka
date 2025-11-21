@@ -106,15 +106,15 @@ namespace Chump_kuka.Dispatchers
         {
             if (!_enable) return;
 
-            if (Debugger.IsAttached)
-            {
-                JObject sim_response = DebugApiSim(apiName);
-                if (sim_response != null)
-                {
-                    handleResponse(sim_response);
-                }
-                return;
-            }
+            //if (Debugger.IsAttached)
+            //{
+            //    JObject sim_response = DebugApiSim(apiName);
+            //    if (sim_response != null)
+            //    {
+            //        handleResponse(sim_response);
+            //    }
+            //    return;
+            //}
 
             int maxRetries = 3;     // 最大重試次數
             int delayMilliseconds = 500;       // 重試間隔
@@ -292,7 +292,8 @@ namespace Chump_kuka.Dispatchers
                 viewBoardType = "",
                 robotType = "LIFT",
                 robotModels = new string[] { },
-                robotIds = Debugger.IsAttached ? new string[] { "1" } : new string[] { },        // Debug模式下，派發虛擬機器人
+                //robotIds = Debugger.IsAttached ? new string[] { "1" } : new string[] { },        // Debug模式下，派發虛擬機器人
+                robotIds = new string[] { },
                 priority = 1,
                 containerType = "",
                 containerCode = "",

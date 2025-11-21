@@ -11,6 +11,7 @@ using static Chump_kuka.KukaModel;
 using System.Collections.Generic;
 using System.Web.Caching;
 using System.Windows;
+using System.Reflection;
 
 namespace Chump_kuka
 {
@@ -19,10 +20,12 @@ namespace Chump_kuka
         private static bool _agv_running = false;
         private static int _task_id = 1;
         private static KukaModel.CarryTask _current_task = null;
-        
+
         private static BindingList<KukaModel.CarryTask> _task_queue = new BindingList<KukaModel.CarryTask>();      // 搬運任務佇列
 
         private static System.Timers.Timer _task_timer;
+        private static System.Timers.Timer _task_asker;     // 當系統無主動回報任務狀態時，強制監控狀態
+        private static bool _current_task_running = false;
 
         // private static List<string> _id_table = new List<string>();      // 暫存任務 ID 表，若任務柱列被刪除，可查詢刪除ID
 
@@ -229,13 +232,19 @@ namespace Chump_kuka
             Log.Append("候車計時器初始化", "SYSTEM", nameof(CarryTaskController));
             // 設定計時器
             _task_timer = new System.Timers.Timer();
-            _task_timer.Interval = 200; // 每 0.2 秒請求一次
+            _task_timer.Interval = 1000; // 每 1 秒請求一次
 
             _task_timer.Elapsed += ProcessNextApiAsync;
             _task_timer.AutoReset = true; // 是否重複執行（true 表示會一直觸發）
             _task_timer.Start();
             //_task_timer.Enabled = true;
             //_task_timer.Tick += ProcessNextApiAsync;
+
+            _task_asker = new System.Timers.Timer();
+            _task_asker.Interval = 500; // 每 0.5 秒請求一次
+
+            _task_asker.Elapsed += TaskAsker;
+            _task_asker.AutoReset = true; // 是否重複執行（true 表示會一直觸發）
         }
 
         private static async void ProcessNextApiAsync(object sender, EventArgs e)
@@ -255,7 +264,42 @@ namespace Chump_kuka
             {
                 _task_timer.Start();
             }
-            
+            else
+            {
+                _task_asker.Start();        // 開啟監控狀態
+            }
+        }
+        private static async void TaskAsker(object sender, EventArgs e)
+        {
+            // AppendTaskLog(_current_task.MissionCode, "未接收回報，主動監控狀態");
+
+            // 取得當前任務
+            foreach (var robot_info in KukaParm.RobotStatusInfos)
+            {
+                if ((string)robot_info["robotId"] == "8503484")
+                {
+                    if ((string)robot_info["missionCode"] == _current_task?.MissionCode)
+                    {
+                        if ((string)robot_info["occupyStatus"] == "1")        // 占用中
+                        {
+                            _current_task_running = true;
+                        }
+                    }
+                    else
+                    {
+                        if (_current_task_running)
+                        {
+                            _current_task_running = false;
+                            if (_current_task != null)
+                            {
+                                AppendTaskLog(_current_task?.MissionCode, "監控結束訊號");
+                                FeedbackFinish(_current_task?.MissionCode);      // 主動回報結束
+                            }
+                            _task_asker.Stop();
+                        }
+                    }
+                }
+            } 
         }
 
         private static void FeedbackDispatcher_Called(object sender, TextEventArgs e)
@@ -311,7 +355,7 @@ namespace Chump_kuka
             }
             
             // 建立搬運任務資訊
-            KukaModel.CarryTask task = new KukaModel.CarryTask(_task_id, !wait, start_node, goal_node);
+            KukaModel.CarryTask task = new KukaModel.CarryTask(_task_id, !wait, start_node, goal_node, false);
             mission_code = task.MissionCode;
             task.LogMsg = $"已建立任務[{task.MissionCode}]\n";
             task.IsPlan = is_plan;      // 判斷是否為策略任務
@@ -431,14 +475,15 @@ namespace Chump_kuka
             // 需確認已經指定目標貨架點，並且該貨架點已鎖定
             await Task.Delay(500);
             KukaModel.Node start_empty_node = start_area.GetEmptyNode();
+            string plan_mission_code = "";
             if (start_empty_node != null)       // 策略A => 將上鎖貨架搬運到當前區域無佔用位置
             {
                 ChatController.PubLog($"[task_{task_id}] > 啟動策略A，搬運到起始區域。");
 
                 AddToQueue(new CarryModel(lock_node.NodeName, null, lock_node),
                             new CarryModel(start_empty_node.NodeName, null, start_empty_node),
-                            out string mission_code, false, true);
-                AppendTaskLog(mission_code, $"[task_{task_id}] 策略A [搬運到起始區域]\n===");
+                            out plan_mission_code, false, true);
+                AppendTaskLog(plan_mission_code, $"[task_{task_id}] 策略A [搬運到起始區域]\n===");
             } 
             else        // 策略B => 將上鎖貨架搬運到下一區域無佔用位置
             {
@@ -449,10 +494,11 @@ namespace Chump_kuka
                 ChatController.PubLog($"[task_{task_id}] > 啟動策略B，搬運到下一區域。");
                 AddToQueue(new CarryModel(lock_node.NodeName, null, lock_node),
                             new CarryModel(next_empty_node.NodeName, null, next_empty_node),
-                            out string mission_code, false, true);
-                AppendTaskLog(mission_code, $"[task_{task_id}] 策略B [搬運到下一區域]\n===");
+                            out plan_mission_code, false, true);
+                AppendTaskLog(plan_mission_code, $"[task_{task_id}] 策略B [搬運到下一區域]\n===");
             }
-            _current_task = _task_queue.FirstOrDefault(task => task.ID == task_id);
+            _current_task = _task_queue.FirstOrDefault(task => task.MissionCode == plan_mission_code);
+            //_current_plan_task = _task_queue.FirstOrDefault(task => task.ID == task_id);        // 將原任務加入至plan
             return true;
         }
 
@@ -519,6 +565,7 @@ namespace Chump_kuka
             // 判斷結完成的任務是否為策略任務
             if (finish_task.IsPlan)
             {
+                Log.Append($"完成策略任務[{mission_code}]", "INFO", "CarryTaskController");
                 // 若是策略任務，移轉鎖定狀態
                 if (finish_task.StartNode.NodeModel.IsLock)
                 {
@@ -625,6 +672,7 @@ namespace Chump_kuka
                 target.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] 已強制取消搬運任務\n";
                 target.FinishTime = DateTime.MinValue;
                 target.StartNode.NodeModel.NodeStatus = 0;
+                ChatController.SyncNodeStatus(target.StartNode.NodeModel.Parent);
                 _current_task = null;
                 ChatController.PubLog($"已強制取消搬運任務[{cancel_id}]");
 

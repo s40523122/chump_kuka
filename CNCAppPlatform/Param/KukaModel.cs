@@ -408,14 +408,21 @@ namespace Chump_kuka
                     OnPropertyChanged(nameof(LogMsg));
                 }
             }
-
+            private bool _del = false;
             /// <summary>
             /// 資料軟刪除時間，若未刪除則為 string.Empty
             /// </summary>
-            [JsonProperty]
-            public bool IsDeleted { get; private set; } = false;
+            public bool IsDeleted 
+            { 
+                get =>_del; 
+                set 
+                {
+                    _del = value;
+                    WriteIni(); 
+                }
+            }
 
-            public CarryTask(int task_id, bool called, CarryModel start_node, CarryModel goal_node)
+            public CarryTask(int task_id, bool called, CarryModel start_node, CarryModel goal_node, bool is_del)
             {
                 if (task_id != 0)       // 防止 Json 因序列化時，自動實作，出現錯誤
                 {
@@ -426,6 +433,7 @@ namespace Chump_kuka
                     GoalNode = goal_node;
                     CreateTime = DateTime.Now;
                     FinishTime = null;
+                    IsDeleted = is_del;
                 }
             }
 
