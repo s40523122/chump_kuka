@@ -350,6 +350,10 @@ namespace Chump_kuka.Controller
             return index == -1 ? 0 : index + 1;
         }
 
+        #region 回報報工系統
+        /// <summary>
+        /// 無人車進站?
+        /// </summary>
         public static void PubReady()
         {
             int _bind_station_no = GetStationNo();
@@ -364,6 +368,9 @@ namespace Chump_kuka.Controller
             }
         }
 
+        /// <summary>
+        /// 物料進站
+        /// </summary>
         public static void AreaReadyFunc()
         {
             int _bind_station_no = GetStationNo();
@@ -378,6 +385,9 @@ namespace Chump_kuka.Controller
 
         }
 
+        /// <summary>
+        /// 無人車進站?
+        /// </summary>
         public static void PubRobotFunc()
         {
             int _bind_station_no = GetStationNo();
@@ -393,6 +403,9 @@ namespace Chump_kuka.Controller
 
         }
 
+        /// <summary>
+        /// 無人車出站
+        /// </summary>
         public static void PubRobotOut()
         {
             int _bind_station_no = GetStationNo();
@@ -408,6 +421,9 @@ namespace Chump_kuka.Controller
                 
         }
 
+        /// <summary>
+        /// 任務結束
+        /// </summary>
         public static void PubCarryOver()
         {
             // 頭尾未形成迴圈
@@ -423,6 +439,10 @@ namespace Chump_kuka.Controller
                 
         }
 
+        /// <summary>
+        /// 錯誤訊息
+        /// </summary>
+        /// <param name="area_code"></param>
         public static void PubCarryError(string area_code)
         {
             // 頭尾未形成迴圈
@@ -437,6 +457,7 @@ namespace Chump_kuka.Controller
             }
 
         }
+        #endregion
     }
 
     public class ButtonPushEventArgs : EventArgs

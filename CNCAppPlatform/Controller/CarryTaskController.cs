@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Web.Caching;
 using System.Windows;
 using System.Reflection;
+using static Chump_kuka.Dispatchers.HttpListenerDispatcher;
 
 namespace Chump_kuka
 {
@@ -280,9 +281,34 @@ namespace Chump_kuka
                 {
                     if ((string)robot_info["missionCode"] == _current_task?.MissionCode)
                     {
-                        if ((string)robot_info["occupyStatus"] == "1")        // 占用中
+                        if (!_current_task_running)
                         {
-                            _current_task_running = true;
+                            if ((string)robot_info["occupyStatus"] == "1")        // 占用中
+                            {
+                                _current_task_running = true;
+                            }
+                        }
+                        else
+                        {
+                            // 模擬收訊訊號
+                            // 先判斷是否接收
+                            if((string)robot_info["nodeCode"] == _current_task.StartNode.NodeModel.NodeCode)
+                            {
+                                if (_current_task.MissionStatus != 2)
+                                {
+                                    _current_task.SetStatus(2);
+                                    HttpListenerDispatcher.ManualHeardEvent(_current_task.MissionCode, _current_task.StartNode.AreaCode, 2);
+                                }
+                            }
+                            else
+                            {
+                                if (_current_task.MissionStatus > 3 && _current_task.MissionStatus != 4)
+                                {
+                                    _current_task.SetStatus(4);
+                                    HttpListenerDispatcher.ManualHeardEvent(_current_task.MissionCode, _current_task.StartNode.AreaCode, 4);
+                                }
+                            }
+                            
                         }
                     }
                     else
@@ -585,6 +611,27 @@ namespace Chump_kuka
             _task_timer.Start();
 
             ChatController.SyncNodeStatus(finish_task.StartNode.NodeModel.Parent);
+
+            // 強制傳送完成
+            if (_current_task.MissionStatus < 5)
+            {
+                // 狀態跳步，強制完成前面狀態
+                for (int step = _current_task.MissionStatus; step < 5; step++)
+                {
+                    _current_task.SetStatus(step + 1);
+                    Task.Delay(5000).GetAwaiter().GetResult();  // 同步等 5 秒
+                    Log.Append($"接收跳步任務狀態[5]，強制完成狀態[{step + 1}]", "WARRING", "CarryTaskController");
+                }
+            }
+            else
+            {
+                if (_current_task.MissionStatus != 5)
+                {
+                    _current_task.SetStatus(5);
+                    HttpListenerDispatcher.ManualHeardEvent(_current_task.MissionCode, _current_task.StartNode.AreaCode, 5);
+                }
+            }
+            
         }
 
         /// <summary>
@@ -682,6 +729,12 @@ namespace Chump_kuka
             {
                 ChatController.PubLog($"找不到指定任務[{cancel_id}]");
             }
+        }
+
+        public static void UpdateMissionStep(string mission_code, int step)
+        {
+            KukaModel.CarryTask task = FindCarryTask(mission_code);
+            task.SetStatus(step);
         }
     }
 }

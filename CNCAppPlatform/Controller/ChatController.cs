@@ -333,10 +333,17 @@ namespace Chump_kuka.Controller
             }
 
             PubLog($"Area_{e.StartAreaCode}:in step [{e.Step}]");
+
+            // 更新任務清單
+            CarryTaskController.UpdateMissionStep(e.MissionCode, e.Step);
         }
 
+        private static int _prev_step = 0;
         private static void PubToLocalController(object sender, HttpListenerDispatcher.HeardEventArgs e)
         {
+            if (e.Step == _prev_step) return;   // 不要重複指定
+            _prev_step = e.Step;
+
             switch (e.Step)
             {
                 case 1:     // 
@@ -424,11 +431,15 @@ namespace Chump_kuka.Controller
             }
         }
 
+        private static string _prev_feedback_msg = "";
+
         public static void SendFeedbackInfo(string feedback_msg)
         {
             if (_is_master)
             {
+                if (_prev_feedback_msg == feedback_msg) { return; }     // 不要連續發訊息
                 FeedbackDispatcher.SendToRecordSystem(feedback_msg);
+                _prev_feedback_msg = feedback_msg;
                 Log.Append($"發送報工訊息{feedback_msg}", "INFO", "ChatController");
             }
             else

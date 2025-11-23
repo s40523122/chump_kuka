@@ -373,6 +373,8 @@ namespace Chump_kuka
 
             public string MissionCode { get; set; }
 
+            public int MissionStatus { get; set; }      // 任務狀態 { 0: 無狀態, 1: 物料進站, 2: 機器人進站, 3: 機器人進站, 4: 出站, 5: 任務完成, -1: 任務出錯} 
+
             public bool IsCalled
             {
                 get => _called;
@@ -459,6 +461,29 @@ namespace Chump_kuka
                 IsDeleted = true;
                 LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] 已刪除任務\n";
                 OnPropertyChanged(nameof(IsDeleted));
+            }
+
+            /// <summary>
+            /// 設定任務狀態
+            /// </summary>
+            public async void SetStatus(int status_step)
+            {
+                
+                if (status_step == MissionStatus + 1) 
+                {
+                    // 正常流程
+                    MissionStatus = status_step;
+                }
+                else if (status_step == MissionStatus)
+                {
+                    // 重複回報任務，忽略
+                    return;
+                }
+                else if (status_step < MissionStatus)
+                {
+                    // 未知情況，可能不會發生
+                    MsgBox.Show("未知情狀，請聯絡開發人員");
+                }
             }
 
             public event PropertyChangedEventHandler PropertyChanged;
