@@ -239,7 +239,7 @@ namespace Chump_kuka.Forms
 
        
 
-        private void btn_send_carry_Click(object sender, EventArgs e)
+        private async void btn_send_carry_Click(object sender, EventArgs e)
         {
             //if (!KukaApiController.Enable)
             //{
@@ -273,7 +273,7 @@ namespace Chump_kuka.Forms
             if (dialogResult == DialogResult.Yes)
             {
                 // KukaApiController.PubCarryTask();
-                MsgBox.ShowFlash("加入等候任務列表...", "手動派車", 1000);
+                await MsgBox.ShowFlash("加入等候任務列表...", "手動派車", 1000);
                 ChatController.AppendCarryTask(_start_carry, _goal_carry, false);
             }
 

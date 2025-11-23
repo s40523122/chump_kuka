@@ -355,7 +355,7 @@ namespace Chump_kuka
             }
             
             // 建立搬運任務資訊
-            KukaModel.CarryTask task = new KukaModel.CarryTask(_task_id, !wait, start_node, goal_node, false);
+            KukaModel.CarryTask task = new KukaModel.CarryTask(_task_id, !wait, start_node, goal_node);
             mission_code = task.MissionCode;
             task.LogMsg = $"已建立任務[{task.MissionCode}]\n";
             task.IsPlan = is_plan;      // 判斷是否為策略任務

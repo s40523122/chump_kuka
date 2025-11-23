@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reactive;
 using Chump_kuka.Controller;
+using System.Runtime.Serialization;
 
 namespace Chump_kuka
 {
@@ -362,6 +363,7 @@ namespace Chump_kuka
 
         public class CarryTask : INotifyPropertyChanged
         {
+            private bool _is_loading = false;
             private bool _called = false;
             private DateTime? _finish_time;
             private string _log_msg = "";
@@ -408,37 +410,45 @@ namespace Chump_kuka
                     OnPropertyChanged(nameof(LogMsg));
                 }
             }
-            private bool _del = false;
+
             /// <summary>
             /// 資料軟刪除時間，若未刪除則為 string.Empty
             /// </summary>
-            public bool IsDeleted 
-            { 
-                get =>_del; 
-                set 
-                {
-                    _del = value;
-                    WriteIni(); 
-                }
-            }
+            public bool IsDeleted { get; set; } = false;
 
-            public CarryTask(int task_id, bool called, CarryModel start_node, CarryModel goal_node, bool is_del)
+            public CarryTask(int task_id, bool called, CarryModel start_node, CarryModel goal_node)
             {
-                if (task_id != 0)       // 防止 Json 因序列化時，自動實作，出現錯誤
+                //if (task_id != 0)       // 防止 Json 因序列化時，自動實作，出現錯誤
+                //{
+                //    ID = task_id;
+                //    MissionCode = $"mission{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
+                //    IsCalled = called;
+                //    StartNode = start_node;
+                //    GoalNode = goal_node;
+                //    CreateTime = DateTime.Now;
+                //    FinishTime = null;
+                //    IsDeleted = is_del;
+                //    _isLoading = true;
+                //}
+                ID = task_id;
+                MissionCode = $"mission{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
+                IsCalled = called;
+                StartNode = start_node;
+                GoalNode = goal_node;
+                CreateTime = DateTime.Now;
+                FinishTime = null;
+
+                // 若 task_id != 0，表示非 Json 反序列化觸發
+                if (task_id != 0)
                 {
-                    ID = task_id;
-                    MissionCode = $"mission{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
-                    IsCalled = called;
-                    StartNode = start_node;
-                    GoalNode = goal_node;
-                    CreateTime = DateTime.Now;
-                    FinishTime = null;
-                    IsDeleted = is_del;
+                    _is_loading = true;
+                    WriteIni();
                 }
             }
 
             private void WriteIni()
             {
+                if (!_is_loading) return;
                 string file_path = KukaParm.GetTodayTaskPath();
                 string task_msg = Newtonsoft.Json.JsonConvert.SerializeObject(this);
                 INiReader.WriteINIFile(file_path, "tasks", ID.ToString(), task_msg);       //單筆任務寫入
@@ -455,6 +465,12 @@ namespace Chump_kuka
 
             protected void OnPropertyChanged(string propertyName)
                 => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+            [OnDeserialized]
+            internal void OnDeserializedMethod(StreamingContext context)
+            {
+                _is_loading = true;
+            }
         }
 
     }
