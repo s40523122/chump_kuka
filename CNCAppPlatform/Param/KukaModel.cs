@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Reactive;
 using Chump_kuka.Controller;
 using System.Runtime.Serialization;
+using CefSharp.DevTools.CSS;
 
 namespace Chump_kuka
 {
@@ -364,79 +365,49 @@ namespace Chump_kuka
         public class CarryTask : INotifyPropertyChanged
         {
             private bool _is_loading = false;
-            private bool _called = false;
-            private DateTime? _finish_time;
-            private string _log_msg = "";
 
+            [JsonProperty]
+            public int ID { get; private set; }
 
-            public int ID { get; set; }
+            [JsonProperty]
+            public string MissionCode { get; private set; }
 
-            public string MissionCode { get; set; }
+            [JsonProperty]
+            public CarryModel StartNode { get; private set; }
 
-            public bool IsCalled
-            {
-                get => _called;
-                set
-                {
-                    _called = value;
-                    WriteIni();
-                    OnPropertyChanged(nameof(IsCalled));
-                }
-            }
+            [JsonProperty]
+            public CarryModel GoalNode { get; private set; }
 
-            public bool IsPlan { get; set; } = false;
+            [JsonProperty]
+            public DateTime CreateTime { get; private set; }
+            
+            [JsonProperty]
+            public DateTime? FinishTime {  get; private set; }
 
-            public CarryModel StartNode { get; set; }
-            public CarryModel GoalNode { get; set; }
-            public DateTime CreateTime { get; set; }
-            public DateTime? FinishTime
-            {
-                get => _finish_time;
-                set
-                {
-                    _finish_time = value;
-                    WriteIni();
-                    OnPropertyChanged(nameof(FinishTime));
-                }
-            }
+            [JsonProperty]
+            public string LogMsg { get; private set; }
 
-            public string LogMsg
-            {
-                get => _log_msg;
-                set
-                {
-                    _log_msg = value;
-                    WriteIni();
-                    OnPropertyChanged(nameof(LogMsg));
-                }
-            }
+            [JsonProperty]
+            public bool IsCalled { get; private set; }
+
+            [JsonProperty]
+            public bool IsPlan { get; private set; } = false;
 
             /// <summary>
-            /// 資料軟刪除時間，若未刪除則為 string.Empty
+            /// 任務是否被軟刪除
             /// </summary>
-            public bool IsDeleted { get; set; } = false;
+            [JsonProperty]
+            public bool IsDeleted { get; private set; } = false;
 
             public CarryTask(int task_id, bool called, CarryModel start_node, CarryModel goal_node)
             {
-                //if (task_id != 0)       // 防止 Json 因序列化時，自動實作，出現錯誤
-                //{
-                //    ID = task_id;
-                //    MissionCode = $"mission{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
-                //    IsCalled = called;
-                //    StartNode = start_node;
-                //    GoalNode = goal_node;
-                //    CreateTime = DateTime.Now;
-                //    FinishTime = null;
-                //    IsDeleted = is_del;
-                //    _isLoading = true;
-                //}
                 ID = task_id;
                 MissionCode = $"mission{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
                 IsCalled = called;
                 StartNode = start_node;
                 GoalNode = goal_node;
                 CreateTime = DateTime.Now;
-                FinishTime = null;
+                LogMsg = $"已建立任務[{MissionCode}]\n";
 
                 // 若 task_id != 0，表示非 Json 反序列化觸發
                 if (task_id != 0)
@@ -454,24 +425,51 @@ namespace Chump_kuka
                 INiReader.WriteINIFile(file_path, "tasks", ID.ToString(), task_msg);       //單筆任務寫入
             }
 
+            public void SetPlanTask()
+            {
+                IsPlan = true;
+                OnPropertyChanged(nameof(IsPlan));
+            }
+
+            public void CallTask()
+            {
+                IsCalled = true;
+                OnPropertyChanged(nameof(IsCalled));
+            }
+
+            public void TaskComplete(bool success)
+            {
+                FinishTime = success ? DateTime.Now : DateTime.MinValue;
+                OnPropertyChanged(nameof(FinishTime));
+            }
+
             public void SoftDelete()
             {
                 IsDeleted = true;
-                LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] 已刪除任務\n";
+                AppendLog("已刪除任務");
                 OnPropertyChanged(nameof(IsDeleted));
+            }
+
+            public void AppendLog(string msg)
+            {
+                LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] {msg}\n";
+                OnPropertyChanged(nameof(LogMsg));
             }
 
             public event PropertyChangedEventHandler PropertyChanged;
 
             protected void OnPropertyChanged(string propertyName)
-                => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            {
+                WriteIni();
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
 
             [OnDeserialized]
             internal void OnDeserializedMethod(StreamingContext context)
             {
+                // Json 反序列化後，將 _is_loading 設定為 true，防止反序列化時，重複寫入文件
                 _is_loading = true;
             }
         }
-
     }
 }

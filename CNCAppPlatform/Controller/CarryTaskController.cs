@@ -356,15 +356,14 @@ namespace Chump_kuka
             
             // 建立搬運任務資訊
             KukaModel.CarryTask task = new KukaModel.CarryTask(_task_id, !wait, start_node, goal_node);
-            mission_code = task.MissionCode;
-            task.LogMsg = $"已建立任務[{task.MissionCode}]\n";
-            task.IsPlan = is_plan;      // 判斷是否為策略任務
+
+            if (is_plan) task.SetPlanTask();      // 判斷是否為策略任務
 
             // 最後一區的任務優先執行
             // if (start_node.AreaCode == KukaParm.KukaAreaModels[KukaParm.KukaAreaModels.Count - 1].AreaCode)
             if (start_node.AreaCode == KukaParm.GetAreaModelByIndex(KukaParm.GetAreaArray().Length - 1).AreaCode)
             {
-                task.IsCalled = true;
+                task.CallTask();
             }
             _task_id++;
 
@@ -525,7 +524,7 @@ namespace Chump_kuka
                                                                                 task.FinishTime == null);
             if (call_task != null)
             {
-                call_task.IsCalled = true;
+                call_task.CallTask();
                 return call_task.MissionCode;
             }
 
@@ -560,7 +559,7 @@ namespace Chump_kuka
             //if (_current_task != null) 
             //    _current_task.FinishTime = DateTime.Now;
             KukaModel.CarryTask finish_task = FindCarryTask(mission_code);
-            finish_task.FinishTime = DateTime.Now;
+            finish_task.TaskComplete(true);
 
             // 判斷結完成的任務是否為策略任務
             if (finish_task.IsPlan)
@@ -596,10 +595,10 @@ namespace Chump_kuka
             //    _current_task.FinishTime = DateTime.MinValue;
             // _current_task = null;
             KukaModel.CarryTask cancle_task = _task_queue.FirstOrDefault(task => task.MissionCode == mission_code);
-            cancle_task.FinishTime = DateTime.MinValue;
-            _current_task.StartNode.NodeModel.NodeStatus = 0;
-            ChatController.SyncNodeStatus(_current_task.StartNode.NodeModel.Parent);
-            _current_task = null;
+            cancle_task.TaskComplete(false);
+            cancle_task.StartNode.NodeModel.NodeStatus = 0;
+            ChatController.SyncNodeStatus(cancle_task.StartNode.NodeModel.Parent);
+            cancle_task = null;
 
             _task_timer.Start();
         }
@@ -613,7 +612,7 @@ namespace Chump_kuka
             //if (_current_task != null)
             //    _current_task.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] {log_message}\n";
             KukaModel.CarryTask task = _task_queue.FirstOrDefault(t => t.MissionCode == mission_code);
-            task.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] {log_message}\n";
+            task.AppendLog("log_message");
         }
 
         /// <summary>
@@ -669,8 +668,8 @@ namespace Chump_kuka
             if (target != null)
             {
                 KukaApiController.PubCarryCancel(target.MissionCode);
-                target.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] 已強制取消搬運任務\n";
-                target.FinishTime = DateTime.MinValue;
+                target.AppendLog("已強制取消搬運任務");
+                target.TaskComplete(false);
                 target.StartNode.NodeModel.NodeStatus = 0;
                 ChatController.SyncNodeStatus(target.StartNode.NodeModel.Parent);
                 _current_task = null;
