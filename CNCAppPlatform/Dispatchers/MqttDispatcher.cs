@@ -47,7 +47,22 @@ namespace Chump_kuka
             mqttService.OnMessageReceived += (topic, message) =>
             {
                 // Console.WriteLine($"[接收] Topic: {topic}, Message: {message}");
-                callback_funcs[topic](message);
+                try
+                {
+                    callback_funcs[topic](message);
+                }
+                catch (Exception ex)
+                {
+                    // MessageBox.Show(ex.Message);
+
+                    // 若找不到，可能原因為使用萬用字元，
+                    // 導致回覆主題為'topic/test'，但登記主題為'topic/#'，
+                    // 無法使用字典進行 callback function 查詢
+                    string[] split_topic = topic.Split('/');
+                    callback_funcs[$"{split_topic[0]}/#"](message);     // 強制改為使用萬用符號
+
+                    // 無法適用所有情形，還是建議不要使用萬用符號
+                }
             };
             try
             {

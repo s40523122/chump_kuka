@@ -136,31 +136,6 @@ namespace Chump_kuka.Controller
         {
             // 若字串為區域類別，解析資料訊息後，將比較後差異處，更新為接收資料
 
-
-            #region 版本補丁
-            //List<KukaModel.KukaOriginAreaModel> origin_areas = JsonConvert.DeserializeObject<List<KukaModel.KukaOriginAreaModel>>(message);
-            //List<KukaModel.Area> areas = new List<KukaModel.Area>();
-            //foreach (KukaModel.KukaOriginAreaModel origin in origin_areas)
-            //{
-            //    List<KukaModel.Node> nodes = new List<KukaModel.Node>();
-            //    for (int i=0; i<origin.NodeList.Length; i++)
-            //    {
-            //        KukaModel.Node new_node = new KukaModel.Node(origin.NodeList[i]);
-            //        if (origin.NodeStatus.Length > i) new_node.RackStatus = origin.NodeStatus[i];
-            //        nodes.Add(new_node);
-            //    }
-            
-            //    areas.Add(new KukaModel.Area()
-            //    {
-            //        AreaName = origin.AreaName,
-            //        AreaCode = origin.AreaCode,
-            //        AreaType = origin.AreaType,
-            //        NodeList = nodes.ToArray()
-            //    });
-            //}
-
-            #endregion 版本補丁
-
             List<KukaModel.Area> areas = JsonConvert.DeserializeObject<List<KukaModel.Area>>(message);
             
             // 目前設定無法透過json字串設定index
@@ -171,9 +146,9 @@ namespace Chump_kuka.Controller
             // 如果接收列表資訊與當前不同，更新當前列表
             //if (KukaParm.KukaAreaModels.Count == 0)
             //    KukaParm.KukaAreaModels = areas;
-            string[] origin_code_array = KukaParm.GetAreaArray().Select(m => m.AreaCode).ToArray();       // 將所有代碼取出為陣列
-            string[] source_code_array = areas.Select(m => m.AreaCode).ToArray();       // 將所有代碼取出為陣列
-            if (origin_code_array != source_code_array)     // 只判定區域代碼是否修正
+            string[] origin_code_array = KukaParm.GetAreaArray().Select(m => m.AreaCode).ToArray();       // 將所有代號取出為陣列
+            string[] source_code_array = areas.Select(m => m.AreaCode).ToArray();       // 將所有代號取出為陣列
+            if (origin_code_array != source_code_array)     // 只判定區域代號是否修正
             {
                 KukaParm.UpdateAreaModels(areas);
                 //foreach (KukaModel.Area source_area in areas)
@@ -186,28 +161,6 @@ namespace Chump_kuka.Controller
 
         private static void NodesCb(string message)
         {
-
-            //#region 版本補丁
-            //KukaModel.KukaOriginAreaModel origin = JsonConvert.DeserializeObject<KukaModel.KukaOriginAreaModel>(message);
-            //List<KukaModel.Node> nodes = new List<KukaModel.Node>();
-            //for (int i = 0; i < origin.NodeList.Length; i++)
-            //{
-            //    nodes.Add(new KukaModel.Node(origin.NodeList[i])
-            //    {
-            //        RackStatus = origin.NodeStatus[i],
-            //    });
-            //}
-
-            //KukaModel.Area receive_area = new KukaModel.Area()
-            //{
-            //    AreaName = origin.AreaName,
-            //    AreaCode = origin.AreaCode,
-            //    AreaType = origin.AreaType,
-            //    NodeList = nodes.ToArray()
-            //};
-
-            //return;
-            //#endregion 版本補丁
             KukaModel.Area receive_area = JsonConvert.DeserializeObject<KukaModel.Area>(message);
 
             // KukaModel.Area find_area = KukaModel.Area.Find(receive_area.AreaName, KukaParm.KukaAreaModels);
