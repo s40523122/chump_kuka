@@ -137,12 +137,7 @@ namespace Chump_kuka.Controller
             // 若字串為區域類別，解析資料訊息後，將比較後差異處，更新為接收資料
 
             List<KukaModel.Area> areas = JsonConvert.DeserializeObject<List<KukaModel.Area>>(message);
-            
-            // 目前設定無法透過json字串設定index
-            for (int index = 0 ; index < areas.Count; index++)
-            {
-                areas[index].SetIndex(index);
-            }
+
             // 如果接收列表資訊與當前不同，更新當前列表
             //if (KukaParm.KukaAreaModels.Count == 0)
             //    KukaParm.KukaAreaModels = areas;

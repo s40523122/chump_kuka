@@ -153,6 +153,7 @@ namespace Chump_kuka
             /// <summary>
             /// 區域所在順序 (從 0 開始; -1 表示為定義)
             /// </summary>
+            [JsonProperty]
             public int Index { get; private set; } = -1;
 
             /// <summary>
