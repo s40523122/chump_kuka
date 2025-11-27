@@ -172,7 +172,10 @@ namespace Chump_kuka.Dispatchers
                         new KukaModel.Area("area002", "組裝區", 0, null),
                         new KukaModel.Area("area003", "成品區", 0, null)
                     };
-
+                    for (int area_index = 0; area_index < area_sim.Count; area_index++)
+                    {
+                        area_sim[area_index].SetIndex(area_sim, area_index);
+                    }
                     return new JObject { ["data"] = JArray.FromObject(area_sim) };
                 case "areaNodesQuery":
                     List<dynamic> nodes_sim = new List<dynamic>()
@@ -359,7 +362,7 @@ namespace Chump_kuka.Dispatchers
                     {
                         models.Add(new KukaModel.Node(node_id));
                     }
-                    area.NodeList = models.ToArray();
+                    area.UpdateNodes(models.ToArray());
                 }
             }
             // KukaParm.KukaAreaModels = _kuka_areas;

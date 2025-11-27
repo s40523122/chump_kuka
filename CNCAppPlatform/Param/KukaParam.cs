@@ -299,7 +299,7 @@ internal static class KukaParm
     {
         foreach(KukaModel.Area area in _area_models)
         {
-            area.SetIndex(-1); 
+            area.SetIndex(null, -1); 
         }
     }
 
@@ -308,10 +308,19 @@ internal static class KukaParm
     /// </summary>
     public static void InitAreaStrategy(List<KukaModel.Area> init_areas)
     {
-        init_areas.RemoveAll(area => area.Index == -1);
+        //init_areas.RemoveAll(area => area.Index == -1);
 
-        // 重新排序
-        _area_models = init_areas.OrderBy(area => area.Index).ToList();
+        //// 重新排序
+        //_area_models = init_areas.OrderBy(area => area.Index).ToList();
+
+        _area_models.Clear();
+        for (int i = 0; i < init_areas.Count; i++)
+        {
+            init_areas[i].SetIndex(_area_models, i);
+        }
+
+        _area_models.AddRange(init_areas);
+
         AreaChanged?.Invoke(_area_models, new PropertyChangedEventArgs("KukaAreaModels"));
     }
 

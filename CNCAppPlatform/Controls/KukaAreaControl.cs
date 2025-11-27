@@ -15,7 +15,7 @@ namespace Chump_kuka.Controls
 {
     internal partial class KukaAreaControl : UserControl
     {
-        private KukaModel.Area _model = new KukaModel.Area();
+        private KukaModel.Area _model = null;
         private KukaModel.Node[] _nodes = new KukaModel.Node[] { };
         private bool _checked = false;
         private int[] _node_status = null;
@@ -55,7 +55,7 @@ namespace Chump_kuka.Controls
             get => label1.Text; 
             set 
             { 
-                if (Model.AreaName != value) Model.AreaName = value; 
+                if (Model?.AreaName != value) Model?.Rename(value); 
                 label1.Text = value;
             }
         }

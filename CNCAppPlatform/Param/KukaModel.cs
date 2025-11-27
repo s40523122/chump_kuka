@@ -12,6 +12,8 @@ using System.Reactive;
 using Chump_kuka.Controller;
 using System.Runtime.Serialization;
 using CefSharp.DevTools.CSS;
+using System.Xml.Linq;
+using System.Reflection;
 
 namespace Chump_kuka
 {
@@ -140,14 +142,8 @@ namespace Chump_kuka
             //public event PropertyChangedEventHandler NodeStatusChanged;
             //public event PropertyChangedEventHandler ModelChanged;
 
-            private string _name;
-            private int[] _node_status = new int[0];
-            private Node[] _node_list = new Node[0];
-
             // 建立屬性值發生變化的通知事件
             public event PropertyChangedEventHandler PropertyChanged;
-            protected void OnPropertyChanged(string name) =>
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
             #region 屬性
             /// <summary>
@@ -157,85 +153,76 @@ namespace Chump_kuka
             public int Index { get; private set; } = -1;
 
             /// <summary>
+            /// 區域列表
+            /// </summary>
+            [JsonIgnore]
+            public List<Area> AreaQueue { get; private set; }
+
+            /// <summary>
             /// 區域編碼 ex: area001
             /// </summary>
-            public string AreaCode { get; set; }
+            [JsonProperty]
+            public string AreaCode { get; private set; }
 
             /// <summary>
             /// 區域名稱 ex: 加工區
             /// </summary>
-            public string AreaName
-            {
-                get => _name;
-                set
-                {
-                    _name = value;
-                    OnPropertyChanged(nameof(AreaName));        // 屬性發生變化
-                }
-            }
+            [JsonProperty]
+            public string AreaName { get; private set; }
 
             /// <summary>
             /// 區域類型 {1: 庫區, 2: 作業區, 3: 暫存區, 4: 緩存區}
             /// </summary>
-            public int AreaType { get; set; }
+            [JsonProperty]
+            public int AreaType { get; private set; }
 
             /// <summary>
             /// 點位集合
             /// </summary>
-            public Node[] NodeList
-            {
-                get => _node_list;
-                set
-                {
-                    if (value == null) return;
-                    if (_node_list == null || !_node_list.SequenceEqual(value))
-                    {
-                        _node_list = null;
-                        _node_list = value;
-                        //ModelChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NodeList)));
-
-                        //_node_status = new int[_node_list.Length / 2];
-
-                        foreach (Node node in value)
-                        {
-                            // node.PropertyChanged += Node_PropertyChanged;
-                            node.Parent = this;
-                        }
-
-                        OnPropertyChanged(nameof(NodeList));        // 屬性發生變化
-                        KukaParm.WriteParamHistory();
-                    }
-                }
-            }
-
-            private void Node_PropertyChanged(object sender, PropertyChangedEventArgs e)
-            {
-                OnPropertyChanged(nameof(NodeList));
-            }
+            [JsonProperty]
+            public Node[] NodeList { get; private set; }
 
             #endregion 屬性
 
-            [JsonConstructor]
             public Area(string areaCode, string areaName, int areaType, Node[] nodeList)
             {
                 AreaCode = areaCode;
-                _name = areaName;
-                AreaType = areaType;
-                NodeList = nodeList;
-            }
-            public Area(JObject json_object = null)
-            {
-                if (json_object == null) return;
-
-                AreaCode = json_object["areaCode"].ToString();
-                AreaName = json_object["areaName"].ToString();
-                //NodeList = json_object["nodeList"].ToObject<string[]>();      // 集合查詢到的區域代碼為陣列
+                Rename(areaName);       // AreaName = areaName;
+                AreaType = areaType; 
+                UpdateNodes(nodeList);      // NodeList = nodeList;
             }
 
             /// <summary>
             /// 設定區域所在順序
             /// </summary>
-            public int SetIndex(int index) => Index = index;
+            public void SetIndex(List<Area> area_queue, int index)
+            {
+                AreaQueue = area_queue;
+                Index = index;
+            }
+
+            public void Rename(string new_area_name)
+            {
+                AreaName = new_area_name;
+                OnPropertyChanged(nameof(AreaName));        // 屬性發生變化
+            }
+
+            public void UpdateNodes(Node[] node_list)
+            {
+                if (node_list == null) return;
+                if (NodeList == null || !NodeList.SequenceEqual(node_list))
+                {
+                    NodeList = node_list;
+
+                    foreach (Node node in node_list)
+                    {
+                        node.Parent = this;
+                    }
+
+                    OnPropertyChanged(nameof(NodeList));        // 屬性發生變化
+                    KukaParm.WriteParamHistory();
+                }
+            }
 
             /// <summary>
             /// 取得指定節點模型
@@ -276,14 +263,6 @@ namespace Chump_kuka
                 //this.NodeStatus = source_model.NodeStatus;
             }
 
-            /// <summary>
-            /// 找尋列表中符合區域名稱的模型
-            /// </summary>
-            /// <param name="target_area"></param>
-            /// <param name="areas"></param>
-            /// <returns></returns>
-            public static Area Find(string target_area_name, List<Area> areas) => areas.FirstOrDefault(area => area.AreaName == target_area_name);
-
             public static bool CompareData(List<Area> sourceData, List<Area> targetData) => sourceData.Select(m => m.AreaName).SequenceEqual(targetData.Select(m => m.AreaName));
 
             public Area Next()
@@ -302,11 +281,25 @@ namespace Chump_kuka
                 //{
                 //    return KukaParm.KukaAreaModels[index + 1];
                 //}
-                return KukaParm.GetAreaModelByIndex(Index+1);
+                // return KukaParm.GetAreaModelByIndex(Index+1);
+                if(AreaQueue == null)
+                {
+                    MsgBox.Show("尚未設定區域列表", "ERROR");
+                    return null;
+                }
+                int next_index = Index + 1;
+                if (next_index >= AreaQueue.Count) next_index = 0;        // 若大於列表數量，從第一筆循環
+                return AreaQueue.FirstOrDefault(area => area.Index == next_index);
             }
 
-            public Node GetEmptyNode() => _node_list.FirstOrDefault(node => node.IsEmpty());
-            public Node GetLockNode() => _node_list.FirstOrDefault(node => node.IsLock);
+            public Node GetEmptyNode() => NodeList.FirstOrDefault(node => node.IsEmpty());
+            public Node GetLockNode() => NodeList.FirstOrDefault(node => node.IsLock);
+
+            protected void OnPropertyChanged(string name)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            }
+                
 
             public override string ToString() => AreaName;
         }

@@ -261,10 +261,7 @@ namespace Chump_kuka.Forms
             }
             else
             {
-                for(int i=0; i<match_models.Count; i++)
-                {
-                    match_models[i].SetIndex(i);
-                }
+                
                 KukaParm.InitAreaStrategy(match_models);       // 將多餘部分移除系統區域
                 Log.Append("完成策略調整", "SYSTEM", "Setting");
                 return true;
@@ -287,7 +284,7 @@ namespace Chump_kuka.Forms
                     KukaModel.Area find_area = KukaParm.GetRawAreaModel(history_area.AreaCode);
                     if (find_area != null)
                     {
-                        find_area.NodeList = history_area.NodeList;
+                        find_area.UpdateNodes(history_area.NodeList);
                     }
                 }
             }
