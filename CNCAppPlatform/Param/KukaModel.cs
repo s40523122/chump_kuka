@@ -381,6 +381,9 @@ namespace Chump_kuka
             [JsonProperty]
             public string LogMsg { get; private set; }
 
+            [JsonIgnore]
+            public int Status { get; set; }
+
             [JsonProperty]
             public bool IsCalled { get; private set; }
 

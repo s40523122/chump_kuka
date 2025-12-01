@@ -27,6 +27,8 @@ namespace Chump_kuka
         private static System.Timers.Timer _task_asker;     // 當系統無主動回報任務狀態時，強制監控狀態
         private static bool _current_task_running = false;
 
+        private static Dictionary<string, string[]> _feedback_msgs = new Dictionary<string, string[]>();
+
         // private static List<string> _id_table = new List<string>();      // 暫存任務 ID 表，若任務柱列被刪除，可查詢刪除ID
 
         public static event Action<bool> OnTimerAlive;     // 計時器啟用事件
@@ -680,6 +682,76 @@ namespace Chump_kuka
             {
                 ChatController.PubLog($"找不到指定任務[{cancel_id}]");
             }
+        }
+
+        private static void SendFeedback(CarryTask task, int index)
+        {
+            int start_station_no = KukaParm.GetAreaModel(task.StartNode.AreaCode).Index;
+            string station_name = $"station{start_station_no + 1}";
+
+            if (start_station_no == -1) return;
+
+            string msg;
+            if (_feedback_msgs.Keys.Contains(station_name))
+            {
+                string[] msgs = _feedback_msgs[station_name];
+                msg = msgs[index];
+            }
+            else
+            {
+                string feedback_string = INiReader.ReadINIFile(Env.LayoutPath, "Control", station_name);
+                string[] feedback_msgs = feedback_string.Split(';');
+                _feedback_msgs[station_name] = feedback_msgs;
+                msg = feedback_msgs[index];
+            }
+            ChatController.SendFeedbackInfo(msg);
+        }
+
+        public static void AreaReadyFunc(CarryTask task)
+        {
+            SendFeedback(task, 0);
+            task.Status = 0;
+        }
+ 
+        public static void PubReady(CarryTask task)
+        {
+            SendFeedback(task, 1);
+        }        
+
+        public static void PubRobotFunc(CarryTask task)
+        {
+            if (task.Status < 1)
+            {
+                PubReady(task);
+            }
+            SendFeedback(task, 2);
+        }
+
+        public static void PubRobotOut(CarryTask task)
+        {
+            if (task.Status < 2)
+            {
+                PubRobotFunc(task);
+            }
+            SendFeedback(task, 3);
+        }
+
+        public static void PubCarryOver(CarryTask task)
+        {
+            if (task.Status < 3)
+            {
+                PubRobotOut(task);
+            }
+            SendFeedback(task, 4);
+        }
+
+        public static void PubCarryError(CarryTask task)
+        {
+            if (task.Status < 4)
+            {
+                PubCarryOver(task);
+            }
+            SendFeedback(task, 5);
         }
     }
 }
