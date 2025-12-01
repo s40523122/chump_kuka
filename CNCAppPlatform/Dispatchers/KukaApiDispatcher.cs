@@ -106,7 +106,8 @@ namespace Chump_kuka.Dispatchers
         {
             if (!_enable) return;
 
-            if (Debugger.IsAttached)
+
+            if (Env.IsDebug)
             {
                 JObject sim_response = DebugApiSim(apiName);
                 if (sim_response != null)

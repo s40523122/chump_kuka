@@ -9,6 +9,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using static Chump_kuka.KukaModel;
 
 namespace Chump_kuka.Controller
 {
@@ -57,6 +58,7 @@ namespace Chump_kuka.Controller
                 _mqtt.Subscriber("del_task", DelTaskCb);
                 _mqtt.Subscriber("cancel_task", CancelTaskCb);
                 _mqtt.Subscriber("update_task", UpdateTaskCb);
+                _mqtt.Subscriber("lock_request", LockCb);
 
                 KukaParm.RobotStatusChanged += KukaParm_RobotStatusChanged;          // 伺服器機器人資訊更新時，發佈到客戶端
                 HttpListenerDispatcher.Heard += HttpListenerDispatcher_Heard;
@@ -66,7 +68,8 @@ namespace Chump_kuka.Controller
             _mqtt.Subscriber("hello", HelloCb);
             _mqtt.Subscriber("robot", RobotCb, 0);
             _mqtt.Subscriber("area", AreaCb);
-            _mqtt.Subscriber("area/nodes", NodesCb);
+            _mqtt.Subscriber("area/rack_status", RackCb);
+            _mqtt.Subscriber("area/node_status", NodesCb);
             _mqtt.Subscriber("carry/finish", CarryFinishCb);
             _mqtt.Subscriber("carry/list", CarryListCb);
             _mqtt.Subscriber("heard", HeardCb);
@@ -154,11 +157,11 @@ namespace Chump_kuka.Controller
             }
         }
 
-        private static void NodesCb(string message)
+        private static void RackCb(string message)
         {
             KukaModel.Area receive_area = JsonConvert.DeserializeObject<KukaModel.Area>(message);
 
-            // KukaModel.Area find_area = KukaModel.Area.Find(receive_area.AreaName, KukaParm.KukaAreaModels);
+            // 找到區域模型並修改節點貨架狀態
             KukaModel.Area find_area = KukaParm.GetAreaModel(receive_area.AreaCode);
             if (find_area != null)
             {
@@ -166,12 +169,40 @@ namespace Chump_kuka.Controller
                 for (int i = 0; i < receive_area.NodeList.Length; i++)
                 {
                     find_area.NodeList[i].RackStatus = receive_area.NodeList[i].RackStatus;
+                }
+            }
+        }
+
+        private static void NodesCb(string message)
+        {
+            KukaModel.Area receive_area = JsonConvert.DeserializeObject<KukaModel.Area>(message);
+
+            KukaModel.Area find_area = KukaParm.GetAreaModel(receive_area.AreaCode);
+            if (find_area != null)
+            {
+                for (int i = 0; i < receive_area.NodeList.Length; i++)
+                {
                     find_area.NodeList[i].IsLock = receive_area.NodeList[i].IsLock;
                     find_area.NodeList[i].NodeStatus = receive_area.NodeList[i].NodeStatus;
                 }
-                // find_area.LockNodes = receive_area.LockNodes;
             }
+        }
 
+        private static void LockCb(string message)
+        {
+            KukaModel.Area receive_area = JsonConvert.DeserializeObject<KukaModel.Area>(message);
+
+            KukaModel.Area find_area = KukaParm.GetAreaModel(receive_area.AreaCode);
+            if (find_area != null)
+            {
+                for (int i = 0; i < receive_area.NodeList.Length; i++)
+                {
+                    find_area.NodeList[i].IsLock = receive_area.NodeList[i].IsLock;
+                }
+            }
+            
+            NodesCb(message);
+            SyncNodeStatus1(find_area);
         }
 
         private static void FeedCb(string message)
@@ -337,7 +368,7 @@ namespace Chump_kuka.Controller
             _mqtt?.Publisher("carry/list", task_list_json);
         }
 
-        /// <summary>
+        /*/// <summary>
         /// 所有主/從站同步所有節點狀態
         /// </summary>
         public static void SyncNodeStatus(KukaModel.Area update_model)
@@ -345,6 +376,49 @@ namespace Chump_kuka.Controller
             string nodes_json = JsonConvert.SerializeObject(update_model, Formatting.Indented);
 
             _mqtt.Publisher("area/nodes", nodes_json);
+        }*/
+
+        /// <summary>
+        /// 同步貨架狀態
+        /// </summary>
+        /// <param name="area_rack">字串陣列，第一字串為區域代號</param>
+        public static void SyncRackStatus(KukaModel.Area area)
+        {
+            string nodes_json = JsonConvert.SerializeObject(area, Formatting.Indented);
+
+            _mqtt.Publisher($"area/rack_status", nodes_json);
+        }
+
+        /// <summary>
+        /// 更新節點狀態(僅server)
+        /// </summary>
+        /// <param name="area_rack">字串陣列，第一字串為區域代號</param>
+        public static void SyncNodeStatus1(KukaModel.Area area)
+        {
+            if (!_is_master)        // 非伺服端不要傳遞訊息
+                return;
+
+            string nodes_json = JsonConvert.SerializeObject(area, Formatting.Indented);
+
+            _mqtt.Publisher($"area/node_status", nodes_json);
+        }
+
+        /// <summary>
+        /// 請求鎖定節點
+        /// </summary>
+        /// <param name="area_code"></param>
+        public static void RequestLockNode(KukaModel.Area request_area)
+        {
+            string area_json = JsonConvert.SerializeObject(request_area, Formatting.Indented);
+
+            if (_is_master)
+            {
+                LockCb(area_json);
+            }
+            else
+            {
+                _mqtt.Publisher("lock_request", area_json);
+            }
         }
 
         /// <summary>

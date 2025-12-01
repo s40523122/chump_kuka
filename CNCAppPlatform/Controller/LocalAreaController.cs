@@ -153,8 +153,10 @@ namespace Chump_kuka.Controller
                     KukaParm.BindAreaModel.NodeList[i].RackStatus = sensor_node_status[i];
                 }
 
-                ChatController.SyncNodeStatus(KukaParm.BindAreaModel);
-                _area_update_time = DateTime.Now;
+                // 同步貨架狀態
+                ChatController.SyncRackStatus(KukaParm.BindAreaModel);
+
+                _area_update_time = DateTime.Now;       // 儲存更新時間
             }
 
             // 若區域滿載達指定時數後，觸發亮燈

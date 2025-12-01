@@ -374,7 +374,7 @@ namespace Chump_kuka
             {
                 start_node.NodeModel.NodeStatus = 1;
             }
-            ChatController.SyncNodeStatus(start_node.NodeModel.Parent);
+            ChatController.SyncNodeStatus1(start_node.NodeModel.Parent);
         }
 
         /// <summary>
@@ -569,9 +569,8 @@ namespace Chump_kuka
                 if (finish_task.StartNode.NodeModel.IsLock)
                 {
                     finish_task.StartNode.NodeModel.IsLock = false;
-                    ChatController.SyncNodeStatus(finish_task.StartNode.NodeModel.Parent);
                     finish_task.GoalNode.NodeModel.IsLock = true;
-                    ChatController.SyncNodeStatus(finish_task.GoalNode.NodeModel.Parent);
+                    ChatController.SyncNodeStatus1(finish_task.GoalNode.NodeModel.Parent);
                 }
 
                 finish_task.StartNode.NodeModel.NodeStatus = 0;
@@ -583,7 +582,7 @@ namespace Chump_kuka
             _current_task = null;
             _task_timer.Start();
 
-            ChatController.SyncNodeStatus(finish_task.StartNode.NodeModel.Parent);
+            ChatController.SyncNodeStatus1(finish_task.StartNode.NodeModel.Parent);
         }
 
         /// <summary>
@@ -597,7 +596,7 @@ namespace Chump_kuka
             KukaModel.CarryTask cancle_task = _task_queue.FirstOrDefault(task => task.MissionCode == mission_code);
             cancle_task.TaskComplete(false);
             cancle_task.StartNode.NodeModel.NodeStatus = 0;
-            ChatController.SyncNodeStatus(cancle_task.StartNode.NodeModel.Parent);
+            ChatController.SyncNodeStatus1(cancle_task.StartNode.NodeModel.Parent);
             cancle_task = null;
 
             _task_timer.Start();
@@ -612,7 +611,7 @@ namespace Chump_kuka
             //if (_current_task != null)
             //    _current_task.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] {log_message}\n";
             KukaModel.CarryTask task = _task_queue.FirstOrDefault(t => t.MissionCode == mission_code);
-            task.AppendLog("log_message");
+            task.AppendLog(log_message);
         }
 
         /// <summary>
@@ -671,7 +670,7 @@ namespace Chump_kuka
                 target.AppendLog("已強制取消搬運任務");
                 target.TaskComplete(false);
                 target.StartNode.NodeModel.NodeStatus = 0;
-                ChatController.SyncNodeStatus(target.StartNode.NodeModel.Parent);
+                ChatController.SyncNodeStatus1(target.StartNode.NodeModel.Parent);
                 _current_task = null;
                 ChatController.PubLog($"已強制取消搬運任務[{cancel_id}]");
 

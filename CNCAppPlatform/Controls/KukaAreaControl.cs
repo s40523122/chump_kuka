@@ -37,7 +37,7 @@ namespace Chump_kuka.Controls
             {
                 if (value != null)
                 {
-                    _model.PropertyChanged -= _model_PropertyChanged;       // 解除既有綁定事件
+                    if (_model != null) _model.PropertyChanged -= _model_PropertyChanged;       // 解除既有綁定事件
                     _model = value;     // 重新指定模型
 
                     AreaName = _model.AreaName;

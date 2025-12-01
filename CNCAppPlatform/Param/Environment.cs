@@ -20,6 +20,17 @@ namespace Chump_kuka
         public static readonly string LayoutPath = Path.Combine(Application.StartupPath, "config\\layout.ini");        // UI設定檔位址
 
         public static event PropertyChangedEventHandler EnvChanged;
+        public static bool IsDebug
+        {
+            get
+            {
+                if (_icaps_server != null)
+                    return _icaps_server.Value;
+                string text = INiReader.ReadINIFile(LayoutPath, "System", "IsDebug");
+                if (text == "") text = "true";
+                return bool.Parse(text);
+            }
+        }
 
         public static bool ICapsServer
         {

@@ -244,9 +244,11 @@ internal static class KukaParm
         // 當物件存在且修改後，從輸入列表中移除
         foreach (KukaModel.Area model in input_areas)
         {
+            model.SetIndex(_area_models, model.Index);
+
             // 判段原始區域列表是否需要增減
             KukaModel.Area exist_model = GetAreaModel(model.AreaCode);
-            
+
             if (exist_model == null)      // 若找不到表示將輸入資料作為更新資料
             {
                 update_value = true;      // 紀錄需更新
@@ -263,9 +265,11 @@ internal static class KukaParm
 
         if (update_value)
         {
-            _area_models = input_areas;
+            _area_models.Clear();
+            _area_models.AddRange(input_areas);
             AreaChanged?.Invoke(_area_models, new PropertyChangedEventArgs("KukaAreaModels"));
             WriteParamHistory();
+
         }
     }
 
