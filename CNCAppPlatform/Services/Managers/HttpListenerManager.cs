@@ -36,20 +36,21 @@ namespace iCAPS.Managers
         {
             if (IsRunning) return;
 
-            try
-            {
-                _listener = new HttpListener();
-                _listener.Prefixes.Add(_listen_url); // 設定伺服器監聽的地址
+            
+            _listener = new HttpListener();
+            _listener.Prefixes.Add(_listen_url); // 設定伺服器監聽的地址
 
-                _listener.Start();
-                IsRunning = _listener.IsListening;
+            _listener.Start();
+            IsRunning = _listener.IsListening;
 
                 
-                Console.WriteLine("C# TCP Server started...");
+            Console.WriteLine("C# TCP Server started...");
 
-                Task.Run(async () =>
+            Task.Run(async () =>
+            {
+                while (true)
                 {
-                    while (true)
+                    try
                     {
                         // 等待 HTTP 請求
                         HttpListenerContext context = _listener.GetContext();
@@ -61,12 +62,13 @@ namespace iCAPS.Managers
                         // 開新 Task 處理客戶端
                         await HandleClientAsync(context);
                     }
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+                    catch (Exception ex)
+                    {
+                        Log.Append($"HttpListener發生錯誤[{ex.ToString()}]", "ERROR", "CarryTaskController");
+                    }
+                }
+            });
+            
             // 當伺服器啟動並開始監聽時，設定 TaskCompletionSource 為成功
             startCompletionSource.SetResult(true);
         }

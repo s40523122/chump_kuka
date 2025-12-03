@@ -412,7 +412,7 @@ namespace Chump_kuka.Controller
 
         public static void PubCarryOver()
         {
-            // 頭尾未形成迴圈
+            // 頭尾未形成迴圈 (但目前規劃，最後一站搬運到第一站後，無須回報第一站完成，所以不影響)
             int _bind_station_no = GetStationNo() + 1;
             string feedback_string = INiReader.ReadINIFile(Env.LayoutPath, "Control", $"station{_bind_station_no}");
             string[] feedback_msgs = feedback_string.Split(';');

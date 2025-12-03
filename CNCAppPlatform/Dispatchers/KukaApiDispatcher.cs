@@ -69,7 +69,7 @@ namespace Chump_kuka.Dispatchers
             // 透過向 /areaQuery 請求，判定是否通訊正常
             
             await RequestApiAsync("areaQuery", null, HandleAreaResponse);
-            if(_raw_areas?.Count == 0) return false;
+            if(_raw_areas == null || _raw_areas?.Count == 0) return false;
 
             var request_body = new
             {

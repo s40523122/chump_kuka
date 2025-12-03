@@ -293,6 +293,19 @@ namespace Chump_kuka.Controller
                 // KukaModel.Area heard_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == e.StartAreaCode);
                 KukaModel.Area heard_area = KukaParm.GetAreaModel(e.StartAreaCode);
                 SendCarryFinish(e.MissionCode, heard_area.Next().AreaCode);         // 通知目標區域更新(起點區域index+1)
+                /* 上行錯誤訊息
+   HttpListener發生錯誤[System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
+   於 Chump_kuka.Controller.ChatController.HttpListenerDispatcher_Heard(Object sender, HeardEventArgs e) 於 C:\Users\11228\OneDrive - 財團法人精密機械研究發展中心\chump_kuka\CNCAppPlatform\Controller\ChatController.cs: 行 295
+   於 Chump_kuka.Dispatchers.HttpListenerDispatcher._kuka_listener_MessageReceived(Object sender, HttpMessageEventArgs e) 於 C:\Users\11228\OneDrive - 財團法人精密機械研究發展中心\chump_kuka\CNCAppPlatform\Dispatchers\HttpListenerDispatcher.cs: 行 217
+   於 iCAPS.Managers.HttpListenerManager.<HandleClientAsync>d__16.MoveNext() 於 C:\Users\11228\OneDrive - 財團法人精密機械研究發展中心\chump_kuka\CNCAppPlatform\Services\Managers\HttpListenerManager.cs: 行 99
+--- 先前擲回例外狀況之位置中的堆疊追蹤結尾 ---
+   於 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   於 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   於 System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   於 iCAPS.Managers.HttpListenerManager.<<Start>b__14_0>d.MoveNext() 於 C:\Users\11228\OneDrive - 財團法人精密機械研究發展中心\chump_kuka\CNCAppPlatform\Services\Managers\HttpListenerManager.cs: 行 63]
+                 */
+
+
                 e.Step = 0;
             }
 
