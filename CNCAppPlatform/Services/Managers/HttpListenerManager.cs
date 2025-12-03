@@ -58,7 +58,6 @@ namespace iCAPS.Managers
                         //IPEndPoint remoteEndPoint = (IPEndPoint)client.Client.RemoteEndPoint;
                         //ClientConnected?.Invoke(this, new TcpConnectionEventArgs(client, remoteEndPoint));
 
-
                         // 開新 Task 處理客戶端
                         await HandleClientAsync(context);
                     }
@@ -99,12 +98,12 @@ namespace iCAPS.Managers
             }
         }
 
-        public void MessageResponse(HttpListenerContext context)
+        public void MessageResponse(HttpListenerContext context, string response_json)
         {
             // 回應客戶端
             var response = context.Response;
-            string responseString = "<html><body>請求已接收</body></html>";
-            byte[] buffer = Encoding.UTF8.GetBytes(responseString);
+            byte[] buffer = Encoding.UTF8.GetBytes(response_json);
+            response.ContentType = "application/json; charset=utf-8";
             response.ContentLength64 = buffer.Length;
             response.OutputStream.Write(buffer, 0, buffer.Length);
             response.OutputStream.Close();

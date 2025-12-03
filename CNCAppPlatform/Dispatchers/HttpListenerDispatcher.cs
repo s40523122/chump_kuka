@@ -216,6 +216,10 @@ namespace Chump_kuka.Dispatchers
             {
                 Heard.Invoke(sender, new HeardEventArgs(mission_code, receive_task.StartNode.AreaCode, _area_step));
             }
+
+
+            string response_json = "{ \"code\": \"0\", \"message\": \"\", \"success\": true, \"data\":[] }";
+            _kuka_listener.MessageResponse(e.Context, response_json);
         }
         public static void ManualHeardEvent(string mission_code, string start_area_code,int step)
         {
