@@ -19,6 +19,8 @@ namespace Chump_kuka
 
         private void SetupGrid()
         {
+            var rand = new Random();
+
             area1.Text = _areas[0].AreaName;
             area2.Text = _areas[1].AreaName;
             area3.Text = _areas[2].AreaName;
@@ -27,6 +29,8 @@ namespace Chump_kuka
             {
                 area1.Controls[i].Text = _areas[0].NodeList[i].NodeName;
                 area1.Controls[i].Tag = _areas[0].NodeList[i];
+                
+                if (_areas[0].NodeList[i].RackStatus == -1) _areas[0].NodeList[i].RackStatus = rand.Next(0, 3);
                 
                 if (_areas[0].NodeList[i].RackStatus >= 0)
                 {
@@ -38,6 +42,8 @@ namespace Chump_kuka
                 area2.Controls[i].Text = _areas[1].NodeList[i].NodeName;
                 area2.Controls[i].Tag = _areas[1].NodeList[i];
 
+                if (_areas[1].NodeList[i].RackStatus == -1) _areas[1].NodeList[i].RackStatus = rand.Next(0, 3);
+
                 if (_areas[1].NodeList[i].RackStatus >= 0)
                 {
                     (area2.Controls[i].Controls[_areas[1].NodeList[i].RackStatus] as RadioButton).Checked = true;
@@ -47,6 +53,8 @@ namespace Chump_kuka
             {
                 area3.Controls[i].Text = _areas[2].NodeList[i].NodeName;
                 area3.Controls[i].Tag = _areas[2].NodeList[i];
+
+                if (_areas[2].NodeList[i].RackStatus == -1) _areas[2].NodeList[i].RackStatus = rand.Next(0, 3);
 
                 if (_areas[2].NodeList[i].RackStatus >= 0)
                 {
