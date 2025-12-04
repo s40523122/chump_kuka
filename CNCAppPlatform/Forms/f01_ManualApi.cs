@@ -196,7 +196,7 @@ namespace Chump_kuka.Forms
                     //selected_1.Text = container.ContainerName;
 
                     // Test
-                    StartCarry = new KukaModel.CarryModel(container.ContainerName, stay_area_code, click_node);
+                    StartCarry = new KukaModel.CarryModel(container.ContainerName, stay_area_code, click_node.NodeCode);
                 }
                 else if (GoalCarry == null)     //else if (selected_2.Tag == null)
                 {
@@ -204,7 +204,7 @@ namespace Chump_kuka.Forms
                     //selected_2.Text = container.ContainerName;
 
                     // Test
-                    GoalCarry = new KukaModel.CarryModel(container.ContainerName, stay_area_code, click_node);
+                    GoalCarry = new KukaModel.CarryModel(container.ContainerName, stay_area_code, click_node.NodeCode);
                 }
                 else
                 {

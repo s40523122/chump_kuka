@@ -270,7 +270,7 @@ namespace Chump_kuka.Dispatchers
                 new
                 {
                     sequence = 1,
-                    position = carry_task.StartNode.NodeModel.NodeCode,     //"A000000002",
+                    position = carry_task.StartNode.NodeCode,     //"A000000002",
                     type = "NODE_POINT",     // "NODE_AREA",
                     putDown = false,
                     passStrategy = "AUTO",
@@ -279,7 +279,7 @@ namespace Chump_kuka.Dispatchers
                 new
                 {
                     sequence = 2,
-                    position = carry_task.GoalNode.NodeModel.NodeCode,     //"A000000002",
+                    position = carry_task.GoalNode.NodeCode,     //"A000000002",
                     type = "NODE_POINT",     // "NODE_AREA",
                     putDown = true,
                     passStrategy = "AUTO",

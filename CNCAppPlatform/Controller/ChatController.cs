@@ -220,9 +220,9 @@ namespace Chump_kuka.Controller
             try
             {
                 PubLog("接收排程搬運任務");
-                ParseAndUpdateCarryNode(message, out KukaModel.CarryModel start_carry_node, out KukaModel.CarryModel goal_carry_node);
-                // KukaApiController.PubCarryTask();
-                AppendCarryTask(start_carry_node, goal_carry_node, true);
+
+                KukaModel.CarryModel[] nodes = JsonConvert.DeserializeObject<KukaModel.CarryModel[]>(message);
+                AppendCarryTask(nodes[0], nodes[1], true);
             }
             catch (Exception _e)
             {
@@ -234,9 +234,8 @@ namespace Chump_kuka.Controller
             try
             {
                 PubLog("接收基本搬運任務");
-                ParseAndUpdateCarryNode(message, out KukaModel.CarryModel start_carry_node, out KukaModel.CarryModel goal_carry_node);
-                // KukaApiController.PubCarryTask();
-                AppendCarryTask(start_carry_node, goal_carry_node, false);
+                KukaModel.CarryModel[] nodes = JsonConvert.DeserializeObject<KukaModel.CarryModel[]>(message);
+                AppendCarryTask(nodes[0], nodes[1], false);
             }
             catch (Exception _e)
             {
@@ -473,20 +472,12 @@ namespace Chump_kuka.Controller
             }
         }
 
-        public static void AppendCarryTask(KukaModel.CarryModel start_node, KukaModel.CarryModel goal_node, bool wait=true)
+        public static void AppendCarryTask(KukaModel.CarryModel start_carry_info, KukaModel.CarryModel goal_carry_info, bool wait=true)
         {
             if (_is_master)        
             {
                 // 若為 master 端，將任務加入等候區
-                CarryTaskController.AddToQueue(start_node, goal_node, out _, wait);
-
-                string[] nodes = new string[2]
-                {
-                    $"{start_node.Name};{start_node.AreaCode};{start_node.NodeModel.NodeCode}",
-                    $"{goal_node.Name};{goal_node.AreaCode};{goal_node.NodeModel?.NodeCode}",
-
-                };
-                string task_node_string = JsonConvert.SerializeObject(nodes, Formatting.Indented);
+                CarryTaskController.AddToQueue(start_carry_info, goal_carry_info, out _, wait);
             }
             else
             {
@@ -494,13 +485,7 @@ namespace Chump_kuka.Controller
                 // 若 wait = true，透過 "carry" 主題傳遞資料，代表需要等待叫車訊號。
                 string topic_name = wait ? "carry" : "carry/auto";
 
-                string[] nodes = new string[2]
-                {
-                    $"{start_node.Name};{start_node.AreaCode};{start_node.NodeModel.NodeCode}",
-                    $"{goal_node.Name};{goal_node.AreaCode};{goal_node.NodeModel?.NodeCode}",
-
-                };
-
+                KukaModel.CarryModel[] nodes = new KukaModel.CarryModel[2] { start_carry_info, goal_carry_info };
                 string task_node_string = JsonConvert.SerializeObject(nodes, Formatting.Indented);
 
                 _mqtt.Publisher(topic_name, task_node_string);
@@ -542,28 +527,6 @@ namespace Chump_kuka.Controller
                 _mqtt.Publisher("cancel_task", task_id);
             }
             
-        }
-
-        private static void ParseAndUpdateCarryNode(string carry_node_msg, out KukaModel.CarryModel start_carry_node, out KukaModel.CarryModel goal_carry_node)
-        {
-            List<string> nodes = JsonConvert.DeserializeObject<List<string>>(carry_node_msg);
-            
-            string[] start_info = nodes[0].Split(';');
-            string[] goal_info = nodes[1].Split(';');
-            KukaModel.Node start_node = null, goal_node = null;
-            foreach (KukaModel.Area area in KukaParm.GetAreaArray())
-            {
-                if (start_node == null)
-                {
-                    start_node = area.GetNode(start_info[2]);
-                }
-                if (goal_node == null)
-                {
-                    goal_node = area.GetNode(goal_info[2]);
-                }
-            }
-            start_carry_node = new KukaModel.CarryModel(start_info[0], start_info[1], start_node);
-            goal_carry_node = new KukaModel.CarryModel(goal_info[0], goal_info[1], goal_node);
         }
     }
 }

@@ -297,6 +297,21 @@ internal static class KukaParm
     public static KukaModel.Area GetAreaModel(string area_code) => _area_models.FirstOrDefault(area => area.AreaCode == area_code);
 
     /// <summary>
+    /// 透過交換站編碼找尋系統環境的交換站模型
+    /// </summary>
+    public static KukaModel.Node GetNodeModel(string node_code)
+    {
+        foreach (KukaModel.Area area in _area_models)
+        {
+            KukaModel.Node get_node = area.GetNode(node_code);
+            if (get_node == null) continue;
+            else return get_node;
+        }
+        Log.DebugInfo($"找不到交換站[{node_code}]");
+        return null;
+    }
+
+    /// <summary>
     /// 初始化區域搬運策略 ( index 設為 -1 )
     /// </summary>
     public static void ResetAreaStrategy()

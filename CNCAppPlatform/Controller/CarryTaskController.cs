@@ -24,10 +24,15 @@ namespace Chump_kuka
         private static BindingList<KukaModel.CarryTask> _task_queue = new BindingList<KukaModel.CarryTask>();      // 搬運任務佇列
 
         private static System.Timers.Timer _task_timer;
-        private static System.Timers.Timer _task_asker;     // 當系統無主動回報任務狀態時，強制監控狀態
+        // private static System.Timers.Timer _task_asker;     // 當系統無主動回報任務狀態時，強制監控狀態
         private static bool _current_task_running = false;
 
-        // private static List<string> _id_table = new List<string>();      // 暫存任務 ID 表，若任務柱列被刪除，可查詢刪除ID
+        private enum TaskStatus
+        {
+            Normal = 0,
+            PlanA = 1,
+            PlanB = 2,
+        }
 
         public static event Action<bool> OnTimerAlive;     // 計時器啟用事件
 
@@ -149,7 +154,7 @@ namespace Chump_kuka
             string file_path = KukaParm.GetTodayTaskPath();
             Dictionary<string, string> tasks_array = ReadBySection(file_path, "tasks");
 
-            if (tasks_array.Count == 0) MsgBox.Show("今日尚未建立可執行任務");
+            if (tasks_array.Count == 0) Task.Run(() => MsgBox.Show("今日尚未建立可執行任務"));
 
             foreach (KeyValuePair<string, string> task in tasks_array)
             {
@@ -159,34 +164,34 @@ namespace Chump_kuka
                 // 若 DeletedAt == string.Empty 表示任務已刪除，跳過此筆
                 if (read_task.IsDeleted) continue;
 
-                // 未完成任務需綁定模型
-                if (read_task.FinishTime == null)
-                {
-                    if (read_task?.StartNode.NodeModel != null)
-                    {
-                        foreach (Area area in KukaParm.GetAreaArray())
-                        {
-                            KukaModel.Node node = area.GetNode(read_task?.StartNode.NodeModel.NodeCode);
-                            if (node != null)
-                            {
-                                read_task.StartNode.NodeModel = node;
-                                break;
-                            }
-                        }
-                    }
-                    if (read_task?.GoalNode.NodeModel != null)
-                    {
-                        foreach (Area area in KukaParm.GetAreaArray())
-                        {
-                            KukaModel.Node node = area.GetNode(read_task?.GoalNode.NodeModel.NodeCode);
-                            if (node != null)
-                            {
-                                read_task.GoalNode.NodeModel = node;
-                                break;
-                            }
-                        }
-                    }
-                }
+                //// 未完成任務需綁定模型
+                //if (read_task.FinishTime == null)
+                //{
+                //    if (read_task?.StartNode.NodeModel != null)
+                //    {
+                //        foreach (Area area in KukaParm.GetAreaArray())
+                //        {
+                //            KukaModel.Node node = area.GetNode(read_task?.StartNode.NodeModel.NodeCode);
+                //            if (node != null)
+                //            {
+                //                read_task.StartNode.NodeModel = node;
+                //                break;
+                //            }
+                //        }
+                //    }
+                //    if (read_task?.GoalNode.NodeModel != null)
+                //    {
+                //        foreach (Area area in KukaParm.GetAreaArray())
+                //        {
+                //            KukaModel.Node node = area.GetNode(read_task?.GoalNode.NodeModel.NodeCode);
+                //            if (node != null)
+                //            {
+                //                read_task.GoalNode.NodeModel = node;
+                //                break;
+                //            }
+                //        }
+                //    }
+                //}
 
                 _task_queue.Add(read_task);
             }
@@ -240,11 +245,11 @@ namespace Chump_kuka
             //_task_timer.Enabled = true;
             //_task_timer.Tick += ProcessNextApiAsync;
 
-            _task_asker = new System.Timers.Timer();
-            _task_asker.Interval = 500; // 每 0.5 秒請求一次
+            //_task_asker = new System.Timers.Timer();
+            //_task_asker.Interval = 500; // 每 0.5 秒請求一次
 
-            _task_asker.Elapsed += TaskAsker;
-            _task_asker.AutoReset = true; // 是否重複執行（true 表示會一直觸發）
+            //_task_asker.Elapsed += TaskAsker;
+            //_task_asker.AutoReset = true; // 是否重複執行（true 表示會一直觸發）
         }
 
         private static async void ProcessNextApiAsync(object sender, EventArgs e)
@@ -264,12 +269,12 @@ namespace Chump_kuka
             {
                 _task_timer.Start();
             }
-            else
-            {
-                _task_asker.Start();        // 開啟監控狀態
-            }
+            //else
+            //{
+            //    _task_asker.Start();        // 開啟監控狀態
+            //}
         }
-        private static async void TaskAsker(object sender, EventArgs e)
+        /*private static async void TaskAsker(object sender, EventArgs e)
         {
             // AppendTaskLog(_current_task.MissionCode, "未接收回報，主動監控狀態");
 
@@ -295,12 +300,12 @@ namespace Chump_kuka
                                 AppendTaskLog(_current_task?.MissionCode, "監控結束訊號");
                                 FeedbackFinish(_current_task?.MissionCode);      // 主動回報結束
                             }
-                            _task_asker.Stop();
+                            // _task_asker.Stop();
                         }
                     }
                 }
             } 
-        }
+        }*/
 
         private static void FeedbackDispatcher_Called(object sender, TextEventArgs e)
         {
@@ -346,7 +351,7 @@ namespace Chump_kuka
 
             // 判定是否建立重複起始點(起始點已在任務列表中，且該任務尚未完成)
             bool exists_task = _task_queue.Any(m => 
-                                        m.StartNode.NodeModel?.NodeCode == start_node.NodeModel?.NodeCode && 
+                                        m.StartNode.NodeCode == start_node.NodeCode && 
                                         m.FinishTime == null);
             if (exists_task)
             {
@@ -364,17 +369,18 @@ namespace Chump_kuka
             if (start_node.AreaCode == KukaParm.GetAreaModelByIndex(KukaParm.GetAreaArray().Length - 1).AreaCode)
             {
                 task.CallTask();
+                ChatController.PubLog($"[{task}]為終點區域任務，系統自動叫車。");
             }
             _task_id++;
 
             _task_queue.Add(task);      // 加入佇列
 
             // 如果起點是 node 標記為任務占用
-            if(start_node.NodeModel != null)
+            if(start_node.NodeCode != "")
             {
-                start_node.NodeModel.NodeStatus = 1;
+                KukaParm.GetNodeModel(start_node.NodeCode).NodeStatus = 1;
             }
-            ChatController.SyncNodeStatus1(start_node.NodeModel.Parent);
+            ChatController.SyncNodeStatus1(KukaParm.GetAreaModel(start_node.AreaCode));
         }
 
         /// <summary>
@@ -400,7 +406,7 @@ namespace Chump_kuka
                 {
                     if (task.IsCalled && task.FinishTime == null)
                     {
-                        KukaModel.Node goal_node = task.GoalNode.NodeModel;
+                        KukaModel.Node goal_node = KukaParm.GetNodeModel(task.GoalNode.NodeCode);
                         // 檢查目標是否為貨架點
                         if (goal_node != null)     // 目標為貨架點
                         {
@@ -415,10 +421,9 @@ namespace Chump_kuka
                                 // 貨架點占用，判斷是否上鎖
                                 if (goal_node.IsLock)
                                 {
+                                    KukaModel.Node start_node = KukaParm.GetNodeModel(task.StartNode.NodeCode);
                                     // 貨架點已鎖定，執行策略
-                                    KukaModel.Area start_area;
-                                    if (task.StartNode.NodeModel != null) start_area = task.StartNode.NodeModel.Parent;
-                                    else start_area = KukaParm.GetAreaModel(task.StartNode.AreaCode);
+                                    KukaModel.Area start_area = KukaParm.GetAreaModel(task.StartNode.AreaCode);
 
                                     TaskPlan(task.ID, goal_node, start_area);
                                     return false;
@@ -446,16 +451,14 @@ namespace Chump_kuka
                                 }
 
                                 // 找到上鎖貨架，執行策略
-                                KukaModel.Area start_area;
-                                if (task.StartNode.NodeModel != null) start_area = task.StartNode.NodeModel.Parent;
-                                else start_area = KukaParm.GetAreaModel(task.StartNode.AreaCode);
+                                KukaModel.Area start_area = KukaParm.GetAreaModel(task.StartNode.AreaCode);
                                 TaskPlan(task.ID, lock_node, start_area);
                                 return false;
                             }
                             else
                             {
                                 // 加入可搬運貨架點
-                                task.GoalNode.NodeModel = empty_node;
+                                task.GoalNode.NodeCode = empty_node.NodeCode;
                             }
                         }
 
@@ -483,14 +486,14 @@ namespace Chump_kuka
             // 執行搬運策略
             // 需確認已經指定目標貨架點，並且該貨架點已鎖定
             await Task.Delay(500);
-            KukaModel.Node start_empty_node = start_area.GetEmptyNode();
+            string start_empty_node_code = start_area.GetEmptyNode().NodeCode;
             string plan_mission_code = "";
-            if (start_empty_node != null)       // 策略A => 將上鎖貨架搬運到當前區域無佔用位置
+            if (start_empty_node_code != "")       // 策略A => 將上鎖貨架搬運到當前區域無佔用位置
             {
                 ChatController.PubLog($"[task_{task_id}] > 啟動策略A，搬運到起始區域。");
 
-                AddToQueue(new CarryModel(lock_node.NodeName, null, lock_node),
-                            new CarryModel(start_empty_node.NodeName, null, start_empty_node),
+                AddToQueue(new CarryModel(lock_node.NodeName, lock_node.Parent.AreaCode, lock_node.NodeCode),
+                            new CarryModel(start_empty_node_code, start_area.AreaCode, start_empty_node_code),
                             out plan_mission_code, false, true);
                 AppendTaskLog(plan_mission_code, $"[task_{task_id}] 策略A [搬運到起始區域]\n===");
             } 
@@ -501,8 +504,8 @@ namespace Chump_kuka
                 if (next_empty_node == null) return false;      // 找不到下一目標
 
                 ChatController.PubLog($"[task_{task_id}] > 啟動策略B，搬運到下一區域。");
-                AddToQueue(new CarryModel(lock_node.NodeName, null, lock_node),
-                            new CarryModel(next_empty_node.NodeName, null, next_empty_node),
+                AddToQueue(new CarryModel(lock_node.NodeName, lock_node.Parent.AreaCode, lock_node.NodeCode),
+                            new CarryModel(next_empty_node.NodeName, next_empty_node.Parent.AreaCode, next_empty_node.NodeCode),
                             out plan_mission_code, false, true);
                 AppendTaskLog(plan_mission_code, $"[task_{task_id}] 策略B [搬運到下一區域]\n===");
             }
@@ -573,32 +576,25 @@ namespace Chump_kuka
 
             try
             {
+                KukaModel.Node start_node = KukaParm.GetNodeModel(finish_task.StartNode.NodeCode);
+                KukaModel.Node goal_node = KukaParm.GetNodeModel(finish_task.GoalNode.NodeCode);
                 // 判斷結完成的任務是否為策略任務
                 if (finish_task.IsPlan)
                 {
                     Log.Append($"完成策略任務[{mission_code}]", "INFO", "CarryTaskController");
                     // 若是策略任務，移轉鎖定狀態
-                    if (finish_task.StartNode.NodeModel.IsLock)
+                    if (start_node.IsLock)
                     {
-                        finish_task.StartNode.NodeModel.IsLock = false;
-                        finish_task.GoalNode.NodeModel.IsLock = true;
-                        ChatController.SyncNodeStatus1(finish_task.GoalNode.NodeModel.Parent);
+                        start_node.IsLock = false;
+                        goal_node.IsLock = true;
+                        ChatController.SyncNodeStatus1(goal_node.Parent);
                     }
+                }
+                start_node.NodeStatus = 0;      // 解除起始交換站的執行預備狀態
 
-                    finish_task.StartNode.NodeModel.NodeStatus = 0;
-                }
-                else
-                {
-                    _current_task.StartNode.NodeModel.NodeStatus = 0;
-                    /*  上行錯誤訊息
-   回報任務完成時發生錯誤[System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
-   於 Chump_kuka.CarryTaskController.FeedbackFinish(String mission_code) 於 C:\Users\11228\OneDrive - 財團法人精密機械研究發展中心\chump_kuka\CNCAppPlatform\Controller\CarryTaskController.cs: 行 591]
-                     */
-                }
-                _current_task = null;
                 _task_timer.Start();
 
-                ChatController.SyncNodeStatus1(finish_task.StartNode.NodeModel.Parent);
+                ChatController.SyncNodeStatus1(start_node.Parent);
             }
             catch (Exception e)
             {
@@ -611,16 +607,40 @@ namespace Chump_kuka
         /// </summary>
         public static void FeedbackFail(string mission_code)
         {
-            //if (_current_task != null)
-            //    _current_task.FinishTime = DateTime.MinValue;
-            // _current_task = null;
-            KukaModel.CarryTask cancle_task = _task_queue.FirstOrDefault(task => task.MissionCode == mission_code);
-            cancle_task.TaskComplete(false);
-            cancle_task.StartNode.NodeModel.NodeStatus = 0;
-            ChatController.SyncNodeStatus1(cancle_task.StartNode.NodeModel.Parent);
-            cancle_task = null;
+            KukaModel.CarryTask fail_task = FindCarryTask(mission_code);
+            fail_task.TaskComplete(false);
+            KukaModel.Node start_node = KukaParm.GetNodeModel(fail_task.StartNode.NodeCode);
+            start_node.NodeStatus = 0;
+            ChatController.SyncNodeStatus1(start_node.Parent);
 
             _task_timer.Start();
+        }
+
+        /// <summary>
+        /// 強制取消指定任務
+        /// </summary>
+        public static void CancelTask(string task_id)
+        {
+            int.TryParse(task_id, out int cancel_id);
+            if (cancel_id == 0)
+            {
+                ChatController.PubError($"錯誤: 請確認搬運任務編號正確[{cancel_id}]");
+                return;
+            }
+
+            KukaModel.CarryTask target = _task_queue.FirstOrDefault(m => m.ID == cancel_id);       // 找到 ID 對應任務
+            if (target != null)
+            {
+                KukaApiController.PubCarryCancel(target.MissionCode);
+                target.AppendLog("已強制取消搬運任務");
+                FeedbackFail(target.MissionCode);
+
+                ChatController.PubLog($"已強制取消搬運任務[{cancel_id}]");
+            }
+            else
+            {
+                ChatController.PubLog($"找不到指定任務[{cancel_id}]");
+            }
         }
 
         /// <summary>
@@ -672,35 +692,6 @@ namespace Chump_kuka
             }
         }
 
-        /// <summary>
-        /// 強制取消指定任務
-        /// </summary>
-        public static void CancelTask(string task_id)
-        {
-            int.TryParse(task_id, out int cancel_id);
-            if (cancel_id == 0)
-            {
-                ChatController.PubError($"錯誤: 請確認搬運任務編號正確[{cancel_id}]");
-                return;
-            }
-
-            KukaModel.CarryTask target = _task_queue.FirstOrDefault(m => m.ID == cancel_id);       // 找到 ID 對應任務
-            if (target != null)
-            {
-                KukaApiController.PubCarryCancel(target.MissionCode);
-                target.AppendLog("已強制取消搬運任務");
-                target.TaskComplete(false);
-                target.StartNode.NodeModel.NodeStatus = 0;
-                ChatController.SyncNodeStatus1(target.StartNode.NodeModel.Parent);
-                _current_task = null;
-                ChatController.PubLog($"已強制取消搬運任務[{cancel_id}]");
-
-                _task_timer.Start();
-            }
-            else
-            {
-                ChatController.PubLog($"找不到指定任務[{cancel_id}]");
-            }
-        }
+        
     }
 }

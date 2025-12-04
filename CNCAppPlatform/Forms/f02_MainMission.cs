@@ -208,7 +208,7 @@ namespace Chump_kuka.Forms
                 LocalAreaController.AreaReadyFunc();
 
                 // 建立搬運任務
-                KukaModel.CarryModel start_carry_node = new KukaModel.CarryModel(can_carry_node.NodeName, KukaParm.BindAreaModel.AreaCode, can_carry_node);
+                KukaModel.CarryModel start_carry_node = new KukaModel.CarryModel(can_carry_node.NodeName, KukaParm.BindAreaModel.AreaCode, can_carry_node.NodeCode);
                 KukaModel.Area next_area = can_carry_node.Parent.Next();
                 KukaModel.CarryModel goal_carry_node = new KukaModel.CarryModel(next_area.AreaName, next_area.AreaCode, null);
 

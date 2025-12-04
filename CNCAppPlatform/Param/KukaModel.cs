@@ -310,13 +310,13 @@ namespace Chump_kuka
 
             public string AreaCode { get; set; }
 
-            public Node NodeModel { get; set; }
+            public string NodeCode { get; set; }
 
-            public CarryModel(string name, string area_code, Node node_model)
+            public CarryModel(string name, string area_code, string node_code)
             {
                 Name = name;
                 AreaCode = area_code;
-                NodeModel = node_model;
+                NodeCode = node_code;
                 //IsArea = node_model == null ? true : false;
             }
         }
