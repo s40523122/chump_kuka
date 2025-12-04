@@ -25,6 +25,7 @@ using CefSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -37,14 +38,37 @@ namespace Chump_kuka
     {
         private static int _add_index = 1;      // 已記錄的 Log 數量
         private static string _filter_status = "";      // 紀錄當前篩選標籤名稱
+        private static string _current_log_csv_path = "";       // 自動記錄檔地址 
 
         public static BindingList<LogMsg> LogData = new BindingList<LogMsg>();      // Log 列表
         public static BindingList<LogMsg> FilterData = new BindingList<LogMsg>();      // Log 列表
         public static SynchronizationContext UiContext { get; set; }        // 加入控制項的 SynchronizationContext.Current，防止跨執行續問題
 
-        public static void SystemInfo(string info, string section = "Setting") => Append(info, "SYSTEM", section);
+        static Log()
+        {
+            string file_name = "log" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".csv";
+            _current_log_csv_path =  Path.Combine(Application.StartupPath, "logs\\" + file_name);
+        }
 
-        public static void TestInfo(string message, [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0) => Append(message, "TTEST", $"{System.IO.Path.GetFileName(filePath)}:{lineNumber}");
+        /// <summary>
+        /// 加入一筆普通訊息
+        /// </summary>
+        public static void SystemInfo(
+            string info_msg,
+            [CallerFilePath] string filePath = "", 
+            [CallerLineNumber] int lineNumber = 0) 
+            => Append(info_msg, "SYSTEM", $"{System.IO.Path.GetFileName(filePath)}:{lineNumber}");
+
+        /// <summary>
+        /// 加入一筆除錯訊息
+        /// </summary>
+        public static void DebugInfo(
+            string info_msg,
+            [CallerFilePath] string filePath = "",
+            [CallerLineNumber] int lineNumber = 0)
+            => Append(info_msg, "Debug", $"{System.IO.Path.GetFileName(filePath)}:{lineNumber}");
+
+        public static void LogTemplate(string message, string status, [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0) => Append(message, "TTEST", $"{System.IO.Path.GetFileName(filePath)}:{lineNumber}");
 
 
         public static void Append(string message, string status, string section)
@@ -76,6 +100,8 @@ namespace Chump_kuka
                     FilterData.Add(new_msg);
                 }
             }
+
+            AppendCsv(new_msg);     // 寫入本地端資料
         }
 
         /// <summary>
@@ -87,6 +113,18 @@ namespace Chump_kuka
             _filter_status = filter_status;
             var aa = LogData.Where(c => c.Status == filter_status).ToList();
             FilterData = new BindingList<LogMsg>(aa);
+        }
+
+        /// <summary>
+        /// 將目前的資料儲存至 CSV。
+        /// </summary>
+        public static void AppendCsv(LogMsg log_msg)
+        {
+            using (var writer = new StreamWriter(_current_log_csv_path, true, System.Text.Encoding.UTF8))
+            {
+                log_msg.Message.Replace('\n', ' ');
+                writer.WriteLine($"{log_msg.ID},{log_msg.Message},{log_msg.Status},{log_msg.Section},{log_msg.CreateDate}");
+            }
         }
 
         public class LogMsg

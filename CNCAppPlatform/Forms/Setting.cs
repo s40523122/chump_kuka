@@ -190,7 +190,6 @@ namespace Chump_kuka.Forms
 
         private async void connTest_Click(object sender, EventArgs e)
         {
-            // Log.TestInfo("測試看看");
             Env.LocalIp = local_ip_combo.Text;
             kuka_api_check.Visible = kuka_response_check.Visible = record_log_check.Visible = sensor_check.Visible = server_check.Visible = false;
             // 依序執行連線任務
