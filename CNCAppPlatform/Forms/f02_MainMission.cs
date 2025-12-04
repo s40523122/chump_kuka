@@ -59,6 +59,8 @@ namespace Chump_kuka.Forms
             CarryTaskController.OnTimerAlive -= CarryTaskController_OnTimerAlive;       // 初始化
 
             _easter_egg_timer.Tick += _easter_egg_timer_Tick;
+
+            LocalAreaController.InitAreaStatus();   // 初始化區域狀態
         }
 
         private void CarryTaskController_OnTimerAlive(bool obj)
