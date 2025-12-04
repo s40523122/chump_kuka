@@ -178,7 +178,7 @@ namespace Chump_kuka
                     {
                         foreach (Area area in KukaParm.GetAreaArray())
                         {
-                            KukaModel.Node node = area.GetNode(read_task?.StartNode.NodeModel.NodeCode);
+                            KukaModel.Node node = area.GetNode(read_task?.GoalNode.NodeModel.NodeCode);
                             if (node != null)
                             {
                                 read_task.GoalNode.NodeModel = node;
@@ -423,8 +423,9 @@ namespace Chump_kuka
                                     TaskPlan(task.ID, goal_node, start_area);
                                     return false;
                                 }
-
-                                ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標貨架點滿載，優先執行下一筆任務");
+                                // ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標貨架點滿載，優先執行下一筆任務");
+                                string task_json = Newtonsoft.Json.JsonConvert.SerializeObject(task);
+                                ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標貨架點[{goal_node.NodeCode}]滿載{{{goal_node.NodeStatus}, {goal_node.RackStatus}}}，優先執行下一筆任務。\n{task_json}");
                                 continue;
                             }
                         }
