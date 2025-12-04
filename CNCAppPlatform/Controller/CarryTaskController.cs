@@ -613,6 +613,8 @@ namespace Chump_kuka
             start_node.NodeStatus = 0;
             ChatController.SyncNodeStatus1(start_node.Parent);
 
+            if (mission_code == _current_task?.MissionCode) _current_task = null;
+
             _task_timer.Start();
         }
 
