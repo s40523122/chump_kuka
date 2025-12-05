@@ -115,6 +115,7 @@ namespace Chump_kuka.Controls
                     container.ImgColor = _container_colors[Math.Max(node.NodeStatus, 0)];
                     // 若 model.NodeStatus == 1，表示節點已上鎖
                     container.ShowLock = node.IsLock;
+                    update_time.Text = $"更新時間：{DateTime.Now.ToString("HH:mm:ss")}";
 
                     node.PropertyChanged += (sender, e) =>
                     {
@@ -137,6 +138,8 @@ namespace Chump_kuka.Controls
                                     break;
                             }
                         }));
+
+                        update_time.Text = $"更新時間：{DateTime.Now.ToString("HH:mm:ss")}";
                     };
 
                     // container.ImageIndex = -1;
