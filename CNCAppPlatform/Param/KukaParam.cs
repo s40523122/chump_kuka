@@ -64,6 +64,7 @@ internal static class KukaParm
 
     public static void WriteParamHistory()
     {
+        if (_area_models.Count == 0) return;
         INiReader.WriteINIFile(ParamPath, "kuka", "area_models", JsonConvert.SerializeObject(_area_models));
     }
 

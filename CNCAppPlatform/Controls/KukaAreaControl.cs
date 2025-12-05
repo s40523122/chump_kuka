@@ -137,9 +137,9 @@ namespace Chump_kuka.Controls
                                     container.ShowLock = model.IsLock;
                                     break;
                             }
-                        }));
 
-                        update_time.Text = $"更新時間：{DateTime.Now.ToString("HH:mm:ss")}";
+                            update_time.Text = $"更新時間：{DateTime.Now.ToString("HH:mm:ss")}";
+                        }));
                     };
 
                     // container.ImageIndex = -1;

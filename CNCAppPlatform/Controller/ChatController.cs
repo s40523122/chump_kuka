@@ -171,6 +171,10 @@ namespace Chump_kuka.Controller
                     find_area.NodeList[i].RackStatus = receive_area.NodeList[i].RackStatus;
                 }
             }
+            else
+            {
+                Log.DebugInfo($"收到貨架更新訊息但找不到區域[{receive_area.AreaCode}]");
+            }
         }
 
         private static void NodesCb(string message)

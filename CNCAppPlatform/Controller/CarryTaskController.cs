@@ -364,6 +364,7 @@ namespace Chump_kuka
             
             // 建立搬運任務資訊
             KukaModel.CarryTask task = new KukaModel.CarryTask(_task_id, !wait, start_node, goal_node);
+            mission_code = task.MissionCode;
 
             if (is_plan) task.SetPlanTask();      // 判斷是否為策略任務
 
@@ -503,9 +504,9 @@ namespace Chump_kuka
             // 執行搬運策略
             // 需確認已經指定目標貨架點，並且該貨架點已鎖定
             await Task.Delay(500);
-            string start_empty_node_code = start_area.GetEmptyNode().NodeCode;
+            string start_empty_node_code = start_area.GetEmptyNode()?.NodeCode;
             string plan_mission_code = "";
-            if (start_empty_node_code != "")       // 策略A => 將上鎖貨架搬運到當前區域無佔用位置
+            if (start_empty_node_code != null)       // 策略A => 將上鎖貨架搬運到當前區域無佔用位置
             {
                 ChatController.PubLog($"[task_{task_id}] > 啟動策略A，搬運到起始區域。");
 
