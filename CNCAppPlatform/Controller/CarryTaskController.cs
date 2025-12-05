@@ -27,6 +27,9 @@ namespace Chump_kuka
         // private static System.Timers.Timer _task_asker;     // 當系統無主動回報任務狀態時，強制監控狀態
         private static bool _current_task_running = false;
 
+        private static List<string> _node_fill_missions = new List<string>();       // 目標交換站滿的任務清單
+        private static List<string> _area_fill_missions = new List<string>();       // 目標區域滿的任務清單
+
         private enum TaskStatus
         {
             Normal = 0,
@@ -406,7 +409,9 @@ namespace Chump_kuka
                 {
                     if (task.IsCalled && task.FinishTime == null)
                     {
+                        Log.DebugInfo("尋找目標交換站");
                         KukaModel.Node goal_node = KukaParm.GetNodeModel(task.GoalNode.NodeCode);
+                        
                         // 檢查目標是否為貨架點
                         if (goal_node != null)     // 目標為貨架點
                         {
@@ -428,14 +433,20 @@ namespace Chump_kuka
                                     TaskPlan(task.ID, goal_node, start_area);
                                     return false;
                                 }
-                                // ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標貨架點滿載，優先執行下一筆任務");
-                                string task_json = Newtonsoft.Json.JsonConvert.SerializeObject(task);
-                                ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標貨架點[{goal_node.NodeCode}]滿載{{{goal_node.NodeStatus}, {goal_node.RackStatus}}}，優先執行下一筆任務。\n{task_json}");
+
+                                if (!_node_fill_missions.Contains(task.MissionCode))
+                                {
+                                    // ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標貨架點滿載，優先執行下一筆任務");
+                                    string task_json = Newtonsoft.Json.JsonConvert.SerializeObject(task);
+                                    ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標貨架點[{goal_node.NodeCode}]滿載{{{goal_node.NodeStatus}, {goal_node.RackStatus}}}，優先執行下一筆任務。\n{task_json}");
+                                    _node_fill_missions.Add(task.MissionCode);
+                                }
                                 continue;
                             }
                         }
                         else       // 目標為區域
                         {
+                            Log.DebugInfo("尋找目標區域");
                             KukaModel.Area goal_area = KukaParm.GetAreaModel(task.GoalNode.AreaCode);
                             // 先搜尋是否有空貨架點
                             KukaModel.Node empty_node = goal_area?.GetEmptyNode();
@@ -445,11 +456,16 @@ namespace Chump_kuka
                                 KukaModel.Node lock_node = goal_area?.GetLockNode();
                                 if (lock_node == null)
                                 {
-                                    // 找不到上鎖貨架，執行下一筆
-                                    ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標區域皆滿載，優先執行下一筆任務");
+                                    if (!_area_fill_missions.Contains(task.MissionCode))
+                                    {
+                                        // 找不到上鎖貨架，執行下一筆
+                                        ChatController.PubLog($"當前任務[{task.ID}]無法執行。目標區域皆滿載，優先執行下一筆任務");
+                                        _area_fill_missions.Add(task.MissionCode );
+                                    }
+                                        
                                     continue;
                                 }
-
+                                Log.DebugInfo($"找到可換交換站{lock_node.NodeCode}");
                                 // 找到上鎖貨架，執行策略
                                 KukaModel.Area start_area = KukaParm.GetAreaModel(task.StartNode.AreaCode);
                                 TaskPlan(task.ID, lock_node, start_area);
@@ -483,6 +499,7 @@ namespace Chump_kuka
 
         private static async Task<bool> TaskPlan(int task_id, KukaModel.Node lock_node, Area start_area)
         {
+            Log.DebugInfo("開始執行策略判斷");
             // 執行搬運策略
             // 需確認已經指定目標貨架點，並且該貨架點已鎖定
             await Task.Delay(500);
@@ -687,6 +704,10 @@ namespace Chump_kuka
                 // 從當前佇列移除
                 _task_queue.Remove(target);
                 ChatController.PubLog($"已從任務列表中移除搬運任務[{task_id}]");
+
+                KukaModel.Node start_node = KukaParm.GetNodeModel(target.StartNode.NodeCode);
+                start_node.NodeStatus = 0;
+                ChatController.SyncNodeStatus1(start_node.Parent);
             }
             else
             {

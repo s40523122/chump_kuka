@@ -51,7 +51,7 @@ namespace Chump_kuka
                 {
                     callback_funcs[topic](message);
                 }
-                catch (Exception ex)
+                catch (KeyNotFoundException no_key)
                 {
                     // MessageBox.Show(ex.Message);
 
@@ -62,6 +62,10 @@ namespace Chump_kuka
                     callback_funcs[$"{split_topic[0]}/#"](message);     // 強制改為使用萬用符號
 
                     // 無法適用所有情形，還是建議不要使用萬用符號
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
                 }
             };
             try

@@ -19,6 +19,7 @@ using System.IO;
 using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 using CefSharp.DevTools.CSS;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 /// KukaParm 類別 (全域設定管理)
@@ -299,7 +300,7 @@ internal static class KukaParm
     /// <summary>
     /// 透過交換站編碼找尋系統環境的交換站模型
     /// </summary>
-    public static KukaModel.Node GetNodeModel(string node_code)
+    public static KukaModel.Node GetNodeModel(string node_code, [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
     {
         foreach (KukaModel.Area area in _area_models)
         {
@@ -307,7 +308,7 @@ internal static class KukaParm
             if (get_node == null) continue;
             else return get_node;
         }
-        Log.DebugInfo($"找不到交換站[{node_code}]");
+        Log.DebugInfo($"找不到交換站[{node_code}]", filePath, lineNumber);
         return null;
     }
 
