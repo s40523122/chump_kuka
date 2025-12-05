@@ -2,6 +2,7 @@
 using Chump_kuka.Controller;
 using Chump_kuka.Controls;
 using iCAPS;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -336,7 +337,14 @@ namespace Chump_kuka.Forms
 
         private void scaleLabel2_Click(object sender, EventArgs e)
         {
-            KukaApiController.GetAreaInfo();
+            // KukaApiController.GetAreaInfo();
+            Form json_form = new Form();
+            RichTextBox richTextBox = new RichTextBox() { Dock = DockStyle.Fill };
+            json_form.Controls.Add(richTextBox);
+            string areas_json = JsonConvert.SerializeObject(KukaParm.GetAreaArray(), Formatting.Indented);
+            richTextBox.Text = areas_json;
+            json_form.Show();
+            // MessageBox.Show(areas_json);
         }
     }
 }
