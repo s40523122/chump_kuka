@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.scaleLabel1 = new iCAPS.ScaleLabel();
             this.treeGridItem1 = new Chump_kuka.Controls.TreeGridRow();
             this.treeGridItem2 = new Chump_kuka.Controls.TreeGridRow();
             this.treeGridItem3 = new Chump_kuka.Controls.TreeGridRow();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.scaleLabel1 = new iCAPS.ScaleLabel();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -51,6 +51,78 @@
             this.flowLayoutPanel1.Size = new System.Drawing.Size(469, 296);
             this.flowLayoutPanel1.TabIndex = 0;
             this.flowLayoutPanel1.WrapContents = false;
+            // 
+            // treeGridItem1
+            // 
+            this.treeGridItem1.AutoIDVisible = true;
+            this.treeGridItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.treeGridItem1.ColumnRatios = new float[] {
+        0.2F,
+        0.2F,
+        0.24F,
+        0.24F,
+        0.12F};
+            this.treeGridItem1.ID = 100;
+            this.treeGridItem1.Items = new string[] {
+        "20",
+        "加工區",
+        "06/19 10:20",
+        "06/19 10:35",
+        "🔕"};
+            this.treeGridItem1.Location = new System.Drawing.Point(3, 3);
+            this.treeGridItem1.LogMsg = "";
+            this.treeGridItem1.Name = "treeGridItem1";
+            this.treeGridItem1.Size = new System.Drawing.Size(462, 46);
+            this.treeGridItem1.TabIndex = 9;
+            this.treeGridItem1.Visible = false;
+            // 
+            // treeGridItem2
+            // 
+            this.treeGridItem2.AutoIDVisible = true;
+            this.treeGridItem2.BackColor = System.Drawing.Color.SpringGreen;
+            this.treeGridItem2.ColumnRatios = new float[] {
+        0.2F,
+        0.2F,
+        0.24F,
+        0.24F,
+        0.12F};
+            this.treeGridItem2.ID = 100;
+            this.treeGridItem2.Items = new string[] {
+        "23",
+        "組裝區",
+        "06/19 10:22",
+        "06/19 10:48",
+        "🔔"};
+            this.treeGridItem2.Location = new System.Drawing.Point(3, 55);
+            this.treeGridItem2.LogMsg = "";
+            this.treeGridItem2.Name = "treeGridItem2";
+            this.treeGridItem2.Size = new System.Drawing.Size(462, 46);
+            this.treeGridItem2.TabIndex = 10;
+            this.treeGridItem2.Visible = false;
+            // 
+            // treeGridItem3
+            // 
+            this.treeGridItem3.AutoIDVisible = true;
+            this.treeGridItem3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.treeGridItem3.ColumnRatios = new float[] {
+        0.2F,
+        0.2F,
+        0.24F,
+        0.24F,
+        0.12F};
+            this.treeGridItem3.ID = 100;
+            this.treeGridItem3.Items = new string[] {
+        "26",
+        "成品區",
+        "06/19 10:21",
+        "06/19 10:55",
+        "N"};
+            this.treeGridItem3.Location = new System.Drawing.Point(3, 107);
+            this.treeGridItem3.LogMsg = "";
+            this.treeGridItem3.Name = "treeGridItem3";
+            this.treeGridItem3.Size = new System.Drawing.Size(462, 46);
+            this.treeGridItem3.TabIndex = 11;
+            this.treeGridItem3.Visible = false;
             // 
             // panel1
             // 
@@ -76,75 +148,6 @@
             this.scaleLabel1.TabIndex = 0;
             this.scaleLabel1.Text = "ID";
             this.scaleLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // treeGridItem1
-            // 
-            this.treeGridItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.treeGridItem1.ColumnRatios = new float[] {
-        0.2F,
-        0.2F,
-        0.24F,
-        0.24F,
-        0.12F};
-            this.treeGridItem1.ID = 100;
-            this.treeGridItem1.Items = new string[] {
-        "20",
-        "加工區",
-        "06/19 10:20",
-        "06/19 10:35",
-        "🔕"};
-            this.treeGridItem1.Location = new System.Drawing.Point(3, 3);
-            this.treeGridItem1.LogMsg = "";
-            this.treeGridItem1.Name = "treeGridItem1";
-            this.treeGridItem1.Size = new System.Drawing.Size(462, 46);
-            this.treeGridItem1.TabIndex = 9;
-            this.treeGridItem1.Visible = false;
-            // 
-            // treeGridItem2
-            // 
-            this.treeGridItem2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.treeGridItem2.ColumnRatios = new float[] {
-        0.2F,
-        0.2F,
-        0.24F,
-        0.24F,
-        0.12F};
-            this.treeGridItem2.ID = 100;
-            this.treeGridItem2.Items = new string[] {
-        "23",
-        "組裝區",
-        "06/19 10:22",
-        "06/19 10:48",
-        "🔔"};
-            this.treeGridItem2.Location = new System.Drawing.Point(3, 55);
-            this.treeGridItem2.LogMsg = "";
-            this.treeGridItem2.Name = "treeGridItem2";
-            this.treeGridItem2.Size = new System.Drawing.Size(462, 46);
-            this.treeGridItem2.TabIndex = 10;
-            this.treeGridItem2.Visible = false;
-            // 
-            // treeGridItem3
-            // 
-            this.treeGridItem3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.treeGridItem3.ColumnRatios = new float[] {
-        0.2F,
-        0.2F,
-        0.24F,
-        0.24F,
-        0.12F};
-            this.treeGridItem3.ID = 100;
-            this.treeGridItem3.Items = new string[] {
-        "26",
-        "成品區",
-        "06/19 10:21",
-        "06/19 10:55",
-        "N"};
-            this.treeGridItem3.Location = new System.Drawing.Point(3, 107);
-            this.treeGridItem3.LogMsg = "";
-            this.treeGridItem3.Name = "treeGridItem3";
-            this.treeGridItem3.Size = new System.Drawing.Size(462, 46);
-            this.treeGridItem3.TabIndex = 11;
-            this.treeGridItem3.Visible = false;
             // 
             // TreeGridView
             // 

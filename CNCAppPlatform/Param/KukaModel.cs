@@ -330,6 +330,7 @@ namespace Chump_kuka
             public string CreateTime { get; set; }
             public string FinishTime { get; set; }
             public string LogMsg { get; set; }
+            public int RunningState { get; set; } = 0;      // {1: 執行中}
 
             public SimpleCarryTask() { }
             public SimpleCarryTask(CarryTask task)

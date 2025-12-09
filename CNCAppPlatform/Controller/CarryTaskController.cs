@@ -538,7 +538,16 @@ namespace Chump_kuka
         /// <returns></returns>
         public static KukaModel.SimpleCarryTask[] GetQueueArray()
         {
-            var simple_queue = _task_queue.Select(queue => new KukaModel.SimpleCarryTask(queue)).ToArray();
+            // var simple_queue = _task_queue.Select(queue => new KukaModel.SimpleCarryTask(queue)).ToArray();
+            var simple_queue = _task_queue.Select(queue => {
+                KukaModel.SimpleCarryTask simple_task = new KukaModel.SimpleCarryTask(queue);
+
+                if(_current_task != null)
+                    if (queue.MissionCode == _current_task.MissionCode) simple_task.RunningState = 1;       // 若執行中，標記為 1
+
+                return simple_task;
+                }).ToArray();
+
             return simple_queue;
         }
         
@@ -625,13 +634,13 @@ namespace Chump_kuka
         /// </summary>
         public static void FeedbackFail(string mission_code)
         {
+            if (mission_code == _current_task?.MissionCode) _current_task = null;
+
             KukaModel.CarryTask fail_task = FindCarryTask(mission_code);
             fail_task.TaskComplete(false);
             KukaModel.Node start_node = KukaParm.GetNodeModel(fail_task.StartNode.NodeCode);
             start_node.NodeStatus = 0;
             ChatController.SyncNodeStatus1(start_node.Parent);
-
-            if (mission_code == _current_task?.MissionCode) _current_task = null;
 
             _task_timer.Start();
         }

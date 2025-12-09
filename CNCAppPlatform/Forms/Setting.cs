@@ -297,6 +297,7 @@ namespace Chump_kuka.Forms
             if((sender as ComboBox).SelectedItem is KukaModel.Area select_model)
             {
                 KukaParm.BindAreaModel = select_model;      // 將指定模型淺複製為 BindAreaModel (數值更改會影響原列表)
+
             }
 
             LocalAreaController.BuildBindArea();

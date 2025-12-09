@@ -112,6 +112,15 @@ namespace Chump_kuka.Forms
             treeGridView1.Invoke(new Action(() =>
             {
                 treeGridView1.DataSource = e;
+
+                int running_index = e
+                    .Select((value, index) => new { value, index })
+                    .FirstOrDefault(x => x.value.RunningState == 1)?.index ?? -1;
+                if (running_index > -1)
+                {
+                    treeGridView1.RowControls[running_index].BackColor = Color.SpringGreen;
+                }
+            
             }));
         }
 

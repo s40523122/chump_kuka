@@ -159,6 +159,8 @@ namespace Chump_kuka.Controls
         [Description("Log 欄位名稱。"), Category("自訂值")]
         public string LogColName { get; set; }
 
+        public TreeGridRow[] RowControls { get => flowLayoutPanel1.Controls.Cast<TreeGridRow>().ToArray(); }
+
         public TreeGridView()
         {
             InitializeComponent();
