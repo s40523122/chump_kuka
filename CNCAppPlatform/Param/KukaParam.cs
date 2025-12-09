@@ -271,7 +271,6 @@ internal static class KukaParm
             _area_models.AddRange(input_areas);
             AreaChanged?.Invoke(_area_models, new PropertyChangedEventArgs("KukaAreaModels"));
             WriteParamHistory();
-
         }
     }
 
@@ -352,7 +351,7 @@ internal static class KukaParm
         set
         {
             if (value == null) return;
-            if (_bind_area != null && Chump_kuka.Env.BindAreaName == value.AreaName) return;        // 非首次綁定時，跳過資料相同的處理
+            //if (_bind_area != null && Chump_kuka.Env.BindAreaName == value.AreaName) return;        // 非首次綁定時，跳過資料相同的處理
 
             Chump_kuka.Env.BindAreaName = value.AreaName;
             _bind_area = value;
