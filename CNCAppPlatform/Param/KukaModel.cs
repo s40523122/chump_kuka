@@ -117,7 +117,7 @@ namespace Chump_kuka
             public override bool Equals(object obj)
             {
                 if (obj is Node other)
-                    return NodeCode == other.NodeCode && IsLock == other.IsLock && NodeStatus == other.NodeStatus;
+                    return NodeCode == other.NodeCode && IsLock == other.IsLock && NodeStatus == other.NodeStatus && RackStatus == other.RackStatus;
 
                 return false;
             }

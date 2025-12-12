@@ -42,6 +42,7 @@ namespace Chump_kuka.Controls
 
                     AreaName = _model.AreaName;
                     AreaCode = _model.AreaCode;
+                    _nodes = new KukaModel.Node[] { }; ;
                     AreaNode = _model.NodeList;
                     
                     _model.PropertyChanged += _model_PropertyChanged;       // 綁定新事件
