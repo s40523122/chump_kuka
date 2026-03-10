@@ -26,10 +26,12 @@ namespace Chump_kuka.Dispatchers
             if (_kuka_listener != null && _kuka_listener.IsRunning) return true;
 
             _kuka_listener = new HttpListenerManager(url);
-            _kuka_listener.Start();
-
-            await _kuka_listener.WaitForServerToStartAsync();
-            _kuka_listener.MessageReceived += _kuka_listener_MessageReceived;
+            bool success = _kuka_listener.Start();
+            if (success)
+            {
+                await _kuka_listener.WaitForServerToStartAsync();
+                _kuka_listener.MessageReceived += _kuka_listener_MessageReceived;
+            }
 
             return _kuka_listener.IsRunning;
         }

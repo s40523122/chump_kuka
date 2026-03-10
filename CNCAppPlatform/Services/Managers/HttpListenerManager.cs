@@ -32,15 +32,24 @@ namespace iCAPS.Managers
         {
             _listen_url = listen_url;
         }
-        public void Start()
+        public bool Start()
         {
-            if (IsRunning) return;
+            if (IsRunning) return true;
 
             
             _listener = new HttpListener();
             _listener.Prefixes.Add(_listen_url); // 設定伺服器監聽的地址
 
-            _listener.Start();
+            try
+            {
+                _listener.Start();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"HttpListener 指定伺服器監聽的地址錯誤");
+                return false;
+            }
+            
             IsRunning = _listener.IsListening;
 
                 
@@ -71,6 +80,7 @@ namespace iCAPS.Managers
             
             // 當伺服器啟動並開始監聽時，設定 TaskCompletionSource 為成功
             startCompletionSource.SetResult(true);
+            return true;
         }
 
         /// <summary>
