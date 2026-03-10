@@ -1,5 +1,6 @@
 ﻿using CefSharp.DevTools.CSS;
 using iCAPS;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
@@ -320,16 +321,15 @@ namespace Chump_kuka.Dispatchers
         /// </summary>
         private void HandleRobotStatusResponse(JObject resp_json)
         {
-            JArray robot_infos = (JArray)resp_json["data"];
+            string robot_infos = resp_json["data"].ToString();
 
-            //JObject updete_time = new JObject();
-            for (int index = 0; index < robot_infos.Count; index++)
-            {
-                robot_infos[index]["updateTime"] = DateTime.Now.ToString(@"G");
-            }
-            //robot_infos.Add(updete_time);
+            //for (int index = 0; index < robot_infos.Count; index++)
+            //{
+            //    robot_infos[index]["updateTime"] = DateTime.Now.ToString(@"G");
+            //}
 
-            KukaParm.RobotStatusInfos = robot_infos;
+
+            KukaParm.RobotStatusInfos = JsonConvert.DeserializeObject<RobotInfo[]>(robot_infos);
             AppendRobotStatusTask();        // 機器人狀態查詢為固定行程
         }
 

@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 using CefSharp.DevTools.CSS;
 using System.Runtime.CompilerServices;
+using static Chump_kuka.KukaModel;
 
 /// <summary>
 /// KukaParm 類別 (全域設定管理)
@@ -40,7 +41,7 @@ internal static class KukaParm
     private static KukaModel.CarryModel _start_node;
     private static KukaModel.CarryModel _goal_node;
     private static string _robot_status_feedback_time = "--";
-    private static JArray _robot_status_infos = new JArray();
+    private static RobotInfo[] _robot_status_infos = null;
     private static List<KukaModel.Area> _raw_area_models = new List<KukaModel.Area>();     // 原始 API 回應區域資料
     private static List<KukaModel.Area> _area_models = new List<KukaModel.Area>();
     private static KukaModel.Area _bind_area = null;
@@ -106,16 +107,19 @@ internal static class KukaParm
     //    }
     //}
 
-    public static JArray RobotStatusInfos
+    public static RobotInfo[] RobotStatusInfos
     {
         get => _robot_status_infos;
         set
         {
-            if (!JToken.DeepEquals(_robot_status_infos, value)) 
-            {
-                _robot_status_infos = value;
-                OnRobotChanged(nameof(RobotStatusInfos));
-            }
+            //if (!JToken.DeepEquals(_robot_status_infos, value)) 
+            //{
+            //    _robot_status_infos = value;
+            //    OnRobotChanged(nameof(RobotStatusInfos));
+            //}
+
+            _robot_status_infos = value;
+            OnRobotChanged(nameof(RobotStatusInfos));
         }
     }
 

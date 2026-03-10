@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
+using static Chump_kuka.KukaModel;
 
 
 namespace Chump_kuka.Controls
@@ -80,7 +81,7 @@ namespace Chump_kuka.Controls
         /// </summary>
         private void InfoUPdate()
         {
-            if (KukaParm.RobotStatusInfos.Count == 0)
+            if (KukaParm.RobotStatusInfos == null || KukaParm.RobotStatusInfos.Length == 0)
             {
                 tabControl1.Controls.Clear();
                 tabControl1.Controls.Add(tabPage2);
@@ -88,11 +89,14 @@ namespace Chump_kuka.Controls
             }
 
             // 將搜尋到的機器人名稱整理成 list
+            //List<string> robotIds = KukaParm.RobotStatusInfos
+            //                      .Select(item => item["robotId"]?.ToString())
+            //                      .Where(id => !string.IsNullOrEmpty(id))
+            //                      .ToList();
             List<string> robotIds = KukaParm.RobotStatusInfos
-                                  .Select(item => item["robotId"]?.ToString())
+                                  .Select(item => item.RobotId?.ToString())
                                   .Where(id => !string.IsNullOrEmpty(id))
                                   .ToList();
-            
 
             // 刪除不存在於 List 中的 TabPage
             tabControl1.TabPages
@@ -115,19 +119,41 @@ namespace Chump_kuka.Controls
                 // 因為 api 返回順序不固定，因此需要有一個尋找順序的機制
                 for (int current_index = 0; current_index < robotIds.Count; current_index++)
                 {
+                    //if (robotIds[current_index] == tabControl1.SelectedTab.Text)
+                    //{
+                    //    robot_id.Text = (string)KukaParm.RobotStatusInfos[current_index]["robotId"];
+                    //    robot_type.Text = (string)KukaParm.RobotStatusInfos[current_index]["robotType"];
+                    //    container_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["containerCode"];
+                    //    map_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["mapCode"];
+                    //    Dictionary<string, string> status_dict = new Dictionary<string, string>() { { "1", "離場" }, { "2", "離線" }, { "3", "空閒" }, { "4", "任務中" }, { "5", "充電中" }, { "6", "更新中" }, { "7", "異常" } };
+                    //    status.Text = status_dict[(string)KukaParm.RobotStatusInfos[current_index]["status"]];
+                    //    Dictionary<string, string> occupy_dict = new Dictionary<string, string>() { { "0", "未占用" }, { "1", "占用中" } };
+                    //    occupy_status.Text = occupy_dict[(string)KukaParm.RobotStatusInfos[current_index]["occupyStatus"]];
+                    //    battery_level.Text = (string)KukaParm.RobotStatusInfos[current_index]["batteryLevel"];
+                    //    node_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["nodeCode"];
+                    //    update_time.Text = (string)KukaParm.RobotStatusInfos[current_index]["updateTime"];
+                    //    return;
+                    //}
                     if (robotIds[current_index] == tabControl1.SelectedTab.Text)
                     {
-                        robot_id.Text = (string)KukaParm.RobotStatusInfos[current_index]["robotId"];
-                        robot_type.Text = (string)KukaParm.RobotStatusInfos[current_index]["robotType"];
-                        container_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["containerCode"];
-                        mission_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["missionCode"];
-                        Dictionary<string, string> status_dict = new Dictionary<string, string>() { { "1", "離場" }, { "2", "離線" }, { "3", "空閒" }, { "4", "任務中" }, { "5", "充電中" }, { "6", "更新中" }, { "7", "異常" } };
-                        status.Text = status_dict[(string)KukaParm.RobotStatusInfos[current_index]["status"]];
-                        Dictionary<string, string> occupy_dict = new Dictionary<string, string>() { { "0", "未占用" }, { "1", "占用中" } };
-                        occupy_status.Text = occupy_dict[(string)KukaParm.RobotStatusInfos[current_index]["occupyStatus"]];
-                        battery_level.Text = (string)KukaParm.RobotStatusInfos[current_index]["batteryLevel"];
-                        node_code.Text = (string)KukaParm.RobotStatusInfos[current_index]["nodeCode"];
-                        update_time.Text = (string)KukaParm.RobotStatusInfos[current_index]["updateTime"];
+                        robot_id.Text = (string)KukaParm.RobotStatusInfos[current_index].RobotId;
+                        robot_type.Text = (string)KukaParm.RobotStatusInfos[current_index].RobotType;
+                        container_code.Text = (string)KukaParm.RobotStatusInfos[current_index].ContainerCode;
+                        mission_code.Text = (string)KukaParm.RobotStatusInfos[current_index].MissionCode;
+                        Dictionary<RobotStatus, string> status_dict = new Dictionary<RobotStatus, string>() {
+                            { RobotStatus.Leaving, "離場" },
+                            { RobotStatus.Offline, "離線" },
+                            { RobotStatus.Idle, "空閒" },
+                            { RobotStatus.Working, "任務中" },
+                            { RobotStatus.Charging, "充電中" },
+                            { RobotStatus.Updating, "更新中" },
+                            { RobotStatus.Error, "異常" } };
+                        status.Text = status_dict[KukaParm.RobotStatusInfos[current_index].Status];
+                        Dictionary<int, string> occupy_dict = new Dictionary<int, string>() { { 0, "未占用" }, { 1, "占用中" } };
+                        occupy_status.Text = occupy_dict[KukaParm.RobotStatusInfos[current_index].OccupyStatus];
+                        battery_level.Text = KukaParm.RobotStatusInfos[current_index].BatteryLevel.ToString();
+                        node_code.Text = KukaParm.RobotStatusInfos[current_index].NodeCode;
+                        update_time.Text = KukaParm.RobotStatusInfos[current_index].ReceiveTime;
                         return;
                     }
                 }

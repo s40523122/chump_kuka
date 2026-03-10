@@ -132,7 +132,7 @@ namespace Chump_kuka.Controller
 
         private static void RobotCb(string message)
         {
-            KukaParm.RobotStatusInfos = JsonConvert.DeserializeObject<JArray>(message);
+            KukaParm.RobotStatusInfos = JsonConvert.DeserializeObject<KukaModel.RobotInfo[]>(message);
         }
 
         private static void AreaCb(string message)

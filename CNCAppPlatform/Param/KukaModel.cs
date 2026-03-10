@@ -466,5 +466,92 @@ namespace Chump_kuka
                 _is_loading = true;
             }
         }
+
+        public class RobotInfo
+        {
+            /// <summary>
+            /// 機器人編號
+            /// </summary>
+            public string RobotId { get; set; }
+
+            /// <summary>
+            /// 機器人型號
+            /// </summary>
+            public string RobotType { get; set; }
+
+            /// <summary>
+            /// 機器人持有容器編號
+            /// </summary>
+            public string ContainerCode { get; set; }
+
+            /// <summary>
+            /// 地圖編號
+            /// </summary>
+            public string MapCode { get; set; }
+
+            /// <summary>
+            /// 片區編號
+            /// </summary>
+            public string FloorNumber { get; set; }
+
+            /// <summary>
+            /// 工廠或倉庫編號
+            /// </summary>
+            public string BuildingCode { get; set; }
+
+            /// <summary>
+            /// 機器人狀態
+            /// </summary>
+            public RobotStatus Status { get; set; }
+
+            /// <summary>
+            /// 是否占用
+            /// </summary>
+            public int OccupyStatus { get; set; }
+
+            /// <summary>
+            /// 電量
+            /// </summary>
+            public float BatteryLevel { get; set; }
+
+            /// <summary>
+            /// 當前點位
+            /// </summary>
+            public string NodeCode { get; set; }
+
+            /// <summary>
+            /// 當前任務編號
+            /// </summary>
+            public string MissionCode { get; set; }
+
+            /// <summary>
+            /// 更新時間
+            /// </summary>
+            public string ReceiveTime { get; set; } = DateTime.Now.ToString(@"G");
+        }
+
+        public enum RobotStatus
+        {
+            ///<summary> 離場 </summary>
+            Leaving = 1,
+
+            /// <summary> 離線 </summary>
+            Offline = 2,
+
+            /// <summary> 閒置 </summary>
+            Idle = 3,
+
+            /// <summary> 任務中 </summary>
+            Working = 4,
+
+            /// <summary> 充電中 </summary>
+            Charging = 5,
+
+            /// <summary> 更新中 </summary>
+            Updating = 6,
+
+            /// <summary> 異常 </summary>
+            Error = 7
+        }
     }
 }
