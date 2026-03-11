@@ -31,7 +31,7 @@ namespace Chump_kuka.Controls
             logView.SetDataSource(Log.LogData);
             
             // 檢索所有 Log 訊息，是否存在未登錄標籤
-            foreach (Log.LogMsg log in Log.LogData)
+            foreach (Models.LogMsg log in Log.LogData)
             {
                 CreateLabel(log.Status);
             }

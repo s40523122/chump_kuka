@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using static Chump_kuka.Log;
+using Chump_kuka.Models;
 
 namespace Chump_kuka
 {
@@ -55,5 +57,7 @@ namespace Chump_kuka
     }
 
     internal delegate void CarryTasksEventHandler(object sender, KukaModel.SimpleCarryTask[] e);
+
+    public delegate void AppendLogEventHandler(object sender, LogMsg e);
 
 }

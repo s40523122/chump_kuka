@@ -295,6 +295,7 @@
     <Compile Include="Dispatchers\FeedbackDispatcher.cs" />
     <Compile Include="Dispatchers\MqttDispatcher.cs" />
     <Compile Include="Dispatchers\UdpDispatcher.cs" />
+    <Compile Include="Models\LogMsg.cs" />
     <Compile Include="Param\Environment.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

@@ -22,6 +22,7 @@
  */
 
 using CefSharp;
+using Chump_kuka.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -44,6 +45,7 @@ namespace Chump_kuka
         public static BindingList<LogMsg> FilterData = new BindingList<LogMsg>();      // Log 列表
         public static SynchronizationContext UiContext { get; set; }        // 加入控制項的 SynchronizationContext.Current，防止跨執行續問題
 
+        public static event AppendLogEventHandler LogAppended;      // 
         static Log()
         {
             string file_name = "log" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".csv";
@@ -56,8 +58,9 @@ namespace Chump_kuka
         public static void SystemInfo(
             string info_msg,
             [CallerFilePath] string filePath = "", 
-            [CallerLineNumber] int lineNumber = 0) 
-            => Append(info_msg, "SYSTEM", $"{System.IO.Path.GetFileName(filePath)}:{lineNumber}");
+            [CallerLineNumber] int lineNumber = 0,
+            string log_method = "") 
+            => Append(info_msg, "SYSTEM", $"{System.IO.Path.GetFileName(filePath)}:{lineNumber}", log_method);
 
         /// <summary>
         /// 加入一筆除錯訊息
@@ -65,13 +68,14 @@ namespace Chump_kuka
         public static void DebugInfo(
             string info_msg,
             [CallerFilePath] string filePath = "",
-            [CallerLineNumber] int lineNumber = 0)
-            => Append(info_msg, "Debug", $"{System.IO.Path.GetFileName(filePath)}:{lineNumber}");
+            [CallerLineNumber] int lineNumber = 0, 
+            string log_method = "")
+            => Append(info_msg, "Debug", $"{System.IO.Path.GetFileName(filePath)}:{lineNumber}", log_method);
 
         public static void LogTemplate(string message, string status, [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0) => Append(message, "TTEST", $"{System.IO.Path.GetFileName(filePath)}:{lineNumber}");
 
 
-        public static void Append(string message, string status, string section)
+        public static void Append(string message, string status, string section, string log_method = "")
         {
             LogMsg new_msg = new LogMsg(_add_index++, message, status, section);
 
@@ -102,6 +106,8 @@ namespace Chump_kuka
             }
 
             AppendCsv(new_msg);     // 寫入本地端資料
+
+            if (log_method != "") LogAppended?.Invoke(null, new_msg);
         }
 
         /// <summary>
@@ -124,24 +130,6 @@ namespace Chump_kuka
             {
                 log_msg.Message.Replace('\n', ' ');
                 writer.WriteLine($"{log_msg.ID},{log_msg.Message},{log_msg.Status},{log_msg.Section},{log_msg.CreateDate}");
-            }
-        }
-
-        public class LogMsg
-        {
-            public int ID { get; set; } = 0;
-            public string Message { get; set; }
-            public string Status { get; set; }
-            public string Section { get; set; }
-            public string CreateDate { get; set; }
-
-            public LogMsg(int id, string message, string status, string section)
-            {
-                ID = id;
-                Message = message;
-                Status = status;
-                Section = section;
-                CreateDate = DateTime.Now.ToString(@"MM/dd HH:mm:ss");
             }
         }
     }
