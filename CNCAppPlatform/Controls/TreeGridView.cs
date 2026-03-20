@@ -187,7 +187,7 @@ namespace Chump_kuka.Controls
             if (check == DialogResult.Yes)
             {
                 Log.Append($"已申請刪除搬運任務[{item.Items[0].ToString()}]", "NOTICE", "TreeView");
-                ChatController.DelTask(item.Items[0].ToString());
+                ModulePlugIn.ChatModule.DelTask(item.Items[0].ToString());
                 
                 //item.Dispose();
             }
@@ -201,7 +201,7 @@ namespace Chump_kuka.Controls
             {
                 item.Dispose();
 
-                ChatController.CancelTask(item.Items[0].ToString());
+                ModulePlugIn.ChatModule.CancelTask(item.Items[0].ToString());
             }
         }
     }

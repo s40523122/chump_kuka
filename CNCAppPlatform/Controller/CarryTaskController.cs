@@ -7,28 +7,31 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using static Chump_kuka.KukaModel;
 using System.Collections.Generic;
 using System.Web.Caching;
 using System.Windows;
 using System.Reflection;
+using Chump_kuka.Services;
+using static Chump_kuka.KukaModel;
 
 namespace Chump_kuka
 {
-    internal class CarryTaskController
+    public class CarryTaskController : IKukaService
     {
-        private static bool _agv_running = false;
-        private static int _task_id = 1;
-        private static KukaModel.CarryTask _current_task = null;
+        private bool _agv_running = false;
+        private int _task_id = 1;
+        private KukaModel.CarryTask _current_task = null;
 
-        private static BindingList<KukaModel.CarryTask> _task_queue = new BindingList<KukaModel.CarryTask>();      // 搬運任務佇列
+        private BindingList<KukaModel.CarryTask> _task_queue = new BindingList<KukaModel.CarryTask>();      // 搬運任務佇列
 
-        private static System.Timers.Timer _task_timer;
-        // private static System.Timers.Timer _task_asker;     // 當系統無主動回報任務狀態時，強制監控狀態
-        private static bool _current_task_running = false;
+        private System.Timers.Timer _task_timer;
+        // private System.Timers.Timer _task_asker;     // 當系統無主動回報任務狀態時，強制監控狀態
+        private bool _current_task_running = false;
 
-        private static List<string> _node_fill_missions = new List<string>();       // 目標交換站滿的任務清單
-        private static List<string> _area_fill_missions = new List<string>();       // 目標區域滿的任務清單
+        private List<string> _node_fill_missions = new List<string>();       // 目標交換站滿的任務清單
+        private List<string> _area_fill_missions = new List<string>();       // 目標區域滿的任務清單
+
+        private IKukaApiService _api_service;
 
         private enum TaskStatus
         {
@@ -37,25 +40,36 @@ namespace Chump_kuka
             PlanB = 2,
         }
 
-        public static event Action<bool> OnTimerAlive;     // 計時器啟用事件
+        public event Action<bool> OnTimerAlive;     // 計時器啟用事件
 
-        public static KukaModel.CarryTask CurrentTask { get => _current_task; }
+        public KukaModel.CarryTask CurrentTask { get => _current_task; }
 
-        static CarryTaskController()
+        internal CarryTaskController(IKukaApiService api_service)
         {
-            FeedbackDispatcher.Called += FeedbackDispatcher_Called;
+            _api_service = api_service;
+            
+            EventBus.ApiFailed += EventBus_ApiFailed;
 
             if (!Env.ICapsServer) return;
             InitRecordTasks();
             _task_queue.ListChanged += task_queue_ListChanged;
         }
 
-        public static KukaModel.CarryTask FindCarryTask(string mission_code) => _task_queue.FirstOrDefault(task => task.MissionCode == mission_code);
+        private void EventBus_ApiFailed(Models.Msgs.MissionStatusMsg args)
+        {
+            if (args.StatusMsg == "submitMission Failed")
+            {
+                FeedbackFail(args.MissionCode);     // 回報任務失敗
+                AppendTaskLog(args.MissionCode, args.Describe);
+            }
+        }
+
+        public KukaModel.CarryTask FindCarryTask(string mission_code) => _task_queue.FirstOrDefault(task => task.MissionCode == mission_code);
 
         /*/// <summary>
         /// 取得當天 InI 檔案內紀錄的任務，並實例
         /// </summary>
-        private static void InitRecordTasks()
+        private void InitRecordTasks()
         {
             string file_path = KukaParm.GetTodayTaskPath();
             int.TryParse(INiReader.ReadINIFile(file_path, "tasks", "task_last_id"), out int record_count);        // 任務數量
@@ -113,7 +127,7 @@ namespace Chump_kuka
         /// <summary>
         /// 讀取 ini檔案，並取得 section 內容
         /// </summary>
-        public static Dictionary<string, string> ReadBySection(string filePath, string sectionName)
+        public Dictionary<string, string> ReadBySection(string filePath, string sectionName)
         {
             // 1. 建立解析器
             var parser = new FileIniDataParser();
@@ -151,7 +165,7 @@ namespace Chump_kuka
             }
 }
 
-        private static void InitRecordTasks()
+        private void InitRecordTasks()
         {
             // 取得今日日期以讀取任務清單
             string file_path = KukaParm.GetTodayTaskPath();
@@ -209,7 +223,7 @@ namespace Chump_kuka
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void task_queue_ListChanged(object sender, ListChangedEventArgs e)
+        private void task_queue_ListChanged(object sender, ListChangedEventArgs e)
         {
             // 當任務狀態更改時，自動儲存，防止系統崩潰後，資料消失
             // 任務清單檔案依日期建立&儲存
@@ -235,7 +249,7 @@ namespace Chump_kuka
             ChatController.SyncCarryTask(GetQueueArray());      // 同步&更新所有 UI
         }
 
-        private static void initTimer()
+        private void initTimer()
         {
             Log.Append("候車計時器初始化", "SYSTEM", nameof(CarryTaskController));
             // 設定計時器
@@ -255,7 +269,7 @@ namespace Chump_kuka
             //_task_asker.AutoReset = true; // 是否重複執行（true 表示會一直觸發）
         }
 
-        private static async void ProcessNextApiAsync(object sender, EventArgs e)
+        private async void ProcessNextApiAsync(object sender, EventArgs e)
         {
             // 停止計時器，確保在請求處理中不會再觸發計時器
             _task_timer.Stop();
@@ -277,7 +291,7 @@ namespace Chump_kuka
             //    _task_asker.Start();        // 開啟監控狀態
             //}
         }
-        /*private static async void TaskAsker(object sender, EventArgs e)
+        /*private async void TaskAsker(object sender, EventArgs e)
         {
             // AppendTaskLog(_current_task.MissionCode, "未接收回報，主動監控狀態");
 
@@ -310,32 +324,13 @@ namespace Chump_kuka
             } 
         }*/
 
-        private static void FeedbackDispatcher_Called(object sender, TextEventArgs e)
-        {
-            // TODO 等待上一筆任務結束
-
-
-            // 接收到叫車命令，尋找可派發任務
-            string start_area_code = e.Message;
-
-            string can_carry_mission_code = GetCallTask(start_area_code);
-            if (can_carry_mission_code != null)
-            {
-                // KukaApiController.PubCarryTask();
-                ChatController.PubLog($"接收叫車任務，等待執行。");
-                HttpListenerDispatcher.ManualHeardEvent(can_carry_mission_code, start_area_code, 1);        // 觸發接收報工系統 call 事件
-            }
-            else
-            {
-                ChatController.PubLog($"接收叫車任務，無可執行搬運任務。(起始節點: {start_area_code})");
-            }
-        }
+        
 
         /// <summary>
         /// 將搬運任務加入等待列表
         /// </summary>
         /// <param name="wait">若為 true，需等待報工系統通知；反之，直接派發任務。</param>
-        public static void AddToQueue(KukaModel.CarryModel start_node, KukaModel.CarryModel goal_node, out string mission_code, bool wait=true, 
+        public void AddToQueue(KukaModel.CarryModel start_node, KukaModel.CarryModel goal_node, out string mission_code, bool wait=true, 
                     bool is_plan = false)
         {
             mission_code = "";
@@ -391,7 +386,7 @@ namespace Chump_kuka
         /// 尋找可執行的搬運任務
         /// </summary>
         /// <returns></returns>
-        private static bool FindAndAssignTask()
+        private bool FindAndAssignTask()
         {
             try
             {
@@ -399,7 +394,7 @@ namespace Chump_kuka
                 CarryTask plan_task = _task_queue.FirstOrDefault(task => task.IsCalled && task.FinishTime == null && task.IsPlan);
                 if (plan_task != null)
                 {
-                    KukaApiController.PubCarryTask(plan_task);
+                    _api_service.PubCarryTask(plan_task);
                     // 0818測試
                     // if(Debugger.IsAttached) _current_task = plan_task;
                     ChatController.PubLog($"已派發策略任務，ID: {plan_task.ID}");
@@ -480,7 +475,7 @@ namespace Chump_kuka
                         }
 
                         // 派發 API
-                        KukaApiController.PubCarryTask(task);
+                        _api_service.PubCarryTask(task);
                         _current_task = task;
                         ChatController.PubLog($"已派發任務，ID: {_current_task.ID}");
 
@@ -498,7 +493,7 @@ namespace Chump_kuka
 
         }
 
-        private static async Task<bool> TaskPlan(int task_id, KukaModel.Node lock_node, Area start_area)
+        private async Task<bool> TaskPlan(int task_id, KukaModel.Node lock_node, Area start_area)
         {
             Log.DebugInfo("開始執行策略判斷");
             // 執行搬運策略
@@ -536,7 +531,7 @@ namespace Chump_kuka
         /// 將任務模型列表轉換成簡化模型，方便資料傳輸
         /// </summary>
         /// <returns></returns>
-        public static KukaModel.SimpleCarryTask[] GetQueueArray()
+        public KukaModel.SimpleCarryTask[] GetQueueArray()
         {
             // var simple_queue = _task_queue.Select(queue => new KukaModel.SimpleCarryTask(queue)).ToArray();
             var simple_queue = _task_queue.Select(queue => {
@@ -556,7 +551,7 @@ namespace Chump_kuka
         /// </summary>
         /// <param name="start_area_code"></param>
         /// <returns></returns>
-        private static string GetCallTask(string start_area_code)
+        public string GetCallTask(string start_area_code)
         {
             // 找到符合開始區域且尚未執行的第一筆資料
             KukaModel.CarryTask call_task = _task_queue.FirstOrDefault(task => task.StartNode.AreaCode == start_area_code &&
@@ -571,7 +566,7 @@ namespace Chump_kuka
             return null;
         }
 
-        //private static bool PubCarryList()
+        //private bool PubCarryList()
         //{
         //    if (_current_task != null)
         //    {
@@ -594,7 +589,7 @@ namespace Chump_kuka
         /// <summary>
         /// 回報任務完成，並重置 _current_task
         /// </summary>
-        public static void FeedbackFinish(string mission_code)
+        public void FeedbackFinish(string mission_code)
         {
             //if (_current_task != null) 
             //    _current_task.FinishTime = DateTime.Now;
@@ -632,7 +627,7 @@ namespace Chump_kuka
         /// <summary>
         /// 回報任務失敗，並重置 _current_task
         /// </summary>
-        public static void FeedbackFail(string mission_code)
+        public void FeedbackFail(string mission_code)
         {
             if (mission_code == _current_task?.MissionCode) _current_task = null;
 
@@ -648,7 +643,7 @@ namespace Chump_kuka
         /// <summary>
         /// 強制取消指定任務
         /// </summary>
-        public static void CancelTask(string task_id)
+        public void CancelTask(string task_id)
         {
             int.TryParse(task_id, out int cancel_id);
             if (cancel_id == 0)
@@ -660,7 +655,7 @@ namespace Chump_kuka
             KukaModel.CarryTask target = _task_queue.FirstOrDefault(m => m.ID == cancel_id);       // 找到 ID 對應任務
             if (target != null)
             {
-                KukaApiController.PubCarryCancel(target.MissionCode);
+                _api_service.PubCarryCancel(target.MissionCode);
                 target.AppendLog("已強制取消搬運任務");
                 FeedbackFail(target.MissionCode);
 
@@ -676,7 +671,7 @@ namespace Chump_kuka
         /// 增加任務狀態紀錄
         /// </summary>
         /// <param name="log_message"></param>
-        public static void AppendTaskLog(string mission_code, string log_message)
+        public void AppendTaskLog(string mission_code, string log_message)
         {
             //if (_current_task != null)
             //    _current_task.LogMsg += $"[{DateTime.Now.ToString(@"MM/dd tt hh:mm:ss")}] {log_message}\n";
@@ -688,7 +683,7 @@ namespace Chump_kuka
         /// 刪除指定任務
         /// </summary>
         /// <param name="log_message"></param>
-        public static void RemoveTask(int task_id)
+        public void RemoveTask(int task_id)
         {
             // 任務 id 不得為 0
             if (task_id == 0)
@@ -725,6 +720,146 @@ namespace Chump_kuka
             }
         }
 
-        
+        public void ParseMission(string mission_code, string status_msg, string describe, out string start_area_code, out KukaMissionStep step)
+        {
+            KukaModel.CarryTask receive_task = FindCarryTask(mission_code);
+            start_area_code = "";
+            step = 0;
+
+
+            if (receive_task != null)
+            {
+                // 若任務取消
+                if (status_msg == "ERROR")
+                {
+                    AppendTaskLog(mission_code, $"任務異常 [{describe}]");
+                }
+                else if (status_msg == "CANCELED")
+                {
+                    FeedbackFail(mission_code);     // 回報任務失敗
+                    receive_task.MissionStep = KukaMissionStep.Canceled;     // 重置步數
+                    return;
+                }
+                else
+                {
+                    CalcMissionStep(receive_task, status_msg);      // 計算當前步數
+                }
+
+                start_area_code = receive_task.StartNode.AreaCode;
+                step = receive_task.MissionStep;
+            }
+        }
+
+        private void CalcMissionStep(KukaModel.CarryTask mission, string task_status)
+        {
+            KukaMissionStep _area_step = mission.MissionStep;
+            string status = "INFO";
+            string message = "";
+            switch (_area_step)
+            {
+                case 0:
+                    if (task_status == "MOVE_BEGIN")
+                    {
+                        _area_step += 1;
+                        message = "接收任務";
+                    }
+                    else
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[MOVE_BEGIN]，實際狀態[{task_status}]。";
+                    }
+                    break;
+                case KukaMissionStep.Received:
+                    if (task_status == "ARRIVE")
+                    {
+                        _area_step += 1;
+                        message = "到達起點";
+                    }
+                    else
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[ARRIVE]，實際狀態[{task_status}]。";
+                    }
+                    break;
+                case KukaMissionStep.Start:
+                    if (task_status == "UP_CONTAINER")
+                    {
+                        _area_step += 1;
+                        message = "頂升貨架";
+                    }
+                    else
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[UP_CONTAINER]，實際狀態[{task_status}]。";
+                    }
+                    break;
+                case KukaMissionStep.UP:
+                    if (task_status == "MOVE_BEGIN")
+                    {
+                        _area_step += 1;
+                        message = "離開起點";
+                    }
+                    else
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[MOVE_BEGIN]，實際狀態[{task_status}]。";
+                    }
+                    break;
+                case KukaMissionStep.Leaved:
+                    if (task_status == "ARRIVE")
+                    {
+                        _area_step += 1;
+                        message = "到達終點";
+                    }
+                    else
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[ARRIVE]，實際狀態[{task_status}]。";
+                    }
+                    break;
+                case KukaMissionStep.Goal:
+                    if (task_status == "DOWN_CONTAINER")
+                    {
+                        _area_step += 1;
+                        message = "放下貨架";
+                    }
+                    else
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[DOWN_CONTAINER]，實際狀態[{task_status}]。";
+                    }
+                    break;
+                case KukaMissionStep.Down:
+                    if (task_status == "COMPLETED")
+                    {
+                        _area_step += 1;
+                        message = "完成任務";
+                    }
+                    else
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[COMPLETED]，實際狀態[{task_status}]。";
+                    }
+                    break;
+                case KukaMissionStep.Complete:
+                    // 等同於 case 0
+                    if (task_status == "MOVE_BEGIN")
+                    {
+                        _area_step = 0;
+                        message = "接收任務";
+                    }
+                    else
+                    {
+                        status = "ERROR";
+                        message = $"欲接收狀態[MOVE_BEGIN]，實際狀態[{task_status}]。";
+                    }
+                    break;
+            }
+
+            Log.Append(message, status, "HttpListenerDispatcher");
+            AppendTaskLog(mission.MissionCode, message);
+        }
+
+
     }
 }

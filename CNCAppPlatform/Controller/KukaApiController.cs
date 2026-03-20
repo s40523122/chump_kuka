@@ -1,5 +1,6 @@
 ﻿using Chump_kuka.Controller;
 using Chump_kuka.Dispatchers;
+using Chump_kuka.Services;
 using iCAPS;
 using Newtonsoft.Json.Linq;
 using System;
@@ -15,19 +16,12 @@ using System.Windows.Forms;
 
 namespace Chump_kuka
 {
-    internal class KukaApiController
+    internal class KukaApiController : IKukaApiService
     {
-        private static bool _conn = false;
-        private static KukaApiDispatcher _api_task;
+        private bool _conn = false;
+        private KukaApiDispatcher _api_task;
 
-        // 移動至CarryTask public static event PropertyChangedEventHandler CarryTaskPub;
-
-        public static async Task<bool> StartListen(string url)
-        {
-            return await HttpListenerDispatcher.StartKukaListener(url);
-        }
-
-        public static async Task<bool> ConnectAndCheck(string url)
+        public async Task<bool> ConnectAndCheck(string url)
         {
             if (!_conn)
             {
@@ -40,7 +34,7 @@ namespace Chump_kuka
         /// <summary>
         /// 將機器人狀態查詢請求加入 API 等待列表
         /// </summary>
-        public static void GetRobotStatus()
+        public void GetRobotStatus()
         {
             if (!_conn) return;
             _api_task.AppendRobotStatusTask();
@@ -49,7 +43,7 @@ namespace Chump_kuka
         /// <summary>
         /// 將區域狀態查詢請求加入 API 等待列表
         /// </summary>
-        public static void GetAreaInfo()
+        public void GetAreaInfo()
         {
             _api_task?.AppendAreaTask();
             _api_task?.AppendNodesTask();
@@ -58,7 +52,7 @@ namespace Chump_kuka
         /// <summary>
         /// 將派車任務請求加入 API 等待列表
         /// </summary>
-        public static void PubCarryTask(KukaModel.CarryTask carry_task)
+        public void PubCarryTask(KukaModel.CarryTask carry_task)
         {
             //if (!Debugger.IsAttached) _api_task.AppendCarryTask(carry_nodes);        // 建立搬運任務
             _api_task.AppendCarryTask(carry_task);        // 建立搬運任務
@@ -69,7 +63,7 @@ namespace Chump_kuka
         /// <summary>
         /// 將強制取消派車任務請求加入 API 等待列表
         /// </summary>
-        public static void PubCarryCancel(string mission_code)
+        public void PubCarryCancel(string mission_code)
         {
             _api_task.ApplyCarryCancel(mission_code);        // 強制取消任務
         }

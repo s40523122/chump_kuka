@@ -61,14 +61,11 @@ namespace Chump_kuka.Controller
 
         public static KukaAreaControl BindControl { get; set; }
 
-        public static event EventHandler<HttpListenerDispatcher.HeardEventArgs> StepChanged;        // 流程變更事件
         public static event EventHandler<ButtonPushEventArgs> ButtonPush;
 
         static LocalAreaController()
         {
             _sensor_dispatcher = new ModbusTCPDispatcher();
-
-            ChatController.StepChanged += (s, e) => StepChanged?.Invoke(s, e);
         }
 
         public async static Task<bool> ConnectIO_Module(IPEndPoint modbus_tco_ip)
@@ -128,8 +125,6 @@ namespace Chump_kuka.Controller
         /// <summary>
         /// 接收感測器資訊事件時，更新綁定模型資料
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private static void ModbusTCPDispatcher_SensorRead(object sender, SensorDataEventArgs e)
         {
             int[] sensor_node_status = ToNodeStatus(e.Data).ToArray();    // 當前節點狀態
@@ -342,103 +337,7 @@ namespace Chump_kuka.Controller
             _sensor_dispatcher.LightControl(false);
         }
 
-        public static int GetStationNo(string area_code="")
-        {
-            if (area_code == "")
-                area_code = KukaParm.BindAreaModel.AreaCode;
-
-            // int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaCode == KukaParm.GetAreaModel(area_code).AreaCode);
-            int index = KukaParm.GetAreaModel(area_code).Index;
-            return index == -1 ? 0 : index + 1;
-        }
-
-        public static void PubReady()
-        {
-            int _bind_station_no = GetStationNo();
-
-            string feedback_string = INiReader.ReadINIFile(Env.LayoutPath, "Control", $"station{_bind_station_no}");
-            string[] feedback_msgs = feedback_string.Split(';');
-
-            if (_bind_station_no != 0)
-            {
-                //ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_ready");
-                ChatController.SendFeedbackInfo(feedback_msgs[1]);
-            }
-        }
-
-        public static void AreaReadyFunc()
-        {
-            int _bind_station_no = GetStationNo();
-
-            string feedback_string = INiReader.ReadINIFile(Env.LayoutPath, "Control", $"station{_bind_station_no}");
-            string[] feedback_msgs = feedback_string.Split(';');
-
-            if (_bind_station_no != 0)
-            {
-                ChatController.SendFeedbackInfo(feedback_msgs[0]);
-            }
-
-        }
-
-        public static void PubRobotFunc()
-        {
-            int _bind_station_no = GetStationNo();
-
-            string feedback_string = INiReader.ReadINIFile(Env.LayoutPath, "Control", $"station{_bind_station_no}");
-            string[] feedback_msgs = feedback_string.Split(';');
-
-            if (_bind_station_no != 0)
-            {
-                //ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_star");
-                ChatController.SendFeedbackInfo(feedback_msgs[2]);
-            }
-
-        }
-
-        public static void PubRobotOut()
-        {
-            int _bind_station_no = GetStationNo();
-
-            string feedback_string = INiReader.ReadINIFile(Env.LayoutPath, "Control", $"station{_bind_station_no}");
-            string[] feedback_msgs = feedback_string.Split(';');
-
-            if (_bind_station_no != 0)
-            {
-                //ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_begin");
-                ChatController.SendFeedbackInfo(feedback_msgs[3]);
-            }
-                
-        }
-
-        public static void PubCarryOver()
-        {
-            // 頭尾未形成迴圈 (但目前規劃，最後一站搬運到第一站後，無須回報第一站完成，所以不影響)
-            int _bind_station_no = GetStationNo() + 1;
-            string feedback_string = INiReader.ReadINIFile(Env.LayoutPath, "Control", $"station{_bind_station_no}");
-            string[] feedback_msgs = feedback_string.Split(';');
-
-            if (_bind_station_no != 0)
-            {
-                //ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_end");
-                ChatController.SendFeedbackInfo(feedback_msgs[4]);
-            }
-                
-        }
-
-        public static void PubCarryError(string area_code)
-        {
-            // 頭尾未形成迴圈
-            int _bind_station_no = GetStationNo(area_code) + 1;
-            string feedback_string = INiReader.ReadINIFile(Env.LayoutPath, "Control", $"station{_bind_station_no}");
-            string[] feedback_msgs = feedback_string.Split(';');
-
-            if (_bind_station_no != 0)
-            {
-                //ChatController.SendFeedbackInfo($"station{_bind_station_no}_agv_end");
-                ChatController.SendFeedbackInfo(feedback_msgs[5]);
-            }
-
-        }
+        
     }
 
     public class ButtonPushEventArgs : EventArgs

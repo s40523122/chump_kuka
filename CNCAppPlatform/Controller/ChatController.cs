@@ -1,4 +1,5 @@
 ﻿using Chump_kuka.Dispatchers;
+using Chump_kuka.Services;
 using iCAPS;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,26 +14,23 @@ using static Chump_kuka.KukaModel;
 
 namespace Chump_kuka.Controller
 {
-    internal class ChatController
+    internal class ChatController : IChatService
     {
         private static MqttDispatcher _mqtt;
         private static bool _is_master = false;
+        private IKukaService _kuka_service;
+        private IFeedbackService _feedback_service;
 
-        public static event EventHandler<HttpListenerDispatcher.HeardEventArgs> StepChanged;
-        public static event CarryTasksEventHandler CarryTaskUpdated;
 
-        static ChatController()
+
+        public ChatController(IKukaService kuka_service)
         {
-
+            _kuka_service = kuka_service;
         }
 
-        public async static Task<bool> Init(bool is_server, IPEndPoint listen_server_info)
+        public async Task<bool> Init(bool is_server, IPEndPoint listen_server_info)
         {
             _is_master = is_server;
-
-            // 初始化，移除所有綁定事件
-            KukaParm.RobotStatusChanged -= KukaParm_RobotStatusChanged;
-            HttpListenerDispatcher.Heard -= HttpListenerDispatcher_Heard;
 
             // 重新建立新的 MQTT 實例
             if (_mqtt != null)
@@ -60,8 +58,8 @@ namespace Chump_kuka.Controller
                 _mqtt.Subscriber("update_task", UpdateTaskCb);
                 _mqtt.Subscriber("lock_request", LockCb);
 
-                KukaParm.RobotStatusChanged += KukaParm_RobotStatusChanged;          // 伺服器機器人資訊更新時，發佈到客戶端
-                HttpListenerDispatcher.Heard += HttpListenerDispatcher_Heard;
+                EventBus.RobotStatusChanged += KukaParm_RobotStatusChanged;          // 伺服器機器人資訊更新時，發佈到客戶端
+                EventBus.MissionStepChanged += HttpListenerDispatcher_Heard;
             }
 
             _mqtt.Subscriber("log", LogCb);
@@ -70,7 +68,7 @@ namespace Chump_kuka.Controller
             _mqtt.Subscriber("area", AreaCb);
             _mqtt.Subscriber("area/rack_status", RackCb);
             _mqtt.Subscriber("area/node_status", NodesCb);
-            _mqtt.Subscriber("carry/finish", CarryFinishCb);
+            //_mqtt.Subscriber("carry/finish", CarryFinishCb);
             _mqtt.Subscriber("carry/list", CarryListCb);
             _mqtt.Subscriber("heard", HeardCb);
             _mqtt.Subscriber("log/error", ErrorCb);
@@ -123,11 +121,8 @@ namespace Chump_kuka.Controller
 
         private static void HeardCb(string message)
         {
-            HttpListenerDispatcher.HeardEventArgs data = JsonConvert.DeserializeObject<HttpListenerDispatcher.HeardEventArgs>(message);
-            if (data.StartAreaCode == KukaParm.BindAreaModel.AreaCode)
-            {
-                PubToLocalController(null, data);     // 傳送至下一階段
-            }
+            HeardEventArgs data = JsonConvert.DeserializeObject<HeardEventArgs>(message);
+            EventBus.PublishMissionStepChanged(data);
         }
 
         private static void RobotCb(string message)
@@ -209,7 +204,7 @@ namespace Chump_kuka.Controller
             SyncNodeStatus1(find_area);
         }
 
-        private static void FeedCb(string message)
+        private void FeedCb(string message)
         {
             if (_is_master)
             {
@@ -219,7 +214,7 @@ namespace Chump_kuka.Controller
             }
         }
 
-        private static void CarryCb(string message)
+        private void CarryCb(string message)
         {
             try
             {
@@ -233,7 +228,7 @@ namespace Chump_kuka.Controller
                 PubLog("錯誤: 接收排程搬運任務" + _e.ToString());
             }
         }
-        private static void CarryAutoCb(string message)
+        private void CarryAutoCb(string message)
         {
             try
             {
@@ -247,35 +242,28 @@ namespace Chump_kuka.Controller
             }
         }
 
-        private static void CarryFinishCb(string message)
-        {
-            // 解析訊息為 [ 任務編號, 區域標號 ]
-            List<string> mission_area = JsonConvert.DeserializeObject<List<string>>(message);
-            SendCarryFinish(mission_area[0], mission_area[1]);
-        }
-
         private static void CarryListCb(string message)
         {
             KukaModel.SimpleCarryTask[] tasks = JsonConvert.DeserializeObject<List<KukaModel.SimpleCarryTask>>(message).ToArray();
-            CarryTaskUpdated?.Invoke(null, tasks);
+            EventBus.PublishCarryTaskUpdated(tasks);
         }
 
-        private static void DelTaskCb(string message)
+        private void DelTaskCb(string message)
         {
             Log.Append($"已接收刪除任務[{message}]", "CHAT", "ChatController");
             int.TryParse(message, out int task_id);
-            CarryTaskController.RemoveTask(task_id);
+            _kuka_service.RemoveTask(task_id);
         }
 
-        private static void CancelTaskCb(string message)
+        private void CancelTaskCb(string message)
         {
             Log.Append($"已接收強制取消任務[{message}]", "CHAT", "ChatController");
-            CarryTaskController.CancelTask(message);
+            _kuka_service.CancelTask(message);
         }
 
-        private static void UpdateTaskCb(string message)
+        private void UpdateTaskCb(string message)
         {
-            SyncCarryTask(CarryTaskController.GetQueueArray());
+            SyncCarryTask(_kuka_service.GetQueueArray());
         }
 
         /// <summary>
@@ -283,74 +271,17 @@ namespace Chump_kuka.Controller
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void HttpListenerDispatcher_Heard(object sender, HttpListenerDispatcher.HeardEventArgs e)
+        private void HttpListenerDispatcher_Heard(HeardEventArgs e)
         {
-            string target_area_code;
-
-            // 如果 step 為 7 代表搬運任務已完成
-            if (e.Step == 7)
+            if (_is_master)
             {
-                CarryTaskController.FeedbackFinish(e.MissionCode);
-                //int index = KukaParm.KukaAreaModels.FindIndex(m => m.AreaCode == e.AreaCode);       // 找到起點區域的 index
-                //int next_index = (index+1) % KukaParm.KukaAreaModels.Count;     // 使用「模運算」達到環狀效果
-                // KukaModel.Area heard_area = KukaParm.KukaAreaModels.FirstOrDefault(area => area.AreaCode == e.StartAreaCode);
-                KukaModel.Area heard_area = KukaParm.GetAreaModel(e.StartAreaCode);
-                SendCarryFinish(e.MissionCode, heard_area.Next().AreaCode);         // 通知目標區域更新(起點區域index+1)
-                /* 上行錯誤訊息
-   HttpListener發生錯誤[System.NullReferenceException: 並未將物件參考設定為物件的執行個體。
-   於 Chump_kuka.Controller.ChatController.HttpListenerDispatcher_Heard(Object sender, HeardEventArgs e) 於 C:\Users\11228\OneDrive - 財團法人精密機械研究發展中心\chump_kuka\CNCAppPlatform\Controller\ChatController.cs: 行 295
-   於 Chump_kuka.Dispatchers.HttpListenerDispatcher._kuka_listener_MessageReceived(Object sender, HttpMessageEventArgs e) 於 C:\Users\11228\OneDrive - 財團法人精密機械研究發展中心\chump_kuka\CNCAppPlatform\Dispatchers\HttpListenerDispatcher.cs: 行 217
-   於 iCAPS.Managers.HttpListenerManager.<HandleClientAsync>d__16.MoveNext() 於 C:\Users\11228\OneDrive - 財團法人精密機械研究發展中心\chump_kuka\CNCAppPlatform\Services\Managers\HttpListenerManager.cs: 行 99
---- 先前擲回例外狀況之位置中的堆疊追蹤結尾 ---
-   於 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
-   於 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
-   於 System.Runtime.CompilerServices.TaskAwaiter.GetResult()
-   於 iCAPS.Managers.HttpListenerManager.<<Start>b__14_0>d.MoveNext() 於 C:\Users\11228\OneDrive - 財團法人精密機械研究發展中心\chump_kuka\CNCAppPlatform\Services\Managers\HttpListenerManager.cs: 行 63]
-                 */
-
-
-                e.Step = 0;
-            }
-
-            // 若監聽目標為綁定區域
-            if (e.StartAreaCode == KukaParm.BindAreaModel.AreaCode)
-            {
-                PubToLocalController(sender, e);     // 傳送至下一階段
-                
-            }
-            else
-            {
-                // 若為其他區域，則傳送至其他模組中
+                // 同步至所有從機中
                 string message = JsonConvert.SerializeObject(e, Formatting.Indented);
 
-                // Send("heard", message);
                 _mqtt.Publisher("heard", message);
             }
-
-            PubLog($"Area_{e.StartAreaCode}:in step [{e.Step}]");
         }
 
-        private static void PubToLocalController(object sender, HttpListenerDispatcher.HeardEventArgs e)
-        {
-            switch (e.Step)
-            {
-                case 1:     // 
-                    break;
-                case 2:     // 機器人進站
-                    LocalAreaController.PubRobotFunc();       // station_agv_star
-                    break;
-                case 4:     // 機器人出站
-                    LocalAreaController.PubRobotOut();      // station_agv_begin
-                    break;
-                case 5:     // 搬運任務完成
-                    LocalAreaController.PubCarryOver();
-                    break;
-                case 7:
-                    break;
-            }
-
-            StepChanged?.Invoke(sender, e);     // 通知任務步驟事件更新
-        }
 
         private static void KukaParm_RobotStatusChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -377,7 +308,7 @@ namespace Chump_kuka.Controller
         /// </summary>
         public static void SyncCarryTask(KukaModel.SimpleCarryTask[] tasks)
         {
-            CarryTaskUpdated?.Invoke(null, tasks);
+            EventBus.PublishCarryTaskUpdated(tasks);
 
             string task_list_json = JsonConvert.SerializeObject(tasks, Formatting.Indented);
 
@@ -437,36 +368,13 @@ namespace Chump_kuka.Controller
             }
         }
 
-        /// <summary>
-        /// 當完成搬運任務時，通知目標區域更新狀態
-        /// </summary>
-        /// <param name="area_code"></param>
-        public static void SendCarryFinish(string mission_code, string area_code)
-        {
-            // 如果目標是當前模組，直接觸發步驟 0，通知工作站更新狀態
-            if (area_code == KukaParm.BindAreaModel.AreaCode)
-            {
-                HttpListenerDispatcher.HeardEventArgs _e = new HttpListenerDispatcher.HeardEventArgs(mission_code, area_code, 0);
+        
 
-                StepChanged.Invoke(null, _e);
-                Log.Append("Get finish", "INFO", "ChatController");
-            }
-            else
-            {
-                if (_is_master)
-                {
-                    string[] send_info = new string[2] { mission_code, area_code };
-                    _mqtt.Publisher("carry/finish", JsonConvert.SerializeObject(send_info));
-                }
-                    
-            }
-        }
-
-        public static void SendFeedbackInfo(string feedback_msg)
+        public void SendFeedbackInfo(string feedback_msg)
         {
             if (_is_master)
             {
-                FeedbackDispatcher.SendToRecordSystem(feedback_msg);
+                // _feedback_service.SendToRecordSystem(feedback_msg);
                 Log.Append($"發送報工訊息{feedback_msg}", "INFO", "ChatController");
             }
             else
@@ -476,12 +384,12 @@ namespace Chump_kuka.Controller
             }
         }
 
-        public static void AppendCarryTask(KukaModel.CarryModel start_carry_info, KukaModel.CarryModel goal_carry_info, bool wait=true)
+        public void AppendCarryTask(KukaModel.CarryModel start_carry_info, KukaModel.CarryModel goal_carry_info, bool wait=true)
         {
             if (_is_master)        
             {
                 // 若為 master 端，將任務加入等候區
-                CarryTaskController.AddToQueue(start_carry_info, goal_carry_info, out _, wait);
+                _kuka_service.AddToQueue(start_carry_info, goal_carry_info, out _, wait);
             }
             else
             {
@@ -496,7 +404,7 @@ namespace Chump_kuka.Controller
             }
         }
 
-        public static void DelTask(string task_id)
+        public void DelTask(string task_id)
         {
             if (_is_master)
             {
@@ -508,7 +416,7 @@ namespace Chump_kuka.Controller
             }
         }
 
-        public static void UpdateTaskList()
+        public void UpdateTaskList()
         {
             if (_is_master)
             {
@@ -520,7 +428,7 @@ namespace Chump_kuka.Controller
             }
         }
 
-        public static void CancelTask(string task_id)
+        public void CancelTask(string task_id)
         {
             if (_is_master)
             {

@@ -17,7 +17,7 @@ using System.Reflection;
 
 namespace Chump_kuka
 {
-    internal class KukaModel
+    public class KukaModel
     {
         public class Node : INotifyPropertyChanged
         {
@@ -263,7 +263,7 @@ namespace Chump_kuka
                 //this.NodeStatus = source_model.NodeStatus;
             }
 
-            public static bool CompareData(List<Area> sourceData, List<Area> targetData) => sourceData.Select(m => m.AreaName).SequenceEqual(targetData.Select(m => m.AreaName));
+            public bool CompareData(List<Area> sourceData, List<Area> targetData) => sourceData.Select(m => m.AreaName).SequenceEqual(targetData.Select(m => m.AreaName));
 
             public Area Next()
             {
@@ -394,6 +394,8 @@ namespace Chump_kuka
             [JsonProperty]
             public bool IsDeleted { get; private set; } = false;
 
+            public KukaMissionStep MissionStep { get; set; } = 0;
+
             public CarryTask(int task_id, bool called, CarryModel start_node, CarryModel goal_node)
             {
                 ID = task_id;
@@ -465,6 +467,33 @@ namespace Chump_kuka
                 // Json 反序列化後，將 _is_loading 設定為 true，防止反序列化時，重複寫入文件
                 _is_loading = true;
             }
+        }
+
+        public enum KukaMissionStep
+        {
+            ///<summary> 接收任務 </summary>
+            Received = 1,
+
+            /// <summary> 到達起點 </summary>
+            Start = 2,
+
+            /// <summary> 頂升貨架 </summary>
+            UP = 3,
+
+            /// <summary> 離開起點 </summary>
+            Leaved = 4,
+
+            /// <summary> 到達終點 </summary>
+            Goal = 5,
+
+            /// <summary> 放下貨架 </summary>
+            Down = 6,
+
+            /// <summary> 完成任務 </summary>
+            Complete = 7,
+
+            /// <summary> 任務取消 </summary>
+            Canceled = 8,
         }
 
         public class RobotInfo

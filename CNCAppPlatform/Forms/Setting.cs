@@ -1,5 +1,6 @@
 ﻿using Chump_kuka.Controller;
 using Chump_kuka.Controls;
+using Chump_kuka.Services;
 using iCAPS;
 using System;
 using System.Collections;
@@ -19,9 +20,12 @@ namespace Chump_kuka.Forms
 {
     public partial class Setting : Form
     {
+        
+
         public Setting()
         {
             InitializeComponent();
+
             Load += Setting_Load;
 
             Env.EnvChanged += (s, e) => bind_comboBox.Text = Env.BindAreaName;
@@ -84,7 +88,7 @@ namespace Chump_kuka.Forms
             if (!Env.ICapsServer)
                 return;
             // TODO 關閉現有連線
-            bool isconn = await KukaApiController.ConnectAndCheck(kuka_request_url.Text);
+            bool isconn = await ModulePlugIn.KukaApiModule.ConnectAndCheck(kuka_request_url.Text);
             kuka_api_check.Change = isconn;
             kuka_api_check.Visible = true;
 
@@ -94,7 +98,7 @@ namespace Chump_kuka.Forms
                 //KukaApiController.GetAreaInfo();
                 Env.KukaApiUrl = kuka_request_url.Text;
                 Log.SystemInfo("成功");
-                KukaApiController.GetRobotStatus();
+                ModulePlugIn.KukaApiModule.GetRobotStatus();
             }
             else
             {
@@ -117,7 +121,7 @@ namespace Chump_kuka.Forms
 
             IPEndPoint listen_server_ipep = new IPEndPoint(IPAddress.Parse(linker_server_ip.Text), int.Parse(linker_server_port.Text));       // 開啟 Linker 通訊
 
-            bool isconn = await ChatController.Init(Env.ICapsServer, listen_server_ipep);
+            bool isconn = await ModulePlugIn.ChatModule.Init(Env.ICapsServer, listen_server_ipep);
             await Task.Delay(500);      // 等待初始化
 
             Env.IcapsLinkerServerIp = linker_server_ip.Text;
@@ -144,7 +148,7 @@ namespace Chump_kuka.Forms
                 return;
             
             // SocketDispatcher _icaps_socket = new SocketDispatcher();
-            bool isconn = await FeedbackDispatcher.StartRecordListener(int.Parse(tcp_record_port.Text));
+            bool isconn = await ModulePlugIn.FeedbackModule.StartFeedbackServer(int.Parse(tcp_record_port.Text));
             if (isconn)
             {
                 Env.RecordLogTcpPort = tcp_record_port.Text;
@@ -178,7 +182,7 @@ namespace Chump_kuka.Forms
             if (!Env.ICapsServer)
                 return;
 
-            bool isconn = await KukaApiController.StartListen(kuka_response_url.Text);
+            bool isconn = await ModulePlugIn.FeedbackModule.StartListenKmResResponse(kuka_response_url.Text);
             kuka_response_check.Change = isconn;
             kuka_response_check.Visible = true;
 
@@ -192,6 +196,9 @@ namespace Chump_kuka.Forms
         {
             Env.LocalIp = local_ip_combo.Text;
             kuka_api_check.Visible = kuka_response_check.Visible = record_log_check.Visible = sensor_check.Visible = server_check.Visible = false;
+
+            ModulePlugIn.FeedbackModule.Init(Env.ICapsServer);
+
             // 依序執行連線任務
             await RunTask(15, 20, "等待 iCAPS 伺服器開啟...", ServerTask);
             await RunTask(35, 40, "等待 KUKA API 連線...", KukaApiTask);
@@ -216,6 +223,7 @@ namespace Chump_kuka.Forms
                     MsgBox.Show("未獲取區域資料，請重新連線測試");
                 }
             }
+
         }
 
         /// <summary>

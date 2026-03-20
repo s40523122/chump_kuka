@@ -1,6 +1,8 @@
 ﻿using CefSharp.DevTools.CSS;
 using Chump_kuka.Controller;
 using Chump_kuka.Controls;
+using Chump_kuka.Dispatchers;
+using Chump_kuka.Services;
 using iCAPS;
 using System;
 using System.Collections.Generic;
@@ -44,8 +46,8 @@ namespace Chump_kuka.Forms
 
             // SetupDataGridView();
 
-            ChatController.CarryTaskUpdated += ChatController_CarryTaskUpdated;
-            LocalAreaController.StepChanged += LocalAreaController_StepChanged;
+            EventBus.CarryTaskUpdated += ChatController_CarryTaskUpdated;
+            EventBus.MissionStepChanged += LocalAreaController_StepChanged;
 
             // 當綁定區域更新時，同步更新控制項 UI
             KukaParm.BindChanged += KukaParm_BindChanged;
@@ -58,16 +60,9 @@ namespace Chump_kuka.Forms
             InitIdleTimer();        // 閒置判斷計時器
             InitTreeGridView();     // 任務列表初始化
 
-            CarryTaskController.OnTimerAlive -= CarryTaskController_OnTimerAlive;       // 初始化
-
             _easter_egg_timer.Tick += _easter_egg_timer_Tick;
 
             LocalAreaController.InitAreaStatus();   // 初始化區域狀態
-        }
-
-        private void CarryTaskController_OnTimerAlive(bool obj)
-        {
-            throw new NotImplementedException();
         }
 
         private void InitTreeGridView()
@@ -102,7 +97,7 @@ namespace Chump_kuka.Forms
             }));
         }
 
-        private void ChatController_CarryTaskUpdated(object sender, KukaModel.SimpleCarryTask[] e)
+        private void ChatController_CarryTaskUpdated(KukaModel.SimpleCarryTask[] e)
         {
             //dataGridView1.Invoke(new Action(() => {
             //    dataGridView1.DataSource = e;
@@ -136,7 +131,7 @@ namespace Chump_kuka.Forms
             _idle_timer.Enabled = true;
         }
 
-        private void LocalAreaController_StepChanged(object sender, Dispatchers.HttpListenerDispatcher.HeardEventArgs e)
+        private void LocalAreaController_StepChanged(HeardEventArgs e)
         {
             this.Invoke(new Action(async ()=>
             {
@@ -148,24 +143,24 @@ namespace Chump_kuka.Forms
                             LocalAreaController.InitAreaStatus();
                             LocalAreaController.TryCreateCarryTask();      // 更新區域狀態
                             break;
-                        case 1:
+                        case KukaModel.KukaMissionStep.Received:
                             Light(2);
                             break;
-                        case 2:
-                            LocalAreaController.PubReady();     // 回報搬運車進站
+                        case KukaModel.KukaMissionStep.Start:
+                            //LocalAreaController.PubReady();     // 回報搬運車進站
                             Light(3);
                             break;
-                        case 4:
+                        case KukaModel.KukaMissionStep.Leaved:
                             Light(4);       // 搬運車出站
                             await Task.Delay(3000);
                             LocalAreaController.InitAreaStatus();
                             LocalAreaController.TryCreateCarryTask();      // 更新區域狀態
                             break;
-                        case 5:
+                        case KukaModel.KukaMissionStep.Goal:
                             Light(5);                            
                             _idle_timer.Enabled = true;
                             break;
-                        case 7:
+                        case KukaModel.KukaMissionStep.Complete:
                             Light(0);
                             break;
                     }
@@ -220,14 +215,14 @@ namespace Chump_kuka.Forms
                 bool wait_call = !bind_area_control.Checked;
 
                 Light(1);       // 表示物料已進站
-                LocalAreaController.AreaReadyFunc();
+                ModulePlugIn.FeedbackModule.AreaReadyFunc();
 
                 // 建立搬運任務
                 KukaModel.CarryModel start_carry_node = new KukaModel.CarryModel(can_carry_node.NodeName, KukaParm.BindAreaModel.AreaCode, can_carry_node.NodeCode);
                 KukaModel.Area next_area = can_carry_node.Parent.Next();
                 KukaModel.CarryModel goal_carry_node = new KukaModel.CarryModel(next_area.AreaName, next_area.AreaCode, null);
 
-                ChatController.AppendCarryTask(start_carry_node, goal_carry_node, wait_call);
+                ModulePlugIn.ChatModule.AppendCarryTask(start_carry_node, goal_carry_node, wait_call);
             }
         }
 
@@ -341,7 +336,7 @@ namespace Chump_kuka.Forms
 
         private void task_list_reset_Click(object sender, EventArgs e)
         {
-            ChatController.UpdateTaskList();
+            ModulePlugIn.ChatModule.UpdateTaskList();
         }
 
         private void bind_area_control_ContainerClick(object sender, ControlClickEventArgs e)

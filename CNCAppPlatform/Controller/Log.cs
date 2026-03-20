@@ -72,6 +72,16 @@ namespace Chump_kuka
             string log_method = "")
             => Append(info_msg, "Debug", $"{System.IO.Path.GetFileName(filePath)}:{lineNumber}", log_method);
 
+        /// <summary>
+        /// 加入一筆錯誤訊息
+        /// </summary>
+        public static void ErrorInfo(
+            string info_msg,
+            [CallerFilePath] string filePath = "",
+            [CallerLineNumber] int lineNumber = 0,
+            string log_method = "")
+            => Append(info_msg, "Error", $"{System.IO.Path.GetFileName(filePath)}:{lineNumber}", log_method);
+
         public static void LogTemplate(string message, string status, [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0) => Append(message, "TTEST", $"{System.IO.Path.GetFileName(filePath)}:{lineNumber}");
 
 

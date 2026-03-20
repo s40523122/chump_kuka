@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chump_kuka.Controller;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -60,7 +61,7 @@ namespace Chump_kuka.Controls
             this.BringToFront(); // 確保在最上層
 
             if (!Env.ICapsServer) return;
-            Chump_kuka.CarryTaskController.OnTimerAlive += CarryTaskController_OnTimerAlive;
+            ModulePlugIn.CarryTaskModule.OnTimerAlive += CarryTaskController_OnTimerAlive;
         }
 
         private void InitializeSidebar()

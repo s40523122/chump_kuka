@@ -1,6 +1,7 @@
 ﻿using CefSharp.DevTools.CSS;
 using Chump_kuka.Controller;
 using Chump_kuka.Controls;
+using Chump_kuka.Services;
 using iCAPS;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -22,6 +23,7 @@ namespace Chump_kuka.Forms
     {
         private KukaModel.CarryModel _start_carry = null;
         private KukaModel.CarryModel _goal_carry = null;
+
         private KukaModel.CarryModel StartCarry 
         { 
             get => _start_carry;
@@ -275,7 +277,7 @@ namespace Chump_kuka.Forms
             {
                 // KukaApiController.PubCarryTask();
                 await MsgBox.ShowFlash("加入等候任務列表...", "手動派車", 1000);
-                ChatController.AppendCarryTask(_start_carry, _goal_carry, false);
+                ModulePlugIn.ChatModule.AppendCarryTask(_start_carry, _goal_carry, false);
             }
 
             

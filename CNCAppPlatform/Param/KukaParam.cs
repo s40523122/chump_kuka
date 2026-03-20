@@ -21,6 +21,7 @@ using System.Security.Cryptography;
 using CefSharp.DevTools.CSS;
 using System.Runtime.CompilerServices;
 using static Chump_kuka.KukaModel;
+using Chump_kuka.Controller;
 
 /// <summary>
 /// KukaParm 類別 (全域設定管理)
@@ -49,7 +50,7 @@ internal static class KukaParm
 
     // public static List<KukaAreaControl> AreaControls = new List<KukaAreaControl>();     // 已記錄的區域控制項
     public static string ParamPath = Path.Combine(Application.StartupPath, "config\\param.ini");
-    public static event PropertyChangedEventHandler RobotStatusChanged;
+    
     public static event PropertyChangedEventHandler AreaChanged;
     //public static event PropertyChangedEventHandler AreaStatusChanged;
     //public static event PropertyChangedEventHandler CarryChanged;
@@ -366,7 +367,7 @@ internal static class KukaParm
 
     private static void OnRobotChanged(string propertyName)
     {
-        RobotStatusChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
+        EventBus.PublishRobotStatusChanged(propertyName);
     }
 
     //private static void OnCarryChanged(string propertyName)

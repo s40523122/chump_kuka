@@ -1,4 +1,5 @@
-﻿using CookComputing.XmlRpc;
+﻿using Chump_kuka.Controller;
+using CookComputing.XmlRpc;
 using iCAPS;
 using Newtonsoft.Json.Linq;
 using System;
@@ -181,7 +182,7 @@ namespace Chump_kuka.Controls
             if (DesignMode) return;     // 若在設計階段，不執行以下內容。( 需在 Load 事件中才有用)
 
             tabControl1.Controls.RemoveAt(0);
-            KukaParm.RobotStatusChanged += KukaParm_PropertyChanged;       // 自動更新機器人資訊
+            EventBus.RobotStatusChanged += KukaParm_PropertyChanged;       // 自動更新機器人資訊
         }
 
         private void KukaRobotStatus_Resize(object sender, EventArgs e)

@@ -1,4 +1,7 @@
 ﻿using CefSharp.DevTools.CSS;
+using Chump_kuka.Controller;
+using Chump_kuka.Models.Msgs;
+using Chump_kuka.Services;
 using iCAPS;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -8,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Security.AccessControl;
 using System.Security.Policy;
 using System.Text;
@@ -139,8 +143,8 @@ namespace Chump_kuka.Dispatchers
                         Log.Append(message, "ERROR", $"/{apiName}");
                         if(apiName == "submitMission")
                         {
-                            CarryTaskController.FeedbackFail(requestBody.missionCode);     // 回報任務失敗
-                            CarryTaskController.AppendTaskLog(requestBody.missionCode, message);
+                            MissionStatusMsg data = new MissionStatusMsg(requestBody.missionCode, "submitMission Failed", message);
+                            EventBus.PublishApiFailed(data);
                         }
                             
                         return;

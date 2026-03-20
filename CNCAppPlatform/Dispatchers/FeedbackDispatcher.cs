@@ -17,11 +17,9 @@ namespace Chump_kuka
     {
         //private const int PORT = 6500;      // 設定連線 port
         //private static WebSocketManager.Server _server = new WebSocketManager.Server(PORT);     // 創建伺服器實例，監聽區域網路的所有IP
-        private static TcpListenerManager order_record_listener;
+        private TcpListenerManager order_record_listener;
 
-        public static event EventHandler<TextEventArgs> Called;
-
-        public static async Task<bool> StartRecordListener(int listen_port)
+        public async Task<bool> StartRecordListener(int listen_port)
         {
             if (order_record_listener != null && order_record_listener.IsRunning) return true;
 
@@ -36,7 +34,7 @@ namespace Chump_kuka
             return order_record_listener.IsRunning;
         }
 
-        public static async void SendToRecordSystem(string msg)
+        public async Task SendToRecordSystem(string msg)
         {
             // 不論如何，送送訊息給已連接的 client
             //await _server.SendToAllClients(msg);
@@ -44,7 +42,7 @@ namespace Chump_kuka
             await order_record_listener.SendMessageAsync(msg);
         }
 
-        private static async void Order_record_listener_MessageReceived(object sender, TcpMessageEventArgs e)
+        private async void Order_record_listener_MessageReceived(object sender, TcpMessageEventArgs e)
         {
             string message = e.Message.Trim().ToLower();
             TcpListenerManager listener = sender as TcpListenerManager;
@@ -58,14 +56,14 @@ namespace Chump_kuka
                     break;
                 case "station1_call":
                     // 發送 station1_agv_ready
-                    // await listener.SendMessageAsync("station1_agv_ready");
-                    Called?.Invoke(sender, new TextEventArgs(KukaParm.GetAreaModelByIndex(0).AreaCode));     // 傳遞第一區域發車命令
+                    // await listener.SendMessageAsync("station1_agv_ready");  
+                    EventBus.PublishFeedbackCalled(new TextEventArgs(KukaParm.GetAreaModelByIndex(0).AreaCode));    // 傳遞第一區域發車命令
 
                     break;
                 case "station2_call":
                     // 發送 station1_agv_ready
                     // await listener.SendMessageAsync("station2_agv_ready");
-                    Called?.Invoke(sender, new TextEventArgs(KukaParm.GetAreaModelByIndex(1).AreaCode));     // 傳遞第二區域發車命令
+                    EventBus.PublishFeedbackCalled(new TextEventArgs(KukaParm.GetAreaModelByIndex(1).AreaCode));     // 傳遞第二區域發車命令
                     break;
                 default:
                     // 回傳確認訊息

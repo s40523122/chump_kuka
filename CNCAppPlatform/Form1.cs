@@ -16,6 +16,7 @@ using Chump_kuka.Dispatchers;
 using Newtonsoft.Json;
 using Chump_kuka.Services;
 using System.Drawing.Drawing2D;
+using Chump_kuka.Controller;
 
 namespace Chump_kuka
 {
@@ -24,9 +25,10 @@ namespace Chump_kuka
         private UdpChatRoom _udp_chat_room = new UdpChatRoom();
         private LogWindow _log_window;
 
-        public Form1()
+        internal Form1()
         {
             InitializeComponent();
+
             Env.EnableBubble = true;
             Load += Form1_Load;
 
@@ -67,7 +69,13 @@ namespace Chump_kuka
             //Log.Append("Test", "TEST", "Form1");
             //MsgBox.Show("Test");
 
-            CarryTaskController.FeedbackFinish(CarryTaskController.CurrentTask.MissionCode);
+            //IKukaService _kuka_service = new CarryTaskController();
+            //_kuka_service.FeedbackFinish(CarryTaskController.CurrentTask.MissionCode);
+
+            HeardEventArgs msg = new HeardEventArgs("mission77974590", "Area01", KukaModel.KukaMissionStep.Start);
+            EventBus.PublishMissionStepChanged(msg);
+
+            ChatController.SyncRackStatus(KukaParm.BindAreaModel);
         }
 
 
